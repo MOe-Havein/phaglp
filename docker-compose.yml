@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    container_name: phaglp-db-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-phaglp_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-phaglp_pass}
+      POSTGRES_DB: ${DB_NAME:-phaglp_prod}
+    volumes:
+      - phaglp-db-data:/var/lib/postgresql/data
+    networks:
+      - internal-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-migrate:
+    image: ghcr.io/${IMAGE_NAME}:latest
+    environment:
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}"
+    command: npx prisma migrate deploy
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal-network
+
+
+
+  app:
+    image: ghcr.io/${IMAGE_NAME}
+    container_name: phaglp-app-prod
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
+    ports:
+      - "${LOCAL_PORT:-3000}:3000"
+      - "${LOCAL_APP_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}"
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      CLOUDINARY_URL: ${CLOUDINARY_URL}
+      
+    volumes:
+      - phaglp-uploads:/app/public/uploads
+    networks:
+      - internal-network
+      - public-network
+
+networks:
+  internal-network:
+    internal: true
+  public-network:
+    driver: bridge
+
+volumes:
+  phaglp-db-data:
+  phaglp-uploads:

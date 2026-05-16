@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+
+}
+
+model User {
+  id           String           @id @default(cuid())
+  email        String           @unique
+  name         String?
+  image        String?
+  passwordHash String
+  role         Role             @default(USER)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  tier         SubscriptionTier @default(BASIC)
+  chatMessages ChatMessage[]
+  comments     Comment[]
+  courses      Course[]         @relation("InstructorCourses")
+  enrollments  Enrollment[]
+  lectures     Lecture[]
+  pages        Page[]
+  posts        Post[]
+  sessions     Session[]
+
+  @@index([role])
+  @@index([tier])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  authorId  String
+  comments  Comment[]
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  postId    String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([authorId])
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  pages Page[] @relation("PageToTag")
+}
+
+model PageRevision {
+  id        String   @id @default(cuid())
+  pageId    String
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+model Page {
+  id              String         @id @default(cuid())
+  slug            String         @unique
+  title           String
+  content         String
+  published       Boolean        @default(false)
+  /// Nullable to support system-generated or orphaned pages (e.g. landing pages without a direct author)
+  authorId        String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  readingTime     Int            @default(0)
+  seoTitle        String?
+  metaDescription String?
+  author          User?          @relation(fields: [authorId], references: [id])
+  revisions       PageRevision[]
+  tags            Tag[]          @relation("PageToTag")
+}
+
+model Lecture {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  title       String
+  body        String
+  excerpt     String?
+  category    String
+  tags        String[]
+  authorId    String
+  published   Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  readingTime Int?
+  coverImage  String?
+  isFeatured  Boolean           @default(false)
+  author      User              @relation(fields: [authorId], references: [id])
+  revisions   LectureRevision[]
+
+  @@index([authorId])
+}
+
+model LectureRevision {
+  id        String   @id @default(cuid())
+  lectureId String
+  title     String
+  body      String
+  authorId  String
+  createdAt DateTime @default(now())
+  lecture   Lecture  @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@index([lectureId])
+  @@index([authorId])
+}
+
+model SiteSettings {
+  id                    String  @id @default("global")
+  siteName              String
+  siteUrl               String
+  metaTitle             String
+  metaDescription       String
+  description           String?
+  primaryColor          String
+  ogImage               String?
+  logoUrl               String?
+  faviconUrl            String?
+  googleAnalyticsId     String?
+  enableGoogleAnalytics Boolean @default(false)
+  maintenanceMode       Boolean @default(false)
+}
+
+model FeatureFlag {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  description String?
+  isEnabled   Boolean @default(false)
+}
+
+model Course {
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  title        String
+  description  String
+  price        Float
+  published    Boolean        @default(false)
+  instructorId String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  duration     String?
+  instructor   User           @relation("InstructorCourses", fields: [instructorId], references: [id])
+  modules      CourseModule[]
+  enrollments  Enrollment[]
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
+
+model CourseModule {
+  id        String   @id @default(cuid())
+  courseId  String
+  title     String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+
+  @@index([courseId])
+}
+
+model Lesson {
+  id        String       @id @default(cuid())
+  moduleId  String
+  title     String
+  content   String?
+  videoUrl  String?
+  order     Int
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  module    CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@index([moduleId])
+}
+
+model KnowledgeBase {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  type      String
+  embedding Float[]
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  role      MessageRole
+  content   String
+  createdAt DateTime    @default(now())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+
+  @@index([sessionId])
+  @@index([userId])
+}
+
+enum Role {
+  USER
+  ADMIN
+  INSTRUCTOR
+}
+
+/// Product access tiers for consumers.
+enum SubscriptionTier {
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+/// Role of a participant in a chat message thread.
+enum MessageRole {
+  USER
+  ASSISTANT
+}

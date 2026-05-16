@@ -1,0 +1,146 @@
+name: Gemini CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: gemini-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gemini:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+
+    env:
+      CI: true
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # -----------------------------
+      # pnpm setup (must come first)
+      # -----------------------------
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      # -----------------------------
+      # Node setup (after pnpm)
+      # -----------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # -----------------------------
+      # Prepare Gemini CLI
+      # -----------------------------
+      - name: Install Gemini CLI
+        run: npm install -g @google/gemini-cli@0.1.7
+
+      - name: Verify Gemini
+        run: gemini --version
+
+      # -----------------------------
+      # Resolve changed files
+      # -----------------------------
+      - name: Get changed files
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')
+          else
+            FILES=$(git diff --name-only HEAD~1...HEAD | tr '\n' ' ')
+          fi
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+
+      # -----------------------------
+      # Run Gemini analysis
+      # -----------------------------
+      - name: Run Gemini CLI
+        run: |
+          gemini analyze \
+            --repo . \
+            --files "${{ steps.changed.outputs.files }}" \
+            --format json \
+            --output gemini-report.json
+
+      # -----------------------------
+      # Validate report
+      # -----------------------------
+      - name: Validate report
+        run: |
+          if [ ! -s gemini-report.json ]; then
+            echo "Gemini report is empty or missing — failing."
+            exit 1
+          fi
+
+      # -----------------------------
+      # Post report as PR comment
+      # -----------------------------
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('gemini-report.json', 'utf8'));
+            const body = [
+              '## Gemini Code Review',
+              '```json',
+              JSON.stringify(report, null, 2),
+              '```',
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c =>
+              c.user.login === 'github-actions[bot]' &&
+              c.body.startsWith('## Gemini Code Review')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      # -----------------------------
+      # Upload report artifact
+      # -----------------------------
+      - name: Upload Gemini Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemini-report
+          path: gemini-report.json

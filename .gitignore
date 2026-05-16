@@ -1,0 +1,54 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+/dist/
+
+# production
+/build
+
+# logs
+*.log
+*.log.*
+
+# performance traces and reports
+*.json.gz
+lighthouse-report.json
+
+# test snapshots and debug info
+*_snapshot.txt
+
+# Gemini temporary files
+.gemini/tmp/
+
+# env files
+.env*
+
+# vercel
+.vercel
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.auth/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# gemini-cli settings
+# .gemini/ # Decided to keep current committed files but usually ignored
+
+# GitHub App credentials
+gha-creds-*.json
+
+.vercel
+# gemini-cli settings
+.gemini/
+
+# GitHub App credentials
+gha-creds-*.json

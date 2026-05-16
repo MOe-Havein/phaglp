@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .carbon-fibre {
+    background:
+      linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+      linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+      linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+      linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+      linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+      linear-gradient(
+        #1d1d1d 25%,
+        #1a1a1a 25%,
+        #1a1a1a 50%,
+        transparent 50%,
+        transparent 75%,
+        #242424 75%,
+        #242424
+      );
+    background-color: #131313;
+    background-size: 20px 20px;
+  }
+}
+
+@layer base {
+  :root {
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+
+    /* 1. Primary Color: #1E3A8A (HSL 224, 64%, 33%) */
+    --primary: 224 64% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    /* 2. Main Background: #FFFFFF (HSL 0, 0%, 100%) */
+    --background: 0 0% 100%;
+
+    /* 7. Text Color: #374151 (HSL 217, 19%, 27%) */
+    --foreground: 217 19% 27%;
+
+    /* 3. Secondary Color: #F3F4F6 (HSL 220, 14%, 96%) */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 217 19% 27%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    /* 4. Motivational Accent (Green): #10B981 (HSL 161, 84%, 39%) */
+    --success: 161 84% 39%;
+    --success-foreground: 0 0% 100%;
+
+    /* 5. Interactive Accent (Orange): #F97316 (HSL 25, 95%, 53%) */
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    /* 6. Alert & Highlight (Yellow): #FACC15 (HSL 48, 96%, 53%) */
+    --warning: 48 96% 53%;
+    --warning-foreground: 217 19% 27%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 217 19% 27%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 217 19% 27%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 64% 33%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 220 14% 98%;
+    --sidebar-foreground: 217 19% 27%;
+    --sidebar-primary: 224 64% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 217 19% 27%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 224 64% 33%;
+  }
+
+  .dark {
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 7%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 222 47% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222 47% 12%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 25 95% 45%;
+    --accent-foreground: 210 40% 98%;
+    --success: 161 84% 35%;
+    --success-foreground: 210 40% 98%;
+    --warning: 48 96% 45%;
+    --warning-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222 47% 15%;
+    --input: 222 47% 15%;
+    --ring: 217 91% 60%;
+    --sidebar-background: 222 47% 4%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 47% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 47% 15%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

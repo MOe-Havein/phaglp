@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // For production environments with a connection pooler like PgBouncer:
+  // 1. Set `directUrl` for migrations.
+  // 2. Use the `pgbouncer=true` flag in the main URL.
+  // directUrl = env("DIRECT_DATABASE_URL") // e.g., for Prisma Migrate
+}
+
+// Enum for User Roles
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  passwordHash String
+  role         Role      @default(USER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  sessions Session[]
+  posts    Post[]
+  comments Comment[]
+
+  @@index([role])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  authorId String
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments Comment[]
+
+  @@index([authorId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([authorId])
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  event     String // e.g., 'page_view', 'user_login'
+  path      String
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  // You could add a userId if you want to link events to specific users
+  // userId    String?
+  // user      User?   @relation(fields: [userId], references: [id])
+
+  @@index([event])
+}

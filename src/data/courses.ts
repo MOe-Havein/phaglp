@@ -1,0 +1,38 @@
+export const courses = [
+  {
+    id: "1",
+    title: "The Foundations of Stoic Wisdom",
+    slug: "foundations-of-stoic-wisdom",
+    instructor: "Dr. Marcus Aurelius",
+    price: 49.99,
+    rating: 4.9,
+    category: "WISDOM",
+  },
+  {
+    id: "2",
+    title: "Applied Ethics in the Modern Age",
+    slug: "applied-ethics-modern-age",
+    instructor: "Dr. Jane Doe",
+    price: 39.99,
+    rating: 4.7,
+    category: "EDUCATION",
+  },
+  {
+    id: "3",
+    title: "Cognitive Science and Philosophy",
+    slug: "cognitive-science-philosophy",
+    instructor: "Prof. Alan Turing",
+    price: 59.99,
+    rating: 4.8,
+    category: "SCIENCE",
+  },
+  {
+    id: "4",
+    title: "Logic and Critical Thinking",
+    slug: "logic-critical-thinking",
+    instructor: "Aristotle",
+    price: 29.99,
+    rating: 4.9,
+    category: "EDUCATION",
+  },
+]
