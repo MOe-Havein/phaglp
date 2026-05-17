@@ -35,7 +35,7 @@ export async function GET() {
     // 2. Create Sample Lecture if none exist
     const lectureCount = await prisma.lecture.count()
 
-    if (lectureCount === 0) {
+    if (lectureCount === 0 && adminUser) {
       await prisma.lecture.create({
         data: {
           title: "Welcome to PHAGLP",
