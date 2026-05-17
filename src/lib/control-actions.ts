@@ -44,6 +44,7 @@ export async function updateSiteSettings(data: any) {
           metaTitle: data.metaTitle,
           metaDescription: data.metaDescription,
           primaryColor: data.primaryColor,
+          fullAddress: data.fullAddress,
         },
         create: {
           id: "global",
@@ -54,6 +55,7 @@ export async function updateSiteSettings(data: any) {
           metaTitle: data.metaTitle,
           metaDescription: data.metaDescription,
           primaryColor: data.primaryColor,
+          fullAddress: data.fullAddress,
         },
       })
     })
@@ -126,6 +128,8 @@ export async function updateUserTier(userId: string, tier: SubscriptionTier) {
   }
 }
 
+import { Sex, IncomeLevel, WorldTier, EducationLevel, IQLevel } from "@prisma/client"
+
 const userSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
@@ -136,6 +140,53 @@ const userSchema = z.object({
     .or(z.literal("")),
   role: z.nativeEnum(Role),
   tier: z.nativeEnum(SubscriptionTier).optional(),
+  
+  // Extended fields
+  firstName: z.string().optional().nullable(),
+  fatherName: z.string().optional().nullable(),
+  grandfatherName: z.string().optional().nullable(),
+  familyName: z.string().optional().nullable(),
+  nickname: z.string().optional().nullable(),
+  photoUrl: z.string().optional().nullable(),
+  sex: z.nativeEnum(Sex).optional().nullable(),
+  birthDate: z.string().optional().nullable(),
+  birthCountry: z.string().optional().nullable(),
+  birthState: z.string().optional().nullable(),
+  birthCity: z.string().optional().nullable(),
+  birthTown: z.string().optional().nullable(),
+  birthVillage: z.string().optional().nullable(),
+  incomeLevel: z.nativeEnum(IncomeLevel).optional().nullable(),
+  worldTier: z.nativeEnum(WorldTier).optional().nullable(),
+  mobile1: z.string().optional().nullable(),
+  mobile2: z.string().optional().nullable(),
+  telephone: z.string().optional().nullable(),
+  educationLevel: z.nativeEnum(EducationLevel).optional().nullable(),
+  educationDegree: z.string().optional().nullable(),
+  educationSchool: z.string().optional().nullable(),
+  educationPhoto: z.string().optional().nullable(),
+  iqLevel: z.nativeEnum(IQLevel).optional().nullable(),
+  nationalityId: z.string().optional().nullable(),
+  nationalityPhoto: z.string().optional().nullable(),
+  residenceState: z.string().optional().nullable(),
+  residenceCity: z.string().optional().nullable(),
+  residenceTown: z.string().optional().nullable(),
+  residenceNo: z.string().optional().nullable(),
+  residencePhoto: z.string().optional().nullable(),
+  homeUnit: z.string().optional().nullable(),
+  homeBuilding: z.string().optional().nullable(),
+  homeStreet: z.string().optional().nullable(),
+  homeCity: z.string().optional().nullable(),
+  homeState: z.string().optional().nullable(),
+  homeCountry: z.string().optional().nullable(),
+  jobTitle: z.string().optional().nullable(),
+  jobIncome: z.string().optional().nullable(),
+  jobOrganization: z.string().optional().nullable(),
+  jobCountry: z.string().optional().nullable(),
+  guardianName: z.string().optional().nullable(),
+  guardianMobile: z.string().optional().nullable(),
+  guardianEmail: z.string().optional().nullable(),
+  guardianResidence: z.string().optional().nullable(),
+  guardianIncome: z.nativeEnum(IncomeLevel).optional().nullable(),
 })
 
 export async function createUser(data: z.infer<typeof userSchema>) {
@@ -191,6 +242,30 @@ export async function updateUser(userId: string, data: Partial<z.infer<typeof us
       updateData.passwordHash = await bcrypt.hash(validated.password, 10)
     }
 
+    // Extended profile fields
+    const extendedFields = [
+      "firstName", "fatherName", "grandfatherName", "familyName", "nickname", "photoUrl",
+      "sex", "birthCountry", "birthState", "birthCity", "birthTown", "birthVillage",
+      "incomeLevel", "worldTier", "mobile1", "mobile2", "telephone", "educationLevel",
+      "educationDegree", "educationSchool", "educationPhoto", "iqLevel", "nationalityId",
+      "nationalityPhoto", "residenceState", "residenceCity", "residenceTown", "residenceNo",
+      "residencePhoto", "homeUnit", "homeBuilding", "homeStreet", "homeCity", "homeState",
+      "homeCountry", "jobTitle", "jobIncome", "jobOrganization", "jobCountry", "guardianName",
+      "guardianMobile", "guardianEmail", "guardianResidence", "guardianIncome"
+    ]
+
+    extendedFields.forEach(field => {
+      if ((validated as any)[field] !== undefined) {
+        updateData[field] = (validated as any)[field]
+      }
+    })
+
+    if (validated.birthDate) {
+      updateData.birthDate = new Date(validated.birthDate)
+    } else if (validated.birthDate === null) {
+      updateData.birthDate = null
+    }
+
     const result = await safeDbQuery(async () => {
       return prisma.user.update({
         where: { id: userId },
@@ -200,6 +275,8 @@ export async function updateUser(userId: string, data: Partial<z.infer<typeof us
 
     if (result.success) {
       revalidatePath("/control/users")
+      revalidatePath("/courses")
+      revalidatePath("/dashboard")
     }
     return result
   } catch (error: any) {

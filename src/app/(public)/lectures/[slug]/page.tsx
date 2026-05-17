@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Calendar, User } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
-import { MarkdownViewer } from "@/components/editor/markdown-viewer"
+import { RichTextViewer } from "@/components/editor/rich-text-viewer"
 
 export default async function LectureDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -55,7 +55,7 @@ export default async function LectureDetailPage({ params }: { params: Promise<{ 
         </header>
 
         <div className="prose prose-blue max-w-none prose-headings:font-bold prose-p:text-slate-700 prose-p:leading-relaxed">
-          <MarkdownViewer value={lecture.body} />
+          <RichTextViewer html={lecture.body} />
         </div>
 
         <div className="mt-12 pt-8 border-t">

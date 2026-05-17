@@ -11,7 +11,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Lecture } from "@prisma/client"
-import { MarkdownEditor } from "@/components/editor/markdown-editor"
+import { RichTextEditor } from "@/components/editor/rich-text-editor"
 
 interface EditLectureFormProps {
   lecture: Lecture
@@ -106,7 +106,7 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="content">Body</Label>
-                <MarkdownEditor value={content} onChange={setContent} />
+                <RichTextEditor value={content} onChange={setContent} />
               </div>
             </CardContent>
           </Card>

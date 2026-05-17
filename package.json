@@ -10,7 +10,7 @@
     "postinstall": "prisma generate",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit",   
+    "typecheck": "tsc --noEmit",
     "analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
@@ -46,6 +46,20 @@
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
     "@statsig/react-bindings": "^3.31.2",
+    "@tiptap/extension-color": "^3.23.4",
+    "@tiptap/extension-image": "^3.23.4",
+    "@tiptap/extension-link": "^3.23.4",
+    "@tiptap/extension-placeholder": "^3.23.4",
+    "@tiptap/extension-table": "^3.23.4",
+    "@tiptap/extension-table-cell": "^3.23.4",
+    "@tiptap/extension-table-header": "^3.23.4",
+    "@tiptap/extension-table-row": "^3.23.4",
+    "@tiptap/extension-text-align": "^3.23.4",
+    "@tiptap/extension-text-style": "^3.23.4",
+    "@tiptap/extension-youtube": "^3.23.4",
+    "@tiptap/react": "^3.23.4",
+    "@tiptap/starter-kit": "^3.23.4",
+    "@types/dompurify": "^3.0.5",
     "@uiw/react-markdown-preview": "^5.1.5",
     "@uiw/react-md-editor": "^4.0.11",
     "@vercel/analytics": "1.3.1",
@@ -62,6 +76,7 @@
     "embla-carousel-react": "8.5.1",
     "framer-motion": "^12.34.0",
     "input-otp": "1.4.1",
+    "isomorphic-dompurify": "^3.13.0",
     "jose": "^6.1.3",
     "lucide-react": "^0.454.0",
     "nanoid": "^5.1.6",
@@ -90,7 +105,6 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
-    
     "@next/bundle-analyzer": "15.5.9",
     "@prisma/adapter-pg": "^7.8.0",
     "@testing-library/jest-dom": "^6.9.1",
@@ -101,8 +115,6 @@
     "cross-env": "^10.1.0",
     "dotenv": "^17.4.2",
     "eslint": "^8.57.1",
-    
-  
     "jsdom": "^28.0.0",
     "pg": "^8.20.0",
     "postcss": "^8.5.6",
@@ -111,8 +123,6 @@
     "tailwindcss": "^3.4.19",
     "tsx": "^4.22.0",
     "typescript": "^5.9.3"
-    
-    
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

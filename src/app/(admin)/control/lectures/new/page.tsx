@@ -10,7 +10,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { MarkdownEditor } from "@/components/editor/markdown-editor"
+import { RichTextEditor } from "@/components/editor/rich-text-editor"
 import { AIAssistantPanel } from "@/components/control/ai-assistant-panel"
 import Image from "next/image"
 
@@ -178,7 +178,7 @@ export default function NewLecturePage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="content">Body</Label>
-                <MarkdownEditor value={content} onChange={setContent} />
+                <RichTextEditor value={content} onChange={setContent} />
               </div>
             </CardContent>
           </Card>

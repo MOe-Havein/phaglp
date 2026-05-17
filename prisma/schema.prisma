@@ -17,6 +17,73 @@ model User {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   tier         SubscriptionTier @default(BASIC)
+
+  // Extended Profile — Personal
+  firstName        String?
+  fatherName       String?
+  grandfatherName  String?
+  familyName       String?
+  nickname         String?
+  photoUrl         String?
+  sex              Sex?
+  birthDate        DateTime?
+  birthCountry     String?
+  birthState       String?
+  birthCity        String?
+  birthTown        String?
+  birthVillage     String?
+
+  // Financial & Geographic classification
+  incomeLevel      IncomeLevel?
+  worldTier        WorldTier?
+
+  // Contact
+  mobile1          String?
+  mobile2          String?
+  telephone        String?
+
+  // Education
+  educationLevel   EducationLevel?
+  educationDegree  String?
+  educationSchool  String?
+  educationPhoto   String?
+
+  // IQ / Aptitude
+  iqLevel          IQLevel?
+
+  // Identity
+  nationalityId    String?
+  nationalityPhoto String?
+
+  // Addresses
+  residenceState   String?
+  residenceCity    String?
+  residenceTown    String?
+  residenceNo      String?
+  residencePhoto   String?
+  homeUnit         String?
+  homeBuilding     String?
+  homeStreet       String?
+  homeCity         String?
+  homeState        String?
+  homeCountry      String?
+
+  // Employment
+  jobTitle         String?
+  jobIncome        String?
+  jobOrganization  String?
+  jobCountry       String?
+
+  // Guardian
+  guardianName     String?
+  guardianMobile   String?
+  guardianEmail    String?
+  guardianResidence String?
+  guardianIncome   IncomeLevel?
+
+  // Dashboard preferences
+  lecturePreferences String[]
+
   chatMessages ChatMessage[]
   comments     Comment[]
   courses      Course[]         @relation("InstructorCourses")
@@ -29,6 +96,8 @@ model User {
 
   @@index([role])
   @@index([tier])
+  @@index([incomeLevel])
+  @@index([worldTier])
 }
 
 model Session {
@@ -152,6 +221,7 @@ model SiteSettings {
   googleAnalyticsId     String?
   enableGoogleAnalytics Boolean @default(false)
   maintenanceMode       Boolean @default(false)
+  fullAddress           String?
 }
 
 model FeatureFlag {
@@ -162,19 +232,23 @@ model FeatureFlag {
 }
 
 model Course {
-  id           String         @id @default(cuid())
-  slug         String         @unique
-  title        String
-  description  String
-  price        Float
-  published    Boolean        @default(false)
-  instructorId String
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  duration     String?
-  instructor   User           @relation("InstructorCourses", fields: [instructorId], references: [id])
-  modules      CourseModule[]
-  enrollments  Enrollment[]
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  title          String
+  description    String
+  price          Float
+  published      Boolean        @default(false)
+  instructorId   String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  duration       String?
+  courseType     CourseType     @default(OTHER)
+  durationMonths Int?
+  instructor     User           @relation("InstructorCourses", fields: [instructorId], references: [id])
+  modules        CourseModule[]
+  enrollments    Enrollment[]
+
+  @@index([courseType])
 }
 
 model ContactMessage {
@@ -286,4 +360,47 @@ enum SubscriptionTier {
 enum MessageRole {
   USER
   ASSISTANT
+}
+
+/// Biological sex for user profile.
+enum Sex {
+  MALE
+  FEMALE
+}
+
+/// Financial income classification.
+enum IncomeLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+/// Global development tier of user's home country.
+enum WorldTier {
+  FIRST
+  SECOND
+  THIRD
+}
+
+/// Cognitive aptitude classification.
+enum IQLevel {
+  GENIUS
+  GIFTED
+  TALENTED
+  AVERAGE
+}
+
+/// Highest education level attained.
+enum EducationLevel {
+  SCHOOL
+  CLASS
+  DEGREE
+}
+
+/// Predefined course program types.
+enum CourseType {
+  GP_GENERAL
+  GP_GROUPS
+  GP_SUBJECTS
+  OTHER
 }

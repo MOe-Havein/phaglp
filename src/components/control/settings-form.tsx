@@ -29,6 +29,7 @@ const formSchema = z.object({
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   primaryColor: z.string().optional(),
+  fullAddress: z.string().optional(),
 })
 
 interface SiteSettingsData {
@@ -39,6 +40,7 @@ interface SiteSettingsData {
   metaTitle?: string | null
   metaDescription?: string | null
   primaryColor?: string | null
+  fullAddress?: string | null
 }
 
 export function SettingsForm({ initialData }: { initialData: SiteSettingsData | null }) {
@@ -54,6 +56,7 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
       metaTitle: initialData?.metaTitle || "",
       metaDescription: initialData?.metaDescription || "",
       primaryColor: initialData?.primaryColor || "#1E3A8A",
+      fullAddress: initialData?.fullAddress || "",
     },
   })
 
@@ -161,6 +164,28 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
                 <FormControl>
                   <Input placeholder="SEO Description" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Contact & Location Information
+          </h3>
+          <FormField
+            control={form.control}
+            name="fullAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full Location Address</FormLabel>
+                <FormControl>
+                  <Input placeholder="2501 Case Street, Unit 13, Batesville 72501, Arkansas, USA." {...field} />
+                </FormControl>
+                <FormDescription>
+                  This address will be displayed as the official physical address of the organization.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
