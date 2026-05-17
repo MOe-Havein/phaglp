@@ -13,8 +13,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
     "test": "vitest run",
-    "analyze": "cross-env ANALYZE=true next build",
-    "postinstall": "prisma generate"
+    "analyze": "cross-env ANALYZE=true next build"
+ 
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.26",
