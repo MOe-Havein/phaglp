@@ -68,7 +68,7 @@ export default async function CoursesPage() {
   // Predefined programs
   const predefinedPrograms = [
     {
-      title: "General Program (GP)",
+      title: "GP COURSE",
       description: "A comprehensive deep-dive into advanced global philosophical models and integration methodologies.",
       originalPrice: 300,
       duration: "2 years",
@@ -78,7 +78,7 @@ export default async function CoursesPage() {
       features: ["Full Core Integration", "Personal Mentoring", "Official Certificate"],
     },
     {
-      title: "Groups (GP)",
+      title: "GP GROUPS COURSES",
       description: "Interactive peer cohort learning program bridging structured logic, discourse, and real-world application.",
       originalPrice: 200,
       duration: "8 months",
@@ -88,7 +88,7 @@ export default async function CoursesPage() {
       features: ["Peer Discussion Cohorts", "Guided Workshops", "Specialist Reviews"],
     },
     {
-      title: "Subjects (GP)",
+      title: "GP SUBJECTS COURSES",
       description: "Accelerated course focusing intensely on highly specialized individual branches of classic and modern thought.",
       originalPrice: 100,
       duration: "2 months",
@@ -106,14 +106,14 @@ export default async function CoursesPage() {
         {/* Stunning Premium Hero */}
         <div className="text-center max-w-3xl mx-auto mb-16 relative">
           <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 rounded-full blur-3xl opacity-50 dark:opacity-30" />
-          <Badge className="bg-gradient-to-r from-primary to-indigo-600 text-white border-0 px-4 py-1.5 rounded-full mb-6 font-semibold tracking-wide">
-            EXPLORE PHAGLP EDUCATION
+          <Badge className="bg-gradient-to-r from-primary to-indigo-600 text-white border-0 px-4 py-1.5 rounded-full mb-6 font-semibold tracking-wide uppercase">
+            OUR ELITE COURSES?!
           </Badge>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-none">
-            Philosophical Curriculum
+            ELITE COURSES?!
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Bridging ancient wisdom with cutting-edge scientific methodology. Elevate your analytical potential and intellectual mastery today.
+          <p className="text-lg text-muted-foreground leading-relaxed font-medium">
+            Elite Courses, these are the scientific modules of The General Program of Life Planning for geniuses, gifted, and talented, young and adult. They are presented here as advanced, specialized academic courses, characterized by their luxury, uniqueness, and exclusivity—unavailable anywhere else.
           </p>
 
           {/* Discount Promotion Banner */}

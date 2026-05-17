@@ -6,9 +6,13 @@ import { isRedirectError } from "@/lib/utils"
 
 export async function signInWithCredentials(formData: FormData) {
   try {
+    const data = Object.fromEntries(formData)
+    const redirectTo = (data.redirectTo as string) || "/dashboard"
+
     await signIn("credentials", {
-      ...Object.fromEntries(formData),
-      redirectTo: "/control", // Secure default redirect inside control center
+      email: data.email,
+      password: data.password,
+      redirectTo,
     })
     return { success: true }
   } catch (error: unknown) {

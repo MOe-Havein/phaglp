@@ -1,12 +1,15 @@
 import { Navbar } from "@/components/navigation/navbar"
 import { Footer } from "@/components/navigation/footer"
+import { getNavigationMenus } from "@/lib/server/menus"
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const menus = await getNavigationMenus()
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar initialMenus={menus} />
       <main className="flex-grow">{children}</main>
-      <Footer />
+      <Footer initialMenus={menus} />
     </div>
   )
 }

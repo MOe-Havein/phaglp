@@ -23,6 +23,7 @@ function LoginForm() {
     setError(null)
 
     const formData = new FormData(event.currentTarget)
+    formData.append("redirectTo", callbackUrl)
     try {
       const result = await signInWithCredentials(formData)
       if (result && !result.success) {

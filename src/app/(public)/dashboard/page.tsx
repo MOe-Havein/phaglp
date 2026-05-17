@@ -247,6 +247,38 @@ export default async function DashboardPage() {
           )}
         </div>
 
+        {/* Interactive Technological Concepts Hub Banner */}
+        <div className="mb-10 bg-gradient-to-r from-indigo-900/90 via-slate-900 to-blue-900/90 dark:from-indigo-950/80 dark:via-slate-950 dark:to-blue-950/80 border border-indigo-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl shadow-indigo-500/5 group">
+          <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-colors duration-500" />
+          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors duration-500" />
+          <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 animate-pulse">
+                  Exclusive Hub
+                </Badge>
+                <span className="text-[10px] text-indigo-400 font-bold flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '4s' }} /> Next-Gen Integration
+                </span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
+                Interactive Competitive Technological Concepts
+              </h2>
+              <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
+                Review and interact with our active integrations of Generative AI, Adaptive Pathing, Academic Digital Twins, Cryptographic Ledger Verification, VR/AR lectures, and Low Connectivity realignments.
+              </p>
+            </div>
+            <Button
+              asChild
+              className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white hover:from-indigo-600 hover:to-blue-700 font-bold rounded-2xl shadow-lg shadow-indigo-500/20 md:shrink-0 transition-transform active:scale-95 group-hover:translate-x-1 duration-300"
+            >
+              <Link href="/dashboard/tech-concepts" className="flex items-center gap-2">
+                Explore Tech Playground →
+              </Link>
+            </Button>
+          </div>
+        </div>
+
         {/* Ongoing Courses */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-6">

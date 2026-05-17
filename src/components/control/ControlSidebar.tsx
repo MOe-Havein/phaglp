@@ -10,6 +10,7 @@ import {
   Menu,
   FileCode,
   Mail,
+  Navigation,
 } from "lucide-react"
 import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -32,6 +33,7 @@ const sidebarItems: SidebarItem[] = [
   { title: "Lectures", href: "/control/lectures", icon: FileText },
   { title: "Pages", href: "/control/pages", icon: FileCode },
   { title: "Messages", href: "/control/messages", icon: Mail },
+  { title: "Menus", href: "/control/menus", icon: Navigation },
   { title: "Settings", href: "/control/settings", icon: Settings },
 ]
 

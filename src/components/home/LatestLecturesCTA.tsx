@@ -37,8 +37,8 @@ export default async function LatestLecturesCTA() {
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div className="max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground tracking-tight">
-              Latest Lectures
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-foreground tracking-tight">
+              OUR LATEST MAGICAL LECTURES?!
             </h2>
             <p className="text-muted-foreground text-lg">
               Explore our newest insights on philosophy, science, and the wisdom of living.

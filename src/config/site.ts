@@ -1,8 +1,8 @@
 import { SiteSettings } from "@/lib/shared/types"
 
 export const siteConfig: SiteSettings = {
-  siteName: "Phaglp",
-  description: "A modern application for philosophical education.",
+  siteName: "The Philosophical Academy for Geniuses Life Planning",
+  description: "Education, Instruction, Culture, and Life Planning for geniuses, gifted, and talented, young and adult.",
   siteUrl: "https://phaglp.com",
   maintenanceMode: false,
   enableGoogleAnalytics: false,

@@ -1,0 +1,814 @@
+"use client"
+
+import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
+import {
+  createMenu,
+  updateMenu,
+  deleteMenu,
+  createSubItem,
+  updateSubItem,
+  deleteSubItem,
+  reorderMenus,
+  reorderSubItems,
+} from "@/lib/menu-actions"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  ArrowUp,
+  ArrowDown,
+  Plus,
+  Trash2,
+  Edit3,
+  ExternalLink,
+  ChevronRight,
+  FolderOpen,
+  Info,
+} from "lucide-react"
+import * as Icons from "lucide-react"
+
+// Dynamic Icon rendering helper matching the one in layout
+function MenuIcon({ name, className }: { name: string | null; className?: string }) {
+  if (!name) return <Icons.Menu className={className} />
+  const IconComponent = (Icons as any)[name]
+  if (!IconComponent) return <Icons.Globe className={className} />
+  return <IconComponent className={className} />
+}
+
+interface SubItem {
+  id: string
+  menuId: string
+  name: string
+  href: string
+  order: number
+  isOpenNewTab: boolean
+  isActive: boolean
+  icon: string | null
+}
+
+interface Menu {
+  id: string
+  name: string
+  href: string | null
+  order: number
+  isOpenNewTab: boolean
+  isActive: boolean
+  icon: string | null
+  items: SubItem[]
+}
+
+interface MenuManagerProps {
+  initialMenus: Menu[]
+}
+
+export function MenuManager({ initialMenus }: MenuManagerProps) {
+  const router = useRouter()
+  const [menus, setMenus] = useState<Menu[]>(initialMenus)
+  const [selectedMenuId, setSelectedMenuId] = useState<string | null>(
+    initialMenus.length > 0 ? initialMenus[0].id : null
+  )
+  const [isPending, startTransition] = useTransition()
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  // Dialog states for Create Menu
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false)
+  const [newMenuName, setNewMenuName] = useState("")
+  const [newMenuHref, setNewMenuHref] = useState("")
+  const [newMenuIcon, setNewMenuIcon] = useState("Folder")
+  const [newMenuOpenNewTab, setNewMenuOpenNewTab] = useState(false)
+
+  // Dialog states for Edit Menu
+  const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
+  const [editingMenu, setEditingMenu] = useState<Menu | null>(null)
+
+  // Dialog states for Create SubItem
+  const [isCreateSubOpen, setIsCreateSubOpen] = useState(false)
+  const [subName, setSubName] = useState("")
+  const [subHref, setSubHref] = useState("")
+  const [subIcon, setSubIcon] = useState("")
+  const [subOpenNewTab, setSubOpenNewTab] = useState(false)
+
+  // Dialog states for Edit SubItem
+  const [isEditSubOpen, setIsEditSubOpen] = useState(false)
+  const [editingSub, setEditingSub] = useState<SubItem | null>(null)
+
+  const selectedMenu = menus.find((m) => m.id === selectedMenuId) || null
+
+  const handleAction = async (actionFn: () => Promise<any>, successCallback?: () => void) => {
+    setErrorMessage(null)
+    startTransition(async () => {
+      try {
+        const res = await actionFn()
+        if (res.success) {
+          router.refresh()
+          if (successCallback) successCallback()
+        } else {
+          setErrorMessage(res.error || "Action failed")
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || "An unexpected error occurred")
+      }
+    })
+  }
+
+  // Reload or reset local state when props update
+  const refreshLocalState = (updatedMenus: Menu[]) => {
+    setMenus(updatedMenus)
+  }
+
+  // Handle Move Menu Up
+  const moveMenuUp = (index: number) => {
+    if (index === 0) return
+    const newMenus = [...menus]
+    const temp = newMenus[index]
+    newMenus[index] = newMenus[index - 1]
+    newMenus[index - 1] = temp
+
+    setMenus(newMenus)
+    const ids = newMenus.map((m) => m.id)
+    handleAction(() => reorderMenus(ids))
+  }
+
+  // Handle Move Menu Down
+  const moveMenuDown = (index: number) => {
+    if (index === menus.length - 1) return
+    const newMenus = [...menus]
+    const temp = newMenus[index]
+    newMenus[index] = newMenus[index + 1]
+    newMenus[index + 1] = temp
+
+    setMenus(newMenus)
+    const ids = newMenus.map((m) => m.id)
+    handleAction(() => reorderMenus(ids))
+  }
+
+  // Handle Move SubItem Up
+  const moveSubUp = (menuIndex: number, subIndex: number) => {
+    if (subIndex === 0) return
+    const newMenus = [...menus]
+    const items = [...newMenus[menuIndex].items]
+    const temp = items[subIndex]
+    items[subIndex] = items[subIndex - 1]
+    items[subIndex - 1] = temp
+    newMenus[menuIndex].items = items
+
+    setMenus(newMenus)
+    const ids = items.map((item) => item.id)
+    handleAction(() => reorderSubItems(ids))
+  }
+
+  // Handle Move SubItem Down
+  const moveSubDown = (menuIndex: number, subIndex: number) => {
+    const newMenus = [...menus]
+    const items = [...newMenus[menuIndex].items]
+    if (subIndex === items.length - 1) return
+    const temp = items[subIndex]
+    items[subIndex] = items[subIndex + 1]
+    items[subIndex + 1] = temp
+    newMenus[menuIndex].items = items
+
+    setMenus(newMenus)
+    const ids = items.map((item) => item.id)
+    handleAction(() => reorderSubItems(ids))
+  }
+
+  // Create Menu Handler
+  const handleCreateMenu = () => {
+    if (!newMenuName) return
+    handleAction(
+      () =>
+        createMenu({
+          name: newMenuName,
+          href: newMenuHref || null,
+          icon: newMenuIcon || "Folder",
+          isOpenNewTab: newMenuOpenNewTab,
+          isActive: true,
+        }),
+      () => {
+        setIsCreateMenuOpen(false)
+        setNewMenuName("")
+        setNewMenuHref("")
+        setNewMenuIcon("Folder")
+        setNewMenuOpenNewTab(false)
+        // Refresh local state by refetching from server via router
+        router.refresh()
+      }
+    )
+  }
+
+  // Update Menu Handler
+  const handleUpdateMenu = () => {
+    if (!editingMenu) return
+    handleAction(
+      () =>
+        updateMenu(editingMenu.id, {
+          name: editingMenu.name,
+          href: editingMenu.href || null,
+          icon: editingMenu.icon,
+          isOpenNewTab: editingMenu.isOpenNewTab,
+          isActive: editingMenu.isActive,
+        }),
+      () => {
+        setIsEditMenuOpen(false)
+        setEditingMenu(null)
+      }
+    )
+  }
+
+  // Toggle Menu Active Inline
+  const toggleMenuState = (menu: Menu, active: boolean) => {
+    handleAction(() => updateMenu(menu.id, { isActive: active }))
+  }
+
+  // Delete Menu Handler
+  const handleDeleteMenu = (id: string) => {
+    if (!confirm("Are you sure you want to delete this menu? All its submenu items will be permanently deleted!")) return
+    handleAction(
+      () => deleteMenu(id),
+      () => {
+        if (selectedMenuId === id) {
+          const remaining = menus.filter((m) => m.id !== id)
+          setSelectedMenuId(remaining.length > 0 ? remaining[0].id : null)
+        }
+      }
+    )
+  }
+
+  // Create SubItem Handler
+  const handleCreateSub = () => {
+    if (!selectedMenuId || !subName || !subHref) return
+    handleAction(
+      () =>
+        createSubItem(selectedMenuId, {
+          name: subName,
+          href: subHref,
+          icon: subIcon || null,
+          isOpenNewTab: subOpenNewTab,
+          isActive: true,
+        }),
+      () => {
+        setIsCreateSubOpen(false)
+        setSubName("")
+        setSubHref("")
+        setSubIcon("")
+        setSubOpenNewTab(false)
+      }
+    )
+  }
+
+  // Update SubItem Handler
+  const handleUpdateSub = () => {
+    if (!editingSub) return
+    handleAction(
+      () =>
+        updateSubItem(editingSub.id, {
+          name: editingSub.name,
+          href: editingSub.href,
+          icon: editingSub.icon,
+          isOpenNewTab: editingSub.isOpenNewTab,
+          isActive: editingSub.isActive,
+        }),
+      () => {
+        setIsEditSubOpen(false)
+        setEditingSub(null)
+      }
+    )
+  }
+
+  // Toggle SubItem Active Inline
+  const toggleSubState = (sub: SubItem, active: boolean) => {
+    handleAction(() => updateSubItem(sub.id, { isActive: active }))
+  }
+
+  // Delete SubItem Handler
+  const handleDeleteSub = (id: string) => {
+    if (!confirm("Delete this sub-menu item?")) return
+    handleAction(() => deleteSubItem(id))
+  }
+
+  return (
+    <div className="space-y-6">
+      {errorMessage && (
+        <div className="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-4 rounded-xl border border-red-200 dark:border-red-900/30 text-sm font-medium flex items-center gap-2">
+          <Info className="w-4 h-4 shrink-0" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
+      <div className="grid lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Menu list */}
+        <div className="lg:col-span-5 space-y-4">
+          <Card className="border-primary/10 shadow-sm overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <div>
+                <CardTitle className="text-lg">Navigation Menus</CardTitle>
+                <CardDescription>Drag-free sorting & structural control</CardDescription>
+              </div>
+              <Dialog open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="gap-1 shadow-sm rounded-xl">
+                    <Plus className="w-4 h-4" /> Add Menu
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="rounded-2xl border-primary/10">
+                  <DialogHeader>
+                    <DialogTitle>Create Menu Category</DialogTitle>
+                    <DialogDescription>
+                      Add a main category to the header navigation.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="menuName">Category Name</Label>
+                      <Input
+                        id="menuName"
+                        placeholder="e.g. Services, About Us"
+                        value={newMenuName}
+                        onChange={(e) => setNewMenuName(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="menuHref">Direct URL / Path (Optional)</Label>
+                      <Input
+                        id="menuHref"
+                        placeholder="e.g. /contact (leave blank for dropdown menu)"
+                        value={newMenuHref}
+                        onChange={(e) => setNewMenuHref(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="menuIcon">Lucide Icon Name</Label>
+                      <Input
+                        id="menuIcon"
+                        placeholder="e.g. Cpu, BookOpen, GraduationCap, Share2"
+                        value={newMenuIcon}
+                        onChange={(e) => setNewMenuIcon(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between pt-2">
+                      <Label htmlFor="menuNewTab" className="cursor-pointer">
+                        Open in New Tab?
+                      </Label>
+                      <Switch
+                        id="menuNewTab"
+                        checked={newMenuOpenNewTab}
+                        onCheckedChange={setNewMenuOpenNewTab}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsCreateMenuOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleCreateMenu} disabled={!newMenuName || isPending}>
+                      {isPending ? "Creating..." : "Create Category"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-gray-100 dark:divide-gray-800">
+                {menus.map((menu, index) => {
+                  const isSelected = menu.id === selectedMenuId
+                  return (
+                    <div
+                      key={menu.id}
+                      onClick={() => setSelectedMenuId(menu.id)}
+                      className={`p-4 flex items-center justify-between cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-900/50 ${
+                        isSelected
+                          ? "bg-primary/5 border-l-4 border-primary dark:bg-primary/10"
+                          : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
+                          className={`p-2 rounded-lg border ${
+                            isSelected
+                              ? "bg-primary/10 text-primary border-primary/20"
+                              : "bg-slate-50 text-muted-foreground border-slate-200/60 dark:bg-slate-900 dark:border-slate-800"
+                          }`}
+                        >
+                          <MenuIcon name={menu.icon} className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-semibold text-sm truncate flex items-center gap-1.5 text-foreground">
+                            {menu.name}
+                            {menu.href && (
+                              <span className="text-[10px] text-muted-foreground bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded flex items-center gap-0.5">
+                                link <ExternalLink className="w-2.5 h-2.5" />
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-2">
+                            <span>Order: {menu.order}</span>
+                            <span>•</span>
+                            <span>{menu.items.length} sub-items</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div
+                        className="flex items-center gap-1"
+                        onClick={(e) => e.stopPropagation()} // Prevent selecting row
+                      >
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-muted-foreground hover:text-foreground"
+                          disabled={index === 0 || isPending}
+                          onClick={() => moveMenuUp(index)}
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-muted-foreground hover:text-foreground"
+                          disabled={index === menus.length - 1 || isPending}
+                          onClick={() => moveMenuDown(index)}
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-blue-600 hover:text-blue-700"
+                          onClick={() => {
+                            setEditingMenu(menu)
+                            setIsEditMenuOpen(true)
+                          }}
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-red-500 hover:text-red-600"
+                          disabled={isPending}
+                          onClick={() => handleDeleteMenu(menu.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {menus.length === 0 && (
+                  <div className="p-8 text-center text-muted-foreground text-sm">
+                    No custom menus created yet.
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column: Selected Menu Workspace */}
+        <div className="lg:col-span-7">
+          {selectedMenu ? (
+            <Card className="border-primary/10 shadow-sm">
+              <CardHeader className="border-b pb-4 flex flex-row items-center justify-between space-y-0">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-primary/10 text-primary border border-primary/20 rounded-xl">
+                    <MenuIcon name={selectedMenu.icon} className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Category: {selectedMenu.name}</CardTitle>
+                    <CardDescription>
+                      {selectedMenu.href
+                        ? `Points directly to URL: ${selectedMenu.href}`
+                        : "Dropdown parent group containing sub-items"}
+                    </CardDescription>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Badge variant={selectedMenu.isActive ? "default" : "secondary"}>
+                    {selectedMenu.isActive ? "Active" : "Inactive"}
+                  </Badge>
+                  <Switch
+                    checked={selectedMenu.isActive}
+                    onCheckedChange={(checked) => toggleMenuState(selectedMenu, checked)}
+                  />
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-sm tracking-wide uppercase text-muted-foreground flex items-center gap-1.5">
+                    <FolderOpen className="w-4 h-4 text-primary" />
+                    Submenu Items ({selectedMenu.items.length})
+                  </h3>
+                  <Dialog open={isCreateSubOpen} onOpenChange={setIsCreateSubOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm" className="gap-1 shadow-sm rounded-xl">
+                        <Plus className="w-4 h-4" /> Add Sub-Item
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="rounded-2xl border-primary/10">
+                      <DialogHeader>
+                        <DialogTitle>Add Sub-Item Link</DialogTitle>
+                        <DialogDescription>
+                          Create a sub-menu item under {selectedMenu.name}.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-1.5">
+                          <Label htmlFor="subName">Display Name</Label>
+                          <Input
+                            id="subName"
+                            placeholder="e.g. About us, Facebook, Support Center"
+                            value={subName}
+                            onChange={(e) => setSubName(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="subHref">URL / Path</Label>
+                          <Input
+                            id="subHref"
+                            placeholder="e.g. /about, https://facebook.com"
+                            value={subHref}
+                            onChange={(e) => setSubHref(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="subIcon">Icon Name (Optional)</Label>
+                          <Input
+                            id="subIcon"
+                            placeholder="e.g. HelpCircle, FileCheck, ExternalLink"
+                            value={subIcon}
+                            onChange={(e) => setSubIcon(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between pt-2">
+                          <Label htmlFor="subNewTab" className="cursor-pointer">
+                            Open in New Tab?
+                          </Label>
+                          <Switch
+                            id="subNewTab"
+                            checked={subOpenNewTab}
+                            onCheckedChange={setNewMenuOpenNewTab} // Reuse or set
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsCreateSubOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleCreateSub} disabled={!subName || !subHref || isPending}>
+                          {isPending ? "Adding..." : "Add Sub-item"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <div className="space-y-2">
+                  {selectedMenu.items.map((item, subIndex) => (
+                    <div
+                      key={item.id}
+                      className="border border-slate-100 dark:border-slate-800/80 p-3 rounded-xl flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-2.5 h-2.5 bg-primary/30 rounded-full flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-semibold text-sm text-foreground flex items-center gap-1.5">
+                            {item.name}
+                            {item.isOpenNewTab && (
+                              <span className="text-[9px] text-primary bg-primary/10 border border-primary/20 px-1 py-0.2 rounded-md">
+                                new tab
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground truncate max-w-[280px]">
+                            {item.href}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Sub-item Actions */}
+                      <div className="flex items-center gap-1">
+                        <Badge
+                          variant={item.isActive ? "default" : "secondary"}
+                          className="mr-2 text-[10px] scale-90"
+                        >
+                          {item.isActive ? "Active" : "Inactive"}
+                        </Badge>
+                        <Switch
+                          checked={item.isActive}
+                          className="scale-75 mr-2"
+                          onCheckedChange={(checked) => toggleSubState(item, checked)}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-muted-foreground hover:text-foreground"
+                          disabled={subIndex === 0 || isPending}
+                          onClick={() => {
+                            const menuIdx = menus.findIndex((m) => m.id === selectedMenu.id)
+                            moveSubUp(menuIdx, subIndex)
+                          }}
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-muted-foreground hover:text-foreground"
+                          disabled={subIndex === selectedMenu.items.length - 1 || isPending}
+                          onClick={() => {
+                            const menuIdx = menus.findIndex((m) => m.id === selectedMenu.id)
+                            moveSubDown(menuIdx, subIndex)
+                          }}
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-blue-600 hover:text-blue-700"
+                          onClick={() => {
+                            setEditingSub(item)
+                            setIsEditSubOpen(true)
+                          }}
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="w-7 h-7 text-red-500 hover:text-red-600"
+                          disabled={isPending}
+                          onClick={() => handleDeleteSub(item.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {selectedMenu.items.length === 0 && (
+                    <div className="border-2 border-dashed border-slate-100 dark:border-slate-800 p-8 text-center text-muted-foreground text-sm rounded-xl">
+                      No links added to this group yet. Click Add Sub-Item to start.
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="border-primary/10 shadow-sm border-2 border-dashed h-[360px] flex flex-col justify-center items-center">
+              <ChevronRight className="w-8 h-8 text-muted-foreground/30 animate-pulse" />
+              <div className="font-semibold text-muted-foreground mt-2">Select a menu category</div>
+              <div className="text-xs text-muted-foreground/80">Manage sub-items and settings dynamically</div>
+            </Card>
+          )}
+        </div>
+      </div>
+
+      {/* Dialog for Edit Menu Category */}
+      {editingMenu && (
+        <Dialog open={isEditMenuOpen} onOpenChange={setIsEditMenuOpen}>
+          <DialogContent className="rounded-2xl border-primary/10">
+            <DialogHeader>
+              <DialogTitle>Edit Menu Category: {editingMenu.name}</DialogTitle>
+              <DialogDescription>
+                Modify global settings for this header menu item.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="editMenuName">Category Name</Label>
+                <Input
+                  id="editMenuName"
+                  value={editingMenu.name}
+                  onChange={(e) => setEditingMenu({ ...editingMenu, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="editMenuHref">Direct URL / Path (Optional)</Label>
+                <Input
+                  id="editMenuHref"
+                  placeholder="e.g. /contact (leave blank for dropdown)"
+                  value={editingMenu.href || ""}
+                  onChange={(e) =>
+                    setEditingMenu({ ...editingMenu, href: e.target.value || null })
+                  }
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="editMenuIcon">Lucide Icon Name</Label>
+                <Input
+                  id="editMenuIcon"
+                  placeholder="e.g. Cpu, BookOpen"
+                  value={editingMenu.icon || ""}
+                  onChange={(e) => setEditingMenu({ ...editingMenu, icon: e.target.value || null })}
+                />
+              </div>
+              <div className="flex items-center justify-between pt-2">
+                <Label htmlFor="editMenuNewTab" className="cursor-pointer">
+                  Open in New Tab?
+                </Label>
+                <Switch
+                  id="editMenuNewTab"
+                  checked={editingMenu.isOpenNewTab}
+                  onCheckedChange={(checked) =>
+                    setEditingMenu({ ...editingMenu, isOpenNewTab: checked })
+                  }
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditMenuOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleUpdateMenu} disabled={!editingMenu.name || isPending}>
+                {isPending ? "Saving..." : "Save Changes"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Dialog for Edit SubItem Link */}
+      {editingSub && (
+        <Dialog open={isEditSubOpen} onOpenChange={setIsEditSubOpen}>
+          <DialogContent className="rounded-2xl border-primary/10">
+            <DialogHeader>
+              <DialogTitle>Edit Sub-Item: {editingSub.name}</DialogTitle>
+              <DialogDescription>
+                Modify settings for this sub-menu redirection link.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="editSubName">Display Name</Label>
+                <Input
+                  id="editSubName"
+                  value={editingSub.name}
+                  onChange={(e) => setEditingSub({ ...editingSub, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="editSubHref">URL / Path</Label>
+                <Input
+                  id="editSubHref"
+                  value={editingSub.href}
+                  onChange={(e) => setEditingSub({ ...editingSub, href: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="editSubIcon">Icon Name (Optional)</Label>
+                <Input
+                  id="editSubIcon"
+                  placeholder="e.g. Laptop, HelpCircle"
+                  value={editingSub.icon || ""}
+                  onChange={(e) =>
+                    setEditingSub({ ...editingSub, icon: e.target.value || null })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between pt-2">
+                <Label htmlFor="editSubNewTab" className="cursor-pointer">
+                  Open in New Tab?
+                </Label>
+                <Switch
+                  id="editSubNewTab"
+                  checked={editingSub.isOpenNewTab}
+                  onCheckedChange={(checked) =>
+                    setEditingSub({ ...editingSub, isOpenNewTab: checked })
+                  }
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditSubOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleUpdateSub} disabled={!editingSub.name || !editingSub.href || isPending}>
+                {isPending ? "Saving..." : "Save Changes"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  )
+}

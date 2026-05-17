@@ -28,11 +28,11 @@ async function main() {
   await prisma.siteSettings.create({
     data: {
       id: "global",
-      siteName: "PHAGLP Unified Academy",
+      siteName: "The Philosophical Academy for Geniuses Life Planning",
       siteUrl: "http://localhost:3000",
-      metaTitle: "PHAGLP Academy - Integrated Wisdom Platform",
-      metaDescription: "Bridging classic philosophy with modern cognitive science.",
-      description: "A premium platform offering General Programs, Peer Discourse Groups, and Focused Subjects.",
+      metaTitle: "THE PHILOSOPHICAL ACADEMY FOR GENIUSES LIFE PLANNING",
+      metaDescription: "Education, Instruction, Culture, and Life Planning for geniuses, gifted, and talented, young and adult.",
+      description: "General Program of Life Planning for geniuses, gifted, and talented, young and adult. (1) Main Projects: Appropriate Education, Appropriate Work, Appropriate Marriage. (2) Supporting Projects: Consultations, Research, Comprehensive Care, General Culture.",
       primaryColor: "#3B82F6",
       fullAddress: "2501 Case Street, Unit 13, Batesville 72501, Arkansas, USA.",
     },
@@ -127,7 +127,7 @@ async function main() {
   await prisma.course.create({
     data: {
       slug: "general-philosophical-integration",
-      title: "Core General Program (GP)",
+      title: "GP COURSE",
       description: "Full two-year comprehensive integration tracking absolute thought methodologies, logic, and societal progression.",
       price: 300.0,
       published: true,
@@ -141,7 +141,7 @@ async function main() {
   await prisma.course.create({
     data: {
       slug: "peer-discourse-groups",
-      title: "Active Dialogue Groups (GP)",
+      title: "GP GROUPS COURSES",
       description: "Eight-month guided group program focusing on collaborative argument parsing, structured debates, and discourse.",
       price: 200.0,
       published: true,
@@ -155,7 +155,7 @@ async function main() {
   await prisma.course.create({
     data: {
       slug: "specialized-subjects-logic",
-      title: "Logic Core Subjects (GP)",
+      title: "GP SUBJECTS COURSES",
       description: "Intense two-month deep-dive focusing exclusively on propositional calculus, syllogisms, and mathematical syntax.",
       price: 100.0,
       published: true,
@@ -247,6 +247,140 @@ async function main() {
     },
   })
   console.log("Created bilingual lectures with RTL segments and detailed table layouts.")
+
+  // Clean up navigation menus
+  try {
+    await prisma.navigationSubItem.deleteMany()
+    await prisma.navigationMenu.deleteMany()
+    console.log("Cleaned up previous navigation menus.")
+  } catch (error) {
+    console.log("Note: Navigation cleanup failed or was not needed.")
+  }
+
+  const menusData = [
+    {
+      name: "Main pages",
+      order: 1,
+      icon: "Home",
+      items: [
+        { name: "About us", order: 1, href: "/about-us" },
+        { name: "Mission and Vision", order: 2, href: "/mission-and-vision" },
+        { name: "Founder", order: 3, href: "/founder" },
+        { name: "Legal info", order: 4, href: "/legal" },
+        { name: "Contact", order: 5, href: "/contact" },
+        { name: "FAQ", order: 6, href: "/faq" },
+        { name: "Blog", order: 7, href: "/blog" },
+      ],
+    },
+    {
+      name: "Services",
+      order: 2,
+      icon: "Cpu",
+      items: [
+        { name: "Cognitive program", order: 1, href: "/services/cognitive-program" },
+        { name: "Gifted training", order: 2, href: "/services/gifted-training" },
+        { name: "AI Leaning Solutions", order: 3, href: "/services/ai-learning-solutions" },
+        { name: "Consult", order: 4, href: "/services/consult" },
+        { name: "Corporate Training", order: 5, href: "/services/corporate-training" },
+      ],
+    },
+    {
+      name: "Learning Platform",
+      order: 3,
+      icon: "GraduationCap",
+      items: [
+        { name: "Courses", order: 1, href: "/courses" },
+        { name: "Learning Path", order: 2, href: "/learning-path" },
+        { name: "AI Tools", order: 3, href: "/ai-tools" },
+        { name: "Assessment", order: 4, href: "/assessment" },
+        { name: "Certificate", order: 5, href: "/certificate" },
+        { name: "Dashboard", order: 6, href: "/dashboard" },
+      ],
+    },
+    {
+      name: "Support",
+      order: 4,
+      icon: "LifeBuoy",
+      items: [
+        { name: "Support Center", order: 1, href: "/support" },
+        { name: "Submit Ticket", order: 2, href: "/support/ticket" },
+        { name: "Feedback", order: 3, href: "/support/feedback" },
+        { name: "Documentation", order: 4, href: "/docs" },
+      ],
+    },
+    {
+      name: "Documents",
+      order: 5,
+      icon: "FileText",
+      items: [
+        { name: "Startup Costs", order: 1, href: "/documents/startup-costs" },
+        { name: "Valuation Report", order: 2, href: "/documents/valuation-report" },
+        { name: "Operating Agreement", order: 3, href: "/documents/operating-agreement" },
+        { name: "Meeting Minutes", order: 4, href: "/documents/meeting-minutes" },
+        { name: "Policies and Privacy", order: 5, href: "/privacy" },
+      ],
+    },
+    {
+      name: "Official Accounts",
+      order: 6,
+      icon: "Share2",
+      items: [
+        { name: "Facebook", order: 1, href: "https://facebook.com", isOpenNewTab: true },
+        { name: "Linkedin", order: 2, href: "https://linkedin.com", isOpenNewTab: true },
+        { name: "Youtube", order: 3, href: "https://youtube.com", isOpenNewTab: true },
+        { name: "Instagram", order: 4, href: "https://instagram.com", isOpenNewTab: true },
+      ],
+    },
+    {
+      name: "Admin Panel",
+      order: 7,
+      icon: "ShieldAlert",
+      items: [
+        { name: "User Management", order: 1, href: "/control/users" },
+        { name: "Courses Management", order: 2, href: "/control/courses" },
+        { name: "Analytics", order: 3, href: "/control" },
+        { name: "Finance", order: 4, href: "/control/finance" },
+      ],
+    },
+    {
+      name: "Business and Partnership",
+      order: 8,
+      icon: "Briefcase",
+      items: [
+        { name: "Agent Branches", order: 1, href: "/business/branches" },
+        { name: "For Institutions", order: 2, href: "/business/institutions" },
+        { name: "For Investors", order: 3, href: "/business/investors" },
+        { name: "Partnerships", order: 4, href: "/business/partnerships" },
+        { name: "Media Kit", order: 5, href: "/business/media-kit" },
+      ],
+    },
+  ]
+
+  for (const menu of menusData) {
+    const createdMenu = await prisma.navigationMenu.create({
+      data: {
+        name: menu.name,
+        order: menu.order,
+        icon: menu.icon,
+        isActive: true,
+      },
+    })
+    console.log(`Created Navigation Menu: ${createdMenu.name}`)
+
+    for (const item of menu.items) {
+      await prisma.navigationSubItem.create({
+        data: {
+          menuId: createdMenu.id,
+          name: item.name,
+          order: item.order,
+          href: item.href,
+          isOpenNewTab: (item as any).isOpenNewTab || false,
+          isActive: true,
+        },
+      })
+    }
+    console.log(`  Seeded ${menu.items.length} sub-items for ${menu.name}`)
+  }
 
   console.log("Seeding finished successfully.")
 }
