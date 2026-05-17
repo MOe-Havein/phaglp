@@ -12,6 +12,7 @@ interface RateLimitResult {
 
 export const rateLimit = {
   limit: async (key: string): Promise<RateLimitResult> => {
+    void key // Suppress unused variable warning
     // In dev or CI without Upstash, always allow
     return {
       success: true,
