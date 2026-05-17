@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Sparkles, Globe, Users, Heart, Lock, ShieldCheck } from "lucide-react"
+import { ArrowRight, Sparkles, Globe, Users } from "lucide-react"
 import Link from "next/link"
 import { Suspense } from "react"
 import LatestLecturesCTA from "@/components/home/LatestLecturesCTA"
