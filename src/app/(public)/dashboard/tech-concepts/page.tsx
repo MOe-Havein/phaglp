@@ -4,7 +4,8 @@ import { redirect } from "next/navigation"
 
 export const metadata = {
   title: "Interactive Tech Concepts Hub",
-  description: "Explore advanced integrated technology configurations within the PHAGLP Unified Academy platform.",
+  description:
+    "Explore advanced integrated technology configurations within the PHAGLP Unified Academy platform.",
 }
 
 export default async function TechConceptsPage() {

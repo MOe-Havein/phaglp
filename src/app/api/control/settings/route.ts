@@ -2,6 +2,8 @@ import { auth } from "@/auth"
 import prisma from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   try {
     const settings = await prisma.siteSettings.findUnique({
@@ -66,7 +68,6 @@ export async function POST(req: Request) {
         enableGoogleAnalytics,
       },
     })
-
 
     return NextResponse.json(settings)
   } catch (error) {

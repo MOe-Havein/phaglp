@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma"
 import { NextResponse } from "next/server"
 import { IncomeLevel, WorldTier, IQLevel, EducationLevel, Sex } from "@prisma/client"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   const session = await auth()
   if (!session || !session.user || !session.user.id) {
@@ -86,16 +88,49 @@ export async function PUT(req: Request) {
     const updateData: any = {}
 
     const allowedStrings = [
-      "name", "image", "firstName", "fatherName", "grandfatherName", "familyName", 
-      "nickname", "photoUrl", "birthCountry", "birthState", "birthCity", "birthTown", 
-      "birthVillage", "mobile1", "mobile2", "telephone", "educationDegree", "educationSchool", 
-      "educationPhoto", "nationalityId", "nationalityPhoto", "residenceState", "residenceCity", 
-      "residenceTown", "residenceNo", "residencePhoto", "homeUnit", "homeBuilding", "homeStreet", 
-      "homeCity", "homeState", "homeCountry", "jobTitle", "jobIncome", "jobOrganization", 
-      "jobCountry", "guardianName", "guardianMobile", "guardianEmail", "guardianResidence"
+      "name",
+      "image",
+      "firstName",
+      "fatherName",
+      "grandfatherName",
+      "familyName",
+      "nickname",
+      "photoUrl",
+      "birthCountry",
+      "birthState",
+      "birthCity",
+      "birthTown",
+      "birthVillage",
+      "mobile1",
+      "mobile2",
+      "telephone",
+      "educationDegree",
+      "educationSchool",
+      "educationPhoto",
+      "nationalityId",
+      "nationalityPhoto",
+      "residenceState",
+      "residenceCity",
+      "residenceTown",
+      "residenceNo",
+      "residencePhoto",
+      "homeUnit",
+      "homeBuilding",
+      "homeStreet",
+      "homeCity",
+      "homeState",
+      "homeCountry",
+      "jobTitle",
+      "jobIncome",
+      "jobOrganization",
+      "jobCountry",
+      "guardianName",
+      "guardianMobile",
+      "guardianEmail",
+      "guardianResidence",
     ]
 
-    allowedStrings.forEach(field => {
+    allowedStrings.forEach((field) => {
       if (body[field] !== undefined) {
         updateData[field] = body[field]
       }

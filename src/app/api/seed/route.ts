@@ -3,10 +3,12 @@ import { revalidatePath } from "next/cache"
 import prisma from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   try {
     // 1. Create Admin User
-    const adminEmails = ["admin@example.com", "admin@moe"]
+    const adminEmails = ["admin@example.com", "admin@moe.com"]
     let adminUser
 
     for (const email of adminEmails) {

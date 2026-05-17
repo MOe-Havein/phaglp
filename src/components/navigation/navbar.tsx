@@ -5,7 +5,7 @@ import { Menu, ChevronDown, LayoutDashboard, Shield, LogOut, ExternalLink } from
 import Link from "next/link"
 import Image from "next/image"
 import { siteConfig } from "@/config/site"
-import { ModeToggle } from "@/components/mode-toggle"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useState } from "react"
 import { useSession, signOut } from "next-auth/react"
@@ -38,8 +38,8 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
   const { data: session } = useSession()
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null)
 
-  // Use initialMenus if present; otherwise fallback to static siteConfig items
-  const menusToRender = initialMenus.length > 0 ? initialMenus : []
+  // Use initialMenus if present; filter to only show in header
+  const menusToRender = initialMenus.length > 0 ? initialMenus.filter((m) => m.showInHeader) : []
 
   const toggleMobileCategory = (id: string) => {
     setExpandedMobileMenu(expandedMobileMenu === id ? null : id)
@@ -76,9 +76,16 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       <ChevronDown className="w-3.5 h-3.5 opacity-60" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-56 rounded-2xl shadow-xl p-2 border mt-1">
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
+                  >
                     {menu.items.map((subItem) => (
-                      <DropdownMenuItem key={subItem.id} asChild className="rounded-xl cursor-pointer">
+                      <DropdownMenuItem
+                        key={subItem.id}
+                        asChild
+                        className="rounded-xl cursor-pointer"
+                      >
                         <Link
                           href={subItem.href}
                           target={subItem.isOpenNewTab ? "_blank" : undefined}
@@ -87,7 +94,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                         >
                           <NavIcon name={subItem.icon} className="w-4 h-4 text-primary" />
                           <span className="flex-1 truncate">{subItem.name}</span>
-                          {subItem.isOpenNewTab && <ExternalLink className="w-3 h-3 text-muted-foreground" />}
+                          {subItem.isOpenNewTab && (
+                            <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                          )}
                         </Link>
                       </DropdownMenuItem>
                     ))}
@@ -125,7 +134,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
             ))}
 
           <div className="flex items-center gap-2 border-l pl-4 ml-1">
-            <ModeToggle />
+            <ThemeToggle />
             {session ? (
               <div className="flex items-center gap-3">
                 <DropdownMenu>
@@ -142,10 +151,17 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       </span>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 rounded-2xl shadow-xl p-2 border mt-1">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
+                  >
                     <DropdownMenuLabel className="px-3 py-2">
-                      <div className="text-sm font-bold truncate">{session.user.name || "User"}</div>
-                      <div className="text-xs text-muted-foreground truncate">{session.user.email}</div>
+                      <div className="text-sm font-bold truncate">
+                        {session.user.name || "User"}
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {session.user.email}
+                      </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
@@ -183,7 +199,11 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 >
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button asChild size="sm" className="bg-accent text-white hover:bg-accent/90 rounded-xl">
+                <Button
+                  asChild
+                  size="sm"
+                  className="bg-accent text-white hover:bg-accent/90 rounded-xl"
+                >
                   <Link href="/register">Register</Link>
                 </Button>
               </>
@@ -193,14 +213,17 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
 
         {/* Mobile Navigation */}
         <div className="flex items-center gap-2 xl:hidden">
-          <ModeToggle />
+          <ThemeToggle />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background">
+            <SheetContent
+              side="right"
+              className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background"
+            >
               <SheetHeader className="p-6 border-b">
                 <SheetTitle className="text-left text-primary dark:text-blue-400 flex items-center gap-2">
                   <Image
@@ -246,7 +269,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                               >
                                 <NavIcon name={subItem.icon} className="w-3.5 h-3.5 text-primary" />
                                 <span className="flex-1 truncate">{subItem.name}</span>
-                                {subItem.isOpenNewTab && <ExternalLink className="w-3 h-3 scale-75" />}
+                                {subItem.isOpenNewTab && (
+                                  <ExternalLink className="w-3 h-3 scale-75" />
+                                )}
                               </Link>
                             ))}
                           </div>
@@ -265,7 +290,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
                       <span>{menu.name}</span>
-                      {menu.isOpenNewTab && <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />}
+                      {menu.isOpenNewTab && (
+                        <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                      )}
                     </Link>
                   )
                 })}
@@ -304,7 +331,12 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       </div>
                     </div>
 
-                    <Button asChild variant="outline" className="w-full justify-start gap-2 rounded-xl" onClick={() => setIsOpen(false)}>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full justify-start gap-2 rounded-xl"
+                      onClick={() => setIsOpen(false)}
+                    >
                       <Link href="/dashboard">
                         <LayoutDashboard className="w-4 h-4 text-primary" />
                         My Dashboard
@@ -312,7 +344,12 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                     </Button>
 
                     {session.user.role === "ADMIN" && (
-                      <Button asChild variant="outline" className="w-full justify-start gap-2 rounded-xl" onClick={() => setIsOpen(false)}>
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full justify-start gap-2 rounded-xl"
+                        onClick={() => setIsOpen(false)}
+                      >
                         <Link href="/control">
                           <Shield className="w-4 h-4 text-red-500" />
                           Control Panel
@@ -341,7 +378,11 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                     >
                       <Link href="/login">Login</Link>
                     </Button>
-                    <Button asChild className="bg-accent text-white hover:bg-accent/90 w-full rounded-xl" onClick={() => setIsOpen(false)}>
+                    <Button
+                      asChild
+                      className="bg-accent text-white hover:bg-accent/90 w-full rounded-xl"
+                      onClick={() => setIsOpen(false)}
+                    >
                       <Link href="/register">Register</Link>
                     </Button>
                   </div>

@@ -19,6 +19,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           .safeParse(credentials)
 
         if (!parsedCredentials.success) {
+          console.error("Credentials validation failed:", parsedCredentials.error.format())
           return null
         }
 

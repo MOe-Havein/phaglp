@@ -16,7 +16,7 @@ import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { ModeToggle } from "@/components/mode-toggle"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
@@ -81,7 +81,7 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
       </ul>
     </nav>
     <div className="p-4 border-t mt-auto flex items-center justify-between">
-      <ModeToggle />
+      <ThemeToggle />
       <form action="/api/auth/signout" method="POST">
         <Button variant="ghost" size="sm" type="submit">
           Sign Out

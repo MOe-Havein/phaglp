@@ -4,7 +4,15 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Role, SubscriptionTier, Sex, IncomeLevel, WorldTier, EducationLevel, IQLevel } from "@prisma/client"
+import {
+  Role,
+  SubscriptionTier,
+  Sex,
+  IncomeLevel,
+  WorldTier,
+  EducationLevel,
+  IQLevel,
+} from "@prisma/client"
 import { updateUser } from "@/lib/control-actions"
 import { Button } from "@/components/ui/button"
 import {
@@ -260,7 +268,10 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 flex-grow overflow-hidden flex flex-col my-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 flex-grow overflow-hidden flex flex-col my-4"
+          >
             <Tabs defaultValue="core" className="w-full flex-grow flex flex-col overflow-hidden">
               <TabsList className="grid grid-cols-5 w-full bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shrink-0">
                 <TabsTrigger value="core" className="rounded-lg text-xs font-semibold">
@@ -350,7 +361,9 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                             <SelectContent>
                               <SelectItem value={SubscriptionTier.BASIC}>Basic</SelectItem>
                               <SelectItem value={SubscriptionTier.PRO}>Pro</SelectItem>
-                              <SelectItem value={SubscriptionTier.ENTERPRISE}>Enterprise</SelectItem>
+                              <SelectItem value={SubscriptionTier.ENTERPRISE}>
+                                Enterprise
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -484,7 +497,9 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                   </div>
 
                   <div className="space-y-2 border-t pt-4">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Birth Origin</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Birth Origin
+                    </h4>
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                       <FormField
                         control={form.control}
@@ -595,7 +610,9 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                   </div>
 
                   <div className="space-y-2 border-t pt-4">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Residence Address</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Residence Address
+                    </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       <FormField
                         control={form.control}
@@ -703,9 +720,13 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value={EducationLevel.DEGREE}>University Degree</SelectItem>
+                              <SelectItem value={EducationLevel.DEGREE}>
+                                University Degree
+                              </SelectItem>
                               <SelectItem value={EducationLevel.CLASS}>Secondary School</SelectItem>
-                              <SelectItem value={EducationLevel.SCHOOL}>Elementary School</SelectItem>
+                              <SelectItem value={EducationLevel.SCHOOL}>
+                                Elementary School
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -719,7 +740,11 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                         <FormItem>
                           <FormLabel>Degree Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. B.Sc. Logic" {...field} value={field.value || ""} />
+                            <Input
+                              placeholder="e.g. B.Sc. Logic"
+                              {...field}
+                              value={field.value || ""}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -732,7 +757,11 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                         <FormItem>
                           <FormLabel>Institution/School</FormLabel>
                           <FormControl>
-                            <Input placeholder="Oxford University" {...field} value={field.value || ""} />
+                            <Input
+                              placeholder="Oxford University"
+                              {...field}
+                              value={field.value || ""}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -799,9 +828,15 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value={WorldTier.FIRST}>First Tier (Developed)</SelectItem>
-                              <SelectItem value={WorldTier.SECOND}>Second Tier (Developing)</SelectItem>
-                              <SelectItem value={WorldTier.THIRD}>Third Tier (Underdeveloped)</SelectItem>
+                              <SelectItem value={WorldTier.FIRST}>
+                                First Tier (Developed)
+                              </SelectItem>
+                              <SelectItem value={WorldTier.SECOND}>
+                                Second Tier (Developing)
+                              </SelectItem>
+                              <SelectItem value={WorldTier.THIRD}>
+                                Third Tier (Underdeveloped)
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -818,7 +853,11 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                         <FormItem>
                           <FormLabel>Job Title</FormLabel>
                           <FormControl>
-                            <Input placeholder="Software Engineer" {...field} value={field.value || ""} />
+                            <Input
+                              placeholder="Software Engineer"
+                              {...field}
+                              value={field.value || ""}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -848,7 +887,11 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                         <FormItem>
                           <FormLabel>Guardian Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Guardian Full Name" {...field} value={field.value || ""} />
+                            <Input
+                              placeholder="Guardian Full Name"
+                              {...field}
+                              value={field.value || ""}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -861,7 +904,11 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
                         <FormItem>
                           <FormLabel>Guardian Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="guardian@example.com" {...field} value={field.value || ""} />
+                            <Input
+                              placeholder="guardian@example.com"
+                              {...field}
+                              value={field.value || ""}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -919,7 +966,11 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading} className="w-full sm:w-auto bg-primary text-white rounded-xl shadow-md min-w-[125px]">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full sm:w-auto bg-primary text-white rounded-xl shadow-md min-w-[125px]"
+              >
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Save Profile
               </Button>

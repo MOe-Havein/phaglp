@@ -23,4 +23,3 @@ export function isRedirectError(error: any): boolean {
     error.digest.startsWith("NEXT_REDIRECT")
   )
 }
-

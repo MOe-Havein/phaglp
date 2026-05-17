@@ -140,7 +140,7 @@ const userSchema = z.object({
     .or(z.literal("")),
   role: z.nativeEnum(Role),
   tier: z.nativeEnum(SubscriptionTier).optional(),
-  
+
   // Extended fields
   firstName: z.string().optional().nullable(),
   fatherName: z.string().optional().nullable(),
@@ -244,17 +244,53 @@ export async function updateUser(userId: string, data: Partial<z.infer<typeof us
 
     // Extended profile fields
     const extendedFields = [
-      "firstName", "fatherName", "grandfatherName", "familyName", "nickname", "photoUrl",
-      "sex", "birthCountry", "birthState", "birthCity", "birthTown", "birthVillage",
-      "incomeLevel", "worldTier", "mobile1", "mobile2", "telephone", "educationLevel",
-      "educationDegree", "educationSchool", "educationPhoto", "iqLevel", "nationalityId",
-      "nationalityPhoto", "residenceState", "residenceCity", "residenceTown", "residenceNo",
-      "residencePhoto", "homeUnit", "homeBuilding", "homeStreet", "homeCity", "homeState",
-      "homeCountry", "jobTitle", "jobIncome", "jobOrganization", "jobCountry", "guardianName",
-      "guardianMobile", "guardianEmail", "guardianResidence", "guardianIncome"
+      "firstName",
+      "fatherName",
+      "grandfatherName",
+      "familyName",
+      "nickname",
+      "photoUrl",
+      "sex",
+      "birthCountry",
+      "birthState",
+      "birthCity",
+      "birthTown",
+      "birthVillage",
+      "incomeLevel",
+      "worldTier",
+      "mobile1",
+      "mobile2",
+      "telephone",
+      "educationLevel",
+      "educationDegree",
+      "educationSchool",
+      "educationPhoto",
+      "iqLevel",
+      "nationalityId",
+      "nationalityPhoto",
+      "residenceState",
+      "residenceCity",
+      "residenceTown",
+      "residenceNo",
+      "residencePhoto",
+      "homeUnit",
+      "homeBuilding",
+      "homeStreet",
+      "homeCity",
+      "homeState",
+      "homeCountry",
+      "jobTitle",
+      "jobIncome",
+      "jobOrganization",
+      "jobCountry",
+      "guardianName",
+      "guardianMobile",
+      "guardianEmail",
+      "guardianResidence",
+      "guardianIncome",
     ]
 
-    extendedFields.forEach(field => {
+    extendedFields.forEach((field) => {
       if ((validated as any)[field] !== undefined) {
         updateData[field] = (validated as any)[field]
       }

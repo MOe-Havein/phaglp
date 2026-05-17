@@ -47,6 +47,8 @@
     --secondary-foreground: 217 19% 27%;
     --muted: 220 14% 96%;
     --muted-foreground: 215 16% 47%;
+    --surface: 0 0% 100%;
+    --text-muted: 215 16% 47%;
 
     /* 4. Motivational Accent (Green): #10B981 (HSL 161, 84%, 39%) */
     --success: 161 84% 39%;
@@ -97,6 +99,8 @@
     --secondary-foreground: 210 40% 98%;
     --muted: 222 47% 12%;
     --muted-foreground: 215 20% 65%;
+    --surface: 222 47% 7%;
+    --text-muted: 215 20% 65%;
     --accent: 25 95% 45%;
     --accent-foreground: 210 40% 98%;
     --success: 161 84% 35%;

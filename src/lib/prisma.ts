@@ -11,7 +11,7 @@ const prismaClientSingleton = () => {
   if (!process.env.DATABASE_URL) {
     throw new Error(
       "[Prisma] DATABASE_URL environment variable is not set. " +
-        "Ensure it is provided via docker-compose `environment:` or your hosting platform."
+        "Ensure it is provided via docker-compose `environment:` or your hosting platform.",
     )
   }
 

@@ -15,15 +15,10 @@ import { IncomeLevel, WorldTier } from "@prisma/client"
  *
  * Combined discount is capped at 50 %.
  */
-export function computeDiscount(
-  income?: IncomeLevel | null,
-  world?: WorldTier | null,
-): number {
-  const baseDiscount =
-    income === IncomeLevel.LOW ? 30 : income === IncomeLevel.MEDIUM ? 15 : 0
+export function computeDiscount(income?: IncomeLevel | null, world?: WorldTier | null): number {
+  const baseDiscount = income === IncomeLevel.LOW ? 30 : income === IncomeLevel.MEDIUM ? 15 : 0
 
-  const geoDiscount =
-    world === WorldTier.THIRD ? 20 : world === WorldTier.SECOND ? 10 : 0
+  const geoDiscount = world === WorldTier.THIRD ? 20 : world === WorldTier.SECOND ? 10 : 0
 
   return Math.min(baseDiscount + geoDiscount, 50)
 }

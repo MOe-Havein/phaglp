@@ -36,6 +36,8 @@ export async function createMenu(data: {
   href?: string | null
   isOpenNewTab?: boolean
   isActive?: boolean
+  showInHeader?: boolean
+  showInFooter?: boolean
   icon?: string | null
 }) {
   try {
@@ -57,6 +59,8 @@ export async function createMenu(data: {
           href: data.href || null,
           isOpenNewTab: data.isOpenNewTab || false,
           isActive: data.isActive !== false,
+          showInHeader: data.showInHeader !== false,
+          showInFooter: data.showInFooter !== false,
           icon: data.icon || null,
         },
       })
@@ -64,6 +68,7 @@ export async function createMenu(data: {
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result
@@ -80,8 +85,10 @@ export async function updateMenu(
     href?: string | null
     isOpenNewTab?: boolean
     isActive?: boolean
+    showInHeader?: boolean
+    showInFooter?: boolean
     icon?: string | null
-  }
+  },
 ) {
   try {
     await ensureAdminAccess()
@@ -94,6 +101,8 @@ export async function updateMenu(
           href: data.href,
           isOpenNewTab: data.isOpenNewTab,
           isActive: data.isActive,
+          showInHeader: data.showInHeader,
+          showInFooter: data.showInFooter,
           icon: data.icon,
         },
       })
@@ -101,6 +110,7 @@ export async function updateMenu(
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result
@@ -120,6 +130,7 @@ export async function deleteMenu(id: string) {
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result
@@ -137,7 +148,7 @@ export async function createSubItem(
     isOpenNewTab?: boolean
     isActive?: boolean
     icon?: string | null
-  }
+  },
 ) {
   try {
     await ensureAdminAccess()
@@ -166,6 +177,7 @@ export async function createSubItem(
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result
@@ -183,7 +195,7 @@ export async function updateSubItem(
     isOpenNewTab?: boolean
     isActive?: boolean
     icon?: string | null
-  }
+  },
 ) {
   try {
     await ensureAdminAccess()
@@ -203,6 +215,7 @@ export async function updateSubItem(
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result
@@ -222,6 +235,7 @@ export async function deleteSubItem(id: string) {
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result
@@ -238,13 +252,14 @@ export async function reorderMenus(menuIds: string[]) {
         prisma.navigationMenu.update({
           where: { id },
           data: { order: index + 1 },
-        })
+        }),
       )
       return prisma.$transaction(updates)
     })
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result
@@ -261,13 +276,14 @@ export async function reorderSubItems(subItemIds: string[]) {
         prisma.navigationSubItem.update({
           where: { id },
           data: { order: index + 1 },
-        })
+        }),
       )
       return prisma.$transaction(updates)
     })
 
     if (result.success) {
       revalidateTag("site-menus")
+      revalidatePath("/control/menus")
       revalidatePath("/")
     }
     return result

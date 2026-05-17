@@ -147,7 +147,10 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
           </div>
         ) : (
           users.map((user) => (
-            <Card key={user.id} className="hover:border-purple-200 transition-all shadow-sm overflow-hidden bg-card">
+            <Card
+              key={user.id}
+              className="hover:border-purple-200 transition-all shadow-sm overflow-hidden bg-card"
+            >
               <CardContent className="p-0">
                 <div className="flex flex-col lg:flex-row lg:items-center p-6 gap-6 justify-between">
                   <div className="flex items-center gap-4 flex-1">

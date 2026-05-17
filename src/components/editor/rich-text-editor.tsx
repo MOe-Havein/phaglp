@@ -108,7 +108,8 @@ export function RichTextEditor({
     },
     editorProps: {
       attributes: {
-        class: "outline-none min-h-[inherit] px-6 py-4 prose max-w-none dark:prose-invert prose-table:border prose-td:border prose-td:border-gray-300 prose-th:border prose-th:border-gray-300",
+        class:
+          "outline-none min-h-[inherit] px-6 py-4 prose max-w-none dark:prose-invert prose-table:border prose-td:border prose-td:border-gray-300 prose-th:border prose-th:border-gray-300",
         style: `min-height: ${height}px`,
       },
     },
@@ -128,11 +129,7 @@ export function RichTextEditor({
   }, [editor, value])
 
   const insertTable = useCallback(() => {
-    editor
-      ?.chain()
-      .focus()
-      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-      .run()
+    editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
   }, [editor])
 
   const insertImage = useCallback(
@@ -176,12 +173,7 @@ export function RichTextEditor({
   const insertLink = useCallback(() => {
     const url = window.prompt("Enter URL:")
     if (url) {
-      editor
-        ?.chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
-        .run()
+      editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
     }
   }, [editor])
 
@@ -341,11 +333,7 @@ export function RichTextEditor({
         <Divider />
 
         {/* Link */}
-        <ToolbarButton
-          onClick={insertLink}
-          active={editor.isActive("link")}
-          title="Insert Link"
-        >
+        <ToolbarButton onClick={insertLink} active={editor.isActive("link")} title="Insert Link">
           <LinkIcon className="w-4 h-4" />
         </ToolbarButton>
 
@@ -355,10 +343,7 @@ export function RichTextEditor({
         </ToolbarButton>
 
         {/* Image upload */}
-        <ToolbarButton
-          onClick={() => fileInputRef.current?.click()}
-          title="Insert Image"
-        >
+        <ToolbarButton onClick={() => fileInputRef.current?.click()} title="Insert Image">
           <ImageIcon className="w-4 h-4" />
         </ToolbarButton>
         <input

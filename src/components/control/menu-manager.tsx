@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import {
   createMenu,
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+
 import {
   Dialog,
   DialogContent,
@@ -67,6 +67,8 @@ interface Menu {
   order: number
   isOpenNewTab: boolean
   isActive: boolean
+  showInHeader: boolean
+  showInFooter: boolean
   icon: string | null
   items: SubItem[]
 }
@@ -79,10 +81,21 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
   const router = useRouter()
   const [menus, setMenus] = useState<Menu[]>(initialMenus)
   const [selectedMenuId, setSelectedMenuId] = useState<string | null>(
-    initialMenus.length > 0 ? initialMenus[0].id : null
+    initialMenus.length > 0 ? initialMenus[0].id : null,
   )
   const [isPending, startTransition] = useTransition()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  // Sync state with props when server sends updated navigation rows
+  useEffect(() => {
+    setMenus(initialMenus)
+    // If selectedMenuId is no longer present in the updated list, default to first category
+    if (selectedMenuId && !initialMenus.some((m) => m.id === selectedMenuId)) {
+      setSelectedMenuId(initialMenus.length > 0 ? initialMenus[0].id : null)
+    } else if (!selectedMenuId && initialMenus.length > 0) {
+      setSelectedMenuId(initialMenus[0].id)
+    }
+  }, [initialMenus])
 
   // Dialog states for Create Menu
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false)
@@ -90,6 +103,8 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
   const [newMenuHref, setNewMenuHref] = useState("")
   const [newMenuIcon, setNewMenuIcon] = useState("Folder")
   const [newMenuOpenNewTab, setNewMenuOpenNewTab] = useState(false)
+  const [newMenuShowInHeader, setNewMenuShowInHeader] = useState(true)
+  const [newMenuShowInFooter, setNewMenuShowInFooter] = useState(true)
 
   // Dialog states for Edit Menu
   const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
@@ -125,10 +140,7 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
     })
   }
 
-  // Reload or reset local state when props update
-  const refreshLocalState = (updatedMenus: Menu[]) => {
-    setMenus(updatedMenus)
-  }
+
 
   // Handle Move Menu Up
   const moveMenuUp = (index: number) => {
@@ -196,6 +208,8 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
           href: newMenuHref || null,
           icon: newMenuIcon || "Folder",
           isOpenNewTab: newMenuOpenNewTab,
+          showInHeader: newMenuShowInHeader,
+          showInFooter: newMenuShowInFooter,
           isActive: true,
         }),
       () => {
@@ -204,9 +218,11 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
         setNewMenuHref("")
         setNewMenuIcon("Folder")
         setNewMenuOpenNewTab(false)
+        setNewMenuShowInHeader(true)
+        setNewMenuShowInFooter(true)
         // Refresh local state by refetching from server via router
         router.refresh()
-      }
+      },
     )
   }
 
@@ -220,12 +236,14 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
           href: editingMenu.href || null,
           icon: editingMenu.icon,
           isOpenNewTab: editingMenu.isOpenNewTab,
+          showInHeader: editingMenu.showInHeader,
+          showInFooter: editingMenu.showInFooter,
           isActive: editingMenu.isActive,
         }),
       () => {
         setIsEditMenuOpen(false)
         setEditingMenu(null)
-      }
+      },
     )
   }
 
@@ -234,9 +252,24 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
     handleAction(() => updateMenu(menu.id, { isActive: active }))
   }
 
+  // Toggle Show in Header Inline
+  const toggleMenuHeader = (menu: Menu, show: boolean) => {
+    handleAction(() => updateMenu(menu.id, { showInHeader: show }))
+  }
+
+  // Toggle Show in Footer Inline
+  const toggleMenuFooter = (menu: Menu, show: boolean) => {
+    handleAction(() => updateMenu(menu.id, { showInFooter: show }))
+  }
+
   // Delete Menu Handler
   const handleDeleteMenu = (id: string) => {
-    if (!confirm("Are you sure you want to delete this menu? All its submenu items will be permanently deleted!")) return
+    if (
+      !confirm(
+        "Are you sure you want to delete this menu? All its submenu items will be permanently deleted!",
+      )
+    )
+      return
     handleAction(
       () => deleteMenu(id),
       () => {
@@ -244,7 +277,7 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
           const remaining = menus.filter((m) => m.id !== id)
           setSelectedMenuId(remaining.length > 0 ? remaining[0].id : null)
         }
-      }
+      },
     )
   }
 
@@ -266,7 +299,7 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
         setSubHref("")
         setSubIcon("")
         setSubOpenNewTab(false)
-      }
+      },
     )
   }
 
@@ -285,7 +318,7 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
       () => {
         setIsEditSubOpen(false)
         setEditingSub(null)
-      }
+      },
     )
   }
 
@@ -359,14 +392,34 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
                         onChange={(e) => setNewMenuIcon(e.target.value)}
                       />
                     </div>
-                    <div className="flex items-center justify-between pt-2">
-                      <Label htmlFor="menuNewTab" className="cursor-pointer">
+                    <div className="flex items-center justify-between pt-1">
+                      <Label htmlFor="menuNewTab" className="cursor-pointer text-xs">
                         Open in New Tab?
                       </Label>
                       <Switch
                         id="menuNewTab"
                         checked={newMenuOpenNewTab}
                         onCheckedChange={setNewMenuOpenNewTab}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <Label htmlFor="menuShowInHeader" className="cursor-pointer text-xs">
+                        Show in Navbar Header?
+                      </Label>
+                      <Switch
+                        id="menuShowInHeader"
+                        checked={newMenuShowInHeader}
+                        onCheckedChange={setNewMenuShowInHeader}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <Label htmlFor="menuShowInFooter" className="cursor-pointer text-xs">
+                        Show in Footer Link List?
+                      </Label>
+                      <Switch
+                        id="menuShowInFooter"
+                        checked={newMenuShowInFooter}
+                        onCheckedChange={setNewMenuShowInFooter}
                       />
                     </div>
                   </div>
@@ -499,14 +552,37 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <Badge variant={selectedMenu.isActive ? "default" : "secondary"}>
-                    {selectedMenu.isActive ? "Active" : "Inactive"}
-                  </Badge>
-                  <Switch
-                    checked={selectedMenu.isActive}
-                    onCheckedChange={(checked) => toggleMenuState(selectedMenu, checked)}
-                  />
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-900 border px-2 py-1 rounded-xl shadow-sm text-xs">
+                    <span className="font-semibold text-[10px] uppercase text-muted-foreground tracking-wider">
+                      Active
+                    </span>
+                    <Switch
+                      checked={selectedMenu.isActive}
+                      className="scale-75"
+                      onCheckedChange={(checked) => toggleMenuState(selectedMenu, checked)}
+                    />
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-900 border px-2 py-1 rounded-xl shadow-sm text-xs">
+                    <span className="font-semibold text-[10px] uppercase text-muted-foreground tracking-wider">
+                      Header
+                    </span>
+                    <Switch
+                      checked={selectedMenu.showInHeader}
+                      className="scale-75"
+                      onCheckedChange={(checked) => toggleMenuHeader(selectedMenu, checked)}
+                    />
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-900 border px-2 py-1 rounded-xl shadow-sm text-xs">
+                    <span className="font-semibold text-[10px] uppercase text-muted-foreground tracking-wider">
+                      Footer
+                    </span>
+                    <Switch
+                      checked={selectedMenu.showInFooter}
+                      className="scale-75"
+                      onCheckedChange={(checked) => toggleMenuFooter(selectedMenu, checked)}
+                    />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="pt-6 space-y-6">
@@ -571,7 +647,10 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
                         <Button variant="outline" onClick={() => setIsCreateSubOpen(false)}>
                           Cancel
                         </Button>
-                        <Button onClick={handleCreateSub} disabled={!subName || !subHref || isPending}>
+                        <Button
+                          onClick={handleCreateSub}
+                          disabled={!subName || !subHref || isPending}
+                        >
                           {isPending ? "Adding..." : "Add Sub-item"}
                         </Button>
                       </DialogFooter>
@@ -677,7 +756,9 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
             <Card className="border-primary/10 shadow-sm border-2 border-dashed h-[360px] flex flex-col justify-center items-center">
               <ChevronRight className="w-8 h-8 text-muted-foreground/30 animate-pulse" />
               <div className="font-semibold text-muted-foreground mt-2">Select a menu category</div>
-              <div className="text-xs text-muted-foreground/80">Manage sub-items and settings dynamically</div>
+              <div className="text-xs text-muted-foreground/80">
+                Manage sub-items and settings dynamically
+              </div>
             </Card>
           )}
         </div>
@@ -708,9 +789,7 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
                   id="editMenuHref"
                   placeholder="e.g. /contact (leave blank for dropdown)"
                   value={editingMenu.href || ""}
-                  onChange={(e) =>
-                    setEditingMenu({ ...editingMenu, href: e.target.value || null })
-                  }
+                  onChange={(e) => setEditingMenu({ ...editingMenu, href: e.target.value || null })}
                 />
               </div>
               <div className="space-y-1.5">
@@ -722,8 +801,8 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
                   onChange={(e) => setEditingMenu({ ...editingMenu, icon: e.target.value || null })}
                 />
               </div>
-              <div className="flex items-center justify-between pt-2">
-                <Label htmlFor="editMenuNewTab" className="cursor-pointer">
+              <div className="flex items-center justify-between pt-1">
+                <Label htmlFor="editMenuNewTab" className="cursor-pointer text-xs">
                   Open in New Tab?
                 </Label>
                 <Switch
@@ -731,6 +810,30 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
                   checked={editingMenu.isOpenNewTab}
                   onCheckedChange={(checked) =>
                     setEditingMenu({ ...editingMenu, isOpenNewTab: checked })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <Label htmlFor="editMenuShowInHeader" className="cursor-pointer text-xs">
+                  Show in Navbar Header?
+                </Label>
+                <Switch
+                  id="editMenuShowInHeader"
+                  checked={editingMenu.showInHeader}
+                  onCheckedChange={(checked) =>
+                    setEditingMenu({ ...editingMenu, showInHeader: checked })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <Label htmlFor="editMenuShowInFooter" className="cursor-pointer text-xs">
+                  Show in Footer Link List?
+                </Label>
+                <Switch
+                  id="editMenuShowInFooter"
+                  checked={editingMenu.showInFooter}
+                  onCheckedChange={(checked) =>
+                    setEditingMenu({ ...editingMenu, showInFooter: checked })
                   }
                 />
               </div>
@@ -780,9 +883,7 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
                   id="editSubIcon"
                   placeholder="e.g. Laptop, HelpCircle"
                   value={editingSub.icon || ""}
-                  onChange={(e) =>
-                    setEditingSub({ ...editingSub, icon: e.target.value || null })
-                  }
+                  onChange={(e) => setEditingSub({ ...editingSub, icon: e.target.value || null })}
                 />
               </div>
               <div className="flex items-center justify-between pt-2">
@@ -802,7 +903,10 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
               <Button variant="outline" onClick={() => setIsEditSubOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleUpdateSub} disabled={!editingSub.name || !editingSub.href || isPending}>
+              <Button
+                onClick={handleUpdateSub}
+                disabled={!editingSub.name || !editingSub.href || isPending}
+              >
                 {isPending ? "Saving..." : "Save Changes"}
               </Button>
             </DialogFooter>

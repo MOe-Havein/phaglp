@@ -70,7 +70,7 @@ export default async function AdminSettingsPage() {
             <CardHeader>
               <CardTitle>Security Status</CardTitle>
               <CardDescription className="text-primary-foreground/70">
-              System is running on Next.js 15.5
+                System is running on Next.js 15.5
               </CardDescription>
             </CardHeader>
             <CardContent>

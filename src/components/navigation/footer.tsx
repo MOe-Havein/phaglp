@@ -9,16 +9,15 @@ interface FooterProps {
 }
 
 export function Footer({ initialMenus = [] }: FooterProps) {
-  // Select active menus that actually contain sub-menu items to render as footer sections
+  // Select active menus that actually contain sub-menu items and are configured to show in footer
   const activeFooterMenus = initialMenus.filter(
-    (menu) => menu.isActive && menu.items && menu.items.length > 0
+    (menu) => menu.isActive && menu.showInFooter && menu.items && menu.items.length > 0,
   )
 
   return (
     <footer className="bg-slate-100 dark:bg-slate-950 border-t border-slate-200/50 dark:border-slate-800/40 text-foreground py-16 px-4">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
-          
           {/* Logo & Platform Info Section */}
           <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center gap-2">
@@ -34,7 +33,8 @@ export function Footer({ initialMenus = [] }: FooterProps) {
               </span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-              {siteConfig.description || "Bridging classical philosophical teachings with state-of-the-art cognitive training and learning technologies."}
+              {siteConfig.description ||
+                "Bridging classical philosophical teachings with state-of-the-art cognitive training and learning technologies."}
             </p>
             <div className="text-xs text-muted-foreground pt-2">
               {`© ${new Date().getFullYear()} ${siteConfig.siteName}. All rights reserved.`}
@@ -59,7 +59,9 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                           className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 w-fit"
                         >
                           {subItem.name}
-                          {subItem.isOpenNewTab && <ExternalLink className="w-3 h-3 text-muted-foreground" />}
+                          {subItem.isOpenNewTab && (
+                            <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                          )}
                         </Link>
                       </li>
                     ))}

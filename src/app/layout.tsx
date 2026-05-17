@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { siteConfig } from "@/config/site"
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/components/ui/ThemeProvider"
 import { Toaster } from "@/components/ui/sonner"
 import { ChatbotWidget } from "@/components/chatbot/chatbot-widget"
 import { SessionProvider } from "@/components/providers/session-provider"
@@ -67,12 +67,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider>
           <SessionProvider>{children}</SessionProvider>
           <Toaster position="top-center" richColors />
 

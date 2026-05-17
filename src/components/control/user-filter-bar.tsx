@@ -36,7 +36,7 @@ export function UserFilterBar() {
       }
       // Reset to page 1 on search
       params.set("page", "1")
-      
+
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`)
       })
@@ -77,10 +77,7 @@ export function UserFilterBar() {
 
       <div className="flex flex-row gap-4 w-full md:w-auto">
         <div className="w-full md:w-[160px]">
-          <Select
-            value={roleVal}
-            onValueChange={(val) => handleSelectChange("role", val)}
-          >
+          <Select value={roleVal} onValueChange={(val) => handleSelectChange("role", val)}>
             <SelectTrigger>
               <SelectValue placeholder="Filter by Role" />
             </SelectTrigger>
@@ -94,10 +91,7 @@ export function UserFilterBar() {
         </div>
 
         <div className="w-full md:w-[180px]">
-          <Select
-            value={sortVal}
-            onValueChange={(val) => handleSelectChange("sort", val)}
-          >
+          <Select value={sortVal} onValueChange={(val) => handleSelectChange("sort", val)}>
             <SelectTrigger>
               <SelectValue placeholder="Sort order" />
             </SelectTrigger>

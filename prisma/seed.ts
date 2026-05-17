@@ -1,4 +1,12 @@
-import { PrismaClient, Role, SubscriptionTier, CourseType, Sex, IncomeLevel, WorldTier } from "@prisma/client"
+import {
+  PrismaClient,
+  Role,
+  SubscriptionTier,
+  CourseType,
+  Sex,
+  IncomeLevel,
+  WorldTier,
+} from "@prisma/client"
 import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
@@ -31,8 +39,10 @@ async function main() {
       siteName: "The Philosophical Academy for Geniuses Life Planning",
       siteUrl: "http://localhost:3000",
       metaTitle: "THE PHILOSOPHICAL ACADEMY FOR GENIUSES LIFE PLANNING",
-      metaDescription: "Education, Instruction, Culture, and Life Planning for geniuses, gifted, and talented, young and adult.",
-      description: "General Program of Life Planning for geniuses, gifted, and talented, young and adult. (1) Main Projects: Appropriate Education, Appropriate Work, Appropriate Marriage. (2) Supporting Projects: Consultations, Research, Comprehensive Care, General Culture.",
+      metaDescription:
+        "Education, Instruction, Culture, and Life Planning for geniuses, gifted, and talented, young and adult.",
+      description:
+        "General Program of Life Planning for geniuses, gifted, and talented, young and adult. (1) Main Projects: Appropriate Education, Appropriate Work, Appropriate Marriage. (2) Supporting Projects: Consultations, Research, Comprehensive Care, General Culture.",
       primaryColor: "#3B82F6",
       fullAddress: "2501 Case Street, Unit 13, Batesville 72501, Arkansas, USA.",
     },
@@ -43,8 +53,10 @@ async function main() {
   const adminPasswordHash = await bcrypt.hash("adminpassword123", 10)
   const adminUser = await prisma.user.create({
     data: {
-      email: "admin@moe",
+      email: "admin@moe.com",
       name: "Admin User",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=250&auto=format&fit=crop",
       passwordHash: adminPasswordHash,
       role: Role.ADMIN,
       tier: SubscriptionTier.ENTERPRISE,
@@ -58,6 +70,8 @@ async function main() {
     data: {
       email: "instructor@example.com",
       name: "Prof. Socrates",
+      image:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=250&auto=format&fit=crop",
       passwordHash: instructorPasswordHash,
       role: Role.INSTRUCTOR,
       tier: SubscriptionTier.PRO,
@@ -73,6 +87,8 @@ async function main() {
     data: {
       email: "poor.student@example.com",
       name: "Yusuf Al-Sudani",
+      image:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=250&auto=format&fit=crop",
       passwordHash: commonPassword,
       role: Role.USER,
       tier: SubscriptionTier.BASIC,
@@ -91,6 +107,8 @@ async function main() {
     data: {
       email: "med.student@example.com",
       name: "Sophia Rossi",
+      image:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=250&auto=format&fit=crop",
       passwordHash: commonPassword,
       role: Role.USER,
       tier: SubscriptionTier.PRO,
@@ -109,6 +127,8 @@ async function main() {
     data: {
       email: "rich.student@example.com",
       name: "William Vance",
+      image:
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=250&auto=format&fit=crop",
       passwordHash: commonPassword,
       role: Role.USER,
       tier: SubscriptionTier.ENTERPRISE,
@@ -121,14 +141,17 @@ async function main() {
       lecturePreferences: ["Science", "Metaphysics"],
     },
   })
-  console.log("Created demo students with diverse socioeconomic profiles for discount logic verification.")
+  console.log(
+    "Created demo students with diverse socioeconomic profiles for discount logic verification.",
+  )
 
   // Create Sample Courses (Predefined and Custom)
   await prisma.course.create({
     data: {
       slug: "general-philosophical-integration",
       title: "GP COURSE",
-      description: "Full two-year comprehensive integration tracking absolute thought methodologies, logic, and societal progression.",
+      description:
+        "Full two-year comprehensive integration tracking absolute thought methodologies, logic, and societal progression.",
       price: 300.0,
       published: true,
       instructorId: instructor.id,
@@ -142,7 +165,8 @@ async function main() {
     data: {
       slug: "peer-discourse-groups",
       title: "GP GROUPS COURSES",
-      description: "Eight-month guided group program focusing on collaborative argument parsing, structured debates, and discourse.",
+      description:
+        "Eight-month guided group program focusing on collaborative argument parsing, structured debates, and discourse.",
       price: 200.0,
       published: true,
       instructorId: instructor.id,
@@ -156,7 +180,8 @@ async function main() {
     data: {
       slug: "specialized-subjects-logic",
       title: "GP SUBJECTS COURSES",
-      description: "Intense two-month deep-dive focusing exclusively on propositional calculus, syllogisms, and mathematical syntax.",
+      description:
+        "Intense two-month deep-dive focusing exclusively on propositional calculus, syllogisms, and mathematical syntax.",
       price: 100.0,
       published: true,
       instructorId: instructor.id,
@@ -170,7 +195,8 @@ async function main() {
     data: {
       slug: "intro-to-epistemology",
       title: "Introduction to Epistemology",
-      description: "An open elective exploring standard structures of knowledge, belief systems, and scientific validation.",
+      description:
+        "An open elective exploring standard structures of knowledge, belief systems, and scientific validation.",
       price: 50.0,
       published: true,
       instructorId: instructor.id,
@@ -223,7 +249,8 @@ async function main() {
       slug: "unity-of-logic-metaphysics",
       title: "The Unity of Logic & Metaphysics",
       body: richLectureHtml,
-      excerpt: "An advanced bilingual study investigating standard deductive structures and existence models.",
+      excerpt:
+        "An advanced bilingual study investigating standard deductive structures and existence models.",
       category: "Logic",
       tags: ["Logic", "Metaphysics", "Bilingual"],
       authorId: instructor.id,
@@ -262,6 +289,8 @@ async function main() {
       name: "Main pages",
       order: 1,
       icon: "Home",
+      showInHeader: true,
+      showInFooter: true,
       items: [
         { name: "About us", order: 1, href: "/about-us" },
         { name: "Mission and Vision", order: 2, href: "/mission-and-vision" },
@@ -276,6 +305,8 @@ async function main() {
       name: "Services",
       order: 2,
       icon: "Cpu",
+      showInHeader: true,
+      showInFooter: true,
       items: [
         { name: "Cognitive program", order: 1, href: "/services/cognitive-program" },
         { name: "Gifted training", order: 2, href: "/services/gifted-training" },
@@ -288,6 +319,8 @@ async function main() {
       name: "Learning Platform",
       order: 3,
       icon: "GraduationCap",
+      showInHeader: true,
+      showInFooter: true,
       items: [
         { name: "Courses", order: 1, href: "/courses" },
         { name: "Learning Path", order: 2, href: "/learning-path" },
@@ -301,6 +334,8 @@ async function main() {
       name: "Support",
       order: 4,
       icon: "LifeBuoy",
+      showInHeader: true,
+      showInFooter: true,
       items: [
         { name: "Support Center", order: 1, href: "/support" },
         { name: "Submit Ticket", order: 2, href: "/support/ticket" },
@@ -312,6 +347,8 @@ async function main() {
       name: "Documents",
       order: 5,
       icon: "FileText",
+      showInHeader: false,
+      showInFooter: true,
       items: [
         { name: "Startup Costs", order: 1, href: "/documents/startup-costs" },
         { name: "Valuation Report", order: 2, href: "/documents/valuation-report" },
@@ -324,6 +361,8 @@ async function main() {
       name: "Official Accounts",
       order: 6,
       icon: "Share2",
+      showInHeader: false,
+      showInFooter: true,
       items: [
         { name: "Facebook", order: 1, href: "https://facebook.com", isOpenNewTab: true },
         { name: "Linkedin", order: 2, href: "https://linkedin.com", isOpenNewTab: true },
@@ -335,6 +374,8 @@ async function main() {
       name: "Admin Panel",
       order: 7,
       icon: "ShieldAlert",
+      showInHeader: false,
+      showInFooter: false,
       items: [
         { name: "User Management", order: 1, href: "/control/users" },
         { name: "Courses Management", order: 2, href: "/control/courses" },
@@ -346,6 +387,8 @@ async function main() {
       name: "Business and Partnership",
       order: 8,
       icon: "Briefcase",
+      showInHeader: true,
+      showInFooter: true,
       items: [
         { name: "Agent Branches", order: 1, href: "/business/branches" },
         { name: "For Institutions", order: 2, href: "/business/institutions" },
@@ -363,6 +406,8 @@ async function main() {
         order: menu.order,
         icon: menu.icon,
         isActive: true,
+        showInHeader: menu.showInHeader,
+        showInFooter: menu.showInFooter,
       },
     })
     console.log(`Created Navigation Menu: ${createdMenu.name}`)

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs"
 const prisma = new PrismaClient()
 
 async function testLogin() {
-  const email = "admin@moe"
+  const email = "admin@moe.com"
   const password = "adminpassword123"
 
   console.log("Testing login for:", email)

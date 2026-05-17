@@ -71,4 +71,3 @@ export async function registerUser(data: z.infer<typeof registerSchema>) {
     return { success: false, error: error.message || "Something went wrong. Please try again." }
   }
 }
-

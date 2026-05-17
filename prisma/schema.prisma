@@ -412,6 +412,8 @@ model NavigationMenu {
   href          String?              // Optional direct page link instead of dropdown
   isOpenNewTab  Boolean              @default(false)
   isActive      Boolean              @default(true)
+  showInHeader  Boolean              @default(true)
+  showInFooter  Boolean              @default(true)
   icon          String?              // e.g. "BookOpen", "Settings", etc.
   items         NavigationSubItem[]
   createdAt     DateTime             @default(now())
@@ -437,3 +439,24 @@ model NavigationSubItem {
   @@index([menuId])
   @@index([order])
 }
+
+model HomepageSection {
+  id             String   @id @default(cuid())
+  type           String   // e.g. "hero", "features", "cta", "media", "testimonials"
+  title          String?
+  body           String?  // rich text / markdown
+  ctaLabel       String?
+  ctaHref        String?
+  mediaUrl       String?
+  mediaAlt       String?
+  seoTitle       String?
+  seoDescription String?
+  visible        Boolean  @default(true)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([type])
+  @@index([order])
+}
+

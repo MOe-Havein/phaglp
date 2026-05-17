@@ -34,7 +34,8 @@ export default async function AdminMenusPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Navigation Control Hub</h1>
           <p className="text-muted-foreground">
-            Configure dynamic menus, nested dropdown systems, custom redirects, and tab targets across the platform.
+            Configure dynamic menus, nested dropdown systems, custom redirects, and tab targets
+            across the platform.
           </p>
         </div>
       </div>

@@ -1,28 +1,64 @@
-import NextAuth from "next-auth"
-import { authConfig } from "./auth.config"
 import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+import { jwtVerify } from "jose"
 
-const { auth } = NextAuth(authConfig)
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "fallback-secret-at-least-32-chars-long",
+)
+const COOKIE_NAME = "app-session"
 
-export default auth((req) => {
+interface DecodedToken {
+  userId: string
+  email: string
+  role: string
+}
+
+async function getSessionFromRequest(req: NextRequest): Promise<DecodedToken | null> {
+  const token = req.cookies.get(COOKIE_NAME)?.value
+  if (!token) return null
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    return payload as unknown as DecodedToken
+  } catch (error) {
+    return null
+  }
+}
+
+export async function middleware(req: NextRequest) {
   const { nextUrl } = req
+  const pathname = nextUrl.pathname
 
   // 1. Handle legacy /admin redirection
-  if (nextUrl.pathname.startsWith("/admin")) {
-    const newPathname = nextUrl.pathname.replace(/^\/admin/, "/control")
+  if (pathname.startsWith("/admin")) {
+    const newPathname = pathname.replace(/^\/admin/, "/control")
     const redirectUrl = new URL(newPathname, nextUrl.origin)
     return NextResponse.redirect(redirectUrl, 301)
   }
 
-  // NextAuth auth middleware will handle the 'authorized' callback logic from authConfig
+  // 2. Define protected patterns
+  // Admin-only path pattern
+  const isAdminPath = pathname.startsWith("/control")
+
+  if (isAdminPath) {
+    const session = await getSessionFromRequest(req)
+
+    // Unauthorized or not an ADMIN role
+    if (!session || session.role !== "ADMIN") {
+      const loginUrl = new URL("/login", nextUrl.origin)
+      // Save original URL to redirect back after login
+      loginUrl.searchParams.set("callbackUrl", pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (route handlers), except for legacy admin ones
+     * - api (route handlers)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)

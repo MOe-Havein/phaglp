@@ -181,10 +181,14 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
               <FormItem>
                 <FormLabel>Full Location Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="2501 Case Street, Unit 13, Batesville 72501, Arkansas, USA." {...field} />
+                  <Input
+                    placeholder="2501 Case Street, Unit 13, Batesville 72501, Arkansas, USA."
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
-                  This address will be displayed as the official physical address of the organization.
+                  This address will be displayed as the official physical address of the
+                  organization.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

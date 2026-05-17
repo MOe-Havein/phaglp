@@ -9,7 +9,6 @@ export const GET = withApiHandler(async () => {
   await prisma.$queryRaw`SELECT 1`
   const dbDuration = Date.now() - dbStart
 
-
   return NextResponse.json({
     status: "healthy",
     checks: {

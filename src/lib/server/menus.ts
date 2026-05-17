@@ -20,6 +20,8 @@ export interface DynamicMenu {
   order: number
   isOpenNewTab: boolean
   isActive: boolean
+  showInHeader: boolean
+  showInFooter: boolean
   icon: string | null
   items: DynamicSubItem[]
 }
@@ -49,14 +51,19 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
             order: idx + 1,
             isOpenNewTab: false,
             isActive: true,
+            showInHeader: true,
+            showInFooter: true,
             icon: null,
             items: [],
           }))
         }
 
-        return dbMenus as DynamicMenu[]
+        return dbMenus as any[] as DynamicMenu[]
       } catch (error) {
-        console.error("Failed to fetch navigation menus from database, falling back to config", error)
+        console.error(
+          "Failed to fetch navigation menus from database, falling back to config",
+          error,
+        )
         return siteConfig.navItems.map((item, idx) => ({
           id: `fallback-${idx}`,
           name: item.title,
@@ -64,6 +71,8 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
           order: idx + 1,
           isOpenNewTab: false,
           isActive: true,
+          showInHeader: true,
+          showInFooter: true,
           icon: null,
           items: [],
         }))

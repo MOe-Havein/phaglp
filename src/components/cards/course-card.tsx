@@ -68,7 +68,10 @@ export function CourseCard({
             <span className="text-sm font-medium">{rating}</span>
           </div>
           {courseType && (
-            <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+            <Badge
+              variant="secondary"
+              className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+            >
               {getCourseTypeLabel(courseType)}
             </Badge>
           )}
@@ -94,7 +97,9 @@ export function CourseCard({
           {discountPct > 0 ? (
             <>
               <span className="text-xs text-muted-foreground line-through">${price}</span>
-              <span className="text-lg font-bold text-red-600 dark:text-red-400">${finalPrice}</span>
+              <span className="text-lg font-bold text-red-600 dark:text-red-400">
+                ${finalPrice}
+              </span>
             </>
           ) : (
             <span className="text-lg font-bold">${price}</span>

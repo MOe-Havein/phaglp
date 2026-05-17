@@ -1,5 +1,7 @@
 import prisma from "@/lib/prisma"
 import { notFound } from "next/navigation"
+
+export const dynamic = "force-dynamic"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, Clock, GraduationCap, BookOpen } from "lucide-react"

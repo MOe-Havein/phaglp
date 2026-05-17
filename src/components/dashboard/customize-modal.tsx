@@ -69,7 +69,11 @@ export function CustomizeModal({ initialPreferences, availableCategories }: Cust
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="flex items-center gap-2 border-primary/20 hover:border-primary/50 bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold rounded-xl">
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 border-primary/20 hover:border-primary/50 bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold rounded-xl"
+        >
           <SlidersHorizontal className="w-4 h-4 text-primary" />
           Customize Dashboard
         </Button>
@@ -81,7 +85,8 @@ export function CustomizeModal({ initialPreferences, availableCategories }: Cust
             Personalize Lectures
           </DialogTitle>
           <DialogDescription className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-            Customize which philosophical focus areas and lecture categories appear on your active learning dashboard.
+            Customize which philosophical focus areas and lecture categories appear on your active
+            learning dashboard.
           </DialogDescription>
         </DialogHeader>
 
