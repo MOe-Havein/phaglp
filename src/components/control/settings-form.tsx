@@ -31,7 +31,17 @@ const formSchema = z.object({
   primaryColor: z.string().optional(),
 })
 
-export function SettingsForm({ initialData }: { initialData: any }) {
+interface SiteSettingsData {
+  siteName?: string
+  siteUrl?: string
+  description?: string | null
+  maintenanceMode?: boolean
+  metaTitle?: string | null
+  metaDescription?: string | null
+  primaryColor?: string | null
+}
+
+export function SettingsForm({ initialData }: { initialData: SiteSettingsData | null }) {
   const [loading, setLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({

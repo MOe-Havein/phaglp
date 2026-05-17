@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { Role } from "@prisma/client"
 import { signIn } from "@/auth"
+import { isRedirectError } from "@/lib/utils"
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -52,15 +53,22 @@ export async function registerUser(data: z.infer<typeof registerSchema>) {
       await signIn("credentials", {
         email,
         password,
-        redirect: false,
+        redirectTo: "/dashboard",
       })
       return { success: true, data: { autoLogin: true } }
     } catch (authError) {
+      if (isRedirectError(authError)) {
+        throw authError
+      }
       // If auto-login fails, still return success but maybe with a note
       return { success: true, data: { autoLogin: false } }
     }
   } catch (error: any) {
+    if (isRedirectError(error)) {
+      throw error
+    }
     console.error("Registration error:", error)
     return { success: false, error: error.message || "Something went wrong. Please try again." }
   }
 }
+

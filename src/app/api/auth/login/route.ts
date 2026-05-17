@@ -17,7 +17,17 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json({ success: true, message: "Logged in successfully" })
-  } catch (error) {
+  } catch (error: unknown) {
+    // Re-throw Next.js redirect errors — they are expected control flow
+    if (
+      error instanceof Error &&
+      "digest" in error &&
+      typeof (error as Record<string, unknown>).digest === "string" &&
+      ((error as Record<string, unknown>).digest as string).startsWith("NEXT_REDIRECT")
+    ) {
+      throw error
+    }
+
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":

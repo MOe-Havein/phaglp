@@ -7,11 +7,11 @@ import {
   BookOpen,
   FileText,
   Settings,
-  ShieldAlert,
   Menu,
   FileCode,
   Mail,
 } from "lucide-react"
+import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils"
 interface SidebarItem {
   title: string
   href: string
-  icon: any
+  icon: LucideIcon
 }
 
 const sidebarItems: SidebarItem[] = [
@@ -80,9 +80,11 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
     </nav>
     <div className="p-4 border-t mt-auto flex items-center justify-between">
       <ModeToggle />
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/api/auth/signout">Sign Out</Link>
-      </Button>
+      <form action="/api/auth/signout" method="POST">
+        <Button variant="ghost" size="sm" type="submit">
+          Sign Out
+        </Button>
+      </form>
     </div>
   </div>
 )

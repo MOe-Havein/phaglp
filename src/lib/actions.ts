@@ -2,36 +2,37 @@
 
 import { signIn } from "@/auth"
 import { AuthError } from "next-auth"
+import { isRedirectError } from "@/lib/utils"
 
 export async function signInWithCredentials(formData: FormData) {
   try {
-    console.log("Attempting sign in with credentials Action...")
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       ...Object.fromEntries(formData),
-      redirect: false,
+      redirectTo: "/control", // Secure default redirect inside control center
     })
-    console.log("SignIn result:", result)
-    return { success: true, data: result }
-  } catch (error: any) {
-    // Check for Next.js redirect error
-    if (error?.digest?.startsWith("NEXT_REDIRECT")) {
+    return { success: true }
+  } catch (error: unknown) {
+    // 💡 Auth.js v5 throws a redirect error to perform successful navigation.
+    // We MUST re-throw all redirect errors to avoid breaking the authentication flow.
+    if (isRedirectError(error)) {
       throw error
     }
 
     if (error instanceof AuthError) {
-      console.log("AuthError caught in Action:", error.type)
       switch (error.type) {
         case "CredentialsSignin":
-          return { success: false, error: "Invalid credentials." }
+          return { success: false, error: "Invalid email or password." }
+        case "CallbackRouteError":
+          return { success: false, error: "Invalid credentials or authorization failed." }
         default:
-          return { success: false, error: "Something went wrong during authentication." }
+          return { success: false, error: "An authentication error occurred. Please try again." }
       }
     }
 
-    console.log("Other error in Action:", error)
     return {
       success: false,
       error: error instanceof Error ? error.message : "An unexpected error occurred.",
     }
   }
 }
+

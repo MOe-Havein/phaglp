@@ -14,3 +14,13 @@ export function slugify(text: string) {
     .replace(/[^\w-]+/g, "") // Remove all non-word chars
     .replace(/--+/g, "-") // Replace multiple - with single -
 }
+
+export function isRedirectError(error: any): boolean {
+  if (typeof error !== "object" || error === null) return false
+  return (
+    "digest" in error &&
+    typeof error.digest === "string" &&
+    error.digest.startsWith("NEXT_REDIRECT")
+  )
+}
+

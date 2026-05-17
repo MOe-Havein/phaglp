@@ -6,7 +6,13 @@ import { toggleFeatureFlag } from "@/lib/control-actions"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
-export function FeaturesList({ initialFlags }: { initialFlags: any[] }) {
+interface FeatureFlag {
+  key: string
+  description: string | null
+  isEnabled: boolean
+}
+
+export function FeaturesList({ initialFlags }: { initialFlags: FeatureFlag[] }) {
   const [flags, setFlags] = useState(initialFlags)
   const [updating, setUpdating] = useState<string | null>(null)
 

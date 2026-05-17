@@ -17,11 +17,17 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
-      {
-        protocol: "https",
-        hostname: "**",
-      },
     ],
+  },
+  webpack: (config) => {
+    // Suppress dynamic jose CompressionStream / DecompressionStream warnings in the build log
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings || []),
+      { module: /node_modules\/jose/ },
+      { message: /CompressionStream/ },
+      { message: /DecompressionStream/ },
+    ]
+    return config
   },
   experimental: {
     optimizePackageImports: [
@@ -62,3 +68,4 @@ const nextConfig = {
 export default withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })(nextConfig)
+

@@ -14,55 +14,41 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        console.log("[Auth] Authorize attempt for:", credentials?.email)
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials)
 
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data
-          console.log("[Auth] Parsed email:", email)
-
-          try {
-            const user = await prisma.user.findUnique({
-              where: { email },
-            })
-
-            if (!user) {
-              console.log("[Auth] User not found in DB:", email)
-              return null
-            }
-
-            if (!user.passwordHash) {
-              console.log("[Auth] User has no password hash:", email)
-              return null
-            }
-
-            console.log("[Auth] Comparing passwords...")
-            const passwordsMatch = await bcrypt.compare(password, user.passwordHash)
-            console.log("[Auth] Password match result:", passwordsMatch)
-
-            if (passwordsMatch) {
-              console.log("[Auth] Login successful for:", email)
-              return {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                tier: user.tier,
-              }
-            } else {
-              console.log("[Auth] Password mismatch for:", email)
-            }
-          } catch (dbError) {
-            console.error("[Auth] Database error during authorize:", dbError)
-            throw dbError
-          }
-        } else {
-          console.log("[Auth] Credential validation failed:", parsedCredentials.error.flatten())
+        if (!parsedCredentials.success) {
+          return null
         }
 
-        console.log("[Auth] Authorization failed for:", credentials?.email)
+        const { email, password } = parsedCredentials.data
+
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email },
+          })
+
+          if (!user || !user.passwordHash) {
+            return null
+          }
+
+          const passwordsMatch = await bcrypt.compare(password, user.passwordHash)
+
+          if (passwordsMatch) {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+              tier: user.tier,
+            }
+          }
+        } catch (dbError) {
+          // Re-throw DB errors so Auth.js surfaces them properly
+          throw dbError
+        }
+
         return null
       },
     }),

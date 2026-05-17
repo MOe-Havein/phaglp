@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         name: session.user.name,
         email: session.user.email,
         image: session.user.image,
-        role: (session.user as any).role || Role.USER,
+        role: session.user.role || Role.USER,
       })
     } else {
       setUser(null)

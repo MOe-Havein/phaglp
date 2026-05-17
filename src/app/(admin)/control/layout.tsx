@@ -8,7 +8,7 @@ export default async function ControlLayout({ children }: { children: React.Reac
   const session = await auth()
 
   // Strict server-side check for admin/instructor roles
-  if (!session || (session.user as any).role === Role.USER) {
+  if (!session || !session.user?.role || session.user.role === Role.USER) {
     redirect("/login")
   }
 

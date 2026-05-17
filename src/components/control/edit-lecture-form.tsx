@@ -4,7 +4,6 @@ import { updateLecture } from "@/lib/cms-actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ChevronLeft, Save, Image as ImageIcon, Wand2, Loader2 } from "lucide-react"
 import Link from "next/link"
@@ -33,7 +32,7 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
       slug: formData.get("slug") as string,
       body: content,
       category: formData.get("category") as string,
-      published: true, // or preserve existing
+      published: lecture.published, // Preserve existing publish state
     }
 
     try {

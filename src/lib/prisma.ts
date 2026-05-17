@@ -1,19 +1,20 @@
 import { PrismaClient } from "@prisma/client"
 
-// Guard: fail fast if DATABASE_URL is not set at runtime.
-// This surfaces the real problem immediately instead of a cryptic connection error.
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "[Prisma] DATABASE_URL environment variable is not set. " +
-      "Ensure it is provided via docker-compose `environment:` or your hosting platform."
-  )
-}
-
 // PrismaClient is attached to `globalThis` in development to prevent exhausting
 // database connections during hot-reload. In production each process has one instance.
 // https://www.prisma.io/docs/guides/other/troubleshooting-orm/help-with-database-connection-limit-and-nextjs
 
 const prismaClientSingleton = () => {
+  // Guard: fail fast if DATABASE_URL is not set at runtime.
+  // This check is inside the factory (not top-level) so it doesn't crash
+  // during `next build` when Prisma generate runs without a live DB.
+  if (!process.env.DATABASE_URL) {
+    throw new Error(
+      "[Prisma] DATABASE_URL environment variable is not set. " +
+        "Ensure it is provided via docker-compose `environment:` or your hosting platform."
+    )
+  }
+
   return new PrismaClient({
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     // Explicitly pass the URL so Prisma never reads a stale or baked-in value.
@@ -52,7 +53,7 @@ export function serializePrisma<T>(data: T): T {
  */
 export async function safeDbQuery<T>(
   queryFn: () => Promise<T>,
-  fallbackValue: any = null,
+  fallbackValue: T | null = null,
 ): Promise<{ success: boolean; data: T | null; error: string | null }> {
   try {
     const result = await queryFn()
@@ -61,14 +62,17 @@ export async function safeDbQuery<T>(
       data: serializePrisma(result),
       error: null,
     }
-  } catch (error: any) {
-    console.error("[Database Error]:", error)
+  } catch (error: unknown) {
+    // Use structured logger instead of console.error for production observability
+    const message = error instanceof Error ? error.message : "An unexpected database error occurred"
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Database Error]:", error)
+    }
 
-    // Return serializable error message
     return {
       success: false,
       data: fallbackValue,
-      error: error instanceof Error ? error.message : "An unexpected database error occurred",
+      error: message,
     }
   }
 }

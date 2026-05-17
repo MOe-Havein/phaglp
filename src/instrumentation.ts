@@ -10,11 +10,10 @@ export async function register() {
       try {
         await prisma.$disconnect()
         logger.info("Connections closed successfully.")
-        process.exit(0)
       } catch (error) {
         logger.error("Error during graceful shutdown", error)
-        process.exit(1)
       }
+      // Note: Do NOT call process.exit() here — Next.js handles its own shutdown sequence.
     })
   }
 }

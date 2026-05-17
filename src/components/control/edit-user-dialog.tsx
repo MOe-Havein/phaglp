@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -70,6 +70,16 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
       role: user.role,
     },
   })
+
+  // Reset form when user prop changes to prevent stale data
+  useEffect(() => {
+    form.reset({
+      name: user.name || "",
+      email: user.email,
+      password: "",
+      role: user.role,
+    })
+  }, [user.id, user.name, user.email, user.role, form])
 
   async function onSubmit(data: UserFormValues) {
     setLoading(true)
