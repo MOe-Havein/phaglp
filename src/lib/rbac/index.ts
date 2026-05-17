@@ -1,4 +1,4 @@
-import { getSession, JWTPayload } from "../auth/index"
+import { auth } from "@/auth"
 
 /**
  * Standard role mapping check.
@@ -25,27 +25,31 @@ export function isInstructor(userRole: string): boolean {
  * Require a specific role on Server Components or API Routes.
  * Throws an error if authentication fails or role requirements are not met.
  */
-export async function requireRole(allowedRoles: string[]): Promise<JWTPayload> {
-  const session = await getSession()
-  if (!session) {
+export async function requireRole(allowedRoles: string[]) {
+  const session = await auth()
+  if (!session || !session.user) {
     throw new Error("UNAUTHENTICATED")
   }
-  if (!hasRole(session.role, allowedRoles)) {
+  if (!hasRole(session.user.role, allowedRoles)) {
     throw new Error("UNAUTHORIZED")
   }
-  return session
+  return {
+    userId: session.user.id,
+    email: session.user.email,
+    role: session.user.role,
+  }
 }
 
 /**
  * Securely asserts that the current session belongs to an ADMIN user.
  */
-export async function requireAdmin(): Promise<JWTPayload> {
+export async function requireAdmin() {
   return requireRole(["ADMIN"])
 }
 
 /**
  * Securely asserts that the current session belongs to an INSTRUCTOR or ADMIN.
  */
-export async function requireInstructor(): Promise<JWTPayload> {
+export async function requireInstructor() {
   return requireRole(["INSTRUCTOR", "ADMIN"])
 }

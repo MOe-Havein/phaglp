@@ -1,30 +1,7 @@
+import { auth } from "@/auth"
 import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import { jwtVerify } from "jose"
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "fallback-secret-at-least-32-chars-long",
-)
-const COOKIE_NAME = "app-session"
-
-interface DecodedToken {
-  userId: string
-  email: string
-  role: string
-}
-
-async function getSessionFromRequest(req: NextRequest): Promise<DecodedToken | null> {
-  const token = req.cookies.get(COOKIE_NAME)?.value
-  if (!token) return null
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET)
-    return payload as unknown as DecodedToken
-  } catch (error) {
-    return null
-  }
-}
-
-export async function middleware(req: NextRequest) {
+export default auth((req) => {
   const { nextUrl } = req
   const pathname = nextUrl.pathname
 
@@ -40,10 +17,12 @@ export async function middleware(req: NextRequest) {
   const isAdminPath = pathname.startsWith("/control")
 
   if (isAdminPath) {
-    const session = await getSessionFromRequest(req)
+    const session = req.auth
+    const isLoggedIn = !!session?.user
+    const userRole = session?.user?.role
 
     // Unauthorized or not an ADMIN role
-    if (!session || session.role !== "ADMIN") {
+    if (!isLoggedIn || userRole !== "ADMIN") {
       const loginUrl = new URL("/login", nextUrl.origin)
       // Save original URL to redirect back after login
       loginUrl.searchParams.set("callbackUrl", pathname)
@@ -52,7 +31,7 @@ export async function middleware(req: NextRequest) {
   }
 
   return NextResponse.next()
-}
+})
 
 export const config = {
   matcher: [
