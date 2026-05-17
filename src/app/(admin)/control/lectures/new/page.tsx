@@ -20,7 +20,6 @@ export default function NewLecturePage() {
   const [title, setTitle] = useState("")
   const [category, setCategory] = useState("")
   const [slug, setSlug] = useState("")
-  const [coverImage, setCoverImage] = useState<File | null>(null)
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const router = useRouter()
@@ -119,7 +118,6 @@ export default function NewLecturePage() {
   }
 
   const handleRemoveImage = () => {
-    setCoverImage(null)
     setCoverImagePreview(null)
   }
 
