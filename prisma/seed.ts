@@ -68,7 +68,7 @@ async function main() {
   console.log(`Created sample users: ${user1.email}, ${user2.email}`)
 
   // --- Create Sample Lectures ---
-  const lecture1 = await prisma.lecture.create({
+    await prisma.lecture.create({
     data: {
       title: "The Socratic Method",
       slug: "the-socratic-method",
