@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import prisma from "@/lib/prisma"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Mail, Trash2, Calendar, User, CheckCircle2, Circle } from "lucide-react"
+import { Mail, Calendar, User, CheckCircle2, Circle } from "lucide-react"
 import { format } from "date-fns"
 import { MessageActions } from "@/components/control/message-actions"
 
