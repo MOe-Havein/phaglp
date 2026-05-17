@@ -1,27 +1,20 @@
 import prisma from "@/lib/prisma"
-import { getCachedData } from "@/lib/redis"
 import { Metadata } from "next"
 
 export async function getSiteSettings() {
-  return getCachedData(
-    "site_settings_global",
-    async () => {
-      if (!prisma) {
-        console.warn("Prisma client not initialized, returning null settings")
-        return null
-      }
-      try {
-        const settings = await prisma.siteSettings.findUnique({
-          where: { id: "global" },
-        })
-        return settings
-      } catch (error) {
-        console.error("Failed to fetch site settings from DB:", error)
-        return null
-      }
-    },
-    3600, // Cache for 1 hour
-  )
+  if (!prisma) {
+    console.warn("Prisma client not initialized, returning null settings")
+    return null
+  }
+  try {
+    const settings = await prisma.siteSettings.findUnique({
+      where: { id: "global" },
+    })
+    return settings
+  } catch (error) {
+    console.error("Failed to fetch site settings from DB:", error)
+    return null
+  }
 }
 
 export async function generateGlobalMetadata(): Promise<Metadata> {

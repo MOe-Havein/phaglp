@@ -12,6 +12,6 @@ export default defineConfig({
   migrations: {
     //#seed: 'ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts',
     path: "prisma/migrations",
-    seed: "tsx prisma/seed.ts"
+    seed: "tsx prisma/seed.ts",
   },
 })

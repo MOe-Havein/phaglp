@@ -17,8 +17,5 @@ services:
     volumes:
       - phaglp-db-data:/var/lib/postgresql/data
 
-
-
-
 volumes:
   phaglp-db-data:

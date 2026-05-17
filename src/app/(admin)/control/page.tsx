@@ -126,7 +126,7 @@ export default async function ControlCenter() {
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-muted-foreground">Cache Status</span>
-                <span className="font-mono text-emerald-600">Active (Redis)</span>
+                <span className="font-mono text-emerald-600">Next.js Built-in</span>
               </div>
             </div>
           </CardContent>

@@ -7,10 +7,7 @@ export async function POST(req: Request) {
     const { email, password } = await req.json()
 
     if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password are required" },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
 
     await signIn("credentials", {
@@ -24,21 +21,12 @@ export async function POST(req: Request) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return NextResponse.json(
-            { error: "Invalid credentials" },
-            { status: 401 }
-          )
+          return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
         default:
-          return NextResponse.json(
-            { error: "Something went wrong" },
-            { status: 500 }
-          )
+          return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
       }
     }
 
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

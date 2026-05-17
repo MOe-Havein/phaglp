@@ -42,9 +42,7 @@ export function RecentAnalytics({ data }: { data: AnalyticsEntry[] }) {
           ) : (
             data.map((item) => (
               <div key={item.id} className="flex items-start gap-4 text-sm">
-                <div className="mt-1 p-2 bg-muted rounded-full">
-                  {getIcon(item.event)}
-                </div>
+                <div className="mt-1 p-2 bg-muted rounded-full">{getIcon(item.event)}</div>
                 <div className="flex-1 space-y-1">
                   <div className="flex justify-between">
                     <p className="font-medium text-slate-900 dark:text-slate-100">

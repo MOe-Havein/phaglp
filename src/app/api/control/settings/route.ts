@@ -67,13 +67,6 @@ export async function POST(req: Request) {
       },
     })
 
-    // Invalidate Redis cache
-    try {
-      const redis = (await import("@/lib/redis")).default
-      if (redis) await redis.del("site_settings_global")
-    } catch (e) {
-      console.warn("Redis invalidation failed", e)
-    }
 
     return NextResponse.json(settings)
   } catch (error) {

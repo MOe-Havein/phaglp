@@ -17,9 +17,9 @@ export const rateLimit = {
       success: true,
       limit: 10,
       remaining: 9,
-      reset: Date.now() + 10000
+      reset: Date.now() + 10000,
     }
-  }
+  },
 }
 
 export default rateLimit

@@ -17,7 +17,11 @@ COPY . .
 ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 
-ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db" 
+# DATABASE_URL is needed only so `prisma generate` can run during the build.
+# It is intentionally a dummy value — Prisma generate does NOT connect to the DB.
+# The real DATABASE_URL is injected at runtime via docker-compose environment.
+ARG DATABASE_URL="postgresql://build-placeholder:build-placeholder@localhost:5432/build_db"
+ENV DATABASE_URL=${DATABASE_URL}
 
 RUN npx prisma generate
 
@@ -30,7 +34,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

@@ -26,7 +26,7 @@ export async function submitContactForm(data: z.infer<typeof contactSchema>) {
   try {
     // 1. Rate Limiting
     const ip = (await headers()).get("x-forwarded-for") ?? "127.0.0.1"
-    
+
     if (rateLimit) {
       const { success: rateLimitSuccess } = await rateLimit.limit(`contact_${ip}`)
 

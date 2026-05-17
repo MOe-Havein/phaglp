@@ -1,11 +1,17 @@
 node_modules
 .next
 .git
+
+# Never bake local secrets into the image — DATABASE_URL must come from runtime env
 .env
 .env.local
+.env.*.local
+.env.production.local
+
 .vscode
 public/uploads
 *.md
 Dockerfile
-docker-compose.yml
+docker-compose*.yml
 .github
+tests

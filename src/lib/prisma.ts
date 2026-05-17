@@ -1,14 +1,25 @@
 import { PrismaClient } from "@prisma/client"
 
-// PrismaClient is attached to the `globalThis` object in development to prevent
-// exhausting your database connection limit.
-//
-// Learn more:
+// Guard: fail fast if DATABASE_URL is not set at runtime.
+// This surfaces the real problem immediately instead of a cryptic connection error.
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    "[Prisma] DATABASE_URL environment variable is not set. " +
+      "Ensure it is provided via docker-compose `environment:` or your hosting platform."
+  )
+}
+
+// PrismaClient is attached to `globalThis` in development to prevent exhausting
+// database connections during hot-reload. In production each process has one instance.
 // https://www.prisma.io/docs/guides/other/troubleshooting-orm/help-with-database-connection-limit-and-nextjs
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    // Explicitly pass the URL so Prisma never reads a stale or baked-in value.
+    datasources: {
+      db: { url: process.env.DATABASE_URL },
+    },
   })
 }
 
