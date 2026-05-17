@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbo",
     "dev:infra": "docker compose -f docker-compose.dev.yml up -d",
-    "build": "node scripts/migrate.mjs && next build",
+    "build": "next build",
+
     "start": "node .next/standalone/server.js",
    
     "format": "prettier --write .",
