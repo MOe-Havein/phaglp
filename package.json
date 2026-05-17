@@ -6,17 +6,12 @@
     "dev": "next dev --turbo",
     "dev:infra": "docker compose -f docker-compose.dev.yml up -d",
     "build": "next build",
-
     "start": "node .next/standalone/server.js",
-   
+    "postinstall": "prisma generate",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",   
-    
-  
-    
     "analyze": "cross-env ANALYZE=true next build"
- 
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.26",
