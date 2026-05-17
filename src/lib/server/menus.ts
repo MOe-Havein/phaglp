@@ -60,9 +60,8 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
 
         return dbMenus as any[] as DynamicMenu[]
       } catch (error) {
-        console.error(
-          "Failed to fetch navigation menus from database, falling back to config",
-          error,
+        console.warn(
+          "Failed to fetch navigation menus from database, falling back to config.",
         )
         return siteConfig.navItems.map((item, idx) => ({
           id: `fallback-${idx}`,

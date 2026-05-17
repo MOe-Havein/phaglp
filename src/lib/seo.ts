@@ -12,7 +12,7 @@ export async function getSiteSettings() {
     })
     return settings
   } catch (error) {
-    console.error("Failed to fetch site settings from DB:", error)
+    console.warn("Failed to fetch site settings from DB, using fallback defaults.")
     return null
   }
 }
