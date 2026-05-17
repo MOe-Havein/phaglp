@@ -56,21 +56,5 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role
-        token.tier = user.tier
-        token.id = user.id as string
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as Role
-        session.user.tier = token.tier as SubscriptionTier
-      }
-      return session
-    },
   },
 })

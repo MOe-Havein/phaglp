@@ -30,7 +30,7 @@ export async function requireRole(allowedRoles: string[]) {
   if (!session || !session.user) {
     throw new Error("UNAUTHENTICATED")
   }
-  if (!hasRole(session.user.role, allowedRoles)) {
+  if (!hasRole(session.user.role || "", allowedRoles)) {
     throw new Error("UNAUTHORIZED")
   }
   return {
