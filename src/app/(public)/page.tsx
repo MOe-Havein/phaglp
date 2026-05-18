@@ -9,50 +9,253 @@ export const dynamic = "force-dynamic"
 // Component implementations
 function HeroSection({ data }: { data: HomepageSection }) {
   return (
-    <section className="relative py-20 px-4">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-100/40 via-background to-transparent dark:from-blue-950/20"></div>
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-orange-100/20 via-transparent to-transparent dark:from-orange-950/10"></div>
-      
-      <div className="container mx-auto text-center max-w-4xl relative">
-        {/* Badge */}
-        <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 mb-4 bg-[#1E3A8A]/10 text-[#1E3A8A] hover:bg-[#1E3A8A]/15 border-[#1E3A8A]/20 transition-all duration-300 hover:scale-105">
-          Phaglp - Philosophical Platform
-        </div>
+    <section className="relative py-20 lg:py-28 px-4 overflow-hidden border-b border-slate-200/40 dark:border-slate-800/40">
+      {/* Decorative Brand Color Blobs & Glows */}
+      <div className="absolute top-0 left-1/4 -z-10 w-96 h-96 bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-[#1f7bc6]/10 via-[#1f7bc6]/5 to-transparent dark:from-[#1f7bc6]/15 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 -z-10 w-96 h-96 bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-[#e65c23]/5 via-[#e65c23]/2.5 to-transparent dark:from-[#e65c23]/10 rounded-full blur-3xl"></div>
 
-        {/* Heading */}
-        {data.title && (
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-balance bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#1E3A8A] bg-clip-text text-transparent uppercase">
-            {data.title}
-          </h1>
-        )}
+      <div className="container mx-auto max-w-7xl relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          {/* Left Column: Core Info & CTA */}
+          <div className="lg:col-span-7 flex flex-col gap-6 text-left items-start">
+            
+            {/* Premium Brand Pill Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-semibold bg-[#edf2f4] dark:bg-slate-900 border border-[#1f7bc6]/10 dark:border-slate-800 text-[#1f7bc6] dark:text-[#1f7bc6] transition-all duration-300 hover:scale-102 hover:bg-[#edf2f4]/80 shadow-[0_2px_10px_rgba(31,123,198,0.05)] select-none">
+              <span className="flex h-2 w-2 rounded-full bg-[#e65c23] animate-pulse"></span>
+              Phaglp • Interactive Philosophy Platform
+            </div>
 
-        {/* Subtitle */}
-        {data.body && (
-          <p className="text-xl text-muted-foreground mb-8 leading-relaxed text-pretty max-w-2xl mx-auto">
-            {data.body}
-          </p>
-        )}
+            {/* Massive Premium Heading */}
+            {data.title && (
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] text-balance">
+                {data.title.split(' ').map((word, index) => {
+                  // Make certain parts of the title use our vibrant warm accent color
+                  const isAccent = index % 3 === 2;
+                  return (
+                    <span 
+                      key={index} 
+                      className={isAccent ? "bg-gradient-to-r from-[#e65c23] to-[#c83313] bg-clip-text text-transparent" : ""}
+                    >
+                      {word}{' '}
+                    </span>
+                  )
+                })}
+              </h1>
+            )}
 
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          {data.ctaLabel && data.ctaHref && (
-            <a
-              href={data.ctaHref}
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-11 rounded-md px-8 bg-[#F97316] text-white hover:bg-[#EA580C] shadow-lg shadow-orange-500/20 transition-all hover:scale-105 active:scale-95"
-            >
-              {data.ctaLabel}
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right ml-2 w-4 h-4">
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-              </svg>
-            </a>
-          )}
-          <a
-            href="/lectures"
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border hover:text-accent-foreground h-11 rounded-md px-8 border-[#1E3A8A]/30 text-[#1E3A8A] hover:bg-[#1E3A8A]/5 bg-transparent transition-all hover:scale-105 active:scale-95"
-          >
-            Read Lectures
-          </a>
+            {/* Subtitle / Descriptive Copy */}
+            {data.body && (
+              <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 leading-relaxed text-pretty max-w-xl">
+                {data.body}
+              </p>
+            )}
+
+            {/* SaaS Lead Conversion & CTAs */}
+            <div className="w-full max-w-lg flex flex-col gap-3">
+              <form 
+                action={data.ctaHref || "/register"} 
+                method="GET"
+                className="w-full flex flex-col sm:flex-row gap-2.5 p-2 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus-within:ring-2 focus-within:ring-[#1f7bc6] focus-within:border-transparent transition-all duration-200"
+              >
+                <div className="flex items-center gap-2 flex-grow px-3 py-2 sm:py-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                  </svg>
+                  <input 
+                    type="email" 
+                    name="email"
+                    required
+                    placeholder="Enter your email to get started..." 
+                    className="w-full bg-transparent border-0 p-0 text-sm focus:ring-0 placeholder:text-slate-400 focus:outline-none text-slate-800 dark:text-slate-200"
+                  />
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold h-11 rounded-xl px-6 bg-[#1f7bc6] hover:bg-[#1f7bc6]/90 text-white shadow-lg shadow-blue-500/10 transition-all hover:scale-[1.02] active:scale-[0.98] duration-200"
+                >
+                  {data.ctaLabel || "Get Started"}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </button>
+              </form>
+
+              {/* Secondary CTA options & Social proof */}
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 px-1">
+                <a 
+                  href="/lectures"
+                  className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-[#1f7bc6] hover:text-[#1f7bc6]/80 transition-colors group"
+                >
+                  Browse our philosophy syllabus
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </a>
+                <span className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:inline"></span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 select-none">
+                  No credit card required
+                </span>
+              </div>
+            </div>
+
+            {/* Social Proof Badging */}
+            <div className="flex items-center gap-4 border-t border-slate-100 dark:border-slate-900/60 pt-6 w-full max-w-md mt-2">
+              <div className="flex -space-x-2.5">
+                <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-950 bg-gradient-to-br from-[#1f7bc6] to-blue-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm shadow-black/10 select-none">JD</div>
+                <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-950 bg-gradient-to-br from-[#e65c23] to-orange-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm shadow-black/10 select-none">ML</div>
+                <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-950 bg-gradient-to-br from-[#7cb625] to-green-600 flex items-center justify-center text-[10px] font-bold text-white shadow-sm shadow-black/10 select-none">SK</div>
+                <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-950 bg-slate-800 flex items-center justify-center text-[9px] font-bold text-slate-200 shadow-sm shadow-black/10 select-none">+4k</div>
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-3.5 h-3.5 text-[#f1d48c] fill-current" viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                  ))}
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 ml-1">4.9/5</span>
+                </div>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Join an active group of global thinkers</span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right Column: Premium Visual Glassmorphism Preview */}
+          <div className="lg:col-span-5 relative w-full flex items-center justify-center py-6 lg:py-0">
+            
+            {/* Huge Blurred Ambient Core Backglow */}
+            <div className="absolute w-[120%] h-[120%] bg-gradient-to-tr from-[#1f7bc6]/10 via-[#e65c23]/10 to-[#7cb625]/10 rounded-full blur-3xl opacity-70 -z-10 animate-pulse duration-[12s]"></div>
+            
+            {/* Base Concept Dashboard Card */}
+            <div className="w-full max-w-[400px] bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.06)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col gap-5 relative z-10 transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)]">
+              
+              {/* Header inside widget */}
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-900 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-[#edf2f4] dark:bg-slate-900 flex items-center justify-center text-[#1f7bc6] border border-[#1f7bc6]/10 dark:border-slate-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                      <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-tight">Intellectual Plan</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Curriculum overview</span>
+                  </div>
+                </div>
+                
+                <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-[#7cb625]/10 text-[#7cb625] border border-[#7cb625]/20 animate-pulse">
+                  Active
+                </span>
+              </div>
+
+              {/* Study path items */}
+              <div className="flex flex-col gap-3">
+                
+                {/* Item 1 (Done) */}
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-white/50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-900 transition-all hover:bg-white dark:hover:bg-slate-900">
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-md bg-[#7cb625]/10 flex items-center justify-center border border-[#7cb625]/20">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7cb625" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 tracking-tight">Introduction to Logic</span>
+                      <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">Module completed • 5 lectures</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#7cb625]">100%</span>
+                </div>
+
+                {/* Item 2 (In progress) */}
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-white/80 dark:bg-slate-950/60 border border-[#1f7bc6]/20 dark:border-[#1f7bc6]/30 shadow-sm transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-md bg-[#1f7bc6]/10 flex items-center justify-center border border-[#1f7bc6]/20">
+                      <svg className="animate-spin text-[#1f7bc6] w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 tracking-tight">Ethics & Social Justice</span>
+                      <span className="text-[9px] text-[#1f7bc6] font-semibold animate-pulse">Now studying • Lecture 3</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#1f7bc6]">60%</span>
+                </div>
+
+                {/* Item 3 (Locked) */}
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/40 dark:bg-slate-950/20 border border-slate-100 dark:border-slate-900/60 opacity-60">
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 tracking-tight">Metaphysics & Space</span>
+                      <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">Locked • Requires Module 2</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400">0%</span>
+                </div>
+
+              </div>
+
+              {/* Progress bar footer */}
+              <div className="flex flex-col gap-2 pt-1">
+                <div className="flex items-center justify-between text-[10px] font-bold">
+                  <span className="text-slate-500 dark:text-slate-400">Overall Progress</span>
+                  <span className="text-slate-800 dark:text-slate-200">53% Completed</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-[#1f7bc6] to-[#7cb625] rounded-full" style={{ width: '53%' }}></div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Overlapping Glassmorphism Progress Circular Widget (Top Right) */}
+            <div className="absolute -top-4 -right-4 md:-right-6 bg-white/80 dark:bg-slate-950/85 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-4 shadow-[0_10px_30px_rgba(0,0,0,0.05)] dark:shadow-none flex items-center gap-3.5 z-20 transition-all duration-300 hover:-translate-y-0.5 select-none">
+              <div className="relative flex items-center justify-center">
+                {/* SVG circular progress indicator */}
+                <svg className="w-11 h-11 transform -rotate-90">
+                  <circle cx="22" cy="22" r="18" stroke="currentColor" strokeWidth="3" className="text-slate-100 dark:text-slate-900" fill="transparent" />
+                  <circle cx="22" cy="22" r="18" stroke="#7cb625" strokeWidth="3" className="transition-all" fill="transparent" strokeDasharray="113" strokeDashoffset="20" strokeLinecap="round" />
+                </svg>
+                {/* Custom Brain Icon inside circles */}
+                <div className="absolute text-[#7cb625]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-4.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z"/>
+                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-4.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z"/>
+                  </svg>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold tracking-tight uppercase">Progression</span>
+                <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200">82% Mastery</span>
+              </div>
+            </div>
+
+            {/* Overlapping Vibrant Accent Streak Badge (Bottom Left) */}
+            <div className="absolute -bottom-3 -left-4 bg-[#e65c23] hover:bg-[#c83313] text-white rounded-2xl px-4 py-3 shadow-[0_10px_25px_rgba(230,92,35,0.25)] flex items-center gap-2.5 z-20 transition-all duration-300 hover:translate-y-0.5 select-none">
+              <span className="text-xl">🔥</span>
+              <div className="flex flex-col leading-tight">
+                <span className="text-[10px] text-orange-200 font-bold uppercase tracking-tight">Daily Streak</span>
+                <span className="text-xs font-extrabold">15 Days Active</span>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </div>
     </section>
