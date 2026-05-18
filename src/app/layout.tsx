@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import { siteConfig } from "@/config/site"
+import { getSiteSettings } from "@/lib/server/site-settings"
 import { ThemeProvider } from "@/components/ui/ThemeProvider"
 import { Toaster } from "@/components/ui/sonner"
 import { ChatbotWidget } from "@/components/chatbot/chatbot-widget"
@@ -24,6 +24,7 @@ const geistMono = Geist_Mono({
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
+  const siteConfig = await getSiteSettings()
   return {
     title: {
       default: siteConfig.siteName,
@@ -55,11 +56,12 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const siteConfig = await getSiteSettings()
   return (
     <html
       lang="en"
