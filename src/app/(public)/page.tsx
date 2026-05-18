@@ -24,20 +24,22 @@ function HeroSection({ data }: { data: HomepageSection }) {
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight leading-[1.1] text-balance">
-            {data.title.split(" ").map((word, index, arr) => {
-              // Highlight the last 2-3 words with a gorgeous gradient
-              const highlightStart = Math.max(0, arr.length - 2)
-              if (index >= highlightStart) {
-                return (
-                  <span key={index} className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-600 to-indigo-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400">
-                    {word}{" "}
-                  </span>
-                )
-              }
-              return word + " "
-            })}
-          </h1>
+          {data.title && (
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight leading-[1.1] text-balance">
+              {data.title.split(" ").map((word, index, arr) => {
+                // Highlight the last 2-3 words with a gorgeous gradient
+                const highlightStart = Math.max(0, arr.length - 2)
+                if (index >= highlightStart) {
+                  return (
+                    <span key={index} className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-600 to-indigo-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400">
+                      {word}{" "}
+                    </span>
+                  )
+                }
+                return word + " "
+              })}
+            </h1>
+          )}
 
           {/* Body Description */}
           {data.body && (

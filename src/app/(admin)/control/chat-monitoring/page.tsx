@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Bot, User, TrendingUp, MessageSquare } from "lucide-react"
 
+export const dynamic = "force-dynamic"
+
 export default async function ChatMonitoringPage() {
   // Accurate totals via dedicated count queries
   const [totalMessages, totalSessions] = await Promise.all([
