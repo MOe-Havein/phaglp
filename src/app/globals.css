@@ -32,34 +32,36 @@
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
 
-    /* 1. Primary Color: #1E3A8A (HSL 224, 64%, 33%) */
-    --primary: 224 64% 33%;
+    /* 1. Primary Color: perfectsky #1f7bc6 (HSL 207 73% 45%) */
+    --primary: 207 73% 45%;
     --primary-foreground: 0 0% 100%;
 
-    /* 2. Main Background: #FFFFFF (HSL 0, 0%, 100%) */
+    /* 2. Main Background: #FFFFFF */
     --background: 0 0% 100%;
 
-    /* 7. Text Color: #374151 (HSL 217, 19%, 27%) */
+    /* 7. Text Color: #374151 */
     --foreground: 217 19% 27%;
 
-    /* 3. Secondary Color: #F3F4F6 (HSL 220, 14%, 96%) */
-    --secondary: 220 14% 96%;
+    /* 3. Secondary Color: frost #edf2f4 (HSL 200 27% 94%) */
+    --secondary: 200 27% 94%;
     --secondary-foreground: 217 19% 27%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 16% 47%;
+    
+    /* Muted colors using platinum (HSL 214 15% 80%) & tinfoil (HSL 214 8% 67%) */
+    --muted: 214 15% 80%;
+    --muted-foreground: 214 8% 67%;
     --surface: 0 0% 100%;
-    --text-muted: 215 16% 47%;
+    --text-muted: 214 8% 67%;
 
-    /* 4. Motivational Accent (Green): #10B981 (HSL 161, 84%, 39%) */
-    --success: 161 84% 39%;
+    /* 4. Motivational Accent (Green): laser #7cb625 (HSL 84 66% 43%) */
+    --success: 84 66% 43%;
     --success-foreground: 0 0% 100%;
 
-    /* 5. Interactive Accent (Orange): #F97316 (HSL 25, 95%, 53%) */
-    --accent: 25 95% 53%;
+    /* 5. Interactive Accent (Orange): tartorange #e65c23 (HSL 18 79% 52%) */
+    --accent: 18 79% 52%;
     --accent-foreground: 0 0% 100%;
 
-    /* 6. Alert & Highlight (Yellow): #FACC15 (HSL 48, 96%, 53%) */
-    --warning: 48 96% 53%;
+    /* 6. Alert & Highlight (Yellow/Gold): celebration #f1d48c (HSL 43 78% 75%) */
+    --warning: 43 78% 75%;
     --warning-foreground: 217 19% 27%;
 
     --card: 0 0% 100%;
@@ -67,23 +69,24 @@
     --popover: 0 0% 100%;
     --popover-foreground: 217 19% 27%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    /* Inferno #c83313 (HSL 11 83% 43%) */
+    --destructive: 11 83% 43%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 224 64% 33%;
+    --border: 200 27% 90%;
+    --input: 200 27% 90%;
+    --ring: 207 73% 45%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 220 14% 98%;
+    --sidebar-background: 200 27% 98%;
     --sidebar-foreground: 217 19% 27%;
-    --sidebar-primary: 224 64% 33%;
+    --sidebar-primary: 207 73% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent: 200 27% 94%;
     --sidebar-accent-foreground: 217 19% 27%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 224 64% 33%;
+    --sidebar-border: 200 27% 90%;
+    --sidebar-ring: 207 73% 45%;
   }
 
   .dark {
@@ -93,7 +96,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 222 47% 5%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
+    --primary: 207 85% 60%;
     --primary-foreground: 222 47% 11%;
     --secondary: 222 47% 12%;
     --secondary-foreground: 210 40% 98%;
@@ -101,25 +104,25 @@
     --muted-foreground: 215 20% 65%;
     --surface: 222 47% 7%;
     --text-muted: 215 20% 65%;
-    --accent: 25 95% 45%;
+    --accent: 18 85% 55%;
     --accent-foreground: 210 40% 98%;
-    --success: 161 84% 35%;
+    --success: 84 75% 50%;
     --success-foreground: 210 40% 98%;
-    --warning: 48 96% 45%;
+    --warning: 43 85% 65%;
     --warning-foreground: 210 40% 98%;
-    --destructive: 0 84% 60%;
+    --destructive: 11 80% 50%;
     --destructive-foreground: 210 40% 98%;
     --border: 222 47% 15%;
     --input: 222 47% 15%;
-    --ring: 217 91% 60%;
+    --ring: 207 85% 60%;
     --sidebar-background: 222 47% 4%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary: 207 85% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 222 47% 12%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 222 47% 15%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-ring: 207 85% 60%;
   }
 }
 
