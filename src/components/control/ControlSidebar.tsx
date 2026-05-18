@@ -11,6 +11,7 @@ import {
   FileCode,
   Mail,
   Navigation,
+  Home,
 } from "lucide-react"
 import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -28,6 +29,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { title: "Dashboard", href: "/control", icon: LayoutDashboard },
+  { title: "Homepage CMS", href: "/homepage", icon: Home },
   { title: "Users", href: "/control/users", icon: Users },
   { title: "Courses", href: "/control/courses", icon: BookOpen },
   { title: "Lectures", href: "/control/lectures", icon: FileText },
