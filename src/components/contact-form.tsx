@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { Loader2, Send, CheckCircle2, AlertCircle } from "lucide-react"
+import { Loader2, Send, CheckCircle2 } from "lucide-react"
 
 export function ContactForm() {
   const [loading, setLoading] = useState(false)
