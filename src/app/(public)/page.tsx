@@ -117,10 +117,39 @@ function MediaSection({ data }: { data: HomepageSection }) {
 
 function TestimonialsSection({ data }: { data: HomepageSection }) {
   return (
-    <section className="py-24 px-6 bg-background">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl font-bold text-text-primary mb-12">{data.title}</h2>
-        <blockquote className="text-2xl italic text-text-muted mb-8">"{data.body}"</blockquote>
+    <section className="py-24 px-6 bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center border-t border-slate-200/60 dark:border-slate-800/60">
+      <div className="w-full max-w-4xl flex flex-col gap-10 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 md:p-14 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+        
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-primary shadow-sm border border-slate-200/50 dark:border-slate-700/50 transition-colors duration-200 hover:bg-slate-200 dark:hover:bg-slate-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-square-quote w-6 h-6">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              <path d="M8 12a2 2 0 0 0 2-2V8H8"></path>
+              <path d="M14 12a2 2 0 0 0 2-2V8h-2"></path>
+            </svg>
+          </div>
+          <h2 className="text-2xl md:text-3xl tracking-tight font-semibold text-foreground flex items-center justify-center gap-2">
+            {data.title}
+          </h2>
+        </div>
+
+        <div className="flex flex-col items-center gap-8">
+          <blockquote className="text-xl md:text-2xl font-medium tracking-tight leading-relaxed text-center text-slate-500 dark:text-slate-400 relative px-4 md:px-8">
+            <span className="text-slate-200 dark:text-slate-800 absolute -top-4 left-0 text-6xl select-none leading-none font-serif">"</span>
+            <span className="relative z-10">{data.body}</span>
+            <span className="text-slate-200 dark:text-slate-800 absolute -bottom-8 right-0 text-6xl select-none leading-none font-serif">"</span>
+          </blockquote>
+          
+          {data.ctaLabel && data.ctaHref && (
+             <a href={data.ctaHref} className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 ease-in-out hover:bg-primary/90 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                {data.ctaLabel}
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right w-4 h-4">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+             </a>
+          )}
+        </div>
       </div>
     </section>
   )

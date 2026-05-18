@@ -57,6 +57,16 @@ const config: Config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        // Custom Cool & Neutral Tones
+        frost: "#edf2f4",
+        platinum: "#c5cbd3",
+        tinfoil: "#a3a9b1",
+        perfectsky: "#1f7bc6",
+        // Custom Warm & Vibrant Tones
+        tartorange: "#e65c23",
+        laser: "#7cb625",
+        inferno: "#c83313",
+        celebration: "#f1d48c",
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",
