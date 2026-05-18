@@ -218,54 +218,71 @@ async function LatestLectures() {
   }
 
   return (
-    <section className="py-16 px-4 bg-white dark:bg-gray-950 border-t border-slate-100 dark:border-slate-800">
-      <div className="container mx-auto max-w-7xl">
-        <h2 className="text-2xl md:text-3xl font-bold mb-8 text-slate-900 dark:text-white">
-          Prepare for an in-demand career
-        </h2>
+    <section className="relative py-24 px-6 overflow-hidden bg-slate-50 dark:bg-slate-950 border-t border-border">
+      {/* Glassmorphism background glow */}
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-white to-transparent dark:from-slate-950 pointer-events-none"></div>
+
+      <div className="container mx-auto max-w-7xl relative z-10">
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">
+              Prepare for an in-demand career
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Master the concepts of philosophy, science, and life planning to elevate your analytical skills and build a robust foundation for any role.
+            </p>
+          </div>
+          <a href="/lectures" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-5 py-2 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
+            Explore All Programs
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right w-4 h-4">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
         
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
           {columns.map((col, colIdx) => (
-            <div key={colIdx} className="bg-[#EBF3FF] dark:bg-slate-900/50 rounded-xl p-4 md:p-6 shadow-sm border border-transparent dark:border-slate-800 flex flex-col">
-              <a href="/lectures" className="flex items-center text-lg font-semibold text-slate-900 dark:text-white mb-5 hover:text-blue-600 dark:hover:text-blue-400 group w-fit">
+            <div key={colIdx} className="bg-white/60 dark:bg-slate-900/40 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-slate-200/60 dark:border-slate-800/60 flex flex-col transition-all duration-300 hover:shadow-md hover:bg-white/80 dark:hover:bg-slate-900/60">
+              <a href="/lectures" className="flex items-center text-lg font-bold tracking-tight text-foreground mb-6 hover:text-primary group w-fit transition-colors">
                 {col.title}
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right ml-2 w-4 h-4 transition-transform group-hover:translate-x-1">
-                  <path d="M5 12h14"></path>
-                  <path d="m12 5 7 7-7 7"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right ml-1 w-5 h-5 transition-transform duration-200 ease-in-out group-hover:translate-x-1 text-muted-foreground group-hover:text-primary">
+                  <path d="m9 18 6-6-6-6"></path>
                 </svg>
               </a>
               
-              <div className="flex flex-col gap-4 flex-grow">
+              <div className="flex flex-col gap-3 flex-grow">
                 {col.items.map((lecture) => (
-                  <a key={lecture.id} href={`/lectures/${lecture.slug}`} className="bg-white dark:bg-slate-950 rounded-lg p-3 flex gap-4 hover:shadow-md transition-shadow border border-slate-100 dark:border-slate-800">
-                    <div className="w-16 h-16 shrink-0 rounded-md bg-slate-200 dark:bg-slate-800 overflow-hidden relative">
+                  <a key={lecture.id} href={`/lectures/${lecture.slug}`} className="group/card bg-background rounded-xl p-3 flex gap-4 border border-border shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30 dark:hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                    <div className="w-16 h-16 shrink-0 rounded-lg bg-muted overflow-hidden relative border border-border shadow-inner">
                       {lecture.coverImage ? (
-                        <img src={lecture.coverImage} alt={lecture.title} className="w-full h-full object-cover" />
+                        <img src={lecture.coverImage} alt={lecture.title} className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#1E3A8A] to-[#2563EB]"></div>
+                        <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 transition-transform duration-500 group-hover/card:scale-105"></div>
                       )}
                     </div>
                     
-                    <div className="flex flex-col justify-center flex-grow min-w-0">
-                      <div className="flex items-center gap-1.5 mb-1 text-xs text-slate-600 dark:text-slate-400">
+                    <div className="flex flex-col justify-center flex-grow min-w-0 py-0.5">
+                      <div className="flex items-center gap-2 mb-1.5 text-xs font-medium text-muted-foreground">
                         {lecture.author?.photoUrl ? (
-                          <img src={lecture.author.photoUrl} className="w-4 h-4 rounded-sm object-cover" alt={lecture.author.name || "Author"} />
+                          <img src={lecture.author.photoUrl} className="w-5 h-5 rounded-full object-cover border border-border shadow-sm" alt={lecture.author.name || "Author"} />
                         ) : (
-                          <div className="w-4 h-4 rounded-sm bg-blue-100 text-blue-600 flex items-center justify-center font-bold" style={{ fontSize: '10px' }}>
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold border border-primary/20 shadow-sm" style={{ fontSize: '10px' }}>
                             {(lecture.author?.name || "P")[0]}
                           </div>
                         )}
-                        <span className="truncate">{lecture.author?.name || "Phaglp Academy"}</span>
+                        <span className="truncate tracking-tight">{lecture.author?.name || "Phaglp Academy"}</span>
                       </div>
                       
-                      <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 leading-tight mb-1">
+                      <h3 className="font-semibold text-foreground text-sm line-clamp-2 leading-tight tracking-tight mb-2 transition-colors group-hover/card:text-primary">
                         {lecture.title}
                       </h3>
                       
-                      <div className="flex items-center text-xs text-slate-500 dark:text-slate-400 gap-2 mt-auto">
+                      <div className="flex items-center text-[11px] text-muted-foreground gap-2 mt-auto font-medium">
                         <span>Professional Lecture</span>
-                        <span className="flex items-center text-slate-700 dark:text-slate-300 font-medium">
-                          <svg className="w-3 h-3 text-black dark:text-white mr-0.5" viewBox="0 0 24 24" fill="currentColor">
+                        <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+                        <span className="flex items-center text-foreground font-semibold">
+                          <svg className="w-3.5 h-3.5 text-amber-500 mr-1" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                           </svg>
                           4.8
@@ -277,7 +294,7 @@ async function LatestLectures() {
                 
                 {/* Pad out to 3 items if necessary to keep layout height consistent */}
                 {col.items.length < 3 && Array.from({ length: 3 - col.items.length }).map((_, i) => (
-                  <div key={`empty-${i}`} className="bg-transparent rounded-lg p-3 flex gap-4 opacity-0 pointer-events-none border border-transparent">
+                  <div key={`empty-${i}`} className="bg-transparent rounded-xl p-3 flex gap-4 opacity-0 pointer-events-none">
                     <div className="w-16 h-16 shrink-0"></div>
                     <div className="flex flex-col flex-grow"></div>
                   </div>
