@@ -29,7 +29,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { title: "Dashboard", href: "/control", icon: LayoutDashboard },
-  { title: "Homepage CMS", href: "/homepage", icon: Home },
+  { title: "Homepage CMS", href: "/control/homepage", icon: Home },
   { title: "Users", href: "/control/users", icon: Users },
   { title: "Courses", href: "/control/courses", icon: BookOpen },
   { title: "Lectures", href: "/control/lectures", icon: FileText },
@@ -61,7 +61,9 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
     <nav className="flex-1 px-4 py-2">
       <ul className="space-y-1">
         {sidebarItems.map((item) => {
-          const isActive = pathname === item.href
+          const isActive = item.href === "/control"
+            ? pathname === "/control"
+            : pathname.startsWith(item.href)
           return (
             <li key={item.href}>
               <Link

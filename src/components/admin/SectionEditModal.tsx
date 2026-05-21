@@ -69,12 +69,12 @@ export function SectionEditModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-surface border border-border w-full max-w-2xl rounded-xl shadow-xl flex flex-col max-h-[90vh]">
         <div className="flex justify-between items-center p-6 border-b border-border">
-          <h2 className="text-xl font-semibold text-text-primary">
+          <h2 className="text-xl font-semibold text-foreground">
             {sectionToEdit ? "Edit Section" : "Configure Section"}
           </h2>
           <button
             onClick={onClose}
-            className="text-muted hover:text-text-primary text-2xl leading-none"
+            className="text-muted hover:text-foreground text-2xl leading-none"
           >
             &times;
           </button>
@@ -88,7 +88,7 @@ export function SectionEditModal({
               <label className="block text-sm font-medium text-text-muted mb-1">Title</label>
               <input
                 {...register("title")}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Section Headline"
               />
               {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
@@ -99,7 +99,7 @@ export function SectionEditModal({
               <textarea
                 {...register("body")}
                 rows={4}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Add text content here..."
               />
               {errors.body && <p className="text-red-500 text-xs mt-1">{errors.body.message}</p>}
@@ -110,7 +110,7 @@ export function SectionEditModal({
                 <label className="block text-sm font-medium text-text-muted mb-1">CTA Label</label>
                 <input
                   {...register("ctaLabel")}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g. Get Started"
                 />
                 {errors.ctaLabel && (
@@ -121,7 +121,7 @@ export function SectionEditModal({
                 <label className="block text-sm font-medium text-text-muted mb-1">CTA Href</label>
                 <input
                   {...register("ctaHref")}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g. /signup"
                 />
                 {errors.ctaHref && (
@@ -135,7 +135,7 @@ export function SectionEditModal({
                 <label className="block text-sm font-medium text-text-muted mb-1">Media URL</label>
                 <input
                   {...register("mediaUrl")}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="https://..."
                 />
                 {errors.mediaUrl && (
@@ -148,7 +148,7 @@ export function SectionEditModal({
                 </label>
                 <input
                   {...register("mediaAlt")}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Description of media"
                 />
                 {errors.mediaAlt && (
@@ -158,7 +158,7 @@ export function SectionEditModal({
             </div>
 
             <div className="border-t border-border pt-4 mt-4">
-              <h3 className="text-sm font-semibold text-text-primary mb-3">SEO Overrides</h3>
+              <h3 className="text-sm font-semibold text-foreground mb-3">SEO Overrides</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-1">
@@ -166,7 +166,7 @@ export function SectionEditModal({
                   </label>
                   <input
                     {...register("seoTitle")}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div>
@@ -175,7 +175,7 @@ export function SectionEditModal({
                   </label>
                   <input
                     {...register("seoDescription")}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -188,7 +188,7 @@ export function SectionEditModal({
                   {...register("visible")}
                   className="w-4 h-4 rounded text-primary focus:ring-primary bg-background border-border"
                 />
-                <span className="text-sm font-medium text-text-primary">Visible publicly</span>
+                <span className="text-sm font-medium text-foreground">Visible publicly</span>
               </label>
             </div>
           </form>
@@ -198,7 +198,7 @@ export function SectionEditModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-text-primary hover:bg-background rounded-md border border-transparent transition-colors"
+            className="px-4 py-2 text-sm font-medium text-foreground hover:bg-background rounded-md border border-transparent transition-colors"
           >
             Cancel
           </button>

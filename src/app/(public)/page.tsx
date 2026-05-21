@@ -266,7 +266,7 @@ function FeaturesSection({ data }: { data: HomepageSection }) {
   return (
     <section className="py-24 px-6 bg-background">
       <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl font-bold text-text-primary mb-12">{data.title}</h2>
+        <h2 className="text-3xl font-bold text-foreground mb-12">{data.title}</h2>
         {data.body && (
           <div className="text-text-muted leading-relaxed max-w-3xl mx-auto mb-12">{data.body}</div>
         )}
@@ -306,7 +306,7 @@ function MediaSection({ data }: { data: HomepageSection }) {
     <section className="py-20 px-6 bg-surface">
       <div className="max-w-5xl mx-auto">
         {data.title && (
-          <h2 className="text-3xl font-bold text-center text-text-primary mb-8">{data.title}</h2>
+          <h2 className="text-3xl font-bold text-center text-foreground mb-8">{data.title}</h2>
         )}
         {data.mediaUrl && (
           <div className="rounded-2xl overflow-hidden shadow-xl border border-border">

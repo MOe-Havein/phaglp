@@ -46,9 +46,5 @@ next-env.d.ts
 # GitHub App credentials
 gha-creds-*.json
 
-.vercel
-# gemini-cli settings
-.gemini/
-
-# GitHub App credentials
-gha-creds-*.json
+# Google client secrets
+client_secret*.json

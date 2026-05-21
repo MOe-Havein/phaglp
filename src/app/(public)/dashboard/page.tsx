@@ -176,7 +176,7 @@ export default async function DashboardPage() {
               </div>
 
               {/* Email & Tier Status details */}
-              <p className="text-muted-foreground text-xs font-medium mb-3 flex flex-wrap items-center justify-center md:justify-start gap-x-2 gap-y-1">
+              <div className="text-muted-foreground text-xs font-medium mb-3 flex flex-wrap items-center justify-center md:justify-start gap-x-2 gap-y-1">
                 <span>{dbUser?.email}</span>
                 <span className="text-slate-300 dark:text-slate-700">•</span>
                 <span className="flex items-center gap-1">
@@ -196,7 +196,7 @@ export default async function DashboardPage() {
                     </Badge>
                   )}
                 </span>
-              </p>
+              </div>
 
               <p className="text-muted-foreground text-xs leading-relaxed max-w-xl">
                 Continue your intellectual journey through unified philosophical frameworks and

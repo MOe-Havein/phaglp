@@ -11,7 +11,7 @@ export default async function HomepageEditorPage() {
   })
 
   return (
-    <div className="p-6 md:p-8">
+    <div className="container mx-auto py-10 space-y-8 px-4">
       <HomepageEditor initialSections={sections} />
     </div>
   )

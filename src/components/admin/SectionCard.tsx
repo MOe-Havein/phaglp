@@ -67,7 +67,7 @@ export function SectionCard({ section, index, onEdit, onDelete }: SectionCardPro
               <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary uppercase tracking-wide">
                 {section.type}
               </span>
-              <span className="font-medium text-text-primary">
+              <span className="font-medium text-foreground">
                 {section.title || "Untitled Section"}
               </span>
             </div>

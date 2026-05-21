@@ -91,7 +91,7 @@ export function HomepageEditor({ initialSections }: HomepageEditorProps) {
     <div className="w-full max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">Homepage Builder</h1>
+          <h1 className="text-2xl font-bold text-foreground">Homepage Builder</h1>
           <p className="text-sm text-text-muted mt-1">
             Drag to reorder sections. Changes save automatically.
           </p>
