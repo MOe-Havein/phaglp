@@ -4,6 +4,7 @@
     "allowJs": true,
     "target": "ESNext",
     "skipLibCheck": true,
+    "types": ["node", "dompurify"],
     "strict": true,
     "noEmit": true,
     "noUnusedLocals": true,
