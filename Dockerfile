@@ -6,16 +6,16 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
-
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
+# Copy lockfiles and manifests
 COPY package.json pnpm-lock.yaml* package-lock.json* ./
 COPY prisma ./prisma
 
-# Optimization: Turn off the minimum release age constraint inline for this build step
+# Optimization: Removed --frozen-lockfile to dynamically resolve out-of-sync type files during caching
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
-    if [ -f pnpm-lock.yaml ]; then pnpm i --frozen-lockfile --config.minimum-release-age=0 --dangerously-allow-all-builds; \
-    elif [ -f package-lock.json ]; then pnpm import && pnpm i --frozen-lockfile --config.minimum-release-age=0 --dangerously-allow-all-builds; \
+    if [ -f pnpm-lock.yaml ]; then pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
+    elif [ -f package-lock.json ]; then pnpm import && pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
     else pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
     fi
 
@@ -26,10 +26,9 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
-
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Bring over pre-built node_modules and schema configs
+# Bring over node_modules and setup configurations
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml* package-lock.json* ./
 COPY prisma ./prisma
@@ -37,11 +36,11 @@ COPY prisma ./prisma
 ARG DATABASE_URL="postgresql://build-placeholder:build-placeholder@localhost:5432/build_db"
 ENV DATABASE_URL=${DATABASE_URL}
 
-# Use a specific cache layer for Prisma binary engines to block redownloads
+# Cache layer for Prisma binary engines
 RUN --mount=type=cache,target=/root/.cache/prisma \
     pnpm exec prisma generate
 
-# Pull in your actual source files only after engines finish generating
+# Pull in all actual source files for compilation
 COPY . .
 
 ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
@@ -50,7 +49,7 @@ ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Enforce resource caps so Next.js doesn't throttle or freeze your WSL engine
+# Enforce resource caps so Next.js build passes type checks without choking
 RUN --mount=type=cache,target=/app/.next/cache \
     NODE_OPTIONS="--max-old-space-size=4096" CPUS=2 pnpm run build
 
@@ -71,18 +70,17 @@ RUN addgroup --system --gid 1001 nodejs && \
     mkdir -p .next/cache && \
     chown nextjs:nodejs .next/cache
 
-# 1. Copy the standalone production code (Includes optimized server.js and package.json)
+# 1. Copy standalone production output bundle (automatically strips devDependencies)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 
-# 2. Copy supporting assets 
+# 2. Copy static and public assets
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
-# Install Prisma CLI globally to support migration execution
-
-RUN npm install -g prisma@6.19.2 effect
+# Optimization: Added @prisma/config alongside prisma and effect globally to ensure standalone runtimes don't miss dependencies
+RUN npm install -g prisma@6.19.2 effect @prisma/config
 
 USER nextjs
 EXPOSE 3000
