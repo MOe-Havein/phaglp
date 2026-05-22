@@ -111,7 +111,7 @@ importers:
         specifier: ^3.31.2
         version: 3.33.1(react@19.2.6)
       '@tiptap/core':
-        specifier: ^3.23.6
+        specifier: ^3.23.4
         version: 3.23.6(@tiptap/pm@3.23.6)
       '@tiptap/extension-color':
         specifier: ^3.23.4
