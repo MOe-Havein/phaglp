@@ -12,9 +12,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY package.json pnpm-lock.yaml* package-lock.json* ./
 COPY prisma ./prisma
 
-# Optimization: Removed --frozen-lockfile to dynamically resolve out-of-sync type files during caching
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
-    if [ -f pnpm-lock.yaml ]; then pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
+# Clean Fix: Removed cache mount to force a fresh download of dompurify types
+RUN if [ -f pnpm-lock.yaml ]; then pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
     elif [ -f package-lock.json ]; then pnpm import && pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
     else pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
     fi
@@ -49,9 +48,8 @@ ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Enforce resource caps so Next.js build passes type checks without choking
-RUN --mount=type=cache,target=/app/.next/cache \
-    NODE_OPTIONS="--max-old-space-size=4096" CPUS=2 pnpm run build
+# Clean Fix: Restored the actual Next.js build command without the cache mount
+RUN NODE_OPTIONS="--max-old-space-size=4096" CPUS=2 pnpm run build
 
 # ==========================================
 # Stage 3: Runner
