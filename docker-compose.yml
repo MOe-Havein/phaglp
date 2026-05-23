@@ -11,9 +11,10 @@ services:
       - phaglp-db-data:/var/lib/postgresql/data
     networks:
       - internal-network
+    # FIXED: Simplified to avoid variable expansion issues during boot sequence
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -d ${DB_NAME:-phaglp_prod} -U ${DB_USER:-phaglp_admin}"]
+      interval: 5s
       timeout: 5s
       retries: 5
 

@@ -1,0 +1,54 @@
+name: Build and Push Production Container
+
+on:
+  push:
+    branches:
+      - main # Fires the automation whenever you merge code into main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # Critical permission required to write images to ghcr.io
+
+    steps:
+      # Step 1: Clone your codebase down into the virtual Linux runner environment
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Docker Buildx (Enables high-performance build features and caching)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Authenticate cleanly against the GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 4: Extract metadata and create semantic tags for tracking
+      - name: Extract Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=sha,format=long
+            type=raw,value=latest
+
+      # Step 5: Build and push the image utilizing high-speed GitHub layer caching
+      - name: Build and Push Production Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # HIGH-SPEED OPTIMIZATION: Binds Docker's layer cache straight to the GitHub Actions backend
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+

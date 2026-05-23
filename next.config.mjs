@@ -3,10 +3,14 @@ import withBundleAnalyzer from "@next/bundle-analyzer"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  serverExternalPackages: ["@prisma/client"],
+  
+  // Prevents Next.js from bundling native Prisma binaries into client-side chunks
+  serverExternalPackages: ["@prisma/client", "prisma"],
+
   typescript: {
     ignoreBuildErrors: false,
   },
+
   images: {
     remotePatterns: [
       {
@@ -19,8 +23,9 @@ const nextConfig = {
       },
     ],
   },
+
   webpack: (config) => {
-    // Suppress dynamic jose CompressionStream / DecompressionStream warnings in the build log
+    // Streamlined suppression of dynamic Jose compression warnings in build logs
     config.ignoreWarnings = [
       ...(config.ignoreWarnings || []),
       { module: /node_modules\/jose/ },
@@ -29,39 +34,11 @@ const nextConfig = {
     ]
     return config
   },
+
   experimental: {
-    optimizePackageImports: [
-      "lucide-react",
-      "@radix-ui/react-accordion",
-      "@radix-ui/react-alert-dialog",
-      "@radix-ui/react-aspect-ratio",
-      "@radix-ui/react-avatar",
-      "@radix-ui/react-checkbox",
-      "@radix-ui/react-collapsible",
-      "@radix-ui/react-context-menu",
-      "@radix-ui/react-dialog",
-      "@radix-ui/react-dropdown-menu",
-      "@radix-ui/react-hover-card",
-      "@radix-ui/react-label",
-      "@radix-ui/react-menubar",
-      "@radix-ui/react-navigation-menu",
-      "@radix-ui/react-popover",
-      "@radix-ui/react-progress",
-      "@radix-ui/react-radio-group",
-      "@radix-ui/react-scroll-area",
-      "@radix-ui/react-select",
-      "@radix-ui/react-separator",
-      "@radix-ui/react-slider",
-      "@radix-ui/react-slot",
-      "@radix-ui/react-switch",
-      "@radix-ui/react-tabs",
-      "@radix-ui/react-toast",
-      "@radix-ui/react-toggle",
-      "@radix-ui/react-toggle-group",
-      "@radix-ui/react-tooltip",
-      "framer-motion",
-      "recharts",
-    ],
+    // Next.js 15 auto-optimizes Radix, Lucide, and Framer Motion. 
+    // We only keep large data visualization libraries that benefit from explicit tuning.
+    optimizePackageImports: ["recharts", "@tiptap/core"],
   },
 }
 

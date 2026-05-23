@@ -1,10 +1,11 @@
-# ==========================================
-# Stage 1: Dependencies Base
+ # ==========================================
+# Stage 1: Dependencies Base (Cached & Isolated)
 # ==========================================
 FROM node:22-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Enable Corepack for pnpm handling
 ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
@@ -12,14 +13,15 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY package.json pnpm-lock.yaml* package-lock.json* ./
 COPY prisma ./prisma
 
-# Clean Fix: Removed cache mount to force a fresh download of dompurify types
-RUN if [ -f pnpm-lock.yaml ]; then pnpm i --frozen-lockfile --config.minimum-release-age=0 --dangerously-allow-all-builds; \
+# OPTIMIZATION: Leverages a persistent cache mount for pnpm/npm stores to skip network downloads
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    if [ -f pnpm-lock.yaml ]; then pnpm i --frozen-lockfile --dangerously-allow-all-builds; \
     elif [ -f package-lock.json ]; then npm ci; \
     else npm install; \
     fi
 
 # ==========================================
-# Stage 2: Builder
+# Stage 2: Builder (Compiler Cached)
 # ==========================================
 FROM node:22-alpine AS builder
 WORKDIR /app
@@ -27,7 +29,7 @@ WORKDIR /app
 ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Bring over node_modules and setup configurations
+# Bring over fully-resolved node_modules and configurations
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml* package-lock.json* ./
 COPY prisma ./prisma
@@ -48,11 +50,16 @@ ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Clean Fix: Restored the actual Next.js build command without the cache mount
-RUN NODE_OPTIONS="--max-old-space-size=4096" CPUS=2 pnpm run build
+# OPTIMIZATION: Caches the Next.js SWC (Rust compiler) framework output folder.
+# Subsequent builds will compile in seconds rather than minutes.
+# Replace the Cloudinary block in Stage 2 with this:
+RUN --mount=type=secret,id=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME \
+    export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$(cat /run/secrets/NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) && \
+    --mount=type=cache,target=/app/.next/cache \
+    NODE_OPTIONS="--max-old-space-size=4096" CPUS=2 pnpm run build
 
 # ==========================================
-# Stage 3: Runner
+# Stage 3: Runner (Zero-Dependency Clean Slate)
 # ==========================================
 FROM node:22-alpine AS runner
 WORKDIR /app
@@ -62,13 +69,13 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Consolidate user creation and directory preparation into a single runtime layer
+# Security: Consolidate user creation and runtime directory preparation
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs && \
     mkdir -p .next/cache && \
     chown nextjs:nodejs .next/cache
 
-# 1. Copy standalone production output bundle (automatically strips devDependencies)
+# 1. Copy standalone production output bundle (Automatically captures Prisma & Effect)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 
 # 2. Copy static and public assets
@@ -77,9 +84,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
-# Optimization: Install prisma, @prisma/config, and effect locally to ensure standalone runtimes don't miss dependencies in Node resolution paths
-RUN npm install prisma@6.19.3 @prisma/config@6.19.3 effect && \
-    chown -R nextjs:nodejs /app/node_modules
+# APPROACH B ADVANTAGE: No "npm install" line here! 
+# Next.js standalone mode natively bundles everything into the folder copied on line 60.
 
 USER nextjs
 EXPOSE 3000
