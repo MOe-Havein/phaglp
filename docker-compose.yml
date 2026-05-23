@@ -36,6 +36,9 @@ services:
     image: ghcr.io/${IMAGE_NAME:-mhamidawad/testa-next15-app}:${IMAGE_TAG:-latest}
     build:
       context: .
+      args:
+        # 1. This exposes the variable during 'pnpm run build'
+        - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=phaglp
       dockerfile: Dockerfile
     container_name: phaglp-app-prod
     restart: always
@@ -52,6 +55,7 @@ services:
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
       CLOUDINARY_URL: ${CLOUDINARY_URL}
+
     volumes:
       - phaglp-uploads:/app/public/uploads
     networks:

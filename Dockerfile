@@ -1,4 +1,4 @@
- # ==========================================
+# ==========================================
 # Stage 1: Dependencies Base (Cached & Isolated)
 # ==========================================
 FROM node:22-alpine AS deps
@@ -45,6 +45,7 @@ RUN --mount=type=cache,target=/root/.cache/prisma \
 # Pull in all actual source files for compilation
 COPY . .
 
+# Capture the NEXT_PUBLIC variable passed from docker-compose.yml build args
 ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 
@@ -53,10 +54,7 @@ ENV NODE_ENV=production
 
 # OPTIMIZATION: Caches the Next.js SWC (Rust compiler) framework output folder.
 # Subsequent builds will compile in seconds rather than minutes.
-# Replace the Cloudinary block in Stage 2 with this:
-RUN --mount=type=secret,id=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME \
-    export NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$(cat /run/secrets/NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) && \
-    --mount=type=cache,target=/app/.next/cache \
+RUN --mount=type=cache,target=/app/.next/cache \
     NODE_OPTIONS="--max-old-space-size=4096" CPUS=2 pnpm run build
 
 # ==========================================
@@ -85,8 +83,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
-# APPROACH B ADVANTAGE: No "npm install" line here! 
-# Next.js standalone mode natively bundles everything into the folder copied on line 60.
+# APPROACH B ADVANTAGE: No "npm install" line here!
+# Next.js standalone mode natively bundles everything into the folder copied above.
 
 USER nextjs
 EXPOSE 3000
