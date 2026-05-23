@@ -13,9 +13,9 @@ COPY package.json pnpm-lock.yaml* package-lock.json* ./
 COPY prisma ./prisma
 
 # Clean Fix: Removed cache mount to force a fresh download of dompurify types
-RUN if [ -f pnpm-lock.yaml ]; then pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
-    elif [ -f package-lock.json ]; then pnpm import && pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
-    else pnpm i --config.minimum-release-age=0 --dangerously-allow-all-builds; \
+RUN if [ -f pnpm-lock.yaml ]; then pnpm i --frozen-lockfile --config.minimum-release-age=0 --dangerously-allow-all-builds; \
+    elif [ -f package-lock.json ]; then npm ci; \
+    else npm install; \
     fi
 
 # ==========================================
@@ -77,8 +77,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
-# Optimization: Added @prisma/config alongside prisma and effect globally to ensure standalone runtimes don't miss dependencies
-RUN npm install -g prisma@6.19.2 effect @prisma/config
+# Optimization: Install prisma, @prisma/config, and effect locally to ensure standalone runtimes don't miss dependencies in Node resolution paths
+RUN npm install prisma@6.19.3 @prisma/config@6.19.3 effect && \
+    chown -R nextjs:nodejs /app/node_modules
 
 USER nextjs
 EXPOSE 3000

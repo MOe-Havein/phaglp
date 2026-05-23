@@ -19,6 +19,9 @@ services:
 
   db-migrate:
     image: ghcr.io/${IMAGE_NAME:-mhamidawad/testa-next15-app}:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: node scripts/migrate.mjs
     environment:
       DATABASE_URL: "postgresql://${DB_USER:-phaglp_admin}:${DB_PASSWORD:-phaglp_pass}@postgres:5432/${DB_NAME:-phaglp_prod}"
@@ -30,6 +33,9 @@ services:
 
   app:
     image: ghcr.io/${IMAGE_NAME:-mhamidawad/testa-next15-app}:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: phaglp-app-prod
     restart: always
     depends_on:
