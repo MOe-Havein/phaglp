@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "github-cli-mcp": {
+      "command": "node",
+      "args": [
+        "C:/Users/MOe/.gemini/antigravity-cli/scratch/gh-cli-mcp/index.js"
+      ]
+    },
+    "sqlite": {
+      "command": "npx.cmd",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "--db",
+        "libsql://dev2-arcane-taurus-tftfy9.aws-eu-west-1.turso.io"
+      ]
+    },
+    "mcp-vercel": {
+      "command": "node",
+      "args": [
+        "D:/testa-next15-app/mcp-vercel/build/index.js"
+      ],
+      "env": {
+        "VERCEL_API_TOKEN": "vcp_32c4vOQGx1ecdKGu5g90wZWXKJnuukBurHriEmKO8SLxUgEptp48WifT",
+        "ALERT_WEBHOOK_URL": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+name: Vercel Deploy & Track
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows triggering the deploy manually from GitHub UI
+
+jobs:
+  vercel-deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # Step 3: Install dependencies for the Vercel MCP server
+      - name: Install MCP Server Dependencies
+        run: |
+          cd mcp-vercel
+          npm install
+
+      # Step 4: Build the Vercel MCP server to generate compiled handlers
+      - name: Build MCP Server
+        run: |
+          cd mcp-vercel
+          npm run build
+
+      # Step 5: Execute custom deployment automation tool
+      - name: Trigger Vercel Deploy & Track Progress
+        env:
+          VERCEL_API_TOKEN: ${{ secrets.VERCEL_API_TOKEN }}
+        run: |
+          node antigravitycli/deploy-automation.mjs deploy testa-phaglp2 production
