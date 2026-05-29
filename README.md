@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PHAGLP (Philosophical Academy for Geniuses Life Planning)
 
 PHAGLP is a modern full-stack application designed for philosophical education, scientific research, and intentional marriage matching. Built with an elite, cutting-edge aesthetic and strict architectural standards, it serves as a robust platform for high-level intellectual pursuit.
@@ -78,3 +79,7 @@ pnpm exec playwright test
 - **Route Protection:** Both middleware-level and handler-level RBAC authorization are strictly enforced.
 - **Atomic Transactions:** Multi-step database mutations are wrapped in `prisma.$transaction`.
 - **N+1 Prevention:** Prisma relational data is prefetched using `include` blocks.
+=======
+# testa-phaglp2
+the latest one 25 May 26
+>>>>>>> cde93fa32f3d902a6594179455d5cb7399acfe8a

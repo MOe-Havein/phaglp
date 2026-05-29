@@ -91,10 +91,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PublicHomepage() {
-  const sections = await prisma.homepageSection.findMany({
-    where: { visible: true },
-    orderBy: { order: "asc" },
-  })
+  let sections = []
+  try {
+    sections = await prisma.homepageSection.findMany({
+      where: { visible: true },
+      orderBy: { order: "asc" },
+    })
+  } catch (error) {
+    console.error("Failed to fetch homepage sections:", error)
+  }
 
   if (sections.length === 0) {
     return (
