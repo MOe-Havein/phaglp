@@ -11,21 +11,39 @@ on:
 
   workflow_dispatch:
 
+# Prevent duplicate runs
+concurrency:
+  group: bundle-analysis-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   analyze-bundle:
     name: Analyze Next.js Bundle
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      ANALYZE: true
 
     steps:
       # Checkout repository
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       # Setup pnpm
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
+          run_install: false
 
       # Setup Node.js
       - name: Setup Node.js
@@ -34,32 +52,56 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      # Install dependencies
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      # Restore Next.js build cache
+      # Cache Next.js + pnpm store
       - name: Restore Next.js Cache
         uses: actions/cache@v4
         with:
           path: |
             .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}
+            ~/.pnpm-store
+          key: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
           restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
             ${{ runner.os }}-nextjs-
 
-      # Build with bundle analyzer enabled
-      - name: Analyze Bundle Size
-        env:
-          ANALYZE: true
+      # Install dependencies
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Verify analyzer exists
+      - name: Verify Bundle Analyzer
+        run: |
+          pnpm list @next/bundle-analyzer || pnpm add -D @next/bundle-analyzer
+
+      # Build project with analyzer enabled
+      - name: Build Application
         run: pnpm build
 
-      # Upload analysis artifacts
-      - name: Upload Bundle Report
+      # Show generated bundle files
+      - name: List Analyzer Output
+        run: |
+          find .next -type f | grep -E "html|json" || true
+
+      # Upload bundle analysis artifacts
+      - name: Upload Bundle Analysis
         uses: actions/upload-artifact@v4
         with:
-          name: nextjs-bundle-report
+          name: nextjs-bundle-analysis
           path: |
             .next/analyze
             .next/static
-          retention-days: 7
+            .next/server
+          if-no-files-found: warn
+          compression-level: 9
+          retention-days: 14
+
+      # Optional summary in GitHub Actions UI
+      - name: Create Build Summary
+        run: |
+          echo "## Next.js Bundle Analysis Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Environment: Production" >> $GITHUB_STEP_SUMMARY
+          echo "- Node Version: 20" >> $GITHUB_STEP_SUMMARY
+          echo "- Package Manager: pnpm" >> $GITHUB_STEP_SUMMARY
+          echo "- Analyzer Enabled: true" >> $GITHUB_STEP_SUMMARY
