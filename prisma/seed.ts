@@ -71,7 +71,7 @@ async function main() {
 
   // 5. Seed admin@example.com
   const hashedExample = await bcrypt.hash('SuperSecret123!', 10);
-  const adminExample = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'admin@example.com' },
     update: {
       role: 'ADMIN',
