@@ -11,7 +11,6 @@ on:
 
   workflow_dispatch:
 
-# Prevent duplicate runs
 concurrency:
   group: bundle-analysis-${{ github.ref }}
   cancel-in-progress: true
@@ -30,6 +29,7 @@ jobs:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1
       ANALYZE: true
+      CI: true
 
     steps:
       # Checkout repository
@@ -52,36 +52,36 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      # Cache Next.js + pnpm store
+      # Restore Next.js cache
       - name: Restore Next.js Cache
         uses: actions/cache@v4
         with:
           path: |
             .next/cache
-            ~/.pnpm-store
-          key: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
             ${{ runner.os }}-nextjs-
 
       # Install dependencies
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      # Verify analyzer exists
-      - name: Verify Bundle Analyzer
+      # Verify analyzer dependency
+      - name: Verify Bundle Analyzer Installed
         run: |
-          pnpm list @next/bundle-analyzer || pnpm add -D @next/bundle-analyzer
+          pnpm list @next/bundle-analyzer
 
-      # Build project with analyzer enabled
+      # Build application with analyzer enabled
       - name: Build Application
         run: pnpm build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
 
-      # Show generated bundle files
-      - name: List Analyzer Output
+      # Verify analysis output exists
+      - name: Verify Analyzer Output
         run: |
-          find .next -type f | grep -E "html|json" || true
+          ls -la .next || true
+          find .next -type f \( -name "*.html" -o -name "*.json" \) || true
 
       # Upload bundle analysis artifacts
       - name: Upload Bundle Analysis
@@ -90,13 +90,11 @@ jobs:
           name: nextjs-bundle-analysis
           path: |
             .next/analyze
-            .next/static
-            .next/server
           if-no-files-found: warn
           compression-level: 9
           retention-days: 14
 
-      # Optional summary in GitHub Actions UI
+      # GitHub Actions summary
       - name: Create Build Summary
         run: |
           echo "## Next.js Bundle Analysis Complete" >> $GITHUB_STEP_SUMMARY
