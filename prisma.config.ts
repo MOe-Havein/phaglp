@@ -1,5 +1,5 @@
 import { config } from "dotenv"
-import { defineConfig, env } from "@prisma/config"
+import { defineConfig } from "@prisma/config"
 
 // شحن ملف الإعدادات المحلي
 config({ path: ".env.local" })
