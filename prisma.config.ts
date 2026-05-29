@@ -7,7 +7,7 @@ config({ path: ".env.local" })
 export default defineConfig({
   schema: "prisma/schema.prisma",
   datasource: {
-    url: env("DATABASE_URL"), // الرابط المباشر السحابي لـ Neon
+    url: process.env.DATABASE_URL ?? "postgresql://dummy:dummy@localhost:5432/dummy", // الرابط المباشر السحابي لـ Neon أو قيمة افتراضية للبناء
   },
   migrations: {
     //#seed: 'ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts',
