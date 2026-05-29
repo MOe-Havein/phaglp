@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allows triggering the deploy manually from GitHub UI
+  workflow_dispatch:
 
 jobs:
   vercel-deploy:
@@ -12,32 +12,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
+      # Checkout repository
       - name: Checkout Codebase
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Step 2: Set up Node.js environment
+      # Setup Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
-      # Step 3: Install dependencies for the Vercel MCP server
-      - name: Install MCP Server Dependencies
-        run: |
-          cd mcp-vercel
-          npm install
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
 
-      # Step 4: Build the Vercel MCP server to generate compiled handlers
-      - name: Build MCP Server
-        run: |
-          cd mcp-vercel
-          npm run build
+      # Restore Next.js build cache
+      - name: Restore Next.js Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-
 
-      # Step 5: Execute custom deployment automation tool
-      - name: Trigger Vercel Deploy & Track Progress
-        env:
-          VERCEL_API_TOKEN: ${{ secrets.VERCEL_API_TOKEN }}
-        run: |
-          node antigravitycli/deploy-automation.mjs deploy testa-phaglp2 production
+      # Install Vercel CLI
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      # Pull Vercel environment settings
+      - name: Pull Vercel Environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_API_TOKEN }}
+
+      # Build project artifacts
+      - name: Build Project
+        run: vercel build --prod --token=${{ secrets.VERCEL_API_TOKEN }}
+
+      # Deploy to Vercel
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_API_TOKEN }}
