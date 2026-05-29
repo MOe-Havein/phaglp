@@ -1,33 +1,42 @@
-name: Vercel Deploy & Track
+name: Analyze Bundle Size
 
 on:
+  pull_request:
+    branches:
+      - main
+
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 jobs:
-  vercel-deploy:
-    name: Deploy to Vercel
+  analyze-bundle:
+    name: Analyze Next.js Bundle
     runs-on: ubuntu-latest
 
     steps:
       # Checkout repository
-      - name: Checkout Codebase
+      - name: Checkout Repository
         uses: actions/checkout@v4
+
+      # Setup pnpm
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          fetch-depth: 0
+          version: 9
 
       # Setup Node.js
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: 20
+          cache: pnpm
 
       # Install dependencies
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       # Restore Next.js build cache
       - name: Restore Next.js Cache
@@ -35,22 +44,22 @@ jobs:
         with:
           path: |
             .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
 
-      # Install Vercel CLI
-      - name: Install Vercel CLI
-        run: npm install -g vercel
+      # Build with bundle analyzer enabled
+      - name: Analyze Bundle Size
+        env:
+          ANALYZE: true
+        run: pnpm build
 
-      # Pull Vercel environment settings
-      - name: Pull Vercel Environment
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_API_TOKEN }}
-
-      # Build project artifacts
-      - name: Build Project
-        run: vercel build --prod --token=${{ secrets.VERCEL_API_TOKEN }}
-
-      # Deploy to Vercel
-      - name: Deploy to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_API_TOKEN }}
+      # Upload analysis artifacts
+      - name: Upload Bundle Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-bundle-report
+          path: |
+            .next/analyze
+            .next/static
+          retention-days: 7
