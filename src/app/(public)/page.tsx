@@ -91,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PublicHomepage() {
-  let sections = []
+  let sections: HomepageSection[] = []
   try {
     sections = await prisma.homepageSection.findMany({
       where: { visible: true },
