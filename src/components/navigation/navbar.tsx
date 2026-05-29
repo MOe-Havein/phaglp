@@ -7,7 +7,7 @@ import Image from "next/image"
 import { siteConfig } from "@/config/site"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession, signOut } from "next-auth/react"
 import {
   DropdownMenu,
@@ -36,7 +36,9 @@ interface NavbarProps {
 export function Navbar({ initialMenus = [] }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { data: session } = useSession()
-  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null)
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   // Use initialMenus if present; filter to only show in header
   const menusToRender = initialMenus.length > 0 ? initialMenus.filter((m) => m.showInHeader) : []
@@ -70,8 +72,11 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
             if (menu.items && menu.items.length > 0 && !menu.href) {
               return (
                 <DropdownMenu key={menu.id}>
-                  <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground focus:outline-none transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60">
+                  <DropdownMenuTrigger asChild={false}>
+                    <button
+                      className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground focus:outline-none transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60"
+                      aria-controls={`dropdown-${menu.id}`}
+                    >
                       {menu.name}
                       <ChevronDown className="w-3.5 h-3.5 opacity-60" />
                     </button>
@@ -79,6 +84,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                   <DropdownMenuContent
                     align="start"
                     className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
+                    id={`dropdown-${menu.id}`}
                   >
                     {menu.items.map((subItem) => (
                       <DropdownMenuItem
@@ -134,12 +140,15 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
             ))}
 
           <div className="flex items-center gap-2 border-l pl-4 ml-1">
-            <ThemeToggle />
+            {mounted && <ThemeToggle />}
             {session ? (
               <div className="flex items-center gap-3">
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 hover:opacity-90 focus:outline-none transition-all bg-slate-50 dark:bg-slate-900 border px-3 py-1.5 rounded-full shadow-sm">
+                  <DropdownMenuTrigger asChild={true}>
+                    <button
+                      className="flex items-center gap-2 hover:opacity-90 focus:outline-none transition-all bg-slate-50 dark:bg-slate-900 border px-3 py-1.5 rounded-full shadow-sm"
+                      aria-controls="user-dropdown"
+                    >
                       <Avatar className="w-7 h-7 border border-primary/20">
                         <AvatarImage src={session.user.image || ""} />
                         <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold uppercase">
@@ -154,6 +163,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                   <DropdownMenuContent
                     align="end"
                     className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
+                    id="user-dropdown"
                   >
                     <DropdownMenuLabel className="px-3 py-2">
                       <div className="text-sm font-bold truncate">
@@ -213,13 +223,15 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
 
         {/* Mobile Navigation */}
         <div className="flex items-center gap-2 xl:hidden">
-          <ThemeToggle />
+          {mounted && <ThemeToggle />}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="w-6 h-6" />
-              </Button>
-            </SheetTrigger>
+            {mounted && (
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-6 h-6" />
+                </Button>
+              </SheetTrigger>
+            )}
             <SheetContent
               side="right"
               className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background"

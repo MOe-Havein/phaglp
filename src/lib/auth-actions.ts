@@ -40,6 +40,7 @@ export async function registerUser(data: z.infer<typeof registerSchema>) {
           email,
           passwordHash,
           role: Role.USER,
+          lecturePreferences: [],
         },
       })
     })

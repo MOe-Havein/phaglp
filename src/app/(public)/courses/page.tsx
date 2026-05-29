@@ -2,6 +2,7 @@ import prisma, { safeDbQuery } from "@/lib/prisma"
 import { CourseCard } from "@/components/cards/course-card"
 import { unstable_cache } from "next/cache"
 import { auth } from "@/auth"
+import { redis } from "@/lib/redis"
 import { computeDiscount } from "@/lib/discount"
 import { CourseType } from "@prisma/client"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,6 +16,14 @@ export const dynamic = "force-dynamic"
 
 const getCachedCourses = unstable_cache(
   async () => {
+    // 1. Try Redis first
+    const cacheKey = "public-courses"
+    const cached = await redis.get<any[]>(cacheKey)
+    if (cached) {
+      return cached
+    }
+
+    // 2. Fallback to DB
     const result = await safeDbQuery(async () => {
       return prisma.course.findMany({
         where: {
@@ -32,7 +41,13 @@ const getCachedCourses = unstable_cache(
         },
       })
     }, [])
-    return result.data || []
+
+    const data = result.data || []
+
+    // 3. Store in Redis for 5 minutes (300s)
+    await redis.set(cacheKey, data, { ex: 300 })
+
+    return data
   },
   ["public-courses"],
   { tags: ["courses"], revalidate: 300 },

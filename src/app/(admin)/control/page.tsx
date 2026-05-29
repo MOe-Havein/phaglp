@@ -1,136 +1,82 @@
-import { auth } from "@/auth"
-import { Role } from "@prisma/client"
-import { redirect } from "next/navigation"
-import { getControlAnalytics, getRecentAnalytics } from "@/lib/control-actions"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { RecentAnalytics } from "@/components/control/recent-analytics"
+import { Suspense } from "react"
+import Link from "next/link"
 import {
   Users,
   BookOpen,
   FileText,
-  ShieldCheck,
-  ArrowUpRight,
-  LayoutDashboard,
-  BarChart3,
+  Package,
+  Mail,
+  FileCode,
+  TrendingUp,
+  ArrowRight,
 } from "lucide-react"
-import Link from "next/link"
+import { StatsGrid } from "@/components/admin/StatsGrid"
+import { getAdminDashboardStats } from "@/lib/server/assets"
+import { StatsSkeleton } from "@/components/admin/StatsSkeleton"
 
-export default async function ControlCenter() {
-  const session = await auth()
+export const metadata = {
+  title: "Admin Dashboard — PHAGLP Control Hub",
+  description: "Aggregate overview of platform stats for PHAGLP administrators.",
+}
 
-  if (session?.user?.role !== Role.ADMIN) {
-    redirect("/login")
-  }
+const QUICK_LINKS = [
+  { title: "Manage Users", href: "/control/users", icon: Users },
+  { title: "Manage Courses", href: "/control/courses", icon: BookOpen },
+  { title: "Manage Lectures", href: "/control/lectures", icon: FileText },
+  { title: "Asset Inventory", href: "/control/assets", icon: Package },
+  { title: "CMS Pages", href: "/control/pages", icon: FileCode },
+  { title: "Messages", href: "/control/messages", icon: Mail },
+]
 
-  // Parallel data fetching for performance
-  const [statsResult, recentResult] = await Promise.all([
-    getControlAnalytics(),
-    getRecentAnalytics(5),
-  ])
+async function StatsGridWrapper() {
+  const stats = await getAdminDashboardStats()
+  return <StatsGrid stats={stats} />
+}
 
-  const stats =
-    statsResult.success && "data" in statsResult && statsResult.data
-      ? statsResult.data
-      : { userCount: 0, courseCount: 0, lectureCount: 0 }
-
-  const recentAnalytics =
-    recentResult.success && "data" in recentResult && recentResult.data ? recentResult.data : []
-
-  const modules = [
-    {
-      name: "Settings",
-      icon: ShieldCheck,
-      href: "/control/settings",
-      color: "bg-blue-100 text-blue-600",
-      count: "Global",
-    },
-    {
-      name: "Users",
-      icon: Users,
-      href: "/control/users",
-      color: "bg-purple-100 text-purple-600",
-      count: stats.userCount,
-    },
-    {
-      name: "Courses",
-      icon: BookOpen,
-      href: "/control/courses",
-      color: "bg-orange-100 text-orange-600",
-      count: stats.courseCount,
-    },
-    {
-      name: "Lectures",
-      icon: FileText,
-      href: "/control/lectures",
-      color: "bg-emerald-100 text-emerald-600",
-      count: stats.lectureCount,
-    },
-  ]
-
+export default async function AdminDashboardPage() {
   return (
-    <div className="container mx-auto py-10 space-y-8">
-      <div className="flex items-center justify-between border-b pb-6">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-primary/10 rounded-xl">
-            <LayoutDashboard className="w-8 h-8 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Control Center</h1>
-            <p className="text-muted-foreground">
-              Welcome back, {session.user.name}. Here is what is happening today.
-            </p>
-          </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
+          <TrendingUp className="w-4 h-4" />
+          <span>Overview</span>
         </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          Admin Dashboard
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          PHAGLP platform at a glance.
+        </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {modules.map((m) => (
-          <Link key={m.name} href={m.href} className="group">
-            <Card className="hover:border-primary/50 transition-all hover:shadow-md h-full">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{m.name}</CardTitle>
-                <div className={`p-2 rounded-lg ${m.color}`}>
-                  <m.icon className="w-4 h-4" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{m.count}</div>
-                <div className="flex items-center text-xs text-muted-foreground mt-1 group-hover:text-primary">
-                  Manage Module <ArrowUpRight className="ml-1 w-3 h-3" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      {/* Stats */}
+      <Suspense fallback={<StatsSkeleton />}>
+        <StatsGridWrapper />
+      </Suspense>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        <RecentAnalytics data={recentAnalytics} />
-
-        <Card className="border-primary/5">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-primary" />
-              Platform Health
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Next.js Framework</span>
-                <span className="font-mono text-emerald-600">v15.5.9 (Stable)</span>
+      {/* Quick Links */}
+      <div>
+        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+          Quick Access
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {QUICK_LINKS.map(({ title, href, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-sm transition-all duration-200 group"
+            >
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
+                <Icon className="w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Database Status</span>
-                <span className="font-mono text-emerald-600">Connected (Neon/Postgres)</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Cache Status</span>
-                <span className="font-mono text-emerald-600">Next.js Built-in</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <span className="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                {title}
+              </span>
+              <ArrowRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all" />
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   )

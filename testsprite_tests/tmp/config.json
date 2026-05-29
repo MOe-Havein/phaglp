@@ -1,0 +1,19 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "loginUser": "admin@moe.com",
+  "loginPassword": "adminpassword123",
+  "executionArgs": {
+    "projectName": "testa-next15-app",
+    "projectPath": "d:\\testa-next15-app",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-ichsYfNsVQEZ1VrXVfNq9K-1XLV3XAc4QdjnQacz_8QQB3nhjOy0jPYNBpfNG-AEZ6qdpW_GVmizrs8MvU_0P3POJ_f9UDD8krDZ0I1Q8fA9XWFUfQoBRMWyU8zAZNxz2YE"
+    }
+  },
+  "serverPort": 62972
+}

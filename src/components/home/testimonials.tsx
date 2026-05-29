@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Star, Quote } from "lucide-react"
+import { Star, Quote, ArrowRight } from "lucide-react"
 import Image from "next/image"
 
 const testimonials = [
@@ -68,18 +68,31 @@ const testimonials = [
   },
 ]
 
-export function Testimonials() {
+interface TestimonialsProps {
+  title?: string | null
+  body?: string | null
+  ctaLabel?: string | null
+  ctaHref?: string | null
+}
+
+export function Testimonials({
+  title = "WHAT OUR TALENTED, GIFTED, AND GENIUSES SAY?!",
+  body = "Join the legendary network of scholars and leaders who have unlocked their potential through PHAGLP.",
+  ctaLabel,
+  ctaHref,
+}: TestimonialsProps) {
   return (
     <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900/50">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-primary dark:text-blue-400 tracking-tight text-balance">
-            WHAT OUR TALENTED, GIFTED, AND GENIUSES SAY?!
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-primary dark:text-blue-400 tracking-tight text-balance uppercase">
+            {title}
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
-            Join the legendary network of scholars and leaders who have unlocked their potential
-            through PHAGLP.
-          </p>
+          {body && (
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
+              {body}
+            </p>
+          )}
         </div>
 
         {/* Dynamic 7-section Grid Layout */}
@@ -124,6 +137,17 @@ export function Testimonials() {
             </Card>
           ))}
         </div>
+        {ctaLabel && ctaHref && (
+          <div className="flex justify-center mt-12">
+            <a
+              href={ctaHref}
+              className="inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-semibold text-primary-foreground shadow-md transition-all duration-200 ease-in-out hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+            >
+              {ctaLabel}
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+        )}
       </div>
     </section>
   )

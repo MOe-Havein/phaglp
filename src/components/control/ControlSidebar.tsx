@@ -12,10 +12,12 @@ import {
   Mail,
   Navigation,
   Home,
+  Package,
+  ClipboardCheck,
 } from "lucide-react"
 import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { usePathname } from "next/navigation"
@@ -29,10 +31,12 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { title: "Dashboard", href: "/control", icon: LayoutDashboard },
+  { title: "Implementation Plan", href: "/control/tasks", icon: ClipboardCheck },
   { title: "Homepage CMS", href: "/control/homepage", icon: Home },
   { title: "Users", href: "/control/users", icon: Users },
   { title: "Courses", href: "/control/courses", icon: BookOpen },
   { title: "Lectures", href: "/control/lectures", icon: FileText },
+  { title: "Assets", href: "/control/assets", icon: Package },
   { title: "Pages", href: "/control/pages", icon: FileCode },
   { title: "Messages", href: "/control/messages", icon: Mail },
   { title: "Menus", href: "/control/menus", icon: Navigation },
@@ -97,7 +101,12 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
 
 export function ControlSidebar({ userName }: { userName?: string | null }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   return (
     <>
@@ -111,20 +120,26 @@ export function ControlSidebar({ userName }: { userName?: string | null }) {
         <Link href="/" className="font-bold text-lg text-primary dark:text-blue-400">
           PHAGLP Control
         </Link>
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64">
-            <SidebarContent
-              userName={userName}
-              pathname={pathname}
-              onLinkClick={() => setIsOpen(false)}
-            />
-          </SheetContent>
-        </Sheet>
+        {isMounted ? (
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="w-6 h-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-64">
+              <SidebarContent
+                userName={userName}
+                pathname={pathname}
+                onLinkClick={() => setIsOpen(false)}
+              />
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <Button variant="ghost" size="icon" aria-label="Open navigation menu">
+            <Menu className="w-6 h-6" />
+          </Button>
+        )}
       </header>
     </>
   )

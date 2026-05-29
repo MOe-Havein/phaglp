@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -82,7 +82,7 @@ model User {
   guardianIncome   IncomeLevel?
 
   // Dashboard preferences
-  lecturePreferences String[]
+  lecturePreferences Json
 
   chatMessages ChatMessage[]
   comments     Comment[]
@@ -93,6 +93,7 @@ model User {
   posts        Post[]
   sessions     Session[]
   analytics    Analytics[]
+  assetAllocations AssetAllocation[]
 
   @@index([role])
   @@index([tier])
@@ -180,7 +181,7 @@ model Lecture {
   body        String
   excerpt     String?
   category    String
-  tags        String[]
+  tags        Json
   authorId    String
   published   Boolean           @default(false)
   createdAt   DateTime          @default(now())
@@ -247,6 +248,7 @@ model Course {
   instructor     User           @relation("InstructorCourses", fields: [instructorId], references: [id])
   modules        CourseModule[]
   enrollments    Enrollment[]
+  assets         AcademyAsset[]
 
   @@index([courseType])
 }
@@ -306,7 +308,7 @@ model KnowledgeBase {
   title     String
   content   String
   type      String
-  embedding Float[]
+  embedding Json
   metadata  Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -403,6 +405,85 @@ enum CourseType {
   GP_GROUPS
   GP_SUBJECTS
   OTHER
+}
+
+/// Physical or digital asset category for the academy inventory.
+enum AssetCategory {
+  COURSE_MATERIAL   // Printed/digital handouts, textbooks
+  MEDIA_EQUIPMENT   // Cameras, projectors, microphones
+  PUBLICATION_PRINT // Academy books, journals, magazines
+  DIGITAL_LICENSE   // Software, subscriptions
+  FURNITURE         // Chairs, desks, whiteboards
+  OTHER
+}
+
+/// Physical condition of an academy asset.
+enum AssetCondition {
+  NEW
+  GOOD
+  FAIR
+  POOR
+  RETIRED
+}
+
+/// Operational status of an academy asset.
+enum AssetStatus {
+  AVAILABLE
+  ALLOCATED
+  MAINTENANCE
+  RETIRED
+}
+
+/// An academy asset — physical or digital inventory item.
+model AcademyAsset {
+  id            String         @id @default(cuid())
+  /// Human-readable stock-keeping unit, e.g. "CAM-001", "BK-PHIL-042"
+  sku           String         @unique
+  name          String
+  description   String?
+  category      AssetCategory  @default(OTHER)
+  condition     AssetCondition @default(GOOD)
+  status        AssetStatus    @default(AVAILABLE)
+  quantity      Int            @default(1)
+  /// Unit of measure: "unit", "set", "copy", etc.
+  quantityUnit  String         @default("unit")
+  /// Physical storage location, e.g. "Room A3", "Storage Shelf B2"
+  location      String?
+  supplier      String?
+  purchaseDate  DateTime?
+  purchasePrice Float?
+  notes         String?
+
+  /// Optional link to a specific course this asset supports
+  courseId      String?
+  course        Course?        @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  allocations   AssetAllocation[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([sku])
+  @@index([category])
+  @@index([status])
+  @@index([courseId])
+}
+
+/// Records who an asset was allocated to and when it was (or should be) returned.
+model AssetAllocation {
+  id          String       @id @default(cuid())
+  assetId     String
+  userId      String
+  quantity    Int          @default(1)
+  allocatedAt DateTime     @default(now())
+  /// Null means the asset has not yet been returned.
+  returnedAt  DateTime?
+  notes       String?
+
+  asset       AcademyAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([assetId])
+  @@index([userId])
 }
 
 model NavigationMenu {

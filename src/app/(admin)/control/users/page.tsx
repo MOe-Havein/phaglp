@@ -1,247 +1,174 @@
-import { auth } from "@/auth"
-import { Role } from "@prisma/client"
-import { redirect } from "next/navigation"
-import prisma, { serializePrisma } from "@/lib/prisma"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { User, Mail, Calendar, UserCog, Inbox } from "lucide-react"
-import { format } from "date-fns"
-import { UserRoleManager } from "@/components/control/user-role-manager"
-import Image from "next/image"
+import { Suspense } from "react"
+import { Users } from "lucide-react"
+import { prisma, serializePrisma } from "@/lib/prisma"
 import { AddUserDialog } from "@/components/control/add-user-dialog"
-import { UserFilterBar } from "@/components/control/user-filter-bar"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
+import { EditUserDialog } from "@/components/control/edit-user-dialog"
 
-interface PageProps {
-  searchParams: Promise<{
-    search?: string
-    role?: string
-    sort?: string
-    page?: string
-  }>
+export const metadata = {
+  title: "User Management — PHAGLP Control",
 }
 
-export default async function AdminUsersPage({ searchParams }: PageProps) {
-  const session = await auth()
-
-  if (session?.user?.role !== Role.ADMIN) {
-    redirect("/login")
-  }
-
-  // Await search params since they are a Promise in Next.js 15
-  const params = await searchParams
-  const search = params.search || ""
-  const role = params.role || ""
-  const sort = params.sort || "createdAt_desc"
-  const page = parseInt(params.page || "1", 10)
-  const limit = 6
-
-  // Build the dynamic query options
-  const where: any = {}
-  if (search) {
-    where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { email: { contains: search, mode: "insensitive" } },
-    ]
-  }
-  if (role && role !== "ALL") {
-    where.role = role as Role
-  }
-
-  let orderBy: any = { createdAt: "desc" }
-  if (sort === "createdAt_asc") {
-    orderBy = { createdAt: "asc" }
-  } else if (sort === "name_asc") {
-    orderBy = { name: "asc" }
-  } else if (sort === "name_desc") {
-    orderBy = { name: "desc" }
-  }
-
-  // Query database in parallel for total count and users
-  const [users, totalCount] = await Promise.all([
-    prisma.user.findMany({
-      where,
-      orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
-      include: {
-        _count: {
-          select: {
-            courses: true,
-            lectures: true,
-            enrollments: true,
-          },
-        },
+async function getUsersData() {
+  try {
+    const users = await prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        tier: true,
+        createdAt: true,
+        image: true,
+        firstName: true,
+        fatherName: true,
+        grandfatherName: true,
+        familyName: true,
+        nickname: true,
+        photoUrl: true,
+        sex: true,
+        birthDate: true,
+        birthCountry: true,
+        birthState: true,
+        birthCity: true,
+        birthTown: true,
+        birthVillage: true,
+        incomeLevel: true,
+        worldTier: true,
+        mobile1: true,
+        mobile2: true,
+        telephone: true,
+        educationLevel: true,
+        educationDegree: true,
+        educationSchool: true,
+        educationPhoto: true,
+        iqLevel: true,
+        nationalityId: true,
+        nationalityPhoto: true,
+        residenceState: true,
+        residenceCity: true,
+        residenceTown: true,
+        residenceNo: true,
+        residencePhoto: true,
+        homeUnit: true,
+        homeBuilding: true,
+        homeStreet: true,
+        homeCity: true,
+        homeState: true,
+        homeCountry: true,
+        jobTitle: true,
+        jobIncome: true,
+        jobOrganization: true,
+        jobCountry: true,
+        guardianName: true,
+        guardianMobile: true,
+        guardianEmail: true,
+        guardianResidence: true,
+        guardianIncome: true,
       },
-    }),
-    prisma.user.count({ where }),
-  ])
-
-  const totalPages = Math.ceil(totalCount / limit)
-
-  const getPageUrl = (pageNumber: number) => {
-    const urlParams = new URLSearchParams()
-    if (search) urlParams.set("search", search)
-    if (role && role !== "ALL") urlParams.set("role", role)
-    if (sort) urlParams.set("sort", sort)
-    urlParams.set("page", pageNumber.toString())
-    return `/control/users?${urlParams.toString()}`
+    })
+    return serializePrisma(users)
+  } catch {
+    return []
   }
+}
 
-  const getRoleBadge = (userRole: Role) => {
-    switch (userRole) {
-      case Role.ADMIN:
-        return (
-          <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Admin</Badge>
-        )
-      case Role.INSTRUCTOR:
-        return (
-          <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">
-            Instructor
-          </Badge>
-        )
-      default:
-        return <Badge variant="outline">User</Badge>
-    }
-  }
 
+async function UsersTable() {
+  const users = await getUsersData()
   return (
-    <div className="container mx-auto py-10 space-y-8 px-4 max-w-7xl">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-6 gap-4">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-purple-100 rounded-xl">
-            <UserCog className="w-8 h-8 text-purple-600" />
+    <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-700">
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Name</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Email</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Role</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Tier</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Joined</th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-16 text-center text-gray-400">
+                  <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                  <p className="font-medium">No users found</p>
+                </td>
+              </tr>
+            ) : (
+              users.map((user: any) => (
+                <tr
+                  key={user.id}
+                  className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors"
+                >
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
+                    {user.name ?? "—"}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{user.email}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                      user.role === "ADMIN"
+                        ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                        : user.role === "INSTRUCTOR"
+                        ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
+                        : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                    }`}>
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400 text-xs">{user.tier}</td>
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-500 text-xs">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <EditUserDialog user={user} />
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      {users.length > 0 && (
+        <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500">{users.length} user{users.length !== 1 ? "s" : ""}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default async function UsersPage() {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
+            <Users className="w-4 h-4" />
+            <span>Management</span>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-purple-700 to-indigo-600 bg-clip-text text-transparent">
-              User Management
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Monitor platform growth and manage security roles.
-            </p>
-          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Users</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Manage platform members, roles, and tiers.
+          </p>
         </div>
         <AddUserDialog />
       </div>
 
-      {/* Filter and Search Bar */}
-      <UserFilterBar />
-
-      {/* Grid List */}
-      <div className="grid gap-4">
-        {users.length === 0 ? (
-          <div className="text-center py-20 border-2 border-dashed rounded-2xl bg-slate-50/50">
-            <Inbox className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-            <p className="text-muted-foreground text-lg font-medium">No matches found</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Try adjusting your search query or filters.
-            </p>
+      <Suspense
+        fallback={
+          <div className="space-y-2">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+            ))}
           </div>
-        ) : (
-          users.map((user) => (
-            <Card
-              key={user.id}
-              className="hover:border-purple-200 transition-all shadow-sm overflow-hidden bg-card"
-            >
-              <CardContent className="p-0">
-                <div className="flex flex-col lg:flex-row lg:items-center p-6 gap-6 justify-between">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm overflow-hidden relative flex-shrink-0">
-                      {user.image ? (
-                        <Image
-                          src={user.image}
-                          alt={user.name || "User profile"}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <User className="w-6 h-6 text-slate-400" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{user.name || "Anonymous User"}</span>
-                        {getRoleBadge(user.role)}
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-0.5">
-                        <Mail className="w-3.5 h-3.5" /> {user.email}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-8 px-6 lg:px-12 py-3 lg:py-0 border-t border-b lg:border-t-0 lg:border-b-0 lg:border-l lg:border-r border-slate-100 dark:border-slate-800 flex-shrink-0">
-                    <div className="text-center">
-                      <div className="text-sm font-bold">{user._count.enrollments}</div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                        Courses
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm font-bold">{user._count.lectures}</div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                        Lectures
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm font-bold">{user._count.courses}</div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                        Taught
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center gap-4 lg:gap-2 flex-shrink-0">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Calendar className="w-3.5 h-3.5" /> Joined{" "}
-                      {format(new Date(user.createdAt), "MMM d, yyyy")}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <UserRoleManager user={serializePrisma(user)} />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="pt-4">
-          <Pagination>
-            <PaginationContent>
-              {page > 1 && (
-                <PaginationItem>
-                  <PaginationPrevious href={getPageUrl(page - 1)} />
-                </PaginationItem>
-              )}
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <PaginationItem key={p}>
-                  <PaginationLink href={getPageUrl(p)} isActive={p === page}>
-                    {p}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-
-              {page < totalPages && (
-                <PaginationItem>
-                  <PaginationNext href={getPageUrl(page + 1)} />
-                </PaginationItem>
-              )}
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
+        }
+      >
+        <UsersTable />
+      </Suspense>
     </div>
   )
 }

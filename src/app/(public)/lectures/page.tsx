@@ -2,12 +2,19 @@ import prisma, { safeDbQuery } from "@/lib/prisma"
 import { LectureCard } from "@/components/cards/lecture-card"
 import { format } from "date-fns"
 import { unstable_cache } from "next/cache"
+import { redis } from "@/lib/redis"
 
 // Handle database states safely at runtime
 export const dynamic = "force-dynamic"
 
 const getCachedLectures = unstable_cache(
   async () => {
+    const cacheKey = "public-lectures"
+    const cached = await redis.get<any[]>(cacheKey)
+    if (cached) {
+      return cached
+    }
+
     const result = await safeDbQuery(async () => {
       return prisma.lecture.findMany({
         where: {
@@ -25,7 +32,11 @@ const getCachedLectures = unstable_cache(
         },
       })
     }, [])
-    return result.data || []
+
+    const data = result.data || []
+    
+    await redis.set(cacheKey, data, { ex: 300 })
+    return data
   },
   ["public-lectures"],
   { tags: ["lectures"], revalidate: 300 },

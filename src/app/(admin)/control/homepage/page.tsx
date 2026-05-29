@@ -1,18 +1,39 @@
-import React from "react"
-import prisma from "@/lib/db/prisma"
-import { requireAdmin } from "@/lib/rbac"
+import { Home } from "lucide-react"
+import { prisma, serializePrisma } from "@/lib/prisma"
 import { HomepageEditor } from "@/components/admin/HomepageEditor"
 
-export default async function HomepageEditorPage() {
-  await requireAdmin()
+export const metadata = {
+  title: "Homepage CMS — PHAGLP Control",
+}
 
-  const sections = await prisma.homepageSection.findMany({
-    orderBy: { order: "asc" },
-  })
+async function getSections() {
+  try {
+    const sections = await prisma.homepageSection.findMany({
+      orderBy: { order: "asc" },
+    })
+    return serializePrisma(sections)
+  } catch {
+    return []
+  }
+}
+
+export default async function HomepagePage() {
+  const sections = await getSections()
 
   return (
-    <div className="container mx-auto py-10 space-y-8 px-4">
-      <HomepageEditor initialSections={sections} />
+    <div className="space-y-6">
+      <div>
+        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
+          <Home className="w-4 h-4" />
+          <span>CMS</span>
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Homepage</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          Manage the public-facing homepage sections.
+        </p>
+      </div>
+
+      <HomepageEditor initialSections={sections as any} />
     </div>
   )
 }

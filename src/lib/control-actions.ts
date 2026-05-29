@@ -209,6 +209,7 @@ export async function createUser(data: z.infer<typeof userSchema>) {
           passwordHash,
           role: validated.role,
           tier: validated.tier ?? SubscriptionTier.BASIC,
+          lecturePreferences: [],
         },
       })
     })

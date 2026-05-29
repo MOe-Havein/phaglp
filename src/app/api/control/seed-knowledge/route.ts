@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { seedKnowledgeBase } from "@/lib/seed-knowledge"
-import { auth } from "@/auth"
-import { Role } from "@prisma/client"
+import { requireAdmin } from "@/lib/rbac"
 
 /**
  * Admin-only endpoint to seed the knowledge base
@@ -9,10 +8,10 @@ import { Role } from "@prisma/client"
  */
 export async function POST() {
   try {
-    const session = await auth()
+    const isAdmin = await requireAdmin()
 
     // Only admins can seed the knowledge base
-    if (session?.user?.role !== Role.ADMIN) {
+    if (!isAdmin) {
       return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 403 })
     }
 

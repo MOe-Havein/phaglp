@@ -2,113 +2,195 @@ import { NextResponse } from "next/server"
 import { revalidatePath } from "next/cache"
 import prisma from "@/lib/prisma"
 import bcrypt from "bcryptjs"
+import { courses as staticCourses } from "@/data/courses"
+import { lectures as staticLectures } from "@/data/lectures"
 
 export const dynamic = "force-dynamic"
 
+// Custom descriptions and types for static courses to make them fit the premium design system
+const coursePresets: Record<string, { description: string; type: "GP_GENERAL" | "GP_GROUPS" | "GP_SUBJECTS" | "OTHER"; duration: string }> = {
+  "foundations-of-stoic-wisdom": {
+    description: "Learn ancient Stoic principles and cognitive exercises designed for elite intellectual resilience, emotional self-mastery, and clear strategic thinking.",
+    type: "GP_SUBJECTS",
+    duration: "4 weeks",
+  },
+  "applied-ethics-modern-age": {
+    description: "A comprehensive analysis of moral dilemmas in advanced modern systems, biotechnology, artificial intelligence, and automated corporate decision structures.",
+    type: "GP_GROUPS",
+    duration: "8 weeks",
+  },
+  "cognitive-science-philosophy": {
+    description: "Synthesize cognitive psychology, neurology, and standard epistemology to understand the structural mechanisms of human and artificial minds.",
+    type: "GP_GENERAL",
+    duration: "12 weeks",
+  },
+  "logic-critical-thinking": {
+    description: "Master formal propositional logic, symbolic inference systems, rhetoric fallacies, and robust algorithmic verification paradigms.",
+    type: "GP_SUBJECTS",
+    duration: "6 weeks",
+  },
+}
+
+function slugifyName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "")
+}
+
 export async function GET() {
   try {
-    // 1. Create Admin User
+    const passwordHash = await bcrypt.hash("SuperSecret123!", 10)
+
+    // 1. Ensure Admins exist
     const adminEmails = ["admin@example.com", "admin@moe.com"]
-    let adminUser
+    const admins: any[] = []
 
     for (const email of adminEmails) {
-      const existing = await prisma.user.findUnique({
-        where: { email },
-      })
-
-      if (!existing) {
-        const passwordHash = await bcrypt.hash("adminpassword123", 10)
-        const created = await prisma.user.create({
+      let admin = await prisma.user.findUnique({ where: { email } })
+      if (!admin) {
+        admin = await prisma.user.create({
           data: {
-            email: email,
-            name: "Admin User",
-            passwordHash: passwordHash,
+            email,
+            name: "Initial Admin",
+            passwordHash,
             role: "ADMIN",
+            lecturePreferences: {},
           },
         })
-        console.log(`Created admin user: ${email}`)
-        if (!adminUser) adminUser = created
-      } else {
-        console.log(`Admin user already exists: ${email}`)
-        if (!adminUser) adminUser = existing
+        console.log(`Created admin: ${email}`)
+      }
+      admins.push(admin)
+    }
+
+    const defaultAdmin = admins[0]
+
+    // 2. Map Instructors/Authors and ensure they exist in the DB
+    const instructorsMap: Record<string, string> = {
+      "Initial Admin": defaultAdmin.id,
+    }
+
+    const allInstructorNames = new Set<string>()
+    staticCourses.forEach((c) => allInstructorNames.add(c.instructor))
+    staticLectures.forEach((l) => allInstructorNames.add(l.author))
+
+    for (const name of allInstructorNames) {
+      if (name === "Initial Admin") continue
+
+      const email = `${slugifyName(name)}@example.com`
+      let user = await prisma.user.findUnique({ where: { email } })
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email,
+            name,
+            passwordHash,
+            role: "INSTRUCTOR",
+            lecturePreferences: {},
+          },
+        })
+        console.log(`Created instructor user: ${name} (${email})`)
+      }
+      instructorsMap[name] = user.id
+    }
+
+    // 3. Seed Courses from staticCourses
+    let coursesSeeded = 0
+    for (const c of staticCourses) {
+      const existing = await prisma.course.findUnique({ where: { slug: c.slug } })
+      if (!existing) {
+        const preset = coursePresets[c.slug] || {
+          description: "An advanced academic module in modern critical inquiry and system structures.",
+          type: "OTHER",
+          duration: "Self-paced",
+        }
+
+        const instructorId = instructorsMap[c.instructor] || defaultAdmin.id
+
+        await prisma.course.create({
+          data: {
+            title: c.title,
+            slug: c.slug,
+            description: preset.description,
+            price: c.price,
+            duration: preset.duration,
+            courseType: preset.type,
+            published: true, // Make visible in catalog
+            instructorId,
+          },
+        })
+        coursesSeeded++
+        console.log(`Seeded course: ${c.title}`)
       }
     }
 
-    // 2. Create Sample Lecture if none exist
-    const lectureCount = await prisma.lecture.count()
+    // 4. Seed Lectures from staticLectures
+    let lecturesSeeded = 0
+    const lectureCoverImages: Record<string, string> = {
+      "intersection-logic-experience": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop",
+      "stoicism-digital-age": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600&auto=format&fit=crop",
+      "future-philosophical-education": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop",
+    }
 
-    if (lectureCount === 0 && adminUser) {
+    for (const l of staticLectures) {
+      const existing = await prisma.lecture.findUnique({ where: { slug: l.slug } })
+      if (!existing) {
+        const authorId = instructorsMap[l.author] || defaultAdmin.id
+        const coverImage = lectureCoverImages[l.slug] || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop"
+
+        await prisma.lecture.create({
+          data: {
+            title: l.title,
+            slug: l.slug,
+            body: l.content,
+            excerpt: l.excerpt,
+            category: l.category,
+            published: true, // Make visible on public pages
+            isFeatured: true,
+            authorId,
+            tags: l.tags,
+            coverImage,
+            readingTime: Math.max(5, Math.ceil(l.content.split(/\s+/).length / 200)),
+          },
+        })
+        lecturesSeeded++
+        console.log(`Seeded lecture: ${l.title}`)
+      }
+    }
+
+    // Also seed the standard initial custom lectures if they are completely missing
+    const totalLectures = await prisma.lecture.count()
+    if (totalLectures === 0) {
       await prisma.lecture.create({
         data: {
           title: "Welcome to PHAGLP",
           slug: "welcome-to-phaglp",
-          body: "## Welcome to the platform!\n\nThis is a sample lecture created during the seeding process. You can edit or delete this from the admin dashboard.",
+          body: "## Welcome to the platform!\n\nThis is a sample lecture created during the seeding process.",
           excerpt: "A warm welcome to our new philosophical platform.",
           category: "General",
           published: true,
-          authorId: adminUser.id,
-          coverImage:
-            "https://images.unsplash.com/photo-1507842217121-9e8712ce62be?q=80&w=2676&auto=format&fit=crop", // Temporary placeholder
+          authorId: defaultAdmin.id,
+          coverImage: "https://images.unsplash.com/photo-1507842217121-9e8712ce62be?q=80&w=600&auto=format&fit=crop",
+          tags: [],
+          readingTime: 2,
         },
       })
-
-      await prisma.lecture.create({
-        data: {
-          title: "Preserving Human Agency in the Age of AI",
-          slug: "preserving-human-agency",
-          body: "## The Core Mission\n\nAs artificial intelligence becomes more integrated into our daily lives, the question of human agency becomes paramount...\n\n(This is a placeholder for your first real lecture)",
-          excerpt: "Exploring the philosophical implications of AI on human free will.",
-          category: "Philosophy",
-          published: true,
-          authorId: adminUser.id,
-          coverImage:
-            "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2565&auto=format&fit=crop", // Temporary placeholder
-        },
-      })
-
-      // Additional Demo Lectures from User Request
-      await prisma.lecture.create({
-        data: {
-          title: "The Art of Socratic Questioning in Modern Education",
-          slug: "socratic-questioning-education",
-          body: "## Socratic Method\n\nHow ancient Socratic methods can revolutionize modern teaching and learning approaches. It encourages critical thinking...",
-          excerpt:
-            "How ancient Socratic methods can revolutionize modern teaching and learning approaches.",
-          category: "Education",
-          published: true,
-          authorId: adminUser.id,
-          isFeatured: true,
-          coverImage:
-            "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2670&auto=format&fit=crop",
-        },
-      })
-
-      await prisma.lecture.create({
-        data: {
-          title: "The Stoic Approach to Business Success",
-          slug: "stoic-business",
-          body: "## Stoicism in Business\n\nHow Stoic philosophy can guide ethical business practices and personal growth. Focusing on what you can control...",
-          excerpt: "How Stoic philosophy can guide ethical business practices and personal growth.",
-          category: "E-Commerce",
-          published: true,
-          authorId: adminUser.id,
-          isFeatured: true,
-          coverImage:
-            "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2671&auto=format&fit=crop",
-        },
-      })
-
-      revalidatePath("/")
-      return NextResponse.json({ message: "Database seeded successfully with Admin and Lectures!" })
+      lecturesSeeded++
     }
 
+    revalidatePath("/")
+    revalidatePath("/courses")
+    revalidatePath("/lectures")
+
     return NextResponse.json({
-      message: "Database already has content. Seeding skipped for lectures, ensured Admin exists.",
+      success: true,
+      message: `Database seeded successfully! Seeded ${coursesSeeded} courses and ${lecturesSeeded} lectures.`,
+      stats: {
+        coursesSeeded,
+        lecturesSeeded,
+      },
     })
   } catch (error) {
     console.error("Seeding error:", error)
     return NextResponse.json(
-      { error: "Failed to seed database", details: String(error) },
+      { success: false, error: "Failed to seed database", details: String(error) },
       { status: 500 },
     )
   }

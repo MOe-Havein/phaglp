@@ -1,11 +1,20 @@
 import { z } from "zod"
+import DOMPurify from "isomorphic-dompurify"
 
-export const sectionTypeSchema = z.enum(["hero", "features", "cta", "media", "testimonials"])
+export const sectionTypeSchema = z.enum(["hero", "features", "cta", "media", "testimonials", "lectures"])
+
+const sanitizedString = () => z.string().nullable().optional().transform(val => {
+  if (!val) return val
+  return DOMPurify.sanitize(val, {
+    ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "p", "br", "ul", "ol", "li", "h1", "h2", "h3", "span"],
+    ALLOWED_ATTR: ["href", "target", "rel", "class"]
+  })
+})
 
 export const sectionSchema = z.object({
   type: sectionTypeSchema,
-  title: z.string().nullable().optional(),
-  body: z.string().nullable().optional(),
+  title: sanitizedString(),
+  body: sanitizedString(),
   ctaLabel: z.string().nullable().optional(),
   ctaHref: z.string().nullable().optional(),
   mediaUrl: z.string().nullable().optional(),

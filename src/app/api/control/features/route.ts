@@ -1,6 +1,6 @@
-import { auth } from "@/auth"
 import prisma from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { requireAdmin } from "@/lib/rbac"
 
 export const dynamic = "force-dynamic"
 
@@ -19,10 +19,10 @@ export async function GET() {
 // POST: Toggle or Update a feature flag
 export async function POST(req: Request) {
   try {
-    const session = await auth()
+    const isAdmin = await requireAdmin()
 
-    if (!session || (session.user as any).role !== "ADMIN") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
     const body = await req.json()

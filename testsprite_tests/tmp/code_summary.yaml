@@ -1,0 +1,73 @@
+version: "2"
+type: frontend
+tech_stack:
+  - TypeScript
+  - Next.js 15
+  - TailwindCSS
+  - Prisma
+  - Framer Motion
+  - NextAuth.js (v5)
+routes:
+  - path: /
+    file: src/app/(public)/page.tsx
+    auth_required: false
+    description: Public home page
+  - path: /login
+    file: src/app/(admin)/login/page.tsx
+    auth_required: false
+    description: Admin/User Login page
+  - path: /register
+    file: src/app/(public)/register/page.tsx
+    auth_required: false
+    description: User registration page
+  - path: /dashboard
+    file: src/app/(public)/dashboard/page.tsx
+    auth_required: true
+    description: User dashboard
+  - path: /courses
+    file: src/app/(public)/courses/page.tsx
+    auth_required: false
+    description: Courses catalog page
+  - path: /pricing
+    file: src/app/(public)/pricing/page.tsx
+    auth_required: false
+    description: Pricing plans page
+  - path: /lectures
+    file: src/app/(public)/lectures/page.tsx
+    auth_required: false
+    description: Philosophical lectures directory
+features:
+  - name: Landing Page Navigation
+    description: View courses, lectures, pricing, and navigate to auth
+    files:
+      - src/app/(public)/page.tsx
+    entry_route: /
+    user_interactions:
+      - Visit home page
+      - Scroll to view featured courses/lectures
+      - Click header navigation links
+    api_calls: []
+    auth_required: false
+  - name: Admin/User Login
+    description: Login with email/username and password credentials
+    files:
+      - src/app/(admin)/login/page.tsx
+    entry_route: /login
+    user_interactions:
+      - Visit login page
+      - Input email and password
+      - Click Sign In button
+    api_calls: []
+    auth_required: false
+  - name: User Registration
+    description: Register a new account
+    files:
+      - src/app/(public)/register/page.tsx
+    entry_route: /register
+    user_interactions:
+      - Visit register page
+      - Input email, username, name, and password
+      - Click Sign Up button
+    api_calls: []
+    auth_required: false
+known_limitations: []

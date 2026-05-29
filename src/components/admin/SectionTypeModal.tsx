@@ -2,7 +2,7 @@
 
 import React from "react"
 import { SectionType } from "@/types/homepage"
-import { LayoutTemplate, Image as ImageIcon, MessageSquare, Handshake, Columns } from "lucide-react"
+import { LayoutTemplate, Image as ImageIcon, MessageSquare, Handshake, Columns, GraduationCap } from "lucide-react"
 
 interface SectionTypeModalProps {
   isOpen: boolean
@@ -43,6 +43,12 @@ export function SectionTypeModal({ isOpen, onClose, onSelect }: SectionTypeModal
       icon: <MessageSquare size={24} />,
       label: "Testimonials",
       desc: "Customer quotes and social proof",
+    },
+    {
+      type: "lectures",
+      icon: <GraduationCap size={24} />,
+      label: "Latest Lectures",
+      desc: "Horizontal Coursera-styled grid displaying the latest lectures",
     },
   ]
 

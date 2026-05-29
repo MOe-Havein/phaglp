@@ -10,11 +10,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
 
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     })
+
+    if (result?.error) {
+      // NextAuth returns an error property when credentials are invalid
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
+    }
 
     return NextResponse.json({ success: true, message: "Logged in successfully" })
   } catch (error: unknown) {

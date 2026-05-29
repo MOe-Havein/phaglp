@@ -2,7 +2,7 @@ import { HomepageSection as PrismaHomepageSection } from "@prisma/client"
 
 export type HomepageSection = PrismaHomepageSection
 
-export type SectionType = "hero" | "features" | "cta" | "media" | "testimonials"
+export type SectionType = "hero" | "features" | "cta" | "media" | "testimonials" | "lectures"
 
 export interface CreateSectionInput {
   type: SectionType

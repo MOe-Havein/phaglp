@@ -52,16 +52,17 @@ interface TechConceptsDashboardProps {
     email?: string | null
     image?: string | null
   }
+  initialDbLogs?: any[]
 }
 
-export function TechConceptsDashboard({ user }: TechConceptsDashboardProps) {
+export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConceptsDashboardProps) {
   // Global Settings and Toggles
   const [activeTab, setActiveTab] = useState<string>("tab-1")
   const [isLowConnActive, setIsLowConnActive] = useState<boolean>(false)
   const [activeLanguage, setActiveLanguage] = useState<"en" | "ar" | "fr">("en")
 
   // Real Database Analytics Logs State
-  const [dbLogs, setDbLogs] = useState<any[]>([])
+  const [dbLogs, setDbLogs] = useState<any[]>(initialDbLogs)
   const [isLoadingLogs, setIsLoadingLogs] = useState<boolean>(false)
 
 
@@ -166,9 +167,8 @@ export function TechConceptsDashboard({ user }: TechConceptsDashboardProps) {
 
   // Trigger load
   useEffect(() => {
-    fetchDbLogs()
     logDatabaseEvent("ENTERED_TECH_HUB")
-  }, [fetchDbLogs])
+  }, [])
 
   // Recalculate focus based on actions
   const adjustCognitiveFocus = (amount: number) => {

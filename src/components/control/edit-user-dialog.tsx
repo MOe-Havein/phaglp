@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -108,11 +107,10 @@ type UserFormValues = z.infer<typeof userSchema>
 
 interface EditUserDialogProps {
   user: any
-  open: boolean
-  onOpenChange: (open: boolean) => void
 }
 
-export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps) {
+export function EditUserDialog({ user }: EditUserDialogProps) {
+  const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const form = useForm<UserFormValues>({
@@ -242,7 +240,7 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
       const result = await updateUser(user.id, cleanedData)
       if (result.success) {
         toast.success("User profile updated successfully")
-        onOpenChange(false)
+        setOpen(false)
       } else {
         toast.error(result.error || "Failed to update user profile")
       }
@@ -255,729 +253,737 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[85vh] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between bg-white dark:bg-slate-950 shadow-2xl">
-        <DialogHeader className="pb-2 border-b">
-          <DialogTitle className="text-2xl font-black flex items-center gap-2">
-            <User className="text-primary w-6 h-6 animate-pulse" />
-            Edit User Profile
-          </DialogTitle>
-          <DialogDescription>
-            Update comprehensive personal, academic, financial and localization data.
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="text-xs text-blue-500 hover:text-blue-600 font-medium transition-colors"
+      >
+        Edit
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[700px] max-h-[85vh] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between bg-white dark:bg-slate-950 shadow-2xl">
+          <DialogHeader className="pb-2 border-b">
+            <DialogTitle className="text-2xl font-black flex items-center gap-2">
+              <User className="text-primary w-6 h-6 animate-pulse" />
+              Edit User Profile
+            </DialogTitle>
+            <DialogDescription>
+              Update comprehensive personal, academic, financial and localization data.
+            </DialogDescription>
+          </DialogHeader>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 flex-grow overflow-hidden flex flex-col my-4"
-          >
-            <Tabs defaultValue="core" className="w-full flex-grow flex flex-col overflow-hidden">
-              <TabsList className="grid grid-cols-5 w-full bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shrink-0">
-                <TabsTrigger value="core" className="rounded-lg text-xs font-semibold">
-                  Core Auth
-                </TabsTrigger>
-                <TabsTrigger value="personal" className="rounded-lg text-xs font-semibold">
-                  Personal
-                </TabsTrigger>
-                <TabsTrigger value="contact" className="rounded-lg text-xs font-semibold">
-                  Address
-                </TabsTrigger>
-                <TabsTrigger value="academic" className="rounded-lg text-xs font-semibold">
-                  Academic
-                </TabsTrigger>
-                <TabsTrigger value="guardian" className="rounded-lg text-xs font-semibold">
-                  Guardian
-                </TabsTrigger>
-              </TabsList>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 flex-grow overflow-hidden flex flex-col my-4"
+            >
+              <Tabs defaultValue="core" className="w-full flex-grow flex flex-col overflow-hidden">
+                <TabsList className="grid grid-cols-5 w-full bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shrink-0">
+                  <TabsTrigger value="core" className="rounded-lg text-xs font-semibold">
+                    Core Auth
+                  </TabsTrigger>
+                  <TabsTrigger value="personal" className="rounded-lg text-xs font-semibold">
+                    Personal
+                  </TabsTrigger>
+                  <TabsTrigger value="contact" className="rounded-lg text-xs font-semibold">
+                    Address
+                  </TabsTrigger>
+                  <TabsTrigger value="academic" className="rounded-lg text-xs font-semibold">
+                    Academic
+                  </TabsTrigger>
+                  <TabsTrigger value="guardian" className="rounded-lg text-xs font-semibold">
+                    Guardian
+                  </TabsTrigger>
+                </TabsList>
 
-              <ScrollArea className="flex-grow pr-3 mt-4 h-[420px]">
-                {/* Core Auth & System Roles */}
-                <TabsContent value="core" className="space-y-4 mt-0">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Public Display Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="John Doe" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email Address</FormLabel>
-                          <FormControl>
-                            <Input placeholder="john@example.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="role"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>System Role</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select role" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={Role.USER}>User</SelectItem>
-                              <SelectItem value={Role.INSTRUCTOR}>Instructor</SelectItem>
-                              <SelectItem value={Role.ADMIN}>Admin</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="tier"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subscription Access</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select tier" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={SubscriptionTier.BASIC}>Basic</SelectItem>
-                              <SelectItem value={SubscriptionTier.PRO}>Pro</SelectItem>
-                              <SelectItem value={SubscriptionTier.ENTERPRISE}>
-                                Enterprise
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="•••••• (optional)" {...field} />
-                          </FormControl>
-                          <FormDescription className="text-[10px]">
-                            Omit to preserve current password.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </TabsContent>
-
-                {/* Personal & Demographic */}
-                <TabsContent value="personal" className="space-y-4 mt-0">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>First Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="First" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="fatherName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Father Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Father" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="grandfatherName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>G. Father Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Grandfather" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="familyName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Family Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Family" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="nickname"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nickname</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Nickname" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="sex"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Sex</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || undefined}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select sex" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={Sex.MALE}>Male</SelectItem>
-                              <SelectItem value={Sex.FEMALE}>Female</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="birthDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Birth Date</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="space-y-2 border-t pt-4">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Birth Origin
-                    </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <ScrollArea className="flex-grow pr-3 mt-4 h-[420px]">
+                  {/* Core Auth & System Roles */}
+                  <TabsContent value="core" className="space-y-4 mt-0">
+                    <div className="grid md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
-                        name="birthCountry"
+                        name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[11px]">Country</FormLabel>
+                            <FormLabel>Public Display Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Country" {...field} value={field.value || ""} />
+                              <Input placeholder="John Doe" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email Address</FormLabel>
+                            <FormControl>
+                              <Input placeholder="john@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="role"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>System Role</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select role" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={Role.USER}>User</SelectItem>
+                                <SelectItem value={Role.INSTRUCTOR}>Instructor</SelectItem>
+                                <SelectItem value={Role.ADMIN}>Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="tier"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Subscription Access</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select tier" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={SubscriptionTier.BASIC}>Basic</SelectItem>
+                                <SelectItem value={SubscriptionTier.PRO}>Pro</SelectItem>
+                                <SelectItem value={SubscriptionTier.ENTERPRISE}>
+                                  Enterprise
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" placeholder="•••••• (optional)" {...field} />
+                            </FormControl>
+                            <FormDescription className="text-[10px]">
+                              Omit to preserve current password.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  {/* Personal & Demographic */}
+                  <TabsContent value="personal" className="space-y-4 mt-0">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>First Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="First" {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="fatherName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Father Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Father" {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="grandfatherName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>G. Father Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Grandfather" {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="familyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Family Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Family" {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="nickname"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nickname</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nickname" {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="sex"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Sex</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select sex" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={Sex.MALE}>Male</SelectItem>
+                                <SelectItem value={Sex.FEMALE}>Female</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="birthDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Birth Date</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2 border-t pt-4">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Birth Origin
+                      </h4>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <FormField
+                          control={form.control}
+                          name="birthCountry"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Country</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Country" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="birthState"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">State</FormLabel>
+                              <FormControl>
+                                <Input placeholder="State" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="birthCity"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">City</FormLabel>
+                              <FormControl>
+                                <Input placeholder="City" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="birthTown"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Town</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Town" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="birthVillage"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Village</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Village" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Location, Residence & Contacts */}
+                  <TabsContent value="contact" className="space-y-4 mt-0">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="mobile1"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Mobile 1</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+1..." {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="mobile2"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Mobile 2</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+1..." {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="telephone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telephone</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+1..." {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2 border-t pt-4">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Residence Address
+                      </h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <FormField
+                          control={form.control}
+                          name="homeCountry"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Country</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Country" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="homeState"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">State</FormLabel>
+                              <FormControl>
+                                <Input placeholder="State" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="homeCity"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">City</FormLabel>
+                              <FormControl>
+                                <Input placeholder="City" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="homeStreet"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Street</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Street" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="grid grid-cols-3 gap-3 pt-1">
+                        <FormField
+                          control={form.control}
+                          name="homeBuilding"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Building No</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Building" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="homeUnit"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Unit No</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Unit" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="residenceNo"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[11px]">Contract/House ID</FormLabel>
+                              <FormControl>
+                                <Input placeholder="ID No" {...field} value={field.value || ""} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Academics & Financial & Tiers */}
+                  <TabsContent value="academic" className="space-y-4 mt-0">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="educationLevel"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Academic Level</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select level" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={EducationLevel.DEGREE}>
+                                  University Degree
+                                </SelectItem>
+                                <SelectItem value={EducationLevel.CLASS}>Secondary School</SelectItem>
+                                <SelectItem value={EducationLevel.SCHOOL}>
+                                  Elementary School
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="educationDegree"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Degree Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="e.g. B.Sc. Logic"
+                                {...field}
+                                value={field.value || ""}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="educationSchool"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Institution/School</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Oxford University"
+                                {...field}
+                                value={field.value || ""}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4 border-t pt-4">
+                      <FormField
+                        control={form.control}
+                        name="iqLevel"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Aptitude / IQ Level</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select IQ" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={IQLevel.GENIUS}>Superior / Genius</SelectItem>
+                                <SelectItem value={IQLevel.GIFTED}>Highly Gifted</SelectItem>
+                                <SelectItem value={IQLevel.TALENTED}>Talented</SelectItem>
+                                <SelectItem value={IQLevel.AVERAGE}>Normal / Average</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="incomeLevel"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Financial Income</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select income" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={IncomeLevel.HIGH}>High Income</SelectItem>
+                                <SelectItem value={IncomeLevel.MEDIUM}>Medium Income</SelectItem>
+                                <SelectItem value={IncomeLevel.LOW}>Low Income</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="worldTier"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Geographic economic tier</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select tier" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={WorldTier.FIRST}>
+                                  First Tier (Developed)
+                                </SelectItem>
+                                <SelectItem value={WorldTier.SECOND}>
+                                  Second Tier (Developing)
+                                </SelectItem>
+                                <SelectItem value={WorldTier.THIRD}>
+                                  Third Tier (Underdeveloped)
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4 border-t pt-4">
+                      <FormField
+                        control={form.control}
+                        name="jobTitle"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Job Title</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Software Engineer"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                           </FormItem>
                         )}
                       />
                       <FormField
                         control={form.control}
-                        name="birthState"
+                        name="jobOrganization"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[11px]">State</FormLabel>
+                            <FormLabel>Organization</FormLabel>
                             <FormControl>
-                              <Input placeholder="State" {...field} value={field.value || ""} />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="birthCity"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[11px]">City</FormLabel>
-                            <FormControl>
-                              <Input placeholder="City" {...field} value={field.value || ""} />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="birthTown"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[11px]">Town</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Town" {...field} value={field.value || ""} />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="birthVillage"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[11px]">Village</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Village" {...field} value={field.value || ""} />
+                              <Input placeholder="NASA" {...field} value={field.value || ""} />
                             </FormControl>
                           </FormItem>
                         )}
                       />
                     </div>
-                  </div>
-                </TabsContent>
+                  </TabsContent>
 
-                {/* Location, Residence & Contacts */}
-                <TabsContent value="contact" className="space-y-4 mt-0">
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="mobile1"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mobile 1</FormLabel>
-                          <FormControl>
-                            <Input placeholder="+1..." {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="mobile2"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mobile 2</FormLabel>
-                          <FormControl>
-                            <Input placeholder="+1..." {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="telephone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Telephone</FormLabel>
-                          <FormControl>
-                            <Input placeholder="+1..." {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="space-y-2 border-t pt-4">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Residence Address
-                    </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {/* Guardian Details */}
+                  <TabsContent value="guardian" className="space-y-4 mt-0">
+                    <div className="grid md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
-                        name="homeCountry"
+                        name="guardianName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[11px]">Country</FormLabel>
+                            <FormLabel>Guardian Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Country" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="Guardian Full Name"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
+                            <FormMessage />
                           </FormItem>
                         )}
                       />
                       <FormField
                         control={form.control}
-                        name="homeState"
+                        name="guardianEmail"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[11px]">State</FormLabel>
+                            <FormLabel>Guardian Email</FormLabel>
                             <FormControl>
-                              <Input placeholder="State" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="guardian@example.com"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="homeCity"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[11px]">City</FormLabel>
-                            <FormControl>
-                              <Input placeholder="City" {...field} value={field.value || ""} />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="homeStreet"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[11px]">Street</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Street" {...field} value={field.value || ""} />
-                            </FormControl>
+                            <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
-                    <div className="grid grid-cols-3 gap-3 pt-1">
+
+                    <div className="grid md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
-                        name="homeBuilding"
+                        name="guardianMobile"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[11px]">Building No</FormLabel>
+                            <FormLabel>Guardian Mobile</FormLabel>
                             <FormControl>
-                              <Input placeholder="Building" {...field} value={field.value || ""} />
+                              <Input placeholder="+1..." {...field} value={field.value || ""} />
                             </FormControl>
+                            <FormMessage />
                           </FormItem>
                         )}
                       />
                       <FormField
                         control={form.control}
-                        name="homeUnit"
+                        name="guardianIncome"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-[11px]">Unit No</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Unit" {...field} value={field.value || ""} />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="residenceNo"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[11px]">Contract/House ID</FormLabel>
-                            <FormControl>
-                              <Input placeholder="ID No" {...field} value={field.value || ""} />
-                            </FormControl>
+                            <FormLabel>Guardian Income Level</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger className="rounded-xl">
+                                  <SelectValue placeholder="Select income" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={IncomeLevel.HIGH}>High Income</SelectItem>
+                                <SelectItem value={IncomeLevel.MEDIUM}>Medium Income</SelectItem>
+                                <SelectItem value={IncomeLevel.LOW}>Low Income</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
-                  </div>
-                </TabsContent>
+                  </TabsContent>
+                </ScrollArea>
+              </Tabs>
 
-                {/* Academics & Financial & Tiers */}
-                <TabsContent value="academic" className="space-y-4 mt-0">
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="educationLevel"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Academic Level</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || undefined}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select level" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={EducationLevel.DEGREE}>
-                                University Degree
-                              </SelectItem>
-                              <SelectItem value={EducationLevel.CLASS}>Secondary School</SelectItem>
-                              <SelectItem value={EducationLevel.SCHOOL}>
-                                Elementary School
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="educationDegree"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Degree Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="e.g. B.Sc. Logic"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="educationSchool"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Institution/School</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Oxford University"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-3 gap-4 border-t pt-4">
-                    <FormField
-                      control={form.control}
-                      name="iqLevel"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Aptitude / IQ Level</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || undefined}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select IQ" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={IQLevel.GENIUS}>Superior / Genius</SelectItem>
-                              <SelectItem value={IQLevel.GIFTED}>Highly Gifted</SelectItem>
-                              <SelectItem value={IQLevel.TALENTED}>Talented</SelectItem>
-                              <SelectItem value={IQLevel.AVERAGE}>Normal / Average</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="incomeLevel"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Financial Income</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || undefined}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select income" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={IncomeLevel.HIGH}>High Income</SelectItem>
-                              <SelectItem value={IncomeLevel.MEDIUM}>Medium Income</SelectItem>
-                              <SelectItem value={IncomeLevel.LOW}>Low Income</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="worldTier"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Geographic economic tier</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || undefined}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select tier" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={WorldTier.FIRST}>
-                                First Tier (Developed)
-                              </SelectItem>
-                              <SelectItem value={WorldTier.SECOND}>
-                                Second Tier (Developing)
-                              </SelectItem>
-                              <SelectItem value={WorldTier.THIRD}>
-                                Third Tier (Underdeveloped)
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4 border-t pt-4">
-                    <FormField
-                      control={form.control}
-                      name="jobTitle"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Job Title</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Software Engineer"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="jobOrganization"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Organization</FormLabel>
-                          <FormControl>
-                            <Input placeholder="NASA" {...field} value={field.value || ""} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </TabsContent>
-
-                {/* Guardian Details */}
-                <TabsContent value="guardian" className="space-y-4 mt-0">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="guardianName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Guardian Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Guardian Full Name"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="guardianEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Guardian Email</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="guardian@example.com"
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="guardianMobile"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Guardian Mobile</FormLabel>
-                          <FormControl>
-                            <Input placeholder="+1..." {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="guardianIncome"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Guardian Income Level</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value || undefined}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-xl">
-                                <SelectValue placeholder="Select income" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={IncomeLevel.HIGH}>High Income</SelectItem>
-                              <SelectItem value={IncomeLevel.MEDIUM}>Medium Income</SelectItem>
-                              <SelectItem value={IncomeLevel.LOW}>Low Income</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </TabsContent>
-              </ScrollArea>
-            </Tabs>
-
-            <DialogFooter className="pt-4 border-t shrink-0 flex gap-3">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onOpenChange(false)}
-                className="w-full sm:w-auto rounded-xl"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full sm:w-auto bg-primary text-white rounded-xl shadow-md min-w-[125px]"
-              >
-                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Save Profile
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+              <DialogFooter className="pt-4 border-t shrink-0 flex gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setOpen(false)}
+                  className="w-full sm:w-auto rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:w-auto bg-primary text-white rounded-xl shadow-md min-w-[125px]"
+                >
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Save Profile
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

@@ -17,6 +17,7 @@ import {
   Calendar,
   BookOpenCheck,
   Camera,
+  ListTodo,
 } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link"
@@ -78,7 +79,7 @@ export default async function DashboardPage() {
   ])
 
   const tier = dbUser?.tier || SubscriptionTier.BASIC
-  const preferences = dbUser?.lecturePreferences || []
+  const preferences = (dbUser?.lecturePreferences as string[]) || []
 
   // Extract unique categories from published lectures
   const availableCategories = Array.from(new Set(allLectures.map((l) => l.category)))
@@ -393,6 +394,39 @@ export default async function DashboardPage() {
             >
               <Link href="/dashboard/tech-concepts" className="flex items-center gap-2">
                 Explore Tech Playground →
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Interactive Implementation Plan Showcase Banner */}
+        <div className="mb-10 bg-gradient-to-r from-emerald-900/90 via-slate-900 to-teal-900/90 dark:from-emerald-950/80 dark:via-slate-950 dark:to-teal-950/80 border border-emerald-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl shadow-emerald-500/5 group">
+          <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors duration-500" />
+          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl group-hover:bg-teal-500/20 transition-colors duration-500" />
+          <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 animate-pulse">
+                  System Roadmap
+                </Badge>
+                <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+                  <ListTodo className="w-3.5 h-3.5" />
+                  Interactive Progress Tracker
+                </span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
+                PHAGLP — Interactive Implementation Plan
+              </h2>
+              <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
+                Track our detailed structural engineering progress. Check off key tasks dynamically across Security, Core features, Quality Assurance, and visual Polish with local persistence.
+              </p>
+            </div>
+            <Button
+              asChild
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 font-bold rounded-2xl shadow-lg shadow-emerald-500/20 md:shrink-0 transition-transform active:scale-95 group-hover:translate-x-1 duration-300"
+            >
+              <Link href="/implementation-plan" className="flex items-center gap-2">
+                View Interactive Plan →
               </Link>
             </Button>
           </div>

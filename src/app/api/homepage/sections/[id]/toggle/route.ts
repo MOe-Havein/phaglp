@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/db/prisma"
 import { requireRole } from "@/lib/rbac"
+import { auth } from "@/auth"
 import { logger } from "@/lib/server/logger"
 
 export async function PATCH(_req: Request, props: { params: Promise<{ id: string }> }) {
   try {
     const params = await props.params
-    const session = await requireRole(["ADMIN", "EDITOR"])
+    const session = await auth()
+    const hasAccess = await requireRole(["ADMIN"])
+    if (!hasAccess) throw new Error("UNAUTHORIZED")
 
     // First fetch the current section to get its visibility status
     const currentSection = await prisma.homepageSection.findUnique({
@@ -26,7 +29,7 @@ export async function PATCH(_req: Request, props: { params: Promise<{ id: string
     logger.info("SECTION_VISIBILITY_CHANGED", {
       sectionId: params.id,
       visible: updatedSection.visible,
-      userId: session.userId,
+      userId: session?.user?.id,
     })
 
     return NextResponse.json(updatedSection)

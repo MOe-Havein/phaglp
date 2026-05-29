@@ -1,21 +1,25 @@
-import { auth } from "@/auth"
-import { Role } from "@prisma/client"
-import { redirect, notFound } from "next/navigation"
-import prisma from "@/lib/prisma"
+import { notFound } from "next/navigation"
+import { prisma, serializePrisma } from "@/lib/prisma"
 import { EditCourseForm } from "@/components/control/edit-course-form"
 
-interface EditCoursePageProps {
+interface PageProps {
   params: Promise<{ id: string }>
 }
 
-export default async function EditCoursePage({ params }: EditCoursePageProps) {
+export async function generateMetadata({ params }: PageProps) {
   const { id } = await params
-  const session = await auth()
+  const course = await prisma.course.findUnique({
+    where: { id },
+    select: { title: true },
+  })
 
-  if (session?.user?.role !== Role.ADMIN && session?.user?.role !== Role.INSTRUCTOR) {
-    redirect("/login")
+  return {
+    title: course ? `Edit: ${course.title} — PHAGLP Control` : "Edit Course — PHAGLP Control",
   }
+}
 
+export default async function EditCoursePage({ params }: PageProps) {
+  const { id } = await params
   const course = await prisma.course.findUnique({
     where: { id },
   })
@@ -24,5 +28,12 @@ export default async function EditCoursePage({ params }: EditCoursePageProps) {
     notFound()
   }
 
-  return <EditCourseForm course={course} />
+  // Serialize before passing to client components to prevent Date serialization issues in RSC
+  const serializedCourse = serializePrisma(course)
+
+  return (
+    <div className="container mx-auto py-6">
+      <EditCourseForm course={serializedCourse} />
+    </div>
+  )
 }

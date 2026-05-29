@@ -2,7 +2,20 @@ import type { NextAuthConfig } from "next-auth"
 
 export const authConfig = {
   // 💡 الحل القاطع: تمرير المتغير السري هنا لضمان حقنه في كل مسارات التطبيق والـ Middleware
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "default-secret",
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === "production"
+        ? `__Secure-next-auth.session-token`
+        : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "strict",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   pages: {
     signIn: "/login",
   },

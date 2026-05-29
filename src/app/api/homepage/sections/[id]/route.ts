@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/db/prisma"
 import { requireRole } from "@/lib/rbac"
+import { auth } from "@/auth"
 import { updateSectionSchema } from "@/lib/homepage/sectionSchema"
 import { logger } from "@/lib/server/logger"
+import { revalidatePath } from "next/cache"
+
+export const dynamic = "force-dynamic"
 
 export async function GET(_req: Request, props: { params: Promise<{ id: string }> }) {
   try {
@@ -25,7 +29,9 @@ export async function GET(_req: Request, props: { params: Promise<{ id: string }
 export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
   try {
     const params = await props.params
-    const session = await requireRole(["ADMIN", "EDITOR"])
+    const session = await auth()
+    const hasAccess = await requireRole(["ADMIN"])
+    if (!hasAccess) throw new Error("UNAUTHORIZED")
     const body = await req.json()
     const validatedData = updateSectionSchema.parse(body)
 
@@ -34,7 +40,8 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
       data: validatedData,
     })
 
-    logger.info("SECTION_UPDATED", { sectionId: section.id, userId: session.userId })
+    revalidatePath("/")
+    logger.info("SECTION_UPDATED", { sectionId: section.id, userId: session?.user?.id })
 
     return NextResponse.json(section)
   } catch (error: any) {
@@ -58,13 +65,16 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
 export async function DELETE(_req: Request, props: { params: Promise<{ id: string }> }) {
   try {
     const params = await props.params
-    const session = await requireRole(["ADMIN"])
+    const session = await auth()
+    const hasAccess = await requireRole(["ADMIN"])
+    if (!hasAccess) throw new Error("UNAUTHORIZED")
 
     await prisma.homepageSection.delete({
       where: { id: params.id },
     })
 
-    logger.info("SECTION_DELETED", { sectionId: params.id, userId: session.userId })
+    revalidatePath("/")
+    logger.info("SECTION_DELETED", { sectionId: params.id, userId: session?.user?.id })
 
     return new NextResponse(null, { status: 204 })
   } catch (error: any) {

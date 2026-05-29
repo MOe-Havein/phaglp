@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/db/prisma"
 import { requireRole } from "@/lib/rbac"
+import { auth } from "@/auth"
 import { logger } from "@/lib/server/logger"
+import { revalidatePath } from "next/cache"
 
 export async function PATCH(req: Request) {
   try {
-    const session = await requireRole(["ADMIN", "EDITOR"])
+    const session = await auth()
+    const hasAccess = await requireRole(["ADMIN"])
+    if (!hasAccess) throw new Error("UNAUTHORIZED")
     const body = await req.json()
 
     if (!body || !Array.isArray(body.orderedIds)) {
@@ -27,7 +31,8 @@ export async function PATCH(req: Request) {
       ),
     )
 
-    logger.info("SECTION_REORDERED", { orderedIds, userId: session.userId })
+    revalidatePath("/")
+    logger.info("SECTION_REORDERED", { orderedIds, userId: session?.user?.id })
 
     return NextResponse.json({ success: true, message: "Sections reordered successfully" })
   } catch (error: any) {

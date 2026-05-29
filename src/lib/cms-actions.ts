@@ -3,11 +3,42 @@
 import { prisma, serializePrisma } from "@/lib/prisma"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { Role } from "@prisma/client"
-import { auth } from "@/auth"
 import {
   createLecture as createLectureDb,
   updateLecture as updateLectureDb,
 } from "./server/lectures"
+import { auth } from "@/auth"
+import { z } from "zod"
+
+const courseSchema = z.object({
+  title: z.string().min(1),
+  slug: z.string().min(1),
+  description: z.string().optional().default(""),
+  duration: z.string().optional().default(""),
+  price: z.coerce.number().optional().default(0),
+  published: z.boolean().optional().default(false),
+})
+
+const moduleSchema = z.object({
+  title: z.string().min(1),
+  courseId: z.string().min(1),
+})
+
+const lessonSchema = z.object({
+  title: z.string().min(1),
+  moduleId: z.string().min(1),
+  courseId: z.string().min(1),
+})
+
+const lectureSchema = z.object({
+  title: z.string().min(1),
+  body: z.string().min(1),
+  category: z.string().min(1),
+  coverImage: z.string().nullable().optional(),
+  isFeatured: z.boolean().optional().default(false),
+  published: z.boolean().optional().default(false),
+  tags: z.array(z.string()).optional().default([]),
+})
 
 async function ensureAdminOrInstructor() {
   const session = await auth()
@@ -22,16 +53,17 @@ export async function createCourse(data: any) {
   try {
     await ensureAdminOrInstructor()
     const session = await auth()
+    const parsedData = courseSchema.parse(data)
 
     const course = await prisma.course.create({
       data: {
-        title: data.title,
-        slug: data.slug,
-        description: data.description,
-        duration: data.duration,
+        title: parsedData.title,
+        slug: parsedData.slug,
+        description: parsedData.description ?? "",
+        duration: parsedData.duration ?? "",
         instructorId: session!.user.id!,
-        price: parseFloat(data.price),
-        published: data.published || false,
+        price: parsedData.price,
+        published: parsedData.published,
       },
     })
 
@@ -49,16 +81,17 @@ export async function createCourse(data: any) {
 export async function updateCourse(id: string, data: any) {
   try {
     await ensureAdminOrInstructor()
+    const parsedData = courseSchema.parse(data)
 
     const course = await prisma.course.update({
       where: { id },
       data: {
-        title: data.title,
-        slug: data.slug,
-        description: data.description,
-        duration: data.duration,
-        price: parseFloat(data.price),
-        published: data.published,
+        title: parsedData.title,
+        slug: parsedData.slug,
+        description: parsedData.description ?? "",
+        duration: parsedData.duration ?? "",
+        price: parsedData.price,
+        published: parsedData.published,
       },
     })
 
@@ -94,15 +127,17 @@ export async function createModule(courseId: string, title: string) {
   try {
     await ensureAdminOrInstructor()
 
+    const parsedData = moduleSchema.parse({ title, courseId })
+
     const lastModule = await prisma.courseModule.findFirst({
-      where: { courseId },
+      where: { courseId: parsedData.courseId },
       orderBy: { order: "desc" },
     })
 
     const courseModule = await prisma.courseModule.create({
       data: {
-        title,
-        courseId,
+        title: parsedData.title,
+        courseId: parsedData.courseId,
         order: (lastModule?.order ?? 0) + 1,
       },
     })
@@ -119,15 +154,17 @@ export async function createLesson(moduleId: string, courseId: string, title: st
   try {
     await ensureAdminOrInstructor()
 
+    const parsedData = lessonSchema.parse({ title, moduleId, courseId })
+
     const lastLesson = await prisma.lesson.findFirst({
-      where: { moduleId },
+      where: { moduleId: parsedData.moduleId },
       orderBy: { order: "desc" },
     })
 
     const lesson = await prisma.lesson.create({
       data: {
-        title,
-        moduleId,
+        title: parsedData.title,
+        moduleId: parsedData.moduleId,
         order: (lastLesson?.order ?? 0) + 1,
       },
     })
@@ -151,15 +188,17 @@ export async function createLecture(data: any) {
       return { success: false, error: "User session is invalid. Please log in again." }
     }
 
+    const parsedData = lectureSchema.parse(data)
+
     const lecture = await createLectureDb({
-      title: data.title,
-      body: data.body,
-      category: data.category,
-      coverImage: data.coverImage || null,
-      isFeatured: data.isFeatured || false,
+      title: parsedData.title,
+      body: parsedData.body,
+      category: parsedData.category,
+      coverImage: parsedData.coverImage || null,
+      isFeatured: parsedData.isFeatured || false,
       authorId: session.user.id,
-      published: data.published || false,
-      tags: data.tags || [],
+      published: parsedData.published || false,
+      tags: parsedData.tags || [],
     })
 
     revalidatePath("/control/lectures")
@@ -176,15 +215,16 @@ export async function createLecture(data: any) {
 export async function updateLecture(id: string, data: any) {
   try {
     await ensureAdminOrInstructor()
+    const parsedData = lectureSchema.parse(data)
 
     const lecture = await updateLectureDb(id, {
-      title: data.title,
-      body: data.body,
-      category: data.category,
-      published: data.published,
-      tags: data.tags || [],
-      coverImage: data.coverImage,
-      isFeatured: data.isFeatured,
+      title: parsedData.title,
+      body: parsedData.body,
+      category: parsedData.category,
+      published: parsedData.published,
+      tags: parsedData.tags || [],
+      coverImage: parsedData.coverImage,
+      isFeatured: parsedData.isFeatured,
     })
 
     revalidatePath("/control/lectures")

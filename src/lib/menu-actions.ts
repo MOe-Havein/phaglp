@@ -70,9 +70,14 @@ export async function createMenu(data: {
       revalidateTag("site-menus")
       revalidatePath("/control/menus")
       revalidatePath("/")
+    } else if (result.error && (result.error.includes("P2002") || result.error.includes("Unique constraint failed"))) {
+      return { success: false, error: "A menu with this name already exists" }
     }
     return result
   } catch (error: any) {
+    if (error.code === "P2002" || error.message?.includes("P2002") || error.message?.includes("Unique constraint failed")) {
+      return { success: false, error: "A menu with this name already exists" }
+    }
     return { success: false, error: error.message || "Failed to create menu" }
   }
 }

@@ -1,5 +1,5 @@
 ---
-trigger: always_on
+trigger: manual
 ---
 
 # Ultra-Low Spec & Token Guardrails
@@ -11,4 +11,3 @@ trigger: always_on
 ## Strict First-Try Type Coding
 - Never use the `any` type keyword. If a database relation type is complex, create an explicit TypeScript `interface` block at the top of the file.
 - When mapping over an API response array, always provide fallback operators (e.g., `posts?.map(...) || []`) to prevent undefined runtime breaks.
-

@@ -5,7 +5,7 @@ const nextConfig = {
   output: "standalone",
   
   // Prevents Next.js from bundling native Prisma binaries into client-side chunks
-  serverExternalPackages: ["@prisma/client", "prisma"],
+  serverExternalPackages: ["@prisma/client", "prisma", "isomorphic-dompurify", "jsdom"],
 
   typescript: {
     ignoreBuildErrors: false,
@@ -24,8 +24,14 @@ const nextConfig = {
     ],
   },
 
-  webpack: (config) => {
-    // Streamlined suppression of dynamic Jose compression warnings in build logs
+  experimental: {
+    optimizePackageImports: ["@tiptap/core", "framer-motion", "lucide-react"],
+  },
+}
+
+if (!process.env.TURBOPACK) {
+  nextConfig.webpack = (config) => {
+    // Suppress dynamic Jose compression warnings for standard Webpack builds
     config.ignoreWarnings = [
       ...(config.ignoreWarnings || []),
       { module: /node_modules\/jose/ },
@@ -33,15 +39,11 @@ const nextConfig = {
       { message: /DecompressionStream/ },
     ]
     return config
-  },
-
-  experimental: {
-    // Next.js 15 auto-optimizes Radix, Lucide, and Framer Motion. 
-    // We only keep large data visualization libraries that benefit from explicit tuning.
-    optimizePackageImports: ["recharts", "@tiptap/core"],
-  },
+  }
 }
 
-export default withBundleAnalyzer({
+const configWithAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })(nextConfig)
+
+export default configWithAnalyzer

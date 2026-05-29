@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Shield, Trash2, Loader2, Edit2 } from "lucide-react"
+import { MoreHorizontal, Shield, Trash2, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { EditUserDialog } from "./edit-user-dialog"
 
@@ -27,7 +27,6 @@ interface UserRoleManagerProps {
 
 export function UserRoleManager({ user }: UserRoleManagerProps) {
   const [loading, setLoading] = useState(false)
-  const [editOpen, setEditOpen] = useState(false)
 
   const handleRoleChange = async (role: Role) => {
     setLoading(true)
@@ -77,10 +76,6 @@ export function UserRoleManager({ user }: UserRoleManagerProps) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Manage Access</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
-            <Edit2 className="mr-2 h-4 w-4" /> Edit Details
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => handleRoleChange(Role.USER)}
             disabled={user.role === Role.USER}
@@ -106,7 +101,7 @@ export function UserRoleManager({ user }: UserRoleManagerProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <EditUserDialog user={user} open={editOpen} onOpenChange={setEditOpen} />
+      <EditUserDialog user={user} />
     </>
   )
 }

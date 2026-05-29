@@ -27,6 +27,8 @@ export default async function LectureDetailPage({ params }: { params: Promise<{ 
     notFound()
   }
 
+  const tagsArray = (lecture.tags as string[]) || []
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mx-auto">
@@ -67,7 +69,7 @@ export default async function LectureDetailPage({ params }: { params: Promise<{ 
             Related Tags
           </h3>
           <div className="flex flex-wrap gap-2">
-            {lecture.tags.map((tag) => (
+            {tagsArray.map((tag: string) => (
               <Badge key={tag} variant="secondary">
                 #{tag}
               </Badge>

@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             ? lecture.updatedAt
             : lecture.updatedAt.toISOString(),
         authors: [lecture.author.name || ""],
-        tags: lecture.tags,
+        tags: (lecture.tags as string[]) || undefined,
       },
     }
   } catch (error) {
@@ -64,12 +64,14 @@ export default async function LecturePage({ params }: PageProps) {
     notFound()
   }
 
+  const tags = (lecture.tags as string[]) || []
+
   return (
     <article className="container mx-auto py-10 max-w-4xl">
       <header className="mb-10 text-center">
         <div className="flex justify-center gap-2 mb-4">
           <Badge>{lecture.category}</Badge>
-          {lecture.tags.map((tag: string) => (
+          {tags.map((tag: string) => (
             <Badge key={tag} variant="outline">
               {tag}
             </Badge>

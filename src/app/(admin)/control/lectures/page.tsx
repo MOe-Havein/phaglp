@@ -1,98 +1,130 @@
-import { auth } from "@/auth"
-import { Role } from "@prisma/client"
-import { redirect } from "next/navigation"
-import prisma from "@/lib/prisma"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Plus, FileText, Edit, Trash2, Calendar } from "lucide-react"
+import { Suspense } from "react"
+import { FileText, Plus } from "lucide-react"
 import Link from "next/link"
-import { format } from "date-fns"
+import { prisma, serializePrisma } from "@/lib/prisma"
 
-export default async function AdminLecturesPage() {
-  const session = await auth()
+export const metadata = {
+  title: "Lectures — PHAGLP Control",
+}
 
-  if (session?.user?.role !== Role.ADMIN && session?.user?.role !== Role.INSTRUCTOR) {
-    redirect("/login")
+async function getLectures() {
+  try {
+    const lectures = await prisma.lecture.findMany({
+      orderBy: { createdAt: "desc" },
+      include: { author: { select: { id: true, name: true, email: true } } },
+    })
+    return serializePrisma(lectures)
+  } catch {
+    return []
   }
+}
 
-  const lectures = await prisma.lecture.findMany({
-    include: {
-      author: { select: { name: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  })
-
+async function LecturesTable() {
+  const lectures = await getLectures()
   return (
-    <div className="container mx-auto py-10 space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-6">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-emerald-100 rounded-xl">
-            <FileText className="w-8 h-8 text-emerald-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Lecture CMS</h1>
-            <p className="text-muted-foreground">
-              Manage your philosophical blog and research updates.
-            </p>
-          </div>
+    <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-700">
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Title</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Category</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Author</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Status</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Date</th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lectures.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-16 text-center text-gray-400">
+                  <FileText className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                  <p className="font-medium">No lectures yet</p>
+                </td>
+              </tr>
+            ) : (
+              lectures.map((lecture: any) => (
+                <tr
+                  key={lecture.id}
+                  className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors"
+                >
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white max-w-[240px] truncate">
+                    {lecture.title}
+                  </td>
+                  <td className="px-4 py-3 text-xs text-gray-500">{lecture.category}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                    {lecture.author?.name ?? lecture.author?.email ?? "—"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                      lecture.published
+                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                        : "bg-gray-100 text-gray-500 dark:bg-gray-800"
+                    }`}>
+                      {lecture.published ? "Published" : "Draft"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-xs text-gray-500">
+                    {new Date(lecture.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <Link
+                      href={`/control/lectures/${lecture.id}`}
+                      className="text-xs text-blue-500 hover:text-blue-600 font-medium transition-colors"
+                    >
+                      Edit
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      {lectures.length > 0 && (
+        <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500">{lectures.length} lecture{lectures.length !== 1 ? "s" : ""}</p>
         </div>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" asChild>
-          <Link href="/control/lectures/new">
-            <Plus className="mr-2 h-4 w-4" /> Write Lecture
-          </Link>
-        </Button>
+      )}
+    </div>
+  )
+}
+
+export default async function LecturesPage() {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
+            <FileText className="w-4 h-4" />
+            <span>Content</span>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Lectures</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Manage philosophical lectures and publications.
+          </p>
+        </div>
+        <Link
+          href="/control/lectures/new"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          New Lecture
+        </Link>
       </div>
 
-      <div className="grid gap-4">
-        {lectures.length === 0 ? (
-          <div className="text-center py-20 border-2 border-dashed rounded-2xl">
-            <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-            <p className="text-muted-foreground">No lectures found in the repository.</p>
+      <Suspense
+        fallback={
+          <div className="space-y-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+            ))}
           </div>
-        ) : (
-          lectures.map((lecture) => (
-            <div
-              key={lecture.id}
-              className="flex items-center justify-between p-4 bg-background border rounded-xl hover:shadow-sm transition-all group"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col">
-                  <h3 className="font-bold group-hover:text-emerald-600 transition-colors">
-                    {lecture.title}
-                  </h3>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />{" "}
-                      {format(new Date(lecture.createdAt), "MMM d, yyyy")}
-                    </span>
-                    <span>•</span>
-                    <Badge
-                      variant="outline"
-                      className="text-[10px] py-0 px-1 border-emerald-100 text-emerald-700"
-                    >
-                      {lecture.category}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href={`/control/lectures/${lecture.id}`}>
-                    <Edit className="w-4 h-4" />
-                  </Link>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+        }
+      >
+        <LecturesTable />
+      </Suspense>
     </div>
   )
 }

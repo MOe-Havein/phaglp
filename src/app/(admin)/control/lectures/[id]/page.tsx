@@ -1,21 +1,25 @@
-import { auth } from "@/auth"
-import { Role } from "@prisma/client"
-import { redirect, notFound } from "next/navigation"
-import prisma from "@/lib/prisma"
+import { notFound } from "next/navigation"
+import { prisma, serializePrisma } from "@/lib/prisma"
 import { EditLectureForm } from "@/components/control/edit-lecture-form"
 
-interface EditLecturePageProps {
+interface PageProps {
   params: Promise<{ id: string }>
 }
 
-export default async function EditLecturePage({ params }: EditLecturePageProps) {
+export async function generateMetadata({ params }: PageProps) {
   const { id } = await params
-  const session = await auth()
+  const lecture = await prisma.lecture.findUnique({
+    where: { id },
+    select: { title: true },
+  })
 
-  if (session?.user?.role !== Role.ADMIN && session?.user?.role !== Role.INSTRUCTOR) {
-    redirect("/login")
+  return {
+    title: lecture ? `Edit: ${lecture.title} — PHAGLP Control` : "Edit Lecture — PHAGLP Control",
   }
+}
 
+export default async function EditLecturePage({ params }: PageProps) {
+  const { id } = await params
   const lecture = await prisma.lecture.findUnique({
     where: { id },
   })
@@ -24,5 +28,12 @@ export default async function EditLecturePage({ params }: EditLecturePageProps) 
     notFound()
   }
 
-  return <EditLectureForm lecture={lecture} />
+  // Serialize before passing to client components to prevent Date serialization issues in RSC
+  const serializedLecture = serializePrisma(lecture)
+
+  return (
+    <div className="container mx-auto py-6">
+      <EditLectureForm lecture={serializedLecture} />
+    </div>
+  )
 }

@@ -1,123 +1,80 @@
-# FreshNextJS - A Next.js 15 Boilerplate
+# PHAGLP (Philosophical Academy for Geniuses Life Planning)
 
-FreshNextJS is a modern, feature-rich boilerplate for Next.js 15 applications. It comes pre-configured with a secure authentication system, a role-based admin dashboard, a flexible theme system, and a complete database setup using Prisma and PostgreSQL.
+PHAGLP is a modern full-stack application designed for philosophical education, scientific research, and intentional marriage matching. Built with an elite, cutting-edge aesthetic and strict architectural standards, it serves as a robust platform for high-level intellectual pursuit.
 
-This project is designed to be a solid foundation for building full-stack applications quickly, with a focus on best practices and developer experience. It also includes a unique set of prompts for Google's Gemini to facilitate AI-assisted code generation for new features.
+## 🚀 Features
 
-## Features
+- **Course Management:** Enroll in and manage philosophical and scientific courses (GP Programs).
+- **Lectures & Research:** Explore philosophical lectures, essays, and insights.
+- **Halal Marriage Matching:** A privacy-first, values-based matching system and curriculum tailored to Islamic principles.
+- **Admin Control Panel:** A comprehensive, role-based (RBAC) Content Management System for managing users, courses, lectures, and global site settings.
+- **AI Integration:** Tools for generating outlines, summaries, and exploring interactive logical models.
 
-- **Authentication:** Secure, cookie-based authentication (JWT, httpOnly) with login, logout, and session management.
-- **Admin Dashboard:** A protected admin area with user management (CRUD), analytics widgets, and an audit log system.
-- **Role-Based Access Control (RBAC):** Middleware to protect routes based on user roles (e.g., `admin`).
-- **Database:** Prisma ORM setup for PostgreSQL, including models for Users, Roles, Posts, Comments, and more.
-- **Database Seeding:** A script to seed the database with initial data, including an admin user.
-- **Theming:** A theme system with 'light', 'dark', and 'system' modes, built with TailwindCSS and persisted in `localStorage`.
-- **AI-Assisted Development:** A collection of pre-written prompts for Gemini Code Assist to quickly scaffold new features.
+## 🏛️ Architecture Summary
 
-## Tech Stack
+This platform is engineered using modern React and Node.js best practices, emphasizing performance, security, and type safety:
 
 - **Framework:** Next.js 15 (App Router)
-- **Language:** TypeScript
-- **Styling:** TailwindCSS
-- **ORM:** Prisma
-- **Database:** PostgreSQL
-- **Authentication:** JWT, bcrypt
+- **Language:** Strict TypeScript (100% Type Coverage)
+- **Database:** PostgreSQL accessed via Prisma ORM
+- **Authentication:** NextAuth.js (v5) providing secure, JWT httpOnly cookie-based sessions.
+- **Data Validation:** Zod schema validation applied universally across Server Actions.
+- **Caching Layer:** Upstash Redis with a resilient graceful fallback mechanism, supplementing Next.js `unstable_cache`.
+- **Styling:** TailwindCSS with Framer Motion for micro-animations and seamless Dark Mode (`next-themes`).
+- **Testing:** Playwright End-to-End (E2E) testing suite for critical flows (Auth, Enrollment, Marriage).
 
-## Project Structure
+## 🗺️ Navigation Structure
 
-A brief overview of the key directories in the project.
+- **Main User Navigation:** Courses, Lectures, About, Contact
+- **User Dashboard:** Enrolled courses, saved lectures, AI interaction logs, and marriage profile management.
+- **Admin Control:** Users, Pages, Courses, Navigation Menus, Contact Messages, Homepage Sections, and Lectures.
 
-```
-/
-├── app/                # Next.js App Router pages and API routes
-│   ├── api/            # API endpoints (e.g., /api/auth, /api/admin)
-│   └── (main)/         # Main application routes
-├── prisma/             # Prisma schema, migrations, and seed script
-├── src/                # Source files
-│   ├── components/     # Reusable React components
-│   ├── context/        # React Context providers (AuthContext, AdminContext)
-│   ├── lib/            # Helper functions, database client
-│   └── middleware.ts   # Next.js middleware for route protection
-├── docs/               # Documentation and Gemini prompts
-└── .env.example        # Example environment variables
-```
-
-## Getting Started
-
-Follow these instructions to get the project up and running on your local machine.
+## 🛠️ Getting Started
 
 ### Prerequisites
+- Node.js (v18+)
+- pnpm (Recommended)
+- PostgreSQL database
+- Upstash Redis database (Optional but recommended)
 
-- Node.js (v18 or later)
-- npm, yarn, or pnpm
-- Docker (for running PostgreSQL) or a local PostgreSQL instance
+### Setup
 
-### 1. Clone the Repository
+1. **Clone & Install**
+   ```bash
+   pnpm install
+   ```
 
+2. **Environment Variables**
+   Copy `.env.example` to `.env` and fill in your details:
+   ```env
+   DATABASE_URL="postgresql://user:pass@localhost:5432/phaglp"
+   AUTH_SECRET="your-generated-secret"
+   UPSTASH_REDIS_REST_URL="your-upstash-url"
+   UPSTASH_REDIS_REST_TOKEN="your-upstash-token"
+   ```
+
+3. **Database Migration & Seeding**
+   ```bash
+   pnpm prisma db push
+   pnpm prisma db seed
+   ```
+
+4. **Run Development Server**
+   ```bash
+   pnpm dev
+   ```
+   The application will be available at `http://localhost:3000`.
+
+## 🧪 Testing
+
+Run the Playwright End-to-End test suite to verify core functionality:
 ```bash
-git clone <repository-url>
-cd freshnextjs
+pnpm exec playwright test
 ```
 
-### 2. Install Dependencies
+## 🔒 Security Posture
 
-```bash
-npm install
-```
-
-### 3. Set Up Environment Variables
-
-Copy the example environment file and fill in the required values for your database and JWT secret.
-
-```bash
-cp .env.example .env
-```
-
-Your `.env` file should look like this:
-
-```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase?schema=public"
-
-# Authentication
-JWT_SECRET="your-super-secret-jwt-key"
-JWT_EXPIRES_IN="7d"
-```
-
-### 4. Set Up the Database
-
-The easiest way to run PostgreSQL is with Docker.
-
-```bash
-# Start a PostgreSQL container
-docker run --name my-postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres
-
-# Update your DATABASE_URL in .env to:
-# DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres?schema=public"
-```
-
-Once your database is running and the `.env` file is configured, apply the migrations and seed the database.
-
-```bash
-npx prisma migrate dev
-npx prisma db seed
-```
-
-This will create the database schema and populate it with an admin user.
-
-### 5. Run the Application
-
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:3000`.
-
-## Usage
-
-- **Admin User:** The database seed script creates a default admin user.
-  - **Email:** `admin@example.com`
-  - **Password:** `password123`
-- Navigate to `/login` to sign in.
-- Once logged in as an admin, you can access the Admin Dashboard at `/admin`.
-- Use the theme toggle in the UI to switch between light and dark modes.
+- **No Legacy Auth:** All outdated JWT manual systems have been purged in favor of official NextAuth.js.
+- **Route Protection:** Both middleware-level and handler-level RBAC authorization are strictly enforced.
+- **Atomic Transactions:** Multi-step database mutations are wrapped in `prisma.$transaction`.
+- **N+1 Prevention:** Prisma relational data is prefetched using `include` blocks.

@@ -15,7 +15,7 @@ export function Footer({ initialMenus = [] }: FooterProps) {
   )
 
   return (
-    <footer className="bg-slate-100 dark:bg-slate-950 border-t border-slate-200/50 dark:border-slate-800/40 text-foreground py-16 px-4">
+    <footer className="bg-[#0F1D45] text-white dark:text-white  dark:bg-[#0F1D45] border-t border-perfectsky-200/50 dark:border-perfectsky-800/40 py-16 px-4">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
           {/* Logo & Platform Info Section */}
