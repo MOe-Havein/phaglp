@@ -357,7 +357,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Subscription Access</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value ?? (undefined as any)}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select tier" />
@@ -475,7 +478,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Sex</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value ?? (undefined as any)}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select sex" />
@@ -726,7 +732,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Academic Level</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value ?? (undefined as any)}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select level" />
@@ -791,7 +800,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Aptitude / IQ Level</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value ?? (undefined as any)}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select IQ" />
@@ -814,7 +826,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Financial Income</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value ?? (undefined as any)}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select income" />
@@ -836,7 +851,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Geographic economic tier</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value ?? (undefined as any)}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select tier" />
@@ -951,7 +969,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Guardian Income Level</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value ?? (undefined as any)}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select income" />

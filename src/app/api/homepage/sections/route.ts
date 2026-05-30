@@ -31,8 +31,13 @@ export async function POST(req: Request) {
     const body = await req.json()
     const validatedData = sectionSchema.parse(body)
 
+    // Strip undefined properties to comply with exactOptionalPropertyTypes
+    const createData = Object.fromEntries(
+      Object.entries(validatedData).filter(([_, v]) => v !== undefined),
+    ) as any
+
     const section = await prisma.homepageSection.create({
-      data: validatedData,
+      data: createData,
     })
 
     revalidatePath("/")

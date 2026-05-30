@@ -225,7 +225,7 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
         "Discourse participation is high! Try applying for the 'Active Dialogue Peer Group (GP)' to test your logic arguments.",
         "Your Stoicism node shows 95% concept alignment. Time to explore advanced 'Metaphysics & Absolute Thought Models'!",
       ]
-      const chosen = recs[Math.floor(Math.random() * recs.length)]
+      const chosen = recs[Math.floor(Math.random() * recs.length)] ?? ""
       setAnalyticsRecResult(chosen)
       toast.success("Cognitive model re-analyzed!")
     }, 1500)
@@ -294,7 +294,7 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
       title: `${difficultyLevel} Roadmap: Integrated ${learningFocus.toUpperCase()}`,
       duration: `${durationWeeks} Weeks (${learningPace} pacing)`,
       difficulty: difficultyLevel,
-      modules: focusTitles[learningFocus].map((m, idx) => ({
+      modules: (focusTitles[learningFocus] ?? []).map((m, idx) => ({
         id: idx + 1,
         title: m,
         hours: learningPace === "relaxed" ? 2 : learningPace === "balanced" ? 8 : 18,
@@ -1370,7 +1370,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       step={1}
                       value={[studyHours]}
                       onValueChange={(val) => {
-                        setStudyHours(val[0])
+                        const v = val[0]
+                        if (v !== undefined) setStudyHours(v)
                         adjustCognitiveFocus(1)
                       }}
                     />
@@ -1395,7 +1396,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       step={5}
                       value={[discourseRate]}
                       onValueChange={(val) => {
-                        setDiscourseRate(val[0])
+                        const v = val[0]
+                        if (v !== undefined) setDiscourseRate(v)
                         adjustCognitiveFocus(1)
                       }}
                     />

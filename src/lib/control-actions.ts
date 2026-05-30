@@ -378,7 +378,7 @@ export async function trackAnalytics(event: string, path?: string, metadata?: an
           path,
           metadata: metadata || {},
           userId,
-        },
+        } as any,
       })
     })
   } catch (error) {

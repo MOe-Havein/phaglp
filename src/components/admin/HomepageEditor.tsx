@@ -37,6 +37,7 @@ export function HomepageEditor({ initialSections }: HomepageEditorProps) {
     // Reorder locally
     const reordered = Array.from(sections)
     const [removed] = reordered.splice(startIndex, 1)
+    if (!removed) return
     reordered.splice(endIndex, 0, removed)
 
     setSections(reordered)

@@ -27,12 +27,12 @@ function HeroSection({ data }: { data: HomepageSection }) {
       headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(" ")
       headlinePost = words.slice(segmentSize * 2).join(" ")
     } else if (words.length === 2) {
-      headlinePre = words[0]
-      headlineHighlight = words[1]
+      headlinePre = words[0] ?? ""
+      headlineHighlight = words[1] ?? ""
       headlinePost = ""
     } else {
       headlinePre = ""
-      headlineHighlight = words[0]
+      headlineHighlight = words[0] ?? ""
       headlinePost = ""
     }
   }

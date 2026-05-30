@@ -28,5 +28,5 @@ export async function cached<T>(
   return unstable_cache(wrappedFn, cacheKey, {
     tags,
     revalidate,
-  })()
+  } as any)()
 }

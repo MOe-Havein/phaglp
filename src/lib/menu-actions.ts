@@ -116,7 +116,7 @@ export async function updateMenu(
           showInHeader: data.showInHeader,
           showInFooter: data.showInFooter,
           icon: data.icon,
-        },
+        } as any,
       })
     })
 
@@ -221,7 +221,7 @@ export async function updateSubItem(
           isOpenNewTab: data.isOpenNewTab,
           isActive: data.isActive,
           icon: data.icon,
-        },
+        } as any,
       })
     })
 

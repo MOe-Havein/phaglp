@@ -40,13 +40,22 @@ export function LectureCard({
   isFeatured = false,
   readingTime,
 }: LectureCardProps) {
-  const colors = categoryColors[category] || categoryColors["default"]
+  const colors = categoryColors[category] ||
+    categoryColors["default"] || {
+      bg: "bg-slate-50",
+      text: "text-slate-700",
+      imageBg: "bg-slate-200",
+    }
 
   // Generate initials from title for placeholder
   const getInitials = (text: string) => {
     const words = text.split(" ")
-    if (words.length >= 2) {
-      return words[0][0] + words[1][0]
+    const firstWord = words[0]
+    const secondWord = words[1]
+    if (firstWord && secondWord) {
+      const firstChar = firstWord[0] || ""
+      const secondChar = secondWord[0] || ""
+      return firstChar + secondChar
     }
     return text.substring(0, 2)
   }

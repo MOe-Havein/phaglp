@@ -860,7 +860,7 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                         Phase {p.number}
                       </span>
                       <h4 className="text-sm font-bold text-foreground leading-tight">
-                        {p.title.split("—")[1].trim()}
+                        {p.title.split("—")[1]?.trim() ?? p.title}
                       </h4>
                       <p className="text-[11px] text-muted-foreground font-semibold uppercase">
                         {p.duration}

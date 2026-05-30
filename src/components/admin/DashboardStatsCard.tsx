@@ -9,10 +9,10 @@ export interface DashboardStatsCardProps {
   value: string | number
   description: string
   icon: ComponentType<{ className?: string }>
-  colorTheme?: "blue" | "violet" | "emerald" | "amber" | "rose" | "cyan"
-  badgeText?: string
-  isLoading?: boolean
-  onClick?: () => void
+  colorTheme?: "blue" | "violet" | "emerald" | "amber" | "rose" | "cyan" | undefined
+  badgeText?: string | undefined
+  isLoading?: boolean | undefined
+  onClick?: (() => void) | undefined
 }
 
 const THEME_MAP = {

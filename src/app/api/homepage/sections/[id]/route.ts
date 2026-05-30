@@ -35,9 +35,14 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
     const body = await req.json()
     const validatedData = updateSectionSchema.parse(body)
 
+    // Strip undefined properties to comply with exactOptionalPropertyTypes
+    const updateData = Object.fromEntries(
+      Object.entries(validatedData).filter(([_, v]) => v !== undefined),
+    ) as any
+
     const section = await prisma.homepageSection.update({
       where: { id: params.id },
-      data: validatedData,
+      data: updateData,
     })
 
     revalidatePath("/")

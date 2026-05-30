@@ -5,15 +5,15 @@ import { motion } from "framer-motion"
 import { ArrowRight, Brain } from "lucide-react"
 
 interface SaaSHeroProps {
-  badgeText?: string
-  headlinePre?: string
-  headlineHighlight?: string
-  headlinePost?: string
-  subheadline?: string
-  primaryCtaText?: string
-  primaryCtaHref?: string
-  secondaryCtaText?: string
-  secondaryCtaHref?: string
+  badgeText?: string | undefined
+  headlinePre?: string | undefined
+  headlineHighlight?: string | undefined
+  headlinePost?: string | undefined
+  subheadline?: string | undefined
+  primaryCtaText?: string | undefined
+  primaryCtaHref?: string | undefined
+  secondaryCtaText?: string | undefined
+  secondaryCtaHref?: string | undefined
 }
 
 export function SaaSHero({

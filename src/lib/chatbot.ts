@@ -55,9 +55,9 @@ export async function addKnowledge(data: {
 export async function findRelevantKnowledge(
   query: string,
   options: {
-    limit?: number
-    type?: string
-    minSimilarity?: number
+    limit?: number | undefined
+    type?: string | undefined
+    minSimilarity?: number | undefined
   } = {},
 ) {
   try {
@@ -68,9 +68,11 @@ export async function findRelevantKnowledge(
 
     const result = await safeDbQuery(async () => {
       // Get all knowledge entries (filtered by type if specified)
-      return prisma.knowledgeBase.findMany({
-        where: type ? { type } : undefined,
-      })
+      const queryArgs: any = {}
+      if (type) {
+        queryArgs.where = { type }
+      }
+      return prisma.knowledgeBase.findMany(queryArgs)
     }, [])
 
     if (!result.success || !result.data) {
@@ -100,9 +102,9 @@ export async function findRelevantKnowledge(
 export async function answerQuestion(
   question: string,
   options: {
-    contextType?: string
-    sessionId?: string
-    userId?: string
+    contextType?: string | undefined
+    sessionId?: string | undefined
+    userId?: string | undefined
   } = {},
 ) {
   try {
@@ -181,7 +183,7 @@ ${context}
               role: "USER",
               content: question,
               userId,
-            },
+            } as any,
           }),
           prisma.chatMessage.create({
             data: {

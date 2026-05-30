@@ -80,9 +80,7 @@ interface MenuManagerProps {
 export function MenuManager({ initialMenus }: MenuManagerProps) {
   const router = useRouter()
   const [menus, setMenus] = useState<Menu[]>(initialMenus)
-  const [selectedMenuId, setSelectedMenuId] = useState<string | null>(
-    initialMenus.length > 0 ? initialMenus[0].id : null,
-  )
+  const [selectedMenuId, setSelectedMenuId] = useState<string | null>(initialMenus[0]?.id ?? null)
   const [isPending, startTransition] = useTransition()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -91,9 +89,9 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
     setMenus(initialMenus)
     // If selectedMenuId is no longer present in the updated list, default to first category
     if (selectedMenuId && !initialMenus.some((m) => m.id === selectedMenuId)) {
-      setSelectedMenuId(initialMenus.length > 0 ? initialMenus[0].id : null)
+      setSelectedMenuId(initialMenus[0]?.id ?? null)
     } else if (!selectedMenuId && initialMenus.length > 0) {
-      setSelectedMenuId(initialMenus[0].id)
+      setSelectedMenuId(initialMenus[0]?.id ?? null)
     }
   }, [initialMenus])
 
@@ -145,12 +143,15 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
     if (index === 0) return
     const newMenus = [...menus]
     const temp = newMenus[index]
-    newMenus[index] = newMenus[index - 1]
-    newMenus[index - 1] = temp
+    const prev = newMenus[index - 1]
+    if (temp !== undefined && prev !== undefined) {
+      newMenus[index] = prev
+      newMenus[index - 1] = temp
 
-    setMenus(newMenus)
-    const ids = newMenus.map((m) => m.id)
-    handleAction(() => reorderMenus(ids))
+      setMenus(newMenus)
+      const ids = newMenus.map((m) => m.id)
+      handleAction(() => reorderMenus(ids))
+    }
   }
 
   // Handle Move Menu Down
@@ -158,42 +159,55 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
     if (index === menus.length - 1) return
     const newMenus = [...menus]
     const temp = newMenus[index]
-    newMenus[index] = newMenus[index + 1]
-    newMenus[index + 1] = temp
+    const next = newMenus[index + 1]
+    if (temp !== undefined && next !== undefined) {
+      newMenus[index] = next
+      newMenus[index + 1] = temp
 
-    setMenus(newMenus)
-    const ids = newMenus.map((m) => m.id)
-    handleAction(() => reorderMenus(ids))
+      setMenus(newMenus)
+      const ids = newMenus.map((m) => m.id)
+      handleAction(() => reorderMenus(ids))
+    }
   }
 
   // Handle Move SubItem Up
   const moveSubUp = (menuIndex: number, subIndex: number) => {
     if (subIndex === 0) return
     const newMenus = [...menus]
-    const items = [...newMenus[menuIndex].items]
+    const menu = newMenus[menuIndex]
+    if (!menu) return
+    const items = [...menu.items]
     const temp = items[subIndex]
-    items[subIndex] = items[subIndex - 1]
-    items[subIndex - 1] = temp
-    newMenus[menuIndex].items = items
+    const prev = items[subIndex - 1]
+    if (temp !== undefined && prev !== undefined) {
+      items[subIndex] = prev
+      items[subIndex - 1] = temp
+      menu.items = items
 
-    setMenus(newMenus)
-    const ids = items.map((item) => item.id)
-    handleAction(() => reorderSubItems(ids))
+      setMenus(newMenus)
+      const ids = items.map((item) => item.id)
+      handleAction(() => reorderSubItems(ids))
+    }
   }
 
   // Handle Move SubItem Down
   const moveSubDown = (menuIndex: number, subIndex: number) => {
     const newMenus = [...menus]
-    const items = [...newMenus[menuIndex].items]
+    const menu = newMenus[menuIndex]
+    if (!menu) return
+    const items = [...menu.items]
     if (subIndex === items.length - 1) return
     const temp = items[subIndex]
-    items[subIndex] = items[subIndex + 1]
-    items[subIndex + 1] = temp
-    newMenus[menuIndex].items = items
+    const next = items[subIndex + 1]
+    if (temp !== undefined && next !== undefined) {
+      items[subIndex] = next
+      items[subIndex + 1] = temp
+      menu.items = items
 
-    setMenus(newMenus)
-    const ids = items.map((item) => item.id)
-    handleAction(() => reorderSubItems(ids))
+      setMenus(newMenus)
+      const ids = items.map((item) => item.id)
+      handleAction(() => reorderSubItems(ids))
+    }
   }
 
   // Create Menu Handler
@@ -273,7 +287,7 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
       () => {
         if (selectedMenuId === id) {
           const remaining = menus.filter((m) => m.id !== id)
-          setSelectedMenuId(remaining.length > 0 ? remaining[0].id : null)
+          setSelectedMenuId(remaining[0]?.id ?? null)
         }
       },
     )

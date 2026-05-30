@@ -110,8 +110,13 @@ export function AIAssistantPanel({
   const extractCategoryFromContent = (content: string): string => {
     // Try to find category in common patterns
     const categoryMatch = content.match(/(?:category|topic|subject):\s*([\w\s,]+)/i)
-    if (categoryMatch) {
-      return categoryMatch[1].split(",")[0].trim()
+    const matchVal = categoryMatch?.[1]
+    if (matchVal) {
+      const parts = matchVal.split(",")
+      const firstPart = parts[0]
+      if (firstPart) {
+        return firstPart.trim()
+      }
     }
     // Default to the category prop if available
     return category || ""

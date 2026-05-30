@@ -217,15 +217,21 @@ export async function updateLecture(id: string, data: any) {
     await ensureAdminOrInstructor()
     const parsedData = lectureSchema.parse(data)
 
-    const lecture = await updateLectureDb(id, {
+    const updateData: any = {
       title: parsedData.title,
       body: parsedData.body,
       category: parsedData.category,
       published: parsedData.published,
       tags: parsedData.tags || [],
-      coverImage: parsedData.coverImage,
-      isFeatured: parsedData.isFeatured,
-    })
+    }
+    if (parsedData.coverImage !== undefined) {
+      updateData.coverImage = parsedData.coverImage
+    }
+    if (parsedData.isFeatured !== undefined) {
+      updateData.isFeatured = parsedData.isFeatured
+    }
+
+    const lecture = await updateLectureDb(id, updateData)
 
     revalidatePath("/control/lectures")
     revalidatePath("/lectures")

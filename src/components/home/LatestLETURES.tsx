@@ -55,7 +55,7 @@ const FALLBACK_LECTURES: LETURES[] = [
 ]
 
 interface LatestLETURESProps {
-  title?: string
+  title?: string | undefined
 }
 
 export async function LatestLETURES({ title = "Latest Lectures" }: LatestLETURESProps) {

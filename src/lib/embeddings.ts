@@ -32,7 +32,10 @@ export async function generateTextEmbedding(text: string): Promise<number[]> {
     })
 
     if (Array.isArray(response.embeddings)) {
-      return response.embeddings[0]
+      const first = response.embeddings[0]
+      if (first) {
+        return first
+      }
     }
     throw new Error("Failed to generate embedding: Invalid response format")
   } catch (error) {
@@ -76,9 +79,11 @@ export function cosineSimilarity(vecA: number[], vecB: number[]): number {
   let magnitudeB = 0
 
   for (let i = 0; i < vecA.length; i++) {
-    dotProduct += vecA[i] * vecB[i]
-    magnitudeA += vecA[i] * vecA[i]
-    magnitudeB += vecB[i] * vecB[i]
+    const valA = vecA[i] ?? 0
+    const valB = vecB[i] ?? 0
+    dotProduct += valA * valB
+    magnitudeA += valA * valA
+    magnitudeB += valB * valB
   }
 
   magnitudeA = Math.sqrt(magnitudeA)
