@@ -95,6 +95,8 @@ model User {
   sessions     Session[]
   analytics    Analytics[]
   assetAllocations AssetAllocation[]
+  certificates     Certificate[]
+  lessonProgress   LessonProgress[]
 
   @@index([role])
   @@index([tier])
@@ -250,6 +252,7 @@ model Course {
   modules        CourseModule[]
   enrollments    Enrollment[]
   assets         AcademyAsset[]
+  certificates   Certificate[]
 
   @@index([courseType])
 }
@@ -300,6 +303,7 @@ model Lesson {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   module    CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress  LessonProgress[]
 
   @@index([moduleId])
 }
@@ -540,5 +544,34 @@ model HomepageSection {
 
   @@index([type])
   @@index([order])
+}
+
+model Certificate {
+  id              String   @id @default(cuid())
+  userId          String
+  courseId        String
+  certificateCode String   @unique
+  grade           String   @default("Completed")
+  issueDate       DateTime @default(now())
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([courseId])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
 }
 

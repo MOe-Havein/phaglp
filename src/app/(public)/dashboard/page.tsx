@@ -26,6 +26,7 @@ import { SubscriptionTier } from "@prisma/client"
 import prisma from "@/lib/prisma"
 import { CustomizeModal } from "@/components/dashboard/customize-modal"
 import { format } from "date-fns"
+import { getUserCertificates } from "@/lib/certificate-actions"
 
 export const dynamic = "force-dynamic"
 
@@ -55,7 +56,7 @@ export default async function DashboardPage() {
   }
 
   // Fetch dbUser preferences and dynamic platform content
-  const [dbUser, allLectures] = await Promise.all([
+  const [dbUser, allLectures, certificatesResult] = await Promise.all([
     prisma.user.findUnique({
       where: { id: user.id },
       select: {
@@ -76,10 +77,15 @@ export default async function DashboardPage() {
       },
       orderBy: { createdAt: "desc" },
     }),
+    getUserCertificates(user.id),
   ])
 
+  const certificates = certificatesResult.success ? certificatesResult.data || [] : []
+
   const tier = dbUser?.tier || SubscriptionTier.BASIC
-  const preferences = (dbUser?.lecturePreferences as string[]) || []
+  const preferences = Array.isArray(dbUser?.lecturePreferences)
+    ? (dbUser.lecturePreferences as string[])
+    : []
 
   // Extract unique categories from published lectures
   const availableCategories = Array.from(new Set(allLectures.map((l) => l.category)))
@@ -108,36 +114,38 @@ export default async function DashboardPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/20 py-10">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100/40 via-slate-50/50 to-slate-100/40 dark:from-slate-950/40 dark:via-slate-950/20 dark:to-slate-950/40 py-12">
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Facebook Style Profile Header */}
-        <div className="mb-10 rounded-3xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/80 shadow-md">
+        {/* Facebook Style Profile Header with Glassmorphism */}
+        <div className="mb-12 rounded-3xl overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-xl shadow-slate-100/10 dark:shadow-slate-950/50 transition-all duration-500 hover:border-slate-300/60 dark:hover:border-slate-700/60">
           {/* Cover Photo */}
-          <div className="relative h-48 md:h-64 w-full bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 overflow-hidden">
+          <div className="relative h-56 md:h-72 w-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950 via-slate-950 to-slate-950 overflow-hidden">
             {/* Ambient Background Lights */}
-            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-1/3 -mb-10 w-72 h-48 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" />
-            {/* Grid overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:20px_20px]" />
+            <div className="absolute -top-12 -right-12 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute -bottom-16 left-1/4 w-80 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-10 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+            
+            {/* High-Tech Grid overlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,black_70%,transparent_100%)]" />
 
             {/* Add Cover Photo Label / Decorative Badge */}
-            <Badge className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white border-0 text-[10px] uppercase font-bold tracking-wider py-1 px-3.5 hover:bg-black/60 cursor-default">
+            <Badge className="absolute bottom-6 right-6 bg-white/10 dark:bg-black/40 backdrop-blur-md text-white border border-white/10 text-[9px] uppercase font-bold tracking-widest py-1.5 px-4 hover:bg-white/20 dark:hover:bg-black/60 cursor-default">
               PHAGLP Scholar Campus
             </Badge>
           </div>
 
           {/* Profile Area */}
-          <div className="relative p-6 pt-20 md:pt-6 pb-8 flex flex-col md:flex-row items-center md:items-end justify-between gap-6">
-            {/* Facebook Style Overlapping Avatar */}
-            <div className="absolute -top-16 md:-top-24 left-1/2 -translate-x-1/2 md:left-8 md:translate-x-0 group">
-              <div className="relative rounded-full border-4 border-white dark:border-slate-900 shadow-xl overflow-hidden bg-slate-100 dark:bg-slate-800 transition-transform duration-300 hover:scale-105">
-                <Avatar className="w-32 h-32 md:w-36 md:h-36 rounded-full">
+          <div className="relative p-6 pt-24 md:pt-8 pb-10 flex flex-col md:flex-row items-center md:items-end justify-between gap-6">
+            {/* Overlapping Avatar with Glowing Ring */}
+            <div className="absolute -top-20 md:-top-28 left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0 group">
+              <div className="relative rounded-full border-4 border-white dark:border-slate-900 shadow-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 transition-all duration-500 hover:scale-105 hover:shadow-primary/20">
+                <Avatar className="w-36 h-36 md:w-40 md:h-40 rounded-full">
                   <AvatarImage
                     src={dbUser?.image || ""}
                     alt={dbUser?.name || "User Avatar"}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-gradient-to-tr from-primary to-indigo-600 text-white text-3xl font-extrabold uppercase flex items-center justify-center">
+                  <AvatarFallback className="bg-gradient-to-tr from-primary via-indigo-600 to-purple-600 text-white text-4xl font-black uppercase flex items-center justify-center">
                     {dbUser?.name
                       ? dbUser.name
                           .split(" ")
@@ -148,66 +156,65 @@ export default async function DashboardPage() {
                   </AvatarFallback>
                 </Avatar>
 
-                {/* Decorative Camera Icon overlay matching Facebook profile photo edit style */}
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 cursor-pointer">
-                  <Camera className="w-6 h-6 text-white animate-bounce" />
+                {/* Decorative Camera Icon overlay */}
+                <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 cursor-pointer">
+                  <Camera className="w-7 h-7 text-white animate-bounce" />
                 </div>
               </div>
             </div>
 
-            {/* Profile Info Details (pushed right to make room for Avatar on desktop) */}
-            <div className="text-center md:text-left md:pl-44 flex-1">
-              <div className="flex flex-col md:flex-row md:items-center gap-2.5 mb-1.5 justify-center md:justify-start">
-                <h1 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-2 justify-center md:justify-start">
+            {/* Profile Info Details */}
+            <div className="text-center md:text-left md:pl-48 flex-1">
+              <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2 justify-center md:justify-start">
+                <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight flex items-center gap-2 justify-center md:justify-start">
                   <span>{dbUser?.name || "Academic Scholar"}</span>
                   <span
-                    className="inline-flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full text-white shadow-sm"
+                    className="inline-flex items-center justify-center w-5 h-5 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full text-white shadow-md shadow-blue-500/20"
                     title="Verified Scholar"
                   >
-                    <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20">
+                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
                       <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 111.414-1.414L9 10.586l3.293-3.293a1 1 0 111.414 1.414z" />
                     </svg>
                   </span>
                 </h1>
 
                 {/* User Role Badge */}
-                <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] font-bold py-0.5 px-2.5 rounded-full uppercase w-fit mx-auto md:mx-0">
+                <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] font-extrabold py-0.5 px-3 rounded-full uppercase w-fit mx-auto md:mx-0 tracking-wider">
                   {dbUser?.role || "USER"}
                 </Badge>
               </div>
 
               {/* Email & Tier Status details */}
-              <div className="text-muted-foreground text-xs font-medium mb-3 flex flex-wrap items-center justify-center md:justify-start gap-x-2 gap-y-1">
-                <span>{dbUser?.email}</span>
+              <div className="text-muted-foreground text-xs font-semibold mb-4 flex flex-wrap items-center justify-center md:justify-start gap-x-2.5 gap-y-1">
+                <span className="hover:text-primary transition-colors cursor-pointer">{dbUser?.email}</span>
                 <span className="text-slate-300 dark:text-slate-700">•</span>
                 <span className="flex items-center gap-1">
                   {tier === SubscriptionTier.PRO && (
-                    <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0 shadow-sm font-bold text-[9px] py-0 px-2">
+                    <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white border-0 shadow-sm font-extrabold text-[9px] py-0.5 px-2.5 tracking-wider">
                       PRO MEMBER
                     </Badge>
                   )}
                   {tier === SubscriptionTier.ENTERPRISE && (
-                    <Badge className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-0 shadow-sm font-bold text-[9px] py-0 px-2">
+                    <Badge className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-0 shadow-sm font-extrabold text-[9px] py-0.5 px-2.5 tracking-wider">
                       ENTERPRISE
                     </Badge>
                   )}
                   {tier === SubscriptionTier.BASIC && (
-                    <Badge variant="secondary" className="text-[9px] font-semibold py-0 px-2">
+                    <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-[9px] font-extrabold py-0.5 px-2.5 tracking-wider">
                       BASIC SCHOLAR
                     </Badge>
                   )}
                 </span>
               </div>
 
-              <p className="text-muted-foreground text-xs leading-relaxed max-w-xl">
+              <p className="text-muted-foreground/90 text-sm leading-relaxed max-w-xl">
                 Continue your intellectual journey through unified philosophical frameworks and
                 scientific research.
               </p>
             </div>
 
             {/* Profile Action Buttons */}
-            <div className="flex items-center gap-3 shrink-0 self-center md:self-end mt-4 md:mt-0">
-              {/* Customization modal trigger button */}
+            <div className="flex items-center gap-3 shrink-0 self-center md:self-end mt-6 md:mt-0">
               <CustomizeModal
                 initialPreferences={preferences}
                 availableCategories={availableCategories}
@@ -216,7 +223,7 @@ export default async function DashboardPage() {
                 <Button
                   asChild
                   size="sm"
-                  className="bg-primary text-white hover:bg-primary/90 rounded-xl shadow-md font-semibold"
+                  className="bg-gradient-to-r from-primary to-indigo-600 text-white hover:from-primary/95 hover:to-indigo-650 rounded-2xl shadow-lg shadow-primary/20 font-bold px-5"
                 >
                   <Link href="/pricing">Upgrade Platform</Link>
                 </Button>
@@ -225,124 +232,124 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Quick Stats Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow rounded-2xl">
+        {/* Quick Stats Grid with Interactive Glows */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <Card className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30 dark:hover:border-primary/40 transition-all duration-300 rounded-2xl group">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <CardTitle className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
                 Enrolled Courses
               </CardTitle>
-              <GraduationCap className="w-4 h-4 text-primary" />
+              <GraduationCap className="w-5 h-5 text-primary group-hover:scale-110 transition-transform duration-300" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-extrabold text-foreground">4</div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <div className="text-3.5xl font-black text-foreground tracking-tight">4</div>
+              <p className="text-xs text-muted-foreground mt-1.5 font-medium">
                 2 active learning modules this week
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow rounded-2xl">
+          <Card className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:shadow-indigo-500/5 hover:-translate-y-1 hover:border-indigo-500/30 dark:hover:border-indigo-500/40 transition-all duration-300 rounded-2xl group">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <CardTitle className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
                 Completed Lessons
               </CardTitle>
-              <BookOpen className="w-4 h-4 text-indigo-500" />
+              <BookOpen className="w-5 h-5 text-indigo-500 group-hover:scale-110 transition-transform duration-300" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-extrabold text-foreground">24</div>
-              <p className="text-xs text-muted-foreground mt-1">Across all global disciplines</p>
+              <div className="text-3.5xl font-black text-foreground tracking-tight">24</div>
+              <p className="text-xs text-muted-foreground mt-1.5 font-medium">Across all global disciplines</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow rounded-2xl">
+          <Card className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:shadow-amber-500/5 hover:-translate-y-1 hover:border-amber-500/30 dark:hover:border-amber-500/40 transition-all duration-300 rounded-2xl group">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <CardTitle className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
                 Lecture Feed Filters
               </CardTitle>
-              <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+              <Sparkles className="w-5 h-5 text-amber-500 group-hover:scale-110 transition-transform duration-300 animate-pulse" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-extrabold text-foreground">{preferences.length}</div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <div className="text-3.5xl font-black text-foreground tracking-tight">{preferences.length}</div>
+              <p className="text-xs text-muted-foreground mt-1.5 font-medium">
                 {preferences.length > 0 ? "Personalized focus active" : "Displaying all categories"}
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow rounded-2xl">
+          <Card className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-slate-200/60 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:shadow-yellow-500/5 hover:-translate-y-1 hover:border-yellow-500/30 dark:hover:border-yellow-500/40 transition-all duration-300 rounded-2xl group">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Active Tier
+              <CardTitle className="text-xs font-extrabold uppercase tracking-widest text-muted-foreground">
+                Active Platform Tier
               </CardTitle>
-              <Trophy className="w-4 h-4 text-yellow-500" />
+              <Trophy className="w-5 h-5 text-yellow-500 group-hover:scale-110 transition-transform duration-300" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-extrabold text-foreground capitalize">
+              <div className="text-3.5xl font-black text-foreground tracking-tight capitalize">
                 {tier.toLowerCase()}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Full curriculum accessible</p>
+              <p className="text-xs text-muted-foreground mt-1.5 font-medium">Full curriculum accessible</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Personalized Lecture Focus Feed */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-black text-foreground flex items-center gap-2">
-                <Sparkles className="text-primary w-6 h-6 animate-pulse" />
+        <div className="mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div className="space-y-1.5">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
+                <Sparkles className="text-primary w-6 h-6 animate-pulse shrink-0" />
                 My Customized Research & Lectures
               </h2>
-              <p className="text-muted-foreground text-xs mt-0.5">
+              <p className="text-muted-foreground text-sm font-medium">
                 Curated insights automatically aligned with your dashboard focus settings.
               </p>
             </div>
             {preferences.length > 0 && (
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-0 text-xs py-1 px-3 rounded-full font-bold">
+              <Badge className="bg-primary/10 text-primary border-primary/20 text-xs py-1 px-4 rounded-full font-bold tracking-wider w-fit shrink-0">
                 Filtered Feed
               </Badge>
             )}
           </div>
 
           {customizedLectures.length === 0 ? (
-            <Card className="text-center py-16 border-2 border-dashed border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-900/10 rounded-2xl shadow-sm">
-              <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <CardTitle className="text-lg font-bold mb-1">No matching lectures found</CardTitle>
-              <CardDescription className="max-w-md mx-auto text-xs px-4">
+            <Card className="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-900/10 rounded-2xl shadow-sm">
+              <BookOpen className="w-14 h-14 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
+              <CardTitle className="text-xl font-bold mb-1.5">No matching lectures found</CardTitle>
+              <CardDescription className="max-w-md mx-auto text-sm px-4 leading-relaxed">
                 No lectures are currently published under your customized categories. Try editing
                 your focus topics or writing a new one.
               </CardDescription>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {customizedLectures.slice(0, 6).map((lec) => (
                 <Card
                   key={lec.id}
-                  className="group hover:border-primary/40 hover:shadow-lg transition-all duration-300 rounded-2xl overflow-hidden flex flex-col justify-between bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80"
+                  className="group hover:border-primary/45 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col justify-between bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80"
                 >
                   <div>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge className="bg-primary/10 text-primary border-0 text-[10px] px-2 py-0.5 font-bold">
+                    <CardHeader className="pb-3.5">
+                      <div className="flex items-center justify-between mb-3.5">
+                        <Badge className="bg-primary/10 text-primary border-0 text-[10px] px-3 py-1 font-extrabold tracking-wider uppercase">
                           {lec.category}
                         </Badge>
-                        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
+                        <span className="text-[10px] text-muted-foreground font-semibold flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-slate-400" />
                           {format(new Date(lec.createdAt), "MMM d, yyyy")}
                         </span>
                       </div>
-                      <CardTitle className="text-lg font-bold group-hover:text-primary transition-colors line-clamp-2">
+                      <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                         {lec.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="pb-3">
-                      <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                    <CardContent className="pb-4">
+                      <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                         {lec.excerpt || lec.body.replace(/[#*`]/g, "").substring(0, 120) + "..."}
                       </p>
                     </CardContent>
                   </div>
-                  <CardFooter className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+                  <CardFooter className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold">
                     <span className="text-muted-foreground">
                       by {lec.author.name || "Anonymous"}
                     </span>
@@ -350,7 +357,7 @@ export default async function DashboardPage() {
                       asChild
                       size="sm"
                       variant="ghost"
-                      className="text-primary hover:text-primary/80 p-0 h-auto font-bold flex items-center gap-1"
+                      className="text-primary hover:text-primary/80 hover:bg-transparent p-0 h-auto font-extrabold flex items-center gap-1.5 transition-transform group-hover:translate-x-1 duration-300"
                     >
                       <Link href={`/lectures/${lec.slug}`}>Read Lecture →</Link>
                     </Button>
@@ -362,27 +369,27 @@ export default async function DashboardPage() {
         </div>
 
         {/* Interactive Technological Concepts Hub Banner */}
-        <div className="mb-10 bg-gradient-to-r from-indigo-900/90 via-slate-900 to-blue-900/90 dark:from-indigo-950/80 dark:via-slate-950 dark:to-blue-950/80 border border-indigo-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl shadow-indigo-500/5 group">
-          <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-colors duration-500" />
-          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors duration-500" />
-          <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2 max-w-2xl">
-              <div className="flex items-center gap-2">
-                <Badge className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 animate-pulse">
+        <div className="mb-12 bg-gradient-to-r from-indigo-900/90 via-slate-900 to-blue-900/90 dark:from-indigo-950/80 dark:via-slate-950 dark:to-blue-950/80 border border-indigo-500/30 rounded-3xl p-8 relative overflow-hidden shadow-2xl shadow-indigo-500/5 group">
+          <div className="absolute top-0 right-0 -mt-6 -mr-6 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-colors duration-500 animate-pulse" />
+          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-colors duration-500 animate-pulse" />
+          <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="space-y-3 max-w-3xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-extrabold uppercase tracking-widest text-[9px] px-3 py-1">
                   Exclusive Hub
                 </Badge>
-                <span className="text-[10px] text-indigo-400 font-bold flex items-center gap-1">
+                <span className="text-[10px] text-indigo-400 font-extrabold flex items-center gap-1.5 tracking-wider">
                   <Sparkles
-                    className="w-3.5 h-3.5 animate-spin"
-                    style={{ animationDuration: "4s" }}
-                  />{" "}
+                    className="w-4 h-4 animate-spin text-indigo-400"
+                    style={{ animationDuration: "5s" }}
+                  />
                   Next-Gen Integration
                 </span>
               </div>
-              <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
                 Interactive Competitive Technological Concepts
               </h2>
-              <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
+              <p className="text-slate-300 text-sm md:text-base leading-relaxed">
                 Review and interact with our active integrations of Generative AI, Adaptive Pathing,
                 Academic Digital Twins, Cryptographic Ledger Verification, VR/AR lectures, and Low
                 Connectivity realignments.
@@ -390,9 +397,9 @@ export default async function DashboardPage() {
             </div>
             <Button
               asChild
-              className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white hover:from-indigo-600 hover:to-blue-700 font-bold rounded-2xl shadow-lg shadow-indigo-500/20 md:shrink-0 transition-transform active:scale-95 group-hover:translate-x-1 duration-300"
+              className="bg-gradient-to-r from-indigo-500 via-indigo-600 to-blue-600 text-white hover:from-indigo-600 hover:to-blue-700 font-bold rounded-2xl shadow-xl shadow-indigo-500/20 py-6 px-8 lg:shrink-0 transition-all duration-300 hover:scale-[1.02] active:scale-98 group-hover:translate-x-1"
             >
-              <Link href="/dashboard/tech-concepts" className="flex items-center gap-2">
+              <Link href="/dashboard/tech-concepts" className="flex items-center gap-2 tracking-wide text-sm font-extrabold">
                 Explore Tech Playground →
               </Link>
             </Button>
@@ -400,24 +407,24 @@ export default async function DashboardPage() {
         </div>
 
         {/* Interactive Implementation Plan Showcase Banner */}
-        <div className="mb-10 bg-gradient-to-r from-emerald-900/90 via-slate-900 to-teal-900/90 dark:from-emerald-950/80 dark:via-slate-950 dark:to-teal-950/80 border border-emerald-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl shadow-emerald-500/5 group">
-          <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors duration-500" />
-          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl group-hover:bg-teal-500/20 transition-colors duration-500" />
-          <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2 max-w-2xl">
-              <div className="flex items-center gap-2">
-                <Badge className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 animate-pulse">
+        <div className="mb-12 bg-gradient-to-r from-emerald-900/90 via-slate-900 to-teal-900/90 dark:from-emerald-950/80 dark:via-slate-950 dark:to-teal-950/80 border border-emerald-500/30 rounded-3xl p-8 relative overflow-hidden shadow-2xl shadow-emerald-500/5 group">
+          <div className="absolute top-0 right-0 -mt-6 -mr-6 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors duration-500 animate-pulse" />
+          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl group-hover:bg-teal-500/20 transition-colors duration-500 animate-pulse" />
+          <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="space-y-3 max-w-3xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-extrabold uppercase tracking-widest text-[9px] px-3 py-1">
                   System Roadmap
                 </Badge>
-                <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
-                  <ListTodo className="w-3.5 h-3.5" />
+                <span className="text-[10px] text-emerald-400 font-extrabold flex items-center gap-1.5 tracking-wider">
+                  <ListTodo className="w-4 h-4 text-emerald-400" />
                   Interactive Progress Tracker
                 </span>
               </div>
-              <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
                 PHAGLP — Interactive Implementation Plan
               </h2>
-              <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
+              <p className="text-slate-300 text-sm md:text-base leading-relaxed">
                 Track our detailed structural engineering progress. Check off key tasks dynamically
                 across Security, Core features, Quality Assurance, and visual Polish with local
                 persistence.
@@ -425,9 +432,9 @@ export default async function DashboardPage() {
             </div>
             <Button
               asChild
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 font-bold rounded-2xl shadow-lg shadow-emerald-500/20 md:shrink-0 transition-transform active:scale-95 group-hover:translate-x-1 duration-300"
+              className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 font-bold rounded-2xl shadow-xl shadow-emerald-500/20 py-6 px-8 lg:shrink-0 transition-all duration-300 hover:scale-[1.02] active:scale-98 group-hover:translate-x-1"
             >
-              <Link href="/implementation-plan" className="flex items-center gap-2">
+              <Link href="/implementation-plan" className="flex items-center gap-2 tracking-wide text-sm font-extrabold">
                 View Interactive Plan →
               </Link>
             </Button>
@@ -435,68 +442,132 @@ export default async function DashboardPage() {
         </div>
 
         {/* Ongoing Courses */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-black text-foreground flex items-center gap-2">
-              <BookOpenCheck className="text-indigo-500 w-6 h-6" />
-              Active Curriculums
-            </h2>
-            <Button asChild size="sm" variant="outline" className="rounded-xl font-bold">
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <div className="space-y-1">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
+                <BookOpenCheck className="text-indigo-500 w-6 h-6 shrink-0" />
+                Active Curriculums
+              </h2>
+              <p className="text-muted-foreground text-sm font-medium">Progress updates across your currently enrolled academy courses.</p>
+            </div>
+            <Button asChild size="sm" variant="outline" className="rounded-xl font-bold border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 px-4">
               <Link href="/courses">Explore Catalog</Link>
             </Button>
           </div>
 
-          <div className="grid gap-6">
+          <div className="grid gap-8">
             {ongoingCourses.map((course) => (
               <Card
                 key={course.id}
-                className="hover:shadow-md transition-shadow rounded-2xl bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80"
+                className="hover:shadow-lg hover:border-slate-300/50 dark:hover:border-slate-700/50 transition-all duration-300 rounded-3xl bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80 overflow-hidden"
               >
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-4 pt-6 px-6 md:px-8">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    <div>
-                      <CardTitle className="flex flex-wrap items-center gap-2 text-xl font-bold text-foreground">
+                    <div className="space-y-1.5">
+                      <CardTitle className="flex flex-wrap items-center gap-2 text-xl font-extrabold text-foreground">
                         {course.name}
                         <Badge
-                          variant="secondary"
-                          className="bg-primary/5 text-primary hover:bg-primary/10 border-0 font-bold"
+                          className="bg-primary/10 text-primary hover:bg-primary/20 border-0 font-bold py-0.5 px-3 rounded-full text-xs tracking-wider"
                         >
                           {course.progress}% Complete
                         </Badge>
                       </CardTitle>
-                      <CardDescription className="mt-1">
+                      <CardDescription className="font-semibold text-xs text-muted-foreground/80">
                         Instructor: {course.instructor}
                       </CardDescription>
                     </div>
                     <Button
                       size="sm"
                       asChild
-                      className="bg-primary text-white rounded-xl shadow-sm shrink-0"
+                      className="bg-primary text-white hover:bg-primary/95 rounded-2xl shadow-md font-bold px-5 shrink-0 transition-transform active:scale-95 duration-200"
                     >
-                      <Link href={`/courses`}>
-                        <PlayCircle className="w-4 h-4 mr-2" />
+                      <Link href={`/courses`} className="flex items-center gap-2">
+                        <PlayCircle className="w-4 h-4" />
                         Resume Module
                       </Link>
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                <CardContent className="pb-6 px-6 md:px-8">
+                  {/* Glowing dynamic progress bar */}
+                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden relative shadow-inner">
                     <div
-                      className="bg-primary h-full transition-all duration-500"
-                      style={{ width: `${course.progress}%` }}
+                      className="bg-gradient-to-r from-primary via-indigo-500 to-purple-600 h-full rounded-full transition-all duration-700 animate-pulse"
+                      style={{ width: `${course.progress}%`, animationDuration: "8s" }}
                     />
                   </div>
-                  <div className="mt-2.5 text-xs text-muted-foreground flex items-center justify-between">
+                  <div className="mt-3.5 text-xs text-muted-foreground font-semibold flex items-center justify-between">
                     <span>
-                      Next topic: <strong>{course.lastLesson}</strong>
+                      Next topic: <strong className="text-foreground">{course.lastLesson}</strong>
                     </span>
-                    <span>Self-paced</span>
+                    <span className="tracking-wide uppercase font-bold text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 py-0.5 px-2 rounded-md">Self-paced</span>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+        </div>
+
+        {/* Achievements & Certifications */}
+        <div className="mb-12 mt-16">
+          <div className="flex items-center gap-2.5 mb-8">
+            <Trophy className="text-amber-500 w-7 h-7 shrink-0 animate-bounce" />
+            <div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
+                Academic Achievements & Certifications
+              </h2>
+              <p className="text-muted-foreground text-sm font-medium">Verify, print, and share your calligraphic completion credentials.</p>
+            </div>
+          </div>
+
+          {certificates.length === 0 ? (
+            <Card className="text-center py-16 border-2 border-dashed border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-slate-900/10 rounded-3xl">
+              <Trophy className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+              <CardTitle className="text-lg font-bold mb-1">No certificates issued yet</CardTitle>
+              <CardDescription className="max-w-md mx-auto text-xs px-4 leading-relaxed">
+                Complete all course modules and pass review examinations to unlock your calligraphic credential certifications here.
+              </CardDescription>
+            </Card>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-8">
+              {certificates.map((cert: any) => (
+                <Card
+                  key={cert.id}
+                  className="hover:shadow-lg hover:border-amber-500/30 transition-all duration-300 rounded-3xl bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80 overflow-hidden flex flex-col justify-between group"
+                >
+                  <CardHeader className="pb-4 pt-6 px-6 md:px-8 flex flex-row items-start justify-between gap-4">
+                    <div className="space-y-1.5">
+                      <CardTitle className="text-lg font-extrabold text-foreground line-clamp-1">
+                        {cert.course.title}
+                      </CardTitle>
+                      <CardDescription className="text-xs font-semibold text-muted-foreground">
+                        Issued: {format(new Date(cert.issueDate), "MMM d, yyyy")}
+                      </CardDescription>
+                    </div>
+                    <div className="w-10 h-10 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500 shrink-0">
+                      <Sparkles className="w-5 h-5 animate-pulse" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pb-6 px-6 md:px-8 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-4">
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">Verification Code</span>
+                      <p className="text-sm font-bold text-foreground font-mono">{cert.certificateCode}</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      asChild
+                      className="bg-emerald-650 hover:bg-emerald-700 text-white rounded-xl shadow-sm font-bold px-4"
+                    >
+                      <Link href={`/certificates/${cert.certificateCode}`}>
+                        Verify Certificate
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

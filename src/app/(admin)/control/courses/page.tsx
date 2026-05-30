@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { BookOpen, Plus } from "lucide-react"
+import { BookOpen, Plus, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { prisma, serializePrisma } from "@/lib/prisma"
 
@@ -134,13 +134,22 @@ export default async function CoursesPage() {
             Academy courses and their enrollment stats.
           </p>
         </div>
-        <Link
-          href="/control/courses/new"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-violet-600 hover:bg-violet-700 text-white transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          New Course
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/control/courses/ai-planner"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors border border-slate-200/50 dark:border-slate-700/50"
+          >
+            <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+            AI Planner
+          </Link>
+          <Link
+            href="/control/courses/new"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-violet-600 hover:bg-violet-700 text-white transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            New Course
+          </Link>
+        </div>
       </div>
 
       <Suspense

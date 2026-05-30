@@ -7,13 +7,16 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useSession } from "next-auth/react"
 
+import Link from "next/link"
+
 interface EnrollButtonProps {
   courseId: string
   isEnrolled: boolean
   price: number
+  courseSlug?: string
 }
 
-export function EnrollButton({ courseId, isEnrolled, price }: EnrollButtonProps) {
+export function EnrollButton({ courseId, isEnrolled, price, courseSlug }: EnrollButtonProps) {
   const [loading, setLoading] = useState(false)
   const { data: session } = useSession()
   const router = useRouter()
@@ -42,8 +45,10 @@ export function EnrollButton({ courseId, isEnrolled, price }: EnrollButtonProps)
 
   if (isEnrolled) {
     return (
-      <Button disabled className="w-full mb-4 bg-green-600 text-white h-12 text-lg font-bold">
-        Already Enrolled
+      <Button asChild className="w-full mb-4 bg-emerald-600 hover:bg-emerald-750 text-white h-12 text-lg font-bold">
+        <Link href={`/courses/${courseSlug}/player`}>
+          Go to Classroom
+        </Link>
       </Button>
     )
   }

@@ -14,7 +14,7 @@ export function Media({ title, body, mediaUrl, mediaAlt = "Media preview" }: Med
   return (
     <section className="relative py-24 px-6 overflow-hidden bg-slate-950 text-slate-100 flex flex-col justify-center items-center">
       {/* Background glow flares */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05),transparent_65%)] blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_65%)] blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: "10s" }} />
 
       <div className="container mx-auto max-w-5xl relative z-10 text-center flex flex-col items-center">
         {title && (

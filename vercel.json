@@ -4,5 +4,10 @@
   "github": {
     "enabled": true,
     "silent": true
+  },
+  "functions": {
+    "src/app/api/**/*": {
+      "maxDuration": 60
+    }
   }
 }

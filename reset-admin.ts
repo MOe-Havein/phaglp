@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "./src/lib/prisma"
 import bcrypt from "bcryptjs"
 
-const prisma = new PrismaClient()
-
 async function resetAdminPassword() {
-  const email = "admin@phaglp.com"
+  const email = "admin@moe.com"
   const newPassword = "adminpassword123"
 
   console.log(`Resetting password for ${email}...`)

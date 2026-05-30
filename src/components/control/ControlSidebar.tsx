@@ -14,6 +14,7 @@ import {
   Home,
   Package,
   ClipboardCheck,
+  Award,
 } from "lucide-react"
 import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -35,6 +36,7 @@ const sidebarItems: SidebarItem[] = [
   { title: "Homepage CMS", href: "/control/homepage", icon: Home },
   { title: "Users", href: "/control/users", icon: Users },
   { title: "Courses", href: "/control/courses", icon: BookOpen },
+  { title: "Certificates", href: "/control/certificates", icon: Award },
   { title: "Lectures", href: "/control/lectures", icon: FileText },
   { title: "Assets", href: "/control/assets", icon: Package },
   { title: "Pages", href: "/control/pages", icon: FileCode },

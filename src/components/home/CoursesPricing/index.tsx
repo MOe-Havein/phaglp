@@ -173,11 +173,11 @@ export function CoursesPricing() {
   }
 
   return (
-    <section className="py-24 px-4 bg-background relative overflow-hidden border-t border-border/40">
+    <section className="py-24 px-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/25 via-background to-emerald-100/20 dark:from-indigo-900/15 dark:via-background dark:to-emerald-900/10 relative overflow-hidden border-t border-border/40">
       {/* Dynamic Background Decorations */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-12 right-12 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-12 left-12 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-12 w-[700px] h-[700px] bg-indigo-500/15 dark:bg-indigo-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDuration: "12s" }} />
+        <div className="absolute bottom-0 left-12 w-[700px] h-[700px] bg-emerald-500/12 dark:bg-emerald-500/6 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto max-w-7xl">

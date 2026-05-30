@@ -147,7 +147,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
               <div className="text-4xl font-bold mb-8 text-primary dark:text-blue-400">
                 {course.price === 0 ? "Free" : `$${course.price.toFixed(2)}`}
               </div>
-              <EnrollButton courseId={course.id} isEnrolled={isEnrolled} price={course.price} />
+              <EnrollButton courseId={course.id} isEnrolled={isEnrolled} price={course.price} courseSlug={course.slug} />
               <Button variant="outline" size="lg" className="w-full mb-8 h-12">
                 Preview Course
               </Button>

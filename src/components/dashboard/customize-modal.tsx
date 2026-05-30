@@ -24,7 +24,9 @@ interface CustomizeModalProps {
 export function CustomizeModal({ initialPreferences, availableCategories }: CustomizeModalProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [selected, setSelected] = useState<string[]>(initialPreferences)
+  const [selected, setSelected] = useState<string[]>(() =>
+    Array.isArray(initialPreferences) ? initialPreferences : []
+  )
   const router = useRouter()
 
   const handleToggle = (category: string) => {

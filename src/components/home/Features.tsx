@@ -45,10 +45,15 @@ export function Features({
   mediaAlt = "Academy features preview",
 }: FeaturesProps) {
   return (
-    <section className="relative py-24 px-6 overflow-hidden bg-slate-950 text-slate-100">
+    <section 
+      className="relative py-24 px-6 overflow-hidden text-slate-100"
+      style={{
+        background: "radial-gradient(circle at 20% 20%, rgba(31, 123, 198, 0.18) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(230, 92, 35, 0.15) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.10) 0%, transparent 60%), #030712"
+      }}
+    >
       {/* Background glow effects */}
-      <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.04),transparent_60%)] blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-10 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.03),transparent_60%)] blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-10 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(31,123,198,0.28),transparent_60%)] blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: "8s" }} />
+      <div className="absolute bottom-1/4 right-10 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(230,92,35,0.18),transparent_60%)] blur-3xl pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* Section Header */}

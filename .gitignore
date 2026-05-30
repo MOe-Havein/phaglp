@@ -49,3 +49,5 @@ gha-creds-*.json
 # Google client secrets
 client_secret*.json
 testsprite_tests\tmp\config.json
+
+.vercel
