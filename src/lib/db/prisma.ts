@@ -1,13 +1,31 @@
 import { PrismaClient } from "@prisma/client"
+import { PrismaLibSql } from "@prisma/adapter-libsql"
 
 // Prevents multiple instances of Prisma Client from being created in development
 const prismaClientSingleton = () => {
-  const client = new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-    datasources: {
-      db: { url: process.env.DATABASE_URL || "file:./dev.db" },
-    },
-  })
+  const url = process.env.DATABASE_URL || "file:./dev.db"
+  const isRemote = url.startsWith("libsql://") || url.startsWith("http://") || url.startsWith("https://")
+
+  let client: PrismaClient
+
+  if (isRemote) {
+    const config: { url: string; authToken?: string } = { url }
+    if (process.env.TURSO_AUTH_TOKEN) {
+      config.authToken = process.env.TURSO_AUTH_TOKEN
+    }
+    const adapter = new PrismaLibSql(config)
+    client = new PrismaClient({
+      log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+      adapter,
+    })
+  } else {
+    client = new PrismaClient({
+      log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+      datasources: {
+        db: { url },
+      },
+    })
+  }
 
   return new Proxy(client, {
     get(target, prop) {

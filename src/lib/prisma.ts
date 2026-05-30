@@ -1,14 +1,27 @@
 import { PrismaClient } from "@prisma/client"
+import { PrismaLibSql } from "@prisma/adapter-libsql"
 import { env } from "@/env"
 
-// Ensure process.env.DATABASE_URL is used by Prisma correctly
-// Prisma uses process.env.DATABASE_URL under the hood, but we can pass it explicitly.
-
 const prismaClientSingleton = () => {
+  const url = env.DATABASE_URL
+  const isRemote = url.startsWith("libsql://") || url.startsWith("http://") || url.startsWith("https://")
+
+  if (isRemote) {
+    const config: { url: string; authToken?: string } = { url }
+    if (process.env.TURSO_AUTH_TOKEN) {
+      config.authToken = process.env.TURSO_AUTH_TOKEN
+    }
+    const adapter = new PrismaLibSql(config)
+    return new PrismaClient({
+      log: env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+      adapter,
+    })
+  }
+
   return new PrismaClient({
     log: env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     datasources: {
-      db: { url: env.DATABASE_URL },
+      db: { url },
     },
   })
 }

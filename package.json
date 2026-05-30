@@ -26,6 +26,8 @@
     "@ai-sdk/google": "^3.0.80",
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.10.0",
+    "@libsql/client": "^0.17.3",
+    "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^6.19.3",
     "@prisma/config": "^6.19.3",
     "@radix-ui/react-accordion": "^1.2.12",
