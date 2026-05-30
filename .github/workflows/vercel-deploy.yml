@@ -1,4 +1,4 @@
-name: Analyze Bundle Size
+name: vercel Bundle Size
 
 on:
   pull_request:
