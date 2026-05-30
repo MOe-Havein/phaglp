@@ -55,16 +55,23 @@ export const getAssetById = cache(async (id: string): Promise<AcademyAsset | nul
  */
 export const getAdminDashboardStats = cache(async (): Promise<AdminDashboardStats> => {
   try {
-    const [userCount, courseCount, lectureCount, pageCount, assetCount, messageCount, unreadMessageCount] =
-      await Promise.all([
-        prisma.user.count(),
-        prisma.course.count(),
-        prisma.lecture.count(),
-        prisma.page.count(),
-        prisma.academyAsset.count(),
-        prisma.contactMessage.count(),
-        prisma.contactMessage.count({ where: { isRead: false } }),
-      ])
+    const [
+      userCount,
+      courseCount,
+      lectureCount,
+      pageCount,
+      assetCount,
+      messageCount,
+      unreadMessageCount,
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.course.count(),
+      prisma.lecture.count(),
+      prisma.page.count(),
+      prisma.academyAsset.count(),
+      prisma.contactMessage.count(),
+      prisma.contactMessage.count({ where: { isRead: false } }),
+    ])
 
     return {
       userCount,

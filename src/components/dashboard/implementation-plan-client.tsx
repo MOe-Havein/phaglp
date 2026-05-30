@@ -48,7 +48,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "jwt_hardening",
     title: "JWT Secret Hardening",
-    description: "Enforce cryptographically secure, 32-byte production-level keys and robust encryption filters.",
+    description:
+      "Enforce cryptographically secure, 32-byte production-level keys and robust encryption filters.",
     phase: 1,
     weight: "Critical",
     duration: "4h",
@@ -57,7 +58,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "cookie_hardening",
     title: "httpOnly Cookie Enforcement",
-    description: "Hardened credential session cookies configured as httpOnly, secure, and sameSite: 'lax' in production.",
+    description:
+      "Hardened credential session cookies configured as httpOnly, secure, and sameSite: 'lax' in production.",
     phase: 1,
     weight: "Critical",
     duration: "3h",
@@ -66,7 +68,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "csrf_xss_prevention",
     title: "CSRF & XSS Prevention Shield",
-    description: "Construct advanced customized CSP headers, X-Frame restrictions, and sanitizers inside active middleware.",
+    description:
+      "Construct advanced customized CSP headers, X-Frame restrictions, and sanitizers inside active middleware.",
     phase: 1,
     weight: "Critical",
     duration: "6h",
@@ -75,7 +78,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "rbac_middleware",
     title: "Strict Route Authorization Check",
-    description: "Enforce role-based access checks (RBAC) against user.role verification in admin and control namespaces.",
+    description:
+      "Enforce role-based access checks (RBAC) against user.role verification in admin and control namespaces.",
     phase: 1,
     weight: "Critical",
     duration: "5h",
@@ -84,7 +88,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "db_migrations_baseline",
     title: "Database Migration Baselines",
-    description: "Structure resilient container-ready migrate scripts to reconcile SQLite local and PostgreSQL production schema shifts.",
+    description:
+      "Structure resilient container-ready migrate scripts to reconcile SQLite local and PostgreSQL production schema shifts.",
     phase: 1,
     weight: "Critical",
     duration: "8h",
@@ -93,7 +98,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "strict_validation",
     title: "Strict Payload Sanitization",
-    description: "Implement unified Zod schema filters across all API routes and server action entry buffers.",
+    description:
+      "Implement unified Zod schema filters across all API routes and server action entry buffers.",
     phase: 1,
     weight: "Critical",
     duration: "6h",
@@ -104,7 +110,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "stoic_curriculums",
     title: "STOIC Course Scaffolding",
-    description: "Draft comprehensive modular schemas representing courses, modules, lessons, and varying payment types.",
+    description:
+      "Draft comprehensive modular schemas representing courses, modules, lessons, and varying payment types.",
     phase: 2,
     weight: "Major",
     duration: "1.5 days",
@@ -113,7 +120,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "adaptive_pathing",
     title: "Genius Adaptive Pathing Core",
-    description: "Configure dynamic algorithms routing custom lessons in alignment with individual IQ levels and preferences.",
+    description:
+      "Configure dynamic algorithms routing custom lessons in alignment with individual IQ levels and preferences.",
     phase: 2,
     weight: "Major",
     duration: "2 days",
@@ -122,7 +130,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "marriage_matching",
     title: "Halal Values-Based Marriage Registry",
-    description: "Build robust profile frameworks encompassing detailed marriage preferences, guardian authorization scopes, and world tiers.",
+    description:
+      "Build robust profile frameworks encompassing detailed marriage preferences, guardian authorization scopes, and world tiers.",
     phase: 2,
     weight: "Major",
     duration: "2.5 days",
@@ -131,7 +140,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "cms_homepage_override",
     title: "Dynamic CMS Homepage Controllers",
-    description: "Provide complete admin controls to override site menus, page structure sections, and logo/favicons database records dynamically.",
+    description:
+      "Provide complete admin controls to override site menus, page structure sections, and logo/favicons database records dynamically.",
     phase: 2,
     weight: "Major",
     duration: "1.5 days",
@@ -140,7 +150,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "ai_fallacy_checking",
     title: "AI Argument fallacy Analyzer",
-    description: "Integrate Gemini API wrappers parser analyzing philosophical arguments to detect formal and informal logical fallacies.",
+    description:
+      "Integrate Gemini API wrappers parser analyzing philosophical arguments to detect formal and informal logical fallacies.",
     phase: 2,
     weight: "Major",
     duration: "2 days",
@@ -149,7 +160,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "asset_allocation_ledger",
     title: "Academy Asset Allocation System",
-    description: "Implement conditional ledger checking tracking supplier details, allocation timestamps, and hardware wear parameters.",
+    description:
+      "Implement conditional ledger checking tracking supplier details, allocation timestamps, and hardware wear parameters.",
     phase: 2,
     weight: "Minor",
     duration: "1 day",
@@ -160,7 +172,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "vitest_unit_testing",
     title: "Vitest Unit Test Suites",
-    description: "Write intensive logic assertions covering utils, custom hooks, and dynamic course algorithms.",
+    description:
+      "Write intensive logic assertions covering utils, custom hooks, and dynamic course algorithms.",
     phase: 3,
     weight: "Major",
     duration: "1.5 days",
@@ -169,7 +182,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "playwright_e2e",
     title: "Playwright E2E User Flows",
-    description: "Run automated workflows validating student registration, course enrollment, and comprehensive admin settings updates.",
+    description:
+      "Run automated workflows validating student registration, course enrollment, and comprehensive admin settings updates.",
     phase: 3,
     weight: "Major",
     duration: "2 days",
@@ -178,7 +192,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "lighthouse_score",
     title: "Lighthouse Performance Boosts",
-    description: "Configure external media domains, apply lazy imports, and optimize large assets to hit a minimum 90 speed index.",
+    description:
+      "Configure external media domains, apply lazy imports, and optimize large assets to hit a minimum 90 speed index.",
     phase: 3,
     weight: "Major",
     duration: "1 day",
@@ -187,7 +202,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "strict_typescript",
     title: "Strict TypeScript Compliance",
-    description: "Purge code warnings, eradicate implicit 'any' declarations, clean up unused vars, and enable strict compiler outputs.",
+    description:
+      "Purge code warnings, eradicate implicit 'any' declarations, clean up unused vars, and enable strict compiler outputs.",
     phase: 3,
     weight: "Critical",
     duration: "1.5 days",
@@ -196,7 +212,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "error_boundaries",
     title: "Global Custom Error Boundaries",
-    description: "Inject user-friendly failure page states capturing system disruptions, network lapses, or database timeouts gracefully.",
+    description:
+      "Inject user-friendly failure page states capturing system disruptions, network lapses, or database timeouts gracefully.",
     phase: 3,
     weight: "Minor",
     duration: "1 day",
@@ -207,7 +224,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "hsl_aesthetic",
     title: "Unified HSL Aesthetic Themes",
-    description: "Update next-themes color parameters with sleek dark grids, refined typography weights, and glowing focus borders.",
+    description:
+      "Update next-themes color parameters with sleek dark grids, refined typography weights, and glowing focus borders.",
     phase: 4,
     weight: "Major",
     duration: "1 day",
@@ -216,7 +234,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "framer_motion_animations",
     title: "Framer Motion Layout Transitions",
-    description: "Scaffold organic visual flows, interactive micro-scaling hover items, and springy drawer overlays.",
+    description:
+      "Scaffold organic visual flows, interactive micro-scaling hover items, and springy drawer overlays.",
     phase: 4,
     weight: "Minor",
     duration: "1 day",
@@ -225,7 +244,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "rtl_responsiveness",
     title: "Arabic RTL Fluent Layouts",
-    description: "Ensure exact multi-device support automatically adjusting text streams, navigation elements, and grid sizes for Arabic readers.",
+    description:
+      "Ensure exact multi-device support automatically adjusting text streams, navigation elements, and grid sizes for Arabic readers.",
     phase: 4,
     weight: "Major",
     duration: "1.5 days",
@@ -234,7 +254,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "seo_tags_manifests",
     title: "SEO Meta Tags & Sitemaps",
-    description: "Generate structured social open-graph tags, canonical configurations, robots settings, and automated sitemap XML feeds.",
+    description:
+      "Generate structured social open-graph tags, canonical configurations, robots settings, and automated sitemap XML feeds.",
     phase: 4,
     weight: "Minor",
     duration: "1 day",
@@ -243,7 +264,8 @@ const ALL_TASKS: Task[] = [
   {
     id: "standalone_dryrun",
     title: "Standalone Docker Readiness Dryrun",
-    description: "Perform staging verification inside production standalone container modules with healthchecks enabled.",
+    description:
+      "Perform staging verification inside production standalone container modules with healthchecks enabled.",
     phase: 4,
     weight: "Critical",
     duration: "1.5 days",
@@ -258,7 +280,8 @@ const PHASES: PhaseInfo[] = [
     shortTitle: "Phase 1",
     status: "Blocker Fixes",
     duration: "~3–5 days",
-    badgeColor: "bg-red-500/10 text-red-500 border-red-500/20 dark:bg-red-500/20 dark:text-red-400 dark:border-red-500/30",
+    badgeColor:
+      "bg-red-500/10 text-red-500 border-red-500/20 dark:bg-red-500/20 dark:text-red-400 dark:border-red-500/30",
     icon: ShieldAlert,
   },
   {
@@ -267,7 +290,8 @@ const PHASES: PhaseInfo[] = [
     shortTitle: "Phase 2",
     status: "Core Features",
     duration: "~5–7 days",
-    badgeColor: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20 dark:bg-indigo-500/20 dark:text-indigo-400 dark:border-indigo-500/30",
+    badgeColor:
+      "bg-indigo-500/10 text-indigo-500 border-indigo-500/20 dark:bg-indigo-500/20 dark:text-indigo-400 dark:border-indigo-500/30",
     icon: Settings,
   },
   {
@@ -276,7 +300,8 @@ const PHASES: PhaseInfo[] = [
     shortTitle: "Phase 3",
     status: "Stabilization & QA",
     duration: "~4–6 days",
-    badgeColor: "bg-amber-500/10 text-amber-500 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-500/30",
+    badgeColor:
+      "bg-amber-500/10 text-amber-500 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-500/30",
     icon: Activity,
   },
   {
@@ -285,7 +310,8 @@ const PHASES: PhaseInfo[] = [
     shortTitle: "Phase 4",
     status: "Meta Tuning",
     duration: "~2–3 days",
-    badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/30",
+    badgeColor:
+      "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/30",
     icon: Sparkles,
   },
 ]
@@ -380,9 +406,11 @@ export function ImplementationPlanClient({ user: _user }: Props) {
   // Computations
   const totalTasksCount = ALL_TASKS.length
   const completedTasksCount = checkedTasks.filter((id) => ALL_TASKS.some((t) => t.id === id)).length
-  const progressPercent = totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0
+  const progressPercent =
+    totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0
 
-  const getPhaseTasksCount = (phaseNum: number) => ALL_TASKS.filter((t) => t.phase === phaseNum).length
+  const getPhaseTasksCount = (phaseNum: number) =>
+    ALL_TASKS.filter((t) => t.phase === phaseNum).length
   const getPhaseCompletedCount = (phaseNum: number) =>
     checkedTasks.filter((id) => ALL_TASKS.some((t) => t.phase === phaseNum && t.id === id)).length
   const getPhasePercent = (phaseNum: number) => {
@@ -394,7 +422,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-primary border-r-2" />
-        <p className="text-muted-foreground text-xs font-semibold">Loading Implementation Canvas...</p>
+        <p className="text-muted-foreground text-xs font-semibold">
+          Loading Implementation Canvas...
+        </p>
       </div>
     )
   }
@@ -417,7 +447,8 @@ export function ImplementationPlanClient({ user: _user }: Props) {
             PHAGLP — implementation plan
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-            Based on FreshNextJS guidelines audit · Next.js 15 · TypeScript strict · Prisma + Auth.js v5
+            Based on FreshNextJS guidelines audit · Next.js 15 · TypeScript strict · Prisma +
+            Auth.js v5
           </p>
         </div>
 
@@ -457,11 +488,14 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 Overall Roadmap Progress
               </CardTitle>
               <CardDescription className="text-xs">
-                Check off structural engineering components dynamically. Your session progress is saved.
+                Check off structural engineering components dynamically. Your session progress is
+                saved.
               </CardDescription>
             </div>
             <div className="text-right shrink-0">
-              <span className="text-2xl font-black text-primary tracking-tight">{progressPercent}%</span>
+              <span className="text-2xl font-black text-primary tracking-tight">
+                {progressPercent}%
+              </span>
               <p className="text-xs text-muted-foreground font-semibold">
                 {completedTasksCount} / {totalTasksCount} done
               </p>
@@ -469,7 +503,10 @@ export function ImplementationPlanClient({ user: _user }: Props) {
           </div>
 
           <div className="relative pt-1">
-            <Progress value={progressPercent} className="h-3.5 rounded-full bg-slate-100 dark:bg-slate-800" />
+            <Progress
+              value={progressPercent}
+              className="h-3.5 rounded-full bg-slate-100 dark:bg-slate-800"
+            />
             <div className="flex items-center justify-between text-[10px] text-muted-foreground font-semibold mt-2.5 px-1">
               <span>0% Start</span>
               <span>Phase 1 Limit (27%)</span>
@@ -504,7 +541,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               )}
 
               <div className="flex items-center gap-1.5 mb-1 text-xs">
-                <Icon className={`w-4 h-4 ${isActive ? "text-primary animate-pulse" : "opacity-60"}`} />
+                <Icon
+                  className={`w-4 h-4 ${isActive ? "text-primary animate-pulse" : "opacity-60"}`}
+                />
                 <span className={isActive ? "text-foreground font-extrabold" : "font-medium"}>
                   {phase.shortTitle}
                 </span>
@@ -528,7 +567,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                   style={{ width: `${percent}%` }}
                 />
               </div>
-              <span className="text-[10px] text-muted-foreground mt-1.5 font-bold leading-none">{percent}% done</span>
+              <span className="text-[10px] text-muted-foreground mt-1.5 font-bold leading-none">
+                {percent}% done
+              </span>
             </button>
           )
         })}
@@ -542,14 +583,24 @@ export function ImplementationPlanClient({ user: _user }: Props) {
           }`}
         >
           <div className="flex items-center gap-1.5 mb-1 text-xs">
-            <Trophy className={`w-4 h-4 ${activeTab === "overview" ? "text-yellow-500" : "opacity-60"}`} />
-            <span className={activeTab === "overview" ? "text-foreground font-extrabold" : "font-medium"}>
+            <Trophy
+              className={`w-4 h-4 ${activeTab === "overview" ? "text-yellow-500" : "opacity-60"}`}
+            />
+            <span
+              className={
+                activeTab === "overview" ? "text-foreground font-extrabold" : "font-medium"
+              }
+            >
               Overview
             </span>
           </div>
-          <span className="text-[10px] uppercase font-bold tracking-wider mb-2 leading-none">Roadmap Stats</span>
+          <span className="text-[10px] uppercase font-bold tracking-wider mb-2 leading-none">
+            Roadmap Stats
+          </span>
           <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full" />
-          <span className="text-[10px] text-muted-foreground mt-1.5 font-bold leading-none">Global Summary</span>
+          <span className="text-[10px] text-muted-foreground mt-1.5 font-bold leading-none">
+            Global Summary
+          </span>
         </button>
       </div>
 
@@ -569,13 +620,20 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
               <div className="flex items-center gap-3">
                 <span className="relative flex h-3.5 w-3.5">
-                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${phase.number === 1 ? "bg-red-400" : phase.number === 2 ? "bg-indigo-400" : phase.number === 3 ? "bg-amber-400" : "bg-emerald-400"}`} />
-                  <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${phase.number === 1 ? "bg-red-500" : phase.number === 2 ? "bg-indigo-500" : phase.number === 3 ? "bg-amber-500" : "bg-emerald-500"}`} />
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${phase.number === 1 ? "bg-red-400" : phase.number === 2 ? "bg-indigo-400" : phase.number === 3 ? "bg-amber-400" : "bg-emerald-400"}`}
+                  />
+                  <span
+                    className={`relative inline-flex rounded-full h-3.5 w-3.5 ${phase.number === 1 ? "bg-red-500" : phase.number === 2 ? "bg-indigo-500" : phase.number === 3 ? "bg-amber-500" : "bg-emerald-500"}`}
+                  />
                 </span>
                 <div>
                   <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                     {phase.title}
-                    <Badge variant="outline" className={`text-[10px] font-bold py-0.5 rounded-full ${phase.badgeColor}`}>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] font-bold py-0.5 rounded-full ${phase.badgeColor}`}
+                    >
                       {phase.status}
                     </Badge>
                   </h3>
@@ -651,7 +709,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                       <div className="flex items-center justify-between gap-2.5">
                         <h4
                           className={`text-sm font-bold truncate transition-colors leading-tight ${
-                            isChecked ? "text-slate-500 dark:text-slate-400 line-through" : "text-foreground"
+                            isChecked
+                              ? "text-slate-500 dark:text-slate-400 line-through"
+                              : "text-foreground"
                           }`}
                         >
                           {task.title}
@@ -669,7 +729,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                           {task.weight}
                         </Badge>
                       </div>
-                      <p className={`text-xs leading-relaxed line-clamp-2 ${isChecked ? "text-slate-400 dark:text-slate-500" : "text-muted-foreground"}`}>
+                      <p
+                        className={`text-xs leading-relaxed line-clamp-2 ${isChecked ? "text-slate-400 dark:text-slate-500" : "text-muted-foreground"}`}
+                      >
                         {task.description}
                       </p>
 
@@ -749,7 +811,10 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-black text-foreground">
-                  {completedTasksCount} <span className="text-lg text-muted-foreground font-normal">/ {totalTasksCount}</span>
+                  {completedTasksCount}{" "}
+                  <span className="text-lg text-muted-foreground font-normal">
+                    / {totalTasksCount}
+                  </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Dynamic live progress index</p>
               </CardContent>
@@ -773,7 +838,10 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 const isStarted = percent > 0
 
                 return (
-                  <div key={p.number} className="relative flex md:flex-col items-start gap-4 md:gap-0 md:text-center md:items-center">
+                  <div
+                    key={p.number}
+                    className="relative flex md:flex-col items-start gap-4 md:gap-0 md:text-center md:items-center"
+                  >
                     {/* Phase Circle Node */}
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center border font-bold text-sm shrink-0 md:mb-4 transition-all duration-300 ${
@@ -791,18 +859,28 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                       <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider block">
                         Phase {p.number}
                       </span>
-                      <h4 className="text-sm font-bold text-foreground leading-tight">{p.title.split("—")[1].trim()}</h4>
-                      <p className="text-[11px] text-muted-foreground font-semibold uppercase">{p.duration}</p>
+                      <h4 className="text-sm font-bold text-foreground leading-tight">
+                        {p.title.split("—")[1].trim()}
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground font-semibold uppercase">
+                        {p.duration}
+                      </p>
                       <div className="mt-1.5 flex items-center justify-start md:justify-center gap-1 text-[10px]">
                         <span
                           className={`font-black ${
-                            isFullyComplete ? "text-emerald-500" : isStarted ? "text-primary" : "text-slate-400"
+                            isFullyComplete
+                              ? "text-emerald-500"
+                              : isStarted
+                                ? "text-primary"
+                                : "text-slate-400"
                           }`}
                         >
                           {percent}%
                         </span>
                         <span className="text-slate-300 dark:text-slate-700">•</span>
-                        <span className="text-muted-foreground">{getPhaseCompletedCount(p.number)} done</span>
+                        <span className="text-muted-foreground">
+                          {getPhaseCompletedCount(p.number)} done
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -818,44 +896,76 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               Technical Stack & Compliance Auditing
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed mb-6">
-              The PHAGLP Platform incorporates rigorous structural auditing, aligning itself with strict development rulesets. We employ optimized client engines, strict compilation filters, and baseline security validations to establish robust standalone containers.
+              The PHAGLP Platform incorporates rigorous structural auditing, aligning itself with
+              strict development rulesets. We employ optimized client engines, strict compilation
+              filters, and baseline security validations to establish robust standalone containers.
             </p>
 
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs font-semibold">
               <div className="p-4 rounded-xl border bg-slate-50/50 dark:bg-slate-900/20 space-y-1">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Framework</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Framework
+                </span>
                 <p className="text-sm font-black text-foreground">Next.js 15 (App Router)</p>
-                <p className="text-[10px] text-muted-foreground leading-tight">Server Components, dynamic Webpack ignore wrappers, edge jose compilation compatibility.</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Server Components, dynamic Webpack ignore wrappers, edge jose compilation
+                  compatibility.
+                </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-slate-50/50 dark:bg-slate-900/20 space-y-1">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Type Safety</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Type Safety
+                </span>
                 <p className="text-sm font-black text-foreground">TypeScript strict mode</p>
-                <p className="text-[10px] text-muted-foreground leading-tight">Elimination of implicit parameters, robust helper utilities, clean local imports, zero build warning overrides.</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Elimination of implicit parameters, robust helper utilities, clean local imports,
+                  zero build warning overrides.
+                </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-slate-50/50 dark:bg-slate-900/20 space-y-1">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Authentication</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Authentication
+                </span>
                 <p className="text-sm font-black text-foreground">Auth.js v5 (NextAuth)</p>
-                <p className="text-[10px] text-muted-foreground leading-tight">httpOnly session tokens, redirect error propagation hooks, robust salt password hashing schemes.</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  httpOnly session tokens, redirect error propagation hooks, robust salt password
+                  hashing schemes.
+                </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-slate-50/50 dark:bg-slate-900/20 space-y-1">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Database layer</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Database layer
+                </span>
                 <p className="text-sm font-black text-foreground">Prisma Client & SQLite</p>
-                <p className="text-[10px] text-muted-foreground leading-tight">Optimized relation mappings, indexed user tier scopes, baseline migration setups, singleton instances.</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Optimized relation mappings, indexed user tier scopes, baseline migration setups,
+                  singleton instances.
+                </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-slate-50/50 dark:bg-slate-900/20 space-y-1">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Container Staging</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Container Staging
+                </span>
                 <p className="text-sm font-black text-foreground">Docker Standalone Runner</p>
-                <p className="text-[10px] text-muted-foreground leading-tight">Prepackaged local CLI builders, standalone node configs, container healthcheck monitoring modules.</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Prepackaged local CLI builders, standalone node configs, container healthcheck
+                  monitoring modules.
+                </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-slate-50/50 dark:bg-slate-900/20 space-y-1">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Testing Suite</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                  Testing Suite
+                </span>
                 <p className="text-sm font-black text-foreground">Vitest & Playwright</p>
-                <p className="text-[10px] text-muted-foreground leading-tight">Unit logic validators, automated browser regression tests, E2E checkouts, multi-browser configurations.</p>
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Unit logic validators, automated browser regression tests, E2E checkouts,
+                  multi-browser configurations.
+                </p>
               </div>
             </div>
           </Card>

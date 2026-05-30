@@ -34,7 +34,7 @@ const getCachedLectures = unstable_cache(
     }, [])
 
     const data = result.data || []
-    
+
     await redis.set(cacheKey, data, { ex: 300 })
     return data
   },

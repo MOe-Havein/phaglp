@@ -33,7 +33,11 @@ function Input({ name, ...props }: React.InputHTMLAttributes<HTMLInputElement> &
   )
 }
 
-function Select({ name, children, ...props }: React.SelectHTMLAttributes<HTMLSelectElement> & { name: string }) {
+function Select({
+  name,
+  children,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & { name: string }) {
   return (
     <select
       name={name}
@@ -45,7 +49,7 @@ function Select({ name, children, ...props }: React.SelectHTMLAttributes<HTMLSel
   )
 }
 
-function FieldError({ errors }: { errors?: string[] }) {
+function FieldError({ errors }: { errors?: string[] | undefined }) {
   if (!errors?.length) return null
   return <p className="text-xs text-red-500 mt-1">{errors[0]}</p>
 }
@@ -64,14 +68,17 @@ export default function NewAssetPage() {
           <Package className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
         </div>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Asset Created!</h2>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">The asset was added to the inventory.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          The asset was added to the inventory.
+        </p>
         <div className="flex gap-3">
-          <Link
-            href="/control/assets/new"
-            className="px-4 py-2 text-sm rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 text-sm rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer"
           >
             Add Another
-          </Link>
+          </button>
           <Link
             href="/control/assets"
             className="px-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -94,7 +101,9 @@ export default function NewAssetPage() {
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to Assets
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">New Asset</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          New Asset
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Add a new item to the academy inventory.
         </p>
@@ -144,7 +153,9 @@ export default function NewAssetPage() {
               <Label required>Category</Label>
               <Select name="category" defaultValue="OTHER">
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c.replace(/_/g, " ")}</option>
+                  <option key={c} value={c}>
+                    {c.replace(/_/g, " ")}
+                  </option>
                 ))}
               </Select>
               <FieldError errors={state.fieldErrors?.category} />
@@ -153,7 +164,9 @@ export default function NewAssetPage() {
               <Label required>Condition</Label>
               <Select name="condition" defaultValue="GOOD">
                 {CONDITIONS.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
                 ))}
               </Select>
             </div>
@@ -161,7 +174,9 @@ export default function NewAssetPage() {
               <Label required>Status</Label>
               <Select name="status" defaultValue="AVAILABLE">
                 {STATUSES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </Select>
             </div>
@@ -211,32 +226,22 @@ export default function NewAssetPage() {
             <Label>Purchase Date</Label>
             <Input name="purchaseDate" type="date" />
           </div>
-
-          <div>
-            <Label>Notes</Label>
-            <textarea
-              name="notes"
-              rows={2}
-              placeholder="Any additional notes…"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none placeholder:text-gray-400"
-            />
-          </div>
         </div>
 
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={isPending}
-            className="px-6 py-2.5 text-sm font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isPending ? "Creating…" : "Create Asset"}
-          </button>
+        <div className="flex justify-end gap-3">
           <Link
             href="/control/assets"
-            className="px-6 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            className="px-4 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             Cancel
           </Link>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="px-4 py-2 text-sm rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white transition-colors cursor-pointer"
+          >
+            {isPending ? "Creating..." : "Create Asset"}
+          </button>
         </div>
       </form>
     </div>

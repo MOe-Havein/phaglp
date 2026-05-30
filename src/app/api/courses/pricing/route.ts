@@ -21,7 +21,7 @@ export async function GET() {
   if (!result.success) {
     return NextResponse.json(
       { success: false, error: result.error || "Failed to fetch courses" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 

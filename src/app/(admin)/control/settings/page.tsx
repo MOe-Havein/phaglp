@@ -24,7 +24,9 @@ export default async function SettingsPage() {
           <Settings className="w-4 h-4" />
           <span>Configuration</span>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Site Settings</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          Site Settings
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Global platform configuration and feature flags.
         </p>

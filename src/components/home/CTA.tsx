@@ -15,7 +15,7 @@ export function CTA({
   title = "Unlock Your Intellectual Potential",
   body = "Enroll in specialized philosophical courses, join interactive scientific fellowships, and structure your life path today.",
   ctaLabel = "Get Started Now",
-  ctaHref = "/register"
+  ctaHref = "/register",
 }: CTAProps) {
   return (
     <section className="relative py-24 px-6 overflow-hidden bg-slate-950 text-slate-100 flex items-center justify-center">
@@ -47,10 +47,7 @@ export function CTA({
           )}
 
           {ctaLabel && ctaHref && (
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <a
                 href={ctaHref}
                 className="inline-flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-8 py-4.5 text-base font-bold text-white shadow-xl shadow-blue-500/10 transition-all duration-300"

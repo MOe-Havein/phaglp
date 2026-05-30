@@ -1,10 +1,12 @@
-import withBundleAnalyzer from "@next/bundle-analyzer"
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  
-  // Prevents Next.js from bundling native Prisma binaries into client-side chunks
+
+  reactStrictMode: true,
+
+  poweredByHeader: false,
+
+  // Prevent native/server-only packages from leaking into client bundles
   serverExternalPackages: ["@prisma/client", "prisma", "isomorphic-dompurify", "jsdom"],
 
   typescript: {
@@ -22,28 +24,30 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
+    formats: ["image/avif", "image/webp"],
   },
 
-  experimental: {
-    optimizePackageImports: ["@tiptap/core", "framer-motion", "lucide-react"],
-  },
-}
-
-if (!process.env.TURBOPACK) {
-  nextConfig.webpack = (config) => {
-    // Suppress dynamic Jose compression warnings for standard Webpack builds
+  webpack: (config, { isServer }) => {
+    // Suppress jose/browser compression warnings
     config.ignoreWarnings = [
       ...(config.ignoreWarnings || []),
       { module: /node_modules\/jose/ },
       { message: /CompressionStream/ },
       { message: /DecompressionStream/ },
     ]
+
+    // Reduce Prisma bundle size on client
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        os: false,
+      }
+    }
+
     return config
-  }
+  },
 }
 
-const configWithAnalyzer = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === "true",
-})(nextConfig)
-
-export default configWithAnalyzer
+export default nextConfig

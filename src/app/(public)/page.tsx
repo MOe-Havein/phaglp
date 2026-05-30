@@ -3,7 +3,6 @@ import { Metadata } from "next"
 import prisma from "@/lib/db/prisma"
 import { HomepageSection } from "@/types/homepage"
 
-
 import { SaaSHero } from "@/components/home/SaaSHero"
 import { Features } from "@/components/home/Features"
 import { CTA } from "@/components/home/CTA"
@@ -21,12 +20,12 @@ function HeroSection({ data }: { data: HomepageSection }) {
   let headlinePost = "with AI Socratic Mapping"
 
   if (data.title) {
-    const words = data.title.split(' ')
+    const words = data.title.split(" ")
     if (words.length >= 3) {
       const segmentSize = Math.ceil(words.length / 3)
-      headlinePre = words.slice(0, segmentSize).join(' ')
-      headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(' ')
-      headlinePost = words.slice(segmentSize * 2).join(' ')
+      headlinePre = words.slice(0, segmentSize).join(" ")
+      headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(" ")
+      headlinePost = words.slice(segmentSize * 2).join(" ")
     } else if (words.length === 2) {
       headlinePre = words[0]
       headlineHighlight = words[1]
@@ -55,10 +54,28 @@ function HeroSection({ data }: { data: HomepageSection }) {
 
 const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
   hero: HeroSection,
-  features: ({ data }) => <Features title={data.title} body={data.body} mediaUrl={data.mediaUrl} mediaAlt={data.mediaAlt} />,
-  cta: ({ data }) => <CTA title={data.title} body={data.body} ctaLabel={data.ctaLabel} ctaHref={data.ctaHref} />,
-  media: ({ data }) => <Media title={data.title} body={data.body} mediaUrl={data.mediaUrl} mediaAlt={data.mediaAlt} />,
-  testimonials: ({ data }) => <Testimonials title={data.title} body={data.body} ctaLabel={data.ctaLabel} ctaHref={data.ctaHref} />,
+  features: ({ data }) => (
+    <Features
+      title={data.title}
+      body={data.body}
+      mediaUrl={data.mediaUrl}
+      mediaAlt={data.mediaAlt}
+    />
+  ),
+  cta: ({ data }) => (
+    <CTA title={data.title} body={data.body} ctaLabel={data.ctaLabel} ctaHref={data.ctaHref} />
+  ),
+  media: ({ data }) => (
+    <Media title={data.title} body={data.body} mediaUrl={data.mediaUrl} mediaAlt={data.mediaAlt} />
+  ),
+  testimonials: ({ data }) => (
+    <Testimonials
+      title={data.title}
+      body={data.body}
+      ctaLabel={data.ctaLabel}
+      ctaHref={data.ctaHref}
+    />
+  ),
   lectures: ({ data }) => <LatestLETURES title={data.title || undefined} />,
 }
 
@@ -81,8 +98,13 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Failed to fetch site settings for SEO metadata", error)
   }
 
-  const title = firstSection?.seoTitle || firstSection?.title || settings?.metaTitle || "Welcome to FreshNextJS"
-  const description = firstSection?.seoDescription || firstSection?.body?.slice(0, 150) || settings?.metaDescription || ""
+  const title =
+    firstSection?.seoTitle || firstSection?.title || settings?.metaTitle || "Welcome to FreshNextJS"
+  const description =
+    firstSection?.seoDescription ||
+    firstSection?.body?.slice(0, 150) ||
+    settings?.metaDescription ||
+    ""
 
   return {
     title,
@@ -117,9 +139,7 @@ export default async function PublicHomepage() {
         return (
           <React.Fragment key={section.id}>
             <Component data={section} />
-            {section.type === "hero" && (
-              <div className="h-1 w-full bg-tinfoil" />
-            )}
+            {section.type === "hero" && <div className="h-1 w-full bg-tinfoil" />}
           </React.Fragment>
         )
       })}

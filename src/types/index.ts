@@ -73,14 +73,14 @@ export interface AcademyAsset {
   sku: string
   name: string
   description: string | null
-  category: string         // AssetCategory enum value
-  condition: string        // AssetCondition enum value
-  status: string           // AssetStatus enum value
+  category: string // AssetCategory enum value
+  condition: string // AssetCondition enum value
+  status: string // AssetStatus enum value
   quantity: number
   quantityUnit: string
   location: string | null
   supplier: string | null
-  purchaseDate: string | null  // ISO string after serialisation
+  purchaseDate: string | null // ISO string after serialisation
   purchasePrice: number | null
   notes: string | null
   courseId: string | null

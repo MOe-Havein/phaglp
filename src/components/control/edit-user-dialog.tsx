@@ -430,7 +430,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>G. Father Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Grandfather" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="Grandfather"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -676,7 +680,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                             <FormItem>
                               <FormLabel className="text-[11px]">Building No</FormLabel>
                               <FormControl>
-                                <Input placeholder="Building" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="Building"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -728,7 +736,9 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                                 <SelectItem value={EducationLevel.DEGREE}>
                                   University Degree
                                 </SelectItem>
-                                <SelectItem value={EducationLevel.CLASS}>Secondary School</SelectItem>
+                                <SelectItem value={EducationLevel.CLASS}>
+                                  Secondary School
+                                </SelectItem>
                                 <SelectItem value={EducationLevel.SCHOOL}>
                                   Elementary School
                                 </SelectItem>

@@ -1,14 +1,17 @@
 # Name: Self-Healing Error Fixing Loop (agy agent)
+
 # Description: Automatically intercepts workspace execution failures, installs missing packages, and rewrites broken file code blocks.
 
 ## Activation Trigger
+
 - Activated whenever a command executed via `agy` returns a non-zero exit code or drops a stack trace (e.g., `ModuleNotFoundError`, `SyntaxError`, `TypeError`).
 
 ## Core Execution Loop Rule
+
 If the command fails, do NOT halt. You must execute these 3 sequential steps autonomously:
 
 1. **Dependency Analysis (Zero-Token Fast Fix)**
-   - Look closely at the `stderr` string. 
+   - Look closely at the `stderr` string.
    - If a `ModuleNotFoundError` or `ImportError` is present, instantly invoke the tool command: `pip install <package_name>`.
    - After installation, immediately re-run the file.
 

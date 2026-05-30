@@ -1,32 +1,67 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "target": "ESNext",
-    "skipLibCheck": true,
-    "types": ["node"],
-    "strict": true,
-    "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "target": "ES2022",
+
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+
     "jsx": "preserve",
+
+    "strict": true,
+
+    "allowJs": false,
+
+    "skipLibCheck": true,
+
+    "noEmit": true,
+
     "incremental": true,
+
+    "isolatedModules": true,
+
+    "esModuleInterop": true,
+
+    "resolveJsonModule": true,
+
+    "types": ["node"],
+
+    "baseUrl": ".",
+
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "forceConsistentCasingInFileNames": true,
+
+    "exactOptionalPropertyTypes": true,
+
+    "noUncheckedIndexedAccess": true,
+
+    "useUnknownInCatchVariables": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "check-db.ts", "list-tables.ts", "list-local-tables.ts"]
+
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
+
+  "exclude": [
+    "node_modules",
+    ".next",
+    "dist",
+    "coverage",
+    "check-db.ts",
+    "list-tables.ts",
+    "list-local-tables.ts"
+  ]
 }

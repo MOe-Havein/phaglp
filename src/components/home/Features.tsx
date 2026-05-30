@@ -15,43 +15,45 @@ const defaultFeatures = [
   {
     icon: <Cpu className="w-6 h-6 text-blue-500" />,
     title: "AI Socratic Mapping",
-    description: "Structure complex arguments and philosophical thoughts with real-time logical critique from our interactive AI assistant."
+    description:
+      "Structure complex arguments and philosophical thoughts with real-time logical critique from our interactive AI assistant.",
   },
   {
     icon: <GraduationCap className="w-6 h-6 text-orange-500" />,
     title: "Gifted Education Paths",
-    description: "Designed for high cognitive abilities, offering specialized, rigorous curriculums in mathematical logic and epistemological science."
+    description:
+      "Designed for high cognitive abilities, offering specialized, rigorous curriculums in mathematical logic and epistemological science.",
   },
   {
     icon: <ShieldAlert className="w-6 h-6 text-green-500" />,
     title: "Fallacy Detection Engine",
-    description: "Instantly check outlines, essays, and debate nodes for logical errors, cognitive biases, and inconsistencies."
+    description:
+      "Instantly check outlines, essays, and debate nodes for logical errors, cognitive biases, and inconsistencies.",
   },
   {
     icon: <Award className="w-6 h-6 text-purple-500" />,
     title: "Intellectual Fellowship",
-    description: "A values-based, privacy-first ecosystem matching intellectual compatibility and scientific collaboration."
-  }
+    description:
+      "A values-based, privacy-first ecosystem matching intellectual compatibility and scientific collaboration.",
+  },
 ]
 
 export function Features({
   title = "Prepare for an Intellectual Revolution",
   body = "Discover advanced methodologies to analyze philosophy, master logic, and develop rigorous critical thinking standards.",
   mediaUrl,
-  mediaAlt = "Academy features preview"
+  mediaAlt = "Academy features preview",
 }: FeaturesProps) {
   return (
-
     <section className="relative py-24 px-6 overflow-hidden bg-slate-950 text-slate-100">
       {/* Background glow effects */}
       <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.04),transparent_60%)] blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-10 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.03),transparent_60%)] blur-3xl pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
-        
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -61,7 +63,7 @@ export function Features({
             {title}
           </motion.h2>
           {body && (
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -75,9 +77,10 @@ export function Features({
 
         {/* Dynamic media & features grid layout */}
         <div className="grid lg:grid-cols-12 gap-12 items-center">
-          
           {/* Features Cards Grid */}
-          <div className={`${mediaUrl ? "lg:col-span-6" : "lg:col-span-12"} grid sm:grid-cols-2 gap-6`}>
+          <div
+            className={`${mediaUrl ? "lg:col-span-6" : "lg:col-span-12"} grid sm:grid-cols-2 gap-6`}
+          >
             {defaultFeatures.map((feat, index) => (
               <motion.div
                 key={index}
@@ -102,7 +105,7 @@ export function Features({
 
           {/* Optional Media Showoff */}
           {mediaUrl && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -126,9 +129,8 @@ export function Features({
               </div>
             </motion.div>
           )}
-
         </div>
       </div>
     </section>
-  );
+  )
 }

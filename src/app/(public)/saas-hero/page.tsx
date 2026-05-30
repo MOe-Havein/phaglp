@@ -4,13 +4,14 @@ import { SaaSHero } from "@/components/home/SaaSHero"
 
 export const metadata: Metadata = {
   title: "SaaS Hero Showcase - FreshNextJS",
-  description: "A sleek, modern dark mode SaaS hero section preview with a floating glowing browser mockup.",
+  description:
+    "A sleek, modern dark mode SaaS hero section preview with a floating glowing browser mockup.",
 }
 
 export default function SaasHeroShowcase() {
   return (
     <main className="bg-[#030712] min-h-screen w-full flex flex-col justify-start">
-      <SaaSHero 
+      <SaaSHero
         badgeText="New Feature Release ->"
         headlinePre="Structure Your Thoughts,"
         headlineHighlight="Elevate Critical Thinking"

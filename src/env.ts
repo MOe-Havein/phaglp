@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -6,13 +6,13 @@ const envSchema = z.object({
   NEXTAUTH_SECRET: z.string().min(32).optional(),
   AUTH_SECRET: z.string().min(32).optional(),
   // Add other required env vars here
-});
+})
 
-const _env = envSchema.safeParse(process.env);
+const _env = envSchema.safeParse(process.env)
 
 if (!_env.success) {
-  console.error("❌ Invalid environment variables:", _env.error.format());
-  throw new Error("Invalid environment variables");
+  console.error("❌ Invalid environment variables:", _env.error.format())
+  throw new Error("Invalid environment variables")
 }
 
-export const env = _env.data;
+export const env = _env.data

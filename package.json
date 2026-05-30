@@ -13,7 +13,7 @@
     "dev:infra": "docker compose -f docker-compose.dev.yml up -d",
     "build": "next build",
     "start": "node .next/standalone/server.js",
-    "analyze": "cross-env ANALYZE=true next build",
+    "analyze": "pnpm --env ANALYZE=true build",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate --schema=./prisma/schema.prisma",
     "db:migrate": "prisma migrate dev",
@@ -113,7 +113,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "15.5.9",
     "@playwright/test": "^1.60.0",
     "@prisma/adapter-pg": "^6.19.2",
     "@testing-library/jest-dom": "^6.9.1",

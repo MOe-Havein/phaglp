@@ -86,7 +86,7 @@ export function DashboardStatsCard({
         "group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 text-left w-full shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         onClick
           ? "cursor-pointer hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md hover:border-border/80 active:scale-[0.99] transition-all duration-300 ease-out"
-          : "cursor-default"
+          : "cursor-default",
       )}
     >
       <div className={cn("absolute top-0 left-0 right-0 h-1 bg-gradient-to-r", theme.gradient)} />
@@ -96,13 +96,18 @@ export function DashboardStatsCard({
             "flex items-center justify-center size-11 rounded-xl bg-gradient-to-br text-white shadow-sm transition-transform duration-300 ease-out",
             theme.gradient,
             theme.shadow,
-            onClick && "group-hover:scale-110 group-hover:rotate-3"
+            onClick && "group-hover:scale-110 group-hover:rotate-3",
           )}
         >
           <Icon className="size-5" />
         </div>
         {badgeText && (
-          <span className={cn("text-xs font-semibold px-2.5 py-0.5 rounded-full transition-colors duration-200", theme.badge)}>
+          <span
+            className={cn(
+              "text-xs font-semibold px-2.5 py-0.5 rounded-full transition-colors duration-200",
+              theme.badge,
+            )}
+          >
             {badgeText}
           </span>
         )}
@@ -110,15 +115,15 @@ export function DashboardStatsCard({
       <p className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 tracking-tight">
         {typeof value === "number" ? value.toLocaleString("en-US") : value}
       </p>
-      <p className={cn(
-        "text-sm font-medium text-muted-foreground mt-1 transition-colors duration-200",
-        onClick && "group-hover:text-foreground"
-      )}>
+      <p
+        className={cn(
+          "text-sm font-medium text-muted-foreground mt-1 transition-colors duration-200",
+          onClick && "group-hover:text-foreground",
+        )}
+      >
         {title}
       </p>
-      <p className="text-xs text-muted-foreground/75 mt-1">
-        {description}
-      </p>
+      <p className="text-xs text-muted-foreground/75 mt-1">{description}</p>
     </CardWrapper>
   )
 }

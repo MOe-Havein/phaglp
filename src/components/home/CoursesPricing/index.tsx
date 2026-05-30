@@ -2,18 +2,25 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { 
-  CheckCircle2, 
-  Clock, 
-  Sparkles, 
-  BookOpen, 
-  GraduationCap, 
-  Award, 
-  AlertTriangle, 
-  RefreshCw, 
-  ArrowRight
+import {
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  BookOpen,
+  GraduationCap,
+  Award,
+  AlertTriangle,
+  RefreshCw,
+  ArrowRight,
 } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
@@ -149,7 +156,8 @@ export function CoursesPricing() {
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">Failed to Load Pricing Plans</h3>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-              Our academic platform is temporarily unable to retrieve course offerings. Please try reloading the catalog.
+              Our academic platform is temporarily unable to retrieve course offerings. Please try
+              reloading the catalog.
             </p>
             <Button
               onClick={fetchCourses}
@@ -182,7 +190,8 @@ export function CoursesPricing() {
             Elite Academic Pricing Plans
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            Select an exclusive, high-performance course pathway designed for geniuses, scholars, and professionals alike.
+            Select an exclusive, high-performance course pathway designed for geniuses, scholars,
+            and professionals alike.
           </p>
         </div>
 
@@ -229,7 +238,10 @@ export function CoursesPricing() {
 
                   {!meta.popular && (
                     <div className="absolute top-4 right-6">
-                      <Badge variant="outline" className="border-border text-muted-foreground text-[10px] tracking-widest uppercase bg-background/50">
+                      <Badge
+                        variant="outline"
+                        className="border-border text-muted-foreground text-[10px] tracking-widest uppercase bg-background/50"
+                      >
                         {meta.badge}
                       </Badge>
                     </div>
@@ -237,7 +249,9 @@ export function CoursesPricing() {
 
                   <CardHeader className="p-6">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className={`p-3 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-md`}>
+                      <div
+                        className={`p-3 rounded-2xl bg-gradient-to-br ${meta.gradient} text-white shadow-md`}
+                      >
                         <IconComponent className="w-6 h-6" />
                       </div>
                       <div>
@@ -254,9 +268,7 @@ export function CoursesPricing() {
                       <span className="text-4xl font-extrabold tracking-tight text-foreground">
                         ${course.price}
                       </span>
-                      <span className="text-muted-foreground text-sm font-semibold">
-                        / program
-                      </span>
+                      <span className="text-muted-foreground text-sm font-semibold">/ program</span>
                     </div>
 
                     <CardDescription className="pt-4 text-sm leading-relaxed line-clamp-3 min-h-[72px] italic">
@@ -266,7 +278,7 @@ export function CoursesPricing() {
 
                   <CardContent className="flex-grow px-6 pb-6 pt-0">
                     <div className="border-t border-border/60 my-4" />
-                    
+
                     {/* Duration / Schedule Row */}
                     <div className="flex items-center gap-2 mb-6 text-sm text-foreground font-semibold">
                       <Clock className="w-4 h-4 text-muted-foreground" />
@@ -295,7 +307,10 @@ export function CoursesPricing() {
                           : "bg-foreground text-background hover:bg-foreground/90"
                       }`}
                     >
-                      <Link href={`/courses/${course.slug}`} className="flex items-center justify-center gap-2">
+                      <Link
+                        href={`/courses/${course.slug}`}
+                        className="flex items-center justify-center gap-2"
+                      >
                         <span>Enroll Now</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -325,7 +340,10 @@ function CoursesPricingSkeleton() {
         {/* Dynamic cards grid skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="flex flex-col border border-border bg-card h-[500px] rounded-3xl overflow-hidden">
+            <Card
+              key={i}
+              className="flex flex-col border border-border bg-card h-[500px] rounded-3xl overflow-hidden"
+            >
               <div className="h-2 bg-muted" />
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-3">

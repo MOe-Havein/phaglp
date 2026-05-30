@@ -140,8 +140,6 @@ export function MenuManager({ initialMenus }: MenuManagerProps) {
     })
   }
 
-
-
   // Handle Move Menu Up
   const moveMenuUp = (index: number) => {
     if (index === 0) return

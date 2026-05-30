@@ -8,31 +8,45 @@ import { lectures as staticLectures } from "@/data/lectures"
 export const dynamic = "force-dynamic"
 
 // Custom descriptions and types for static courses to make them fit the premium design system
-const coursePresets: Record<string, { description: string; type: "GP_GENERAL" | "GP_GROUPS" | "GP_SUBJECTS" | "OTHER"; duration: string }> = {
+const coursePresets: Record<
+  string,
+  {
+    description: string
+    type: "GP_GENERAL" | "GP_GROUPS" | "GP_SUBJECTS" | "OTHER"
+    duration: string
+  }
+> = {
   "foundations-of-stoic-wisdom": {
-    description: "Learn ancient Stoic principles and cognitive exercises designed for elite intellectual resilience, emotional self-mastery, and clear strategic thinking.",
+    description:
+      "Learn ancient Stoic principles and cognitive exercises designed for elite intellectual resilience, emotional self-mastery, and clear strategic thinking.",
     type: "GP_SUBJECTS",
     duration: "4 weeks",
   },
   "applied-ethics-modern-age": {
-    description: "A comprehensive analysis of moral dilemmas in advanced modern systems, biotechnology, artificial intelligence, and automated corporate decision structures.",
+    description:
+      "A comprehensive analysis of moral dilemmas in advanced modern systems, biotechnology, artificial intelligence, and automated corporate decision structures.",
     type: "GP_GROUPS",
     duration: "8 weeks",
   },
   "cognitive-science-philosophy": {
-    description: "Synthesize cognitive psychology, neurology, and standard epistemology to understand the structural mechanisms of human and artificial minds.",
+    description:
+      "Synthesize cognitive psychology, neurology, and standard epistemology to understand the structural mechanisms of human and artificial minds.",
     type: "GP_GENERAL",
     duration: "12 weeks",
   },
   "logic-critical-thinking": {
-    description: "Master formal propositional logic, symbolic inference systems, rhetoric fallacies, and robust algorithmic verification paradigms.",
+    description:
+      "Master formal propositional logic, symbolic inference systems, rhetoric fallacies, and robust algorithmic verification paradigms.",
     type: "GP_SUBJECTS",
     duration: "6 weeks",
   },
 }
 
 function slugifyName(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "")
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "")
 }
 
 export async function GET() {
@@ -97,7 +111,8 @@ export async function GET() {
       const existing = await prisma.course.findUnique({ where: { slug: c.slug } })
       if (!existing) {
         const preset = coursePresets[c.slug] || {
-          description: "An advanced academic module in modern critical inquiry and system structures.",
+          description:
+            "An advanced academic module in modern critical inquiry and system structures.",
           type: "OTHER",
           duration: "Self-paced",
         }
@@ -124,16 +139,21 @@ export async function GET() {
     // 4. Seed Lectures from staticLectures
     let lecturesSeeded = 0
     const lectureCoverImages: Record<string, string> = {
-      "intersection-logic-experience": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop",
-      "stoicism-digital-age": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600&auto=format&fit=crop",
-      "future-philosophical-education": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop",
+      "intersection-logic-experience":
+        "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop",
+      "stoicism-digital-age":
+        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600&auto=format&fit=crop",
+      "future-philosophical-education":
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop",
     }
 
     for (const l of staticLectures) {
       const existing = await prisma.lecture.findUnique({ where: { slug: l.slug } })
       if (!existing) {
         const authorId = instructorsMap[l.author] || defaultAdmin.id
-        const coverImage = lectureCoverImages[l.slug] || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop"
+        const coverImage =
+          lectureCoverImages[l.slug] ||
+          "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop"
 
         await prisma.lecture.create({
           data: {
@@ -167,7 +187,8 @@ export async function GET() {
           category: "General",
           published: true,
           authorId: defaultAdmin.id,
-          coverImage: "https://images.unsplash.com/photo-1507842217121-9e8712ce62be?q=80&w=600&auto=format&fit=crop",
+          coverImage:
+            "https://images.unsplash.com/photo-1507842217121-9e8712ce62be?q=80&w=600&auto=format&fit=crop",
           tags: [],
           readingTime: 2,
         },

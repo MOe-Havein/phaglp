@@ -10,12 +10,7 @@ interface MediaProps {
   mediaAlt?: string | null
 }
 
-export function Media({
-  title,
-  body,
-  mediaUrl,
-  mediaAlt = "Media preview"
-}: MediaProps) {
+export function Media({ title, body, mediaUrl, mediaAlt = "Media preview" }: MediaProps) {
   return (
     <section className="relative py-24 px-6 overflow-hidden bg-slate-950 text-slate-100 flex flex-col justify-center items-center">
       {/* Background glow flares */}
@@ -60,7 +55,7 @@ export function Media({
               <div className="w-3.5 h-3.5 rounded-full bg-yellow-500/80" />
               <div className="w-3.5 h-3.5 rounded-full bg-green-500/80" />
             </div>
-            
+
             {/* Image Wrapper */}
             <div className="overflow-hidden rounded-b-xl aspect-video bg-slate-950">
               <img

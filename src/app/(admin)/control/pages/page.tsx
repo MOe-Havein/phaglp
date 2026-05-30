@@ -32,12 +32,24 @@ async function PagesTable() {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-700">
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Title</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Slug</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Author</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Status</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Updated</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Actions</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Title
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Slug
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Author
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Status
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Updated
+              </th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -62,11 +74,13 @@ async function PagesTable() {
                     {page.author?.name ?? "System"}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
-                      page.published
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
-                        : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
-                    }`}>
+                    <span
+                      className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                        page.published
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                          : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                      }`}
+                    >
                       {page.published ? "Live" : "Draft"}
                     </span>
                   </td>
@@ -92,7 +106,9 @@ async function PagesTable() {
       </div>
       {pages.length > 0 && (
         <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-500">{pages.length} page{pages.length !== 1 ? "s" : ""}</p>
+          <p className="text-xs text-gray-500">
+            {pages.length} page{pages.length !== 1 ? "s" : ""}
+          </p>
         </div>
       )}
     </div>

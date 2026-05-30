@@ -44,7 +44,7 @@ const sidebarItems: SidebarItem[] = [
 ]
 
 interface SidebarContentProps {
-  userName?: string | null
+  userName?: string | null | undefined
   pathname: string
   onLinkClick: () => void
 }
@@ -65,9 +65,8 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
     <nav className="flex-1 px-4 py-2">
       <ul className="space-y-1">
         {sidebarItems.map((item) => {
-          const isActive = item.href === "/control"
-            ? pathname === "/control"
-            : pathname.startsWith(item.href)
+          const isActive =
+            item.href === "/control" ? pathname === "/control" : pathname.startsWith(item.href)
           return (
             <li key={item.href}>
               <Link
@@ -99,7 +98,7 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
   </div>
 )
 
-export function ControlSidebar({ userName }: { userName?: string | null }) {
+export function ControlSidebar({ userName }: { userName?: string | null | undefined }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()

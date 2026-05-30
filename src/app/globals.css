@@ -45,7 +45,7 @@
     /* 3. Secondary Color: frost #edf2f4 (HSL 200 27% 94%) */
     --secondary: 200 27% 94%;
     --secondary-foreground: 217 19% 27%;
-    
+
     /* Muted colors using platinum (HSL 214 15% 80%) & tinfoil (HSL 214 8% 67%) */
     --muted: 214 15% 80%;
     --muted-foreground: 214 8% 67%;

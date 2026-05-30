@@ -230,7 +230,15 @@ ChartTooltipContent.displayName = "ChartTooltip"
 
 const ChartLegend = RechartsPrimitive.Legend
 
-const ChartLegendContent = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof RechartsPrimitive.Legend> & { hideIcon?: boolean; nameKey?: string; payload?: any[]; verticalAlign?: string; }>(( { className, hideIcon = false, payload = [], verticalAlign = "bottom", nameKey }, ref) => {
+const ChartLegendContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof RechartsPrimitive.Legend> & {
+    hideIcon?: boolean
+    nameKey?: string
+    payload?: any[]
+    verticalAlign?: string
+  }
+>(({ className, hideIcon = false, payload = [], verticalAlign = "bottom", nameKey }, ref) => {
   const { config } = useChart()
 
   if (!payload?.length) {

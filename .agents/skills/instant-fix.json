@@ -3,4 +3,3 @@
   "trigger_keywords": ["error", "fail", "broken", "bug", "type error"],
   "system_injection": "Analyze the compilation error message directly against the single target file scope. Output only the immediate line diff needed to patch the issue. Do not alter surrounding architectural structures or change variable naming conventions."
 }
-

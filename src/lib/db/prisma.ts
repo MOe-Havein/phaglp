@@ -27,11 +27,16 @@ const prismaClientSingleton = () => {
                     errStr.includes("connect") ||
                     errStr.includes("initialization")
                   ) {
-                    console.warn(`[Prisma Proxy] Database unreachable. Mocking prisma.${prop}.${String(modelProp)}`)
+                    console.warn(
+                      `[Prisma Proxy] Database unreachable. Mocking prisma.${prop}.${String(modelProp)}`,
+                    )
                     if (String(modelProp).startsWith("findMany")) {
                       return []
                     }
-                    if (String(modelProp).startsWith("findFirst") || String(modelProp).startsWith("findUnique")) {
+                    if (
+                      String(modelProp).startsWith("findFirst") ||
+                      String(modelProp).startsWith("findUnique")
+                    ) {
                       return null
                     }
                     if (String(modelProp).startsWith("count")) {
@@ -52,11 +57,11 @@ const prismaClientSingleton = () => {
               }
             }
             return originalMethod
-          }
+          },
         })
       }
       return Reflect.get(target, prop)
-    }
+    },
   })
 }
 

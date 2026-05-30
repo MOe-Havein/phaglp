@@ -418,7 +418,9 @@ export default async function DashboardPage() {
                 PHAGLP — Interactive Implementation Plan
               </h2>
               <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
-                Track our detailed structural engineering progress. Check off key tasks dynamically across Security, Core features, Quality Assurance, and visual Polish with local persistence.
+                Track our detailed structural engineering progress. Check off key tasks dynamically
+                across Security, Core features, Quality Assurance, and visual Polish with local
+                persistence.
               </p>
             </div>
             <Button

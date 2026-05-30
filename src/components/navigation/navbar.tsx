@@ -36,9 +36,11 @@ interface NavbarProps {
 export function Navbar({ initialMenus = [] }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { data: session } = useSession()
-  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Use initialMenus if present; filter to only show in header
   const menusToRender = initialMenus.length > 0 ? initialMenus.filter((m) => m.showInHeader) : []

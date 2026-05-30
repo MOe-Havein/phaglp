@@ -150,14 +150,10 @@ export async function updateAcademyAsset(
 /**
  * Delete an AcademyAsset by id.
  */
-export async function deleteAcademyAsset(
-  id: string,
-): Promise<ActionResponseState> {
+export async function deleteAcademyAsset(id: string): Promise<ActionResponseState> {
   try {
     await requireAdmin()
-    const result = await safeDbQuery(() =>
-      prisma.academyAsset.delete({ where: { id } }),
-    )
+    const result = await safeDbQuery(() => prisma.academyAsset.delete({ where: { id } }))
     if (result.success) {
       revalidatePath("/control/assets")
     }
@@ -211,9 +207,7 @@ export async function allocateAsset(
 /**
  * Return all allocated units from a specific allocation record.
  */
-export async function returnAllocation(
-  allocationId: string,
-): Promise<ActionResponseState> {
+export async function returnAllocation(allocationId: string): Promise<ActionResponseState> {
   try {
     await requireAdmin()
     const result = await safeDbQuery(() =>

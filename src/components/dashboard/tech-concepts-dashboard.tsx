@@ -1,13 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -37,7 +31,6 @@ import {
   WifiOff,
   FileSearch,
   ShieldCheck,
-
   Award,
   BookOpen,
   Layers,
@@ -64,7 +57,6 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
   // Real Database Analytics Logs State
   const [dbLogs, setDbLogs] = useState<any[]>(initialDbLogs)
   const [isLoadingLogs, setIsLoadingLogs] = useState<boolean>(false)
-
 
   // Core Focus state
   const [cognitiveFocus, setCognitiveFocus] = useState<number>(78)

@@ -30,13 +30,27 @@ async function CoursesTable() {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-700">
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Title</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Instructor</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Type</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Price</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Enrolled</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Status</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Actions</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Title
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Instructor
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Type
+              </th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">
+                Price
+              </th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">
+                Enrolled
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Status
+              </th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -69,11 +83,13 @@ async function CoursesTable() {
                     {course._count?.enrollments ?? 0}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
-                      course.published
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
-                        : "bg-gray-100 text-gray-500 dark:bg-gray-800"
-                    }`}>
+                    <span
+                      className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                        course.published
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+                          : "bg-gray-100 text-gray-500 dark:bg-gray-800"
+                      }`}
+                    >
                       {course.published ? "Published" : "Draft"}
                     </span>
                   </td>
@@ -93,7 +109,9 @@ async function CoursesTable() {
       </div>
       {courses.length > 0 && (
         <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-500">{courses.length} course{courses.length !== 1 ? "s" : ""}</p>
+          <p className="text-xs text-gray-500">
+            {courses.length} course{courses.length !== 1 ? "s" : ""}
+          </p>
         </div>
       )}
     </div>
@@ -109,7 +127,9 @@ export default async function CoursesPage() {
             <BookOpen className="w-4 h-4" />
             <span>Curriculum</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Courses</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            Courses
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Academy courses and their enrollment stats.
           </p>

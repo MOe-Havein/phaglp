@@ -61,7 +61,9 @@ export function LatestBlogPosts() {
             <div className="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-950 flex items-center justify-center mb-4 text-rose-600 dark:text-rose-400 shadow-sm animate-bounce">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">Could Not Load Latest Insights</h3>
+            <h3 className="text-xl font-bold text-foreground mb-2">
+              Could Not Load Latest Insights
+            </h3>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               We encountered a temporary disruption while retrieving our database updates.
             </p>
@@ -97,7 +99,10 @@ function LatestBlogPostsSkeleton() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="flex flex-col border border-border/50 bg-card/60 h-[400px] rounded-2xl overflow-hidden">
+            <Card
+              key={i}
+              className="flex flex-col border border-border/50 bg-card/60 h-[400px] rounded-2xl overflow-hidden"
+            >
               <div className="w-full h-48 bg-muted"></div>
               <CardHeader className="pb-3 pt-5 px-6 space-y-4">
                 <div className="flex items-center gap-3">

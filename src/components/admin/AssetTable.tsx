@@ -2,15 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  Package,
-  Search,
-  Filter,
-  Plus,
-  Trash2,
-  Eye,
-  ChevronDown,
-} from "lucide-react"
+import { Package, Search, Filter, Plus, Trash2, Eye, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { deleteAcademyAsset } from "@/lib/server/actions/admin/assets"
 import { cn } from "@/lib/utils"
@@ -97,7 +89,9 @@ export function AssetTable({ assets }: AssetTableProps) {
           >
             <option value="ALL">All Categories</option>
             {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>{v}</option>
+              <option key={k} value={k}>
+                {v}
+              </option>
             ))}
           </select>
           <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -118,13 +112,27 @@ export function AssetTable({ assets }: AssetTableProps) {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-700">
-                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">SKU</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Name</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Category</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Status</th>
-                <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Qty</th>
-                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Location</th>
-                <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Actions</th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                  SKU
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                  Category
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">
+                  Qty
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                  Location
+                </th>
+                <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -147,7 +155,9 @@ export function AssetTable({ assets }: AssetTableProps) {
                       transition={{ duration: 0.2, delay: i * 0.03 }}
                       className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors"
                     >
-                      <td className="px-4 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">{asset.sku}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">
+                        {asset.sku}
+                      </td>
                       <td className="px-4 py-3 font-medium text-gray-900 dark:text-white max-w-[200px] truncate">
                         {asset.name}
                       </td>
@@ -155,7 +165,12 @@ export function AssetTable({ assets }: AssetTableProps) {
                         {CATEGORY_LABELS[asset.category] ?? asset.category}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={cn("px-2 py-0.5 text-xs rounded-full font-medium", STATUS_COLORS[asset.status])}>
+                        <span
+                          className={cn(
+                            "px-2 py-0.5 text-xs rounded-full font-medium",
+                            STATUS_COLORS[asset.status],
+                          )}
+                        >
                           {asset.status.charAt(0) + asset.status.slice(1).toLowerCase()}
                         </span>
                       </td>
@@ -194,7 +209,9 @@ export function AssetTable({ assets }: AssetTableProps) {
         </div>
         {filtered.length > 0 && (
           <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-gray-500">{filtered.length} asset{filtered.length !== 1 ? "s" : ""} shown</p>
+            <p className="text-xs text-gray-500">
+              {filtered.length} asset{filtered.length !== 1 ? "s" : ""} shown
+            </p>
           </div>
         )}
       </div>

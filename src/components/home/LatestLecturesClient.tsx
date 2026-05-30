@@ -30,7 +30,7 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
 
   const showMore = () => {
     if (visibleCount < lectures.length) {
-      setVisibleCount(prev => Math.min(prev + 2, lectures.length))
+      setVisibleCount((prev) => Math.min(prev + 2, lectures.length))
     } else {
       setVisibleCount(4)
     }
@@ -39,7 +39,6 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
   return (
     <section className="w-full py-16 px-4 bg-background border-t border-border/40">
       <div className="container mx-auto max-w-7xl">
-        
         {/* 1. Section Header: Left-aligned title, right-aligned primary CTA button */}
         <div className="flex flex-row justify-between items-center mb-8 pb-4 border-b border-border">
           <div>
@@ -50,7 +49,10 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
               Gain top-tier knowledge from international academic and professional fields.
             </p>
           </div>
-          <Button asChild className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/95 text-xs sm:text-sm font-semibold h-9 sm:h-10 px-4 sm:px-5">
+          <Button
+            asChild
+            className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/95 text-xs sm:text-sm font-semibold h-9 sm:h-10 px-4 sm:px-5"
+          >
             <Link href="/signup">Start Free Trial</Link>
           </Button>
         </div>
@@ -58,7 +60,6 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
         {/* 2. Grid Layout: 1-column on mobile, 2-column on large screens */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {lectures.slice(0, visibleCount).map((lecture, index) => (
-            
             // Clickable card container wrapping the contents
             <Link
               key={lecture.id}
@@ -67,7 +68,6 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
             >
               {/* 3. Card Design (Horizontal Layout) using semantic Tailwind classes */}
               <div className="flex flex-row gap-4 p-4 rounded-xl border border-border bg-card text-foreground hover:bg-accent/5 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md h-full">
-                
                 {/* Left: 80x80px square thumbnail using coverImage */}
                 <div className="relative w-20 h-20 shrink-0 overflow-hidden rounded-md border border-border bg-muted">
                   <Image
@@ -82,7 +82,6 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
 
                 {/* Right: Content Stack */}
                 <div className="flex flex-col flex-grow min-w-0 justify-between">
-                  
                   {/* Top: Small avatar/icon next to category text */}
                   <div className="flex items-center gap-1.5 mb-1 shrink-0">
                     <div className="flex items-center justify-center w-4 h-4 rounded-full bg-primary/10 text-primary border border-primary/20 shrink-0">
@@ -109,13 +108,14 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
                       <Clock className="w-3 h-3 shrink-0" aria-hidden="true" />
                       <span>{lecture.readingTime}</span>
                     </span>
-                    <span className="text-border" aria-hidden="true">•</span>
+                    <span className="text-border" aria-hidden="true">
+                      •
+                    </span>
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3 shrink-0" aria-hidden="true" />
                       <time dateTime={lecture.createdAt}>{formatDate(lecture.createdAt)}</time>
                     </span>
                   </div>
-
                 </div>
               </div>
             </Link>
@@ -134,7 +134,6 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
             </Button>
           </div>
         )}
-
       </div>
     </section>
   )

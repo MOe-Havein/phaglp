@@ -73,7 +73,6 @@ async function getUsersData() {
   }
 }
 
-
 async function UsersTable() {
   const users = await getUsersData()
   return (
@@ -82,12 +81,24 @@ async function UsersTable() {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-800/60 border-b border-gray-200 dark:border-gray-700">
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Name</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Email</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Role</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Tier</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">Joined</th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">Actions</th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Name
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Email
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Role
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Tier
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400">
+                Joined
+              </th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-400">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -109,17 +120,21 @@ async function UsersTable() {
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{user.email}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
-                      user.role === "ADMIN"
-                        ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
-                        : user.role === "INSTRUCTOR"
-                        ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
-                        : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-                    }`}>
+                    <span
+                      className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                        user.role === "ADMIN"
+                          ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                          : user.role === "INSTRUCTOR"
+                            ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
+                            : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                      }`}
+                    >
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400 text-xs">{user.tier}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400 text-xs">
+                    {user.tier}
+                  </td>
                   <td className="px-4 py-3 text-gray-500 dark:text-gray-500 text-xs">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
@@ -134,7 +149,9 @@ async function UsersTable() {
       </div>
       {users.length > 0 && (
         <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-500">{users.length} user{users.length !== 1 ? "s" : ""}</p>
+          <p className="text-xs text-gray-500">
+            {users.length} user{users.length !== 1 ? "s" : ""}
+          </p>
         </div>
       )}
     </div>

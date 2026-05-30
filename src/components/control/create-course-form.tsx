@@ -109,12 +109,7 @@ export function CreateCourseForm() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="slug">Slug</Label>
-                <Input
-                  id="slug"
-                  name="slug"
-                  placeholder="e.g. intro-to-philosophy"
-                  required
-                />
+                <Input id="slug" name="slug" placeholder="e.g. intro-to-philosophy" required />
                 {state.fieldErrors?.slug && (
                   <p className="text-xs text-red-500 mt-1">{state.fieldErrors.slug[0]}</p>
                 )}
@@ -146,7 +141,8 @@ export function CreateCourseForm() {
             </CardHeader>
             <CardContent>
               <p className="text-xs leading-relaxed text-violet-600 dark:text-violet-500">
-                New courses are created as drafts by default. You can publish the course and manage its modules once it is saved.
+                New courses are created as drafts by default. You can publish the course and manage
+                its modules once it is saved.
               </p>
             </CardContent>
           </Card>

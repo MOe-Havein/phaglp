@@ -69,7 +69,9 @@ async function MessagesTable() {
                         minute: "2-digit",
                       })}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{msg.message}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                      {msg.message}
+                    </p>
                   </div>
                   <MessageActions id={msg.id} isRead={msg.isRead} />
                 </div>
@@ -79,7 +81,9 @@ async function MessagesTable() {
         </div>
         {messages.length > 0 && (
           <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-gray-500">{messages.length} message{messages.length !== 1 ? "s" : ""}</p>
+            <p className="text-xs text-gray-500">
+              {messages.length} message{messages.length !== 1 ? "s" : ""}
+            </p>
           </div>
         )}
       </div>
@@ -95,7 +99,9 @@ export default async function MessagesPage() {
           <Mail className="w-4 h-4" />
           <span>Inbox</span>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Messages</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          Messages
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Contact form submissions from the public website.
         </p>

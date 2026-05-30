@@ -2,14 +2,7 @@
 
 import React from "react"
 import { useRouter } from "next/navigation"
-import {
-  Users,
-  BookOpen,
-  FileText,
-  Package,
-  FileCode,
-  Mail,
-} from "lucide-react"
+import { Users, BookOpen, FileText, Package, FileCode, Mail } from "lucide-react"
 import { DashboardStatsCard } from "./DashboardStatsCard"
 
 interface StatsGridProps {
@@ -78,8 +71,11 @@ export function StatsGrid({ isLoading = false, stats }: StatsGridProps) {
       value: stats?.unreadMessageCount ?? 0,
       icon: Mail,
       colorTheme: "cyan" as const,
-      description: stats ? `${stats.unreadMessageCount} unread of ${stats.messageCount} total` : "Platform messages",
-      badgeText: stats && stats.unreadMessageCount > 0 ? `${stats.unreadMessageCount} new` : "All read",
+      description: stats
+        ? `${stats.unreadMessageCount} unread of ${stats.messageCount} total`
+        : "Platform messages",
+      badgeText:
+        stats && stats.unreadMessageCount > 0 ? `${stats.unreadMessageCount} new` : "All read",
       onClick: () => handleNavigation("/control/messages"),
     },
   ]

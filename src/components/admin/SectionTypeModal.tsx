@@ -2,7 +2,14 @@
 
 import React from "react"
 import { SectionType } from "@/types/homepage"
-import { LayoutTemplate, Image as ImageIcon, MessageSquare, Handshake, Columns, GraduationCap } from "lucide-react"
+import {
+  LayoutTemplate,
+  Image as ImageIcon,
+  MessageSquare,
+  Handshake,
+  Columns,
+  GraduationCap,
+} from "lucide-react"
 
 interface SectionTypeModalProps {
   isOpen: boolean

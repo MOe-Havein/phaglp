@@ -1,12 +1,7 @@
 {
   "filesystem.watcher.enabled": true,
   "filesystem.watcher.maxFilesToWatch": 200,
-  "filesystem.exclude": [
-    "**/node_modules/**",
-    "**/.next/**",
-    "**/dist/**",
-    "**/.git/**"
-  ],
+  "filesystem.exclude": ["**/node_modules/**", "**/.next/**", "**/dist/**", "**/.git/**"],
   "indexing.autoIndexOnLoad": false,
   "indexing.maxFileSizeMB": 0.1,
   "context.includeTerminalHistory": false,

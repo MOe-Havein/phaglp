@@ -82,7 +82,9 @@ export function BlogCard({ post }: BlogCardProps) {
             <Calendar className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
             <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
           </span>
-          <span className="text-border" aria-hidden="true">·</span>
+          <span className="text-border" aria-hidden="true">
+            ·
+          </span>
           <span className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
             <span>{post.readingTime}</span>
@@ -91,10 +93,7 @@ export function BlogCard({ post }: BlogCardProps) {
 
         {/* Title */}
         <h3 className="font-serif text-lg font-bold leading-snug text-card-foreground group-hover:text-primary transition-colors duration-200 text-balance">
-          <a
-            href={`/blog/${post.slug}`}
-            className="focus:outline-none focus-visible:underline"
-          >
+          <a href={`/blog/${post.slug}`} className="focus:outline-none focus-visible:underline">
             {post.title}
           </a>
         </h3>

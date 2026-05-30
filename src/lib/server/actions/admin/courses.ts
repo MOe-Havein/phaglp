@@ -9,7 +9,11 @@ import type { ActionResponseState } from "@/types"
 
 const courseSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters").max(255),
-  slug: z.string().min(2, "Slug must be at least 2 characters").max(255).regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
+  slug: z
+    .string()
+    .min(2, "Slug must be at least 2 characters")
+    .max(255)
+    .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   description: z.string().min(5, "Description must be at least 5 characters"),
   price: z.coerce.number().min(0, "Price must be a positive number"),
 })
@@ -54,7 +58,7 @@ export async function createCourseAction(
           instructorId: session.user.id!,
           published: false,
         },
-      })
+      }),
     )
 
     if (result.success) {

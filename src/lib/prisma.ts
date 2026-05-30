@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { env } from "@/env";
+import { PrismaClient } from "@prisma/client"
+import { env } from "@/env"
 
 // Ensure process.env.DATABASE_URL is used by Prisma correctly
 // Prisma uses process.env.DATABASE_URL under the hood, but we can pass it explicitly.
@@ -10,19 +10,19 @@ const prismaClientSingleton = () => {
     datasources: {
       db: { url: env.DATABASE_URL },
     },
-  });
-};
+  })
+}
 
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
+type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined;
-};
+  prisma: PrismaClientSingleton | undefined
+}
 
-export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+export const prisma = globalForPrisma.prisma ?? prismaClientSingleton()
 
 if (env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  globalForPrisma.prisma = prisma
 }
 
 /**
@@ -31,8 +31,8 @@ if (env.NODE_ENV !== "production") {
  * class instances are converted to plain objects.
  */
 export function serializePrisma<T>(data: T): T {
-  if (!data) return data;
-  return JSON.parse(JSON.stringify(data));
+  if (!data) return data
+  return JSON.parse(JSON.stringify(data))
 }
 
 /**
@@ -45,24 +45,24 @@ export async function safeDbQuery<T>(
   fallbackValue: T | null = null,
 ): Promise<{ success: boolean; data: T | null; error: string | null }> {
   try {
-    const result = await queryFn();
+    const result = await queryFn()
     return {
       success: true,
       data: serializePrisma(result),
       error: null,
-    };
+    }
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "An unexpected database error occurred";
+    const message = error instanceof Error ? error.message : "An unexpected database error occurred"
     if (env.NODE_ENV === "development") {
-      console.error("[Database Error]:", error);
+      console.error("[Database Error]:", error)
     }
 
     return {
       success: false,
       data: fallbackValue,
       error: message,
-    };
+    }
   }
 }
 
-export default prisma;
+export default prisma

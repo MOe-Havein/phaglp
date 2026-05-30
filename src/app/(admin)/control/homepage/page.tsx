@@ -27,7 +27,9 @@ export default async function HomepagePage() {
           <Home className="w-4 h-4" />
           <span>CMS</span>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Homepage</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          Homepage
+        </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Manage the public-facing homepage sections.
         </p>

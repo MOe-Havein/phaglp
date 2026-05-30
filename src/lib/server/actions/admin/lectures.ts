@@ -10,7 +10,11 @@ import readingTime from "reading-time"
 
 const lectureSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters").max(255),
-  slug: z.string().min(2, "Slug must be at least 2 characters").max(255).regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
+  slug: z
+    .string()
+    .min(2, "Slug must be at least 2 characters")
+    .max(255)
+    .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   body: z.string().min(5, "Body must be at least 5 characters"),
   category: z.string().min(2, "Category must be at least 2 characters").max(100),
   tagsInput: z.string().optional().default(""),
@@ -68,7 +72,7 @@ export async function createLectureAction(
           published: false,
           readingTime: readingTimeMinutes,
         },
-      })
+      }),
     )
 
     if (result.success) {

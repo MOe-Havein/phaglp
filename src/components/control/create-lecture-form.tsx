@@ -67,7 +67,9 @@ export function CreateLectureForm() {
           <Card>
             <CardHeader>
               <CardTitle>Lecture Content</CardTitle>
-              <CardDescription>Compose the main title and text body of the lecture.</CardDescription>
+              <CardDescription>
+                Compose the main title and text body of the lecture.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -109,12 +111,7 @@ export function CreateLectureForm() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="slug">Slug</Label>
-                <Input
-                  id="slug"
-                  name="slug"
-                  placeholder="e.g. socratic-method"
-                  required
-                />
+                <Input id="slug" name="slug" placeholder="e.g. socratic-method" required />
                 {state.fieldErrors?.slug && (
                   <p className="text-xs text-red-500 mt-1">{state.fieldErrors.slug[0]}</p>
                 )}
@@ -122,12 +119,7 @@ export function CreateLectureForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Input
-                  id="category"
-                  name="category"
-                  placeholder="e.g. Philosophy"
-                  required
-                />
+                <Input id="category" name="category" placeholder="e.g. Philosophy" required />
                 {state.fieldErrors?.category && (
                   <p className="text-xs text-red-500 mt-1">{state.fieldErrors.category[0]}</p>
                 )}
@@ -135,11 +127,7 @@ export function CreateLectureForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="tagsInput">Tags (Comma-separated)</Label>
-                <Input
-                  id="tagsInput"
-                  name="tagsInput"
-                  placeholder="e.g. logic, dialogue, greece"
-                />
+                <Input id="tagsInput" name="tagsInput" placeholder="e.g. logic, dialogue, greece" />
                 {state.fieldErrors?.tagsInput && (
                   <p className="text-xs text-red-500 mt-1">{state.fieldErrors.tagsInput[0]}</p>
                 )}
@@ -155,7 +143,8 @@ export function CreateLectureForm() {
             </CardHeader>
             <CardContent>
               <p className="text-xs leading-relaxed text-violet-600 dark:text-violet-500">
-                New lectures are created as drafts by default. You can publish them later from the lecture list.
+                New lectures are created as drafts by default. You can publish them later from the
+                lecture list.
               </p>
             </CardContent>
           </Card>

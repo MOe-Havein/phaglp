@@ -89,9 +89,7 @@ export function Testimonials({
             {title}
           </h2>
           {body && (
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
-              {body}
-            </p>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">{body}</p>
           )}
         </div>
 
