@@ -2,13 +2,11 @@ import { getLectureBySlug } from "@/lib/server/lectures"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import { format } from "date-fns"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import remarkToc from "remark-toc"
-import rehypeRaw from "rehype-raw"
-import rehypeSanitize from "rehype-sanitize"
-import rehypeSlug from "rehype-slug"
 import { Badge } from "@/components/ui/badge"
+import { ArrowLeft, Calendar, User, Clock } from "lucide-react"
+import Link from "next/link"
+import { RichTextViewer } from "@/components/editor/rich-text-viewer"
+import { FoxyLoader } from "@/components/foxy/foxy-loader"
 
 // Ensure dynamic rendering to handle database state safely at runtime
 export const dynamic = "force-dynamic"
@@ -67,34 +65,78 @@ export default async function LecturePage({ params }: PageProps) {
   const tags = (lecture.tags as string[]) || []
 
   return (
-    <article className="container mx-auto py-10 max-w-4xl">
-      <header className="mb-10 text-center">
-        <div className="flex justify-center gap-2 mb-4">
-          <Badge>{lecture.category}</Badge>
-          {tags.map((tag: string) => (
-            <Badge key={tag} variant="outline">
-              {tag}
-            </Badge>
-          ))}
-        </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">{lecture.title}</h1>
-        <div className="flex justify-center items-center gap-4 text-muted-foreground">
-          <span>{format(new Date(lecture.createdAt), "MMMM d, yyyy")}</span>
-          <span>•</span>
-          <span>{lecture.readingTime} min read</span>
-          <span>•</span>
-          <span>By {lecture.author?.name || "Anonymous"}</span>
-        </div>
-      </header>
+    <div className="container mx-auto px-4 py-12 relative min-h-screen">
+      {/* Background Radial Light Effect */}
+      <div className="absolute top-10 left-1/4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl opacity-40 dark:opacity-20 pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl opacity-40 dark:opacity-20 pointer-events-none" />
 
-      <div className="prose dark:prose-invert max-w-none">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkToc]}
-          rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeSlug]}
+      <div className="max-w-3xl mx-auto relative">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary mb-8 transition-colors group"
         >
-          {lecture.body}
-        </ReactMarkdown>
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          Back to Blog Listing
+        </Link>
+
+        <article>
+          <header className="mb-10">
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge className="bg-primary/10 hover:bg-primary/20 text-primary border-none px-3 font-semibold">
+                {lecture.category}
+              </Badge>
+              {tags.map((tag: string) => (
+                <Badge key={tag} variant="outline" className="text-slate-500 border-slate-200 dark:border-slate-800">
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-slate-900 dark:text-slate-50">
+              {lecture.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y border-slate-100 dark:border-slate-900 py-4">
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                <span className="font-semibold text-slate-800 dark:text-slate-200">
+                  {lecture.author?.name || "Anonymous"}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span>{format(new Date(lecture.createdAt), "MMMM d, yyyy")}</span>
+              </div>
+              {lecture.readingTime && (
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>{lecture.readingTime} min read</span>
+                </div>
+              )}
+            </div>
+          </header>
+
+          {/* Cover Image */}
+          {lecture.coverImage && (
+            <div className="mb-10 rounded-2xl overflow-hidden shadow-md max-h-96 w-full">
+              <img
+                src={lecture.coverImage}
+                alt={lecture.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          {/* Body Content */}
+          <div className="prose prose-blue dark:prose-invert max-w-none">
+            <RichTextViewer html={lecture.body} />
+          </div>
+        </article>
+
+        {/* Global FoxyLoader ensures FoxyCart intercept is fully active */}
+        <FoxyLoader />
       </div>
-    </article>
+    </div>
   )
 }
+

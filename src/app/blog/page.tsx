@@ -1,61 +1,65 @@
-import { prisma, safeDbQuery } from "@/lib/prisma"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
-import { format } from "date-fns"
+import prisma, { safeDbQuery } from "@/lib/prisma"
+import { BlogListing } from "@/components/blog/blog-listing"
+import { unstable_cache } from "next/cache"
+import { redis } from "@/lib/redis"
 
 // Ensure dynamic rendering to handle database state safely
 export const dynamic = "force-dynamic"
 
-export default async function LecturesBlogPage() {
-  const result = await safeDbQuery(async () => {
-    return prisma.lecture.findMany({
-      where: { published: true },
-      orderBy: { createdAt: "desc" },
-      include: { author: true },
-    })
-  }, [])
+const getCachedBlogLectures = unstable_cache(
+  async () => {
+    const cacheKey = "blog-lectures"
+    const cached = await redis.get<any[]>(cacheKey)
+    if (cached) {
+      return cached
+    }
 
-  const lectures = result.data || []
+    const result = await safeDbQuery(async () => {
+      return prisma.lecture.findMany({
+        where: {
+          published: true,
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      })
+    }, [])
+
+    const data = result.data || []
+
+    await redis.set(cacheKey, data, { ex: 300 })
+    return data
+  },
+  ["blog-lectures"],
+  { tags: ["lectures"], revalidate: 300 },
+)
+
+export default async function LecturesBlogPage() {
+  let lectures: any[] = []
+  try {
+    lectures = await getCachedBlogLectures()
+  } catch (error) {
+    console.error("Failed to fetch cached blog lectures:", error)
+  }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-4xl font-bold mb-8">Latest Lectures</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {lectures.length === 0 ? (
-          <div className="col-span-full text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed">
-            <p className="text-muted-foreground">No lectures available at the moment.</p>
-          </div>
-        ) : (
-          lectures.map((lecture: any) => (
-            <Card key={lecture.id} className="flex flex-col hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex justify-between items-start mb-2">
-                  <Badge variant="secondary">{lecture.category}</Badge>
-                  <span className="text-sm text-muted-foreground">
-                    {format(new Date(lecture.createdAt), "MMM d, yyyy")}
-                  </span>
-                </div>
-                <CardTitle>
-                  <Link href={`/blog/${lecture.slug}`} className="hover:text-primary">
-                    {lecture.title}
-                  </Link>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <p className="text-muted-foreground line-clamp-3">
-                  {lecture.excerpt || lecture.body.substring(0, 150)}...
-                </p>
-                <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>{lecture.readingTime} min read</span>
-                  <span>•</span>
-                  <span>By {lecture.author?.name || "Anonymous"}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
+    <div className="container mx-auto px-4 py-12">
+      <div className="max-w-3xl mb-12">
+        <h1 className="text-4xl font-bold mb-4">Latest Insights & Lectures</h1>
+        <p className="text-lg text-muted-foreground">
+          Explore research, articles, and community updates from the PHAGLP academic ecosystem.
+        </p>
       </div>
+
+      <BlogListing lectures={lectures} />
     </div>
   )
 }
+

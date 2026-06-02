@@ -14,6 +14,7 @@ interface LectureCardProps {
   coverImage?: string
   isFeatured?: boolean
   readingTime?: number
+  basePath?: string
 }
 
 // Category color mappings
@@ -38,6 +39,7 @@ export function LectureCard({
   coverImage,
   isFeatured = false,
   readingTime,
+  basePath = "/lectures",
 }: LectureCardProps) {
   const colors = categoryColors[category] ||
     categoryColors["default"] || {
@@ -93,7 +95,7 @@ export function LectureCard({
         </div>
 
         {/* Title */}
-        <Link href={`/lectures/${slug}`} className="block mb-3">
+        <Link href={`${basePath}/${slug}`} className="block mb-3">
           <h3 className="text-xl font-bold line-clamp-2 hover:underline transition-all">{title}</h3>
         </Link>
 
@@ -140,7 +142,7 @@ export function LectureCard({
 
         {/* Read Lecture Button */}
         <Link
-          href={`/lectures/${slug}`}
+          href={`${basePath}/${slug}`}
           className="block w-full text-center py-2 border border-slate-300 rounded-md hover:bg-white hover:shadow-sm transition-all text-sm font-medium"
         >
           Read Lecture
