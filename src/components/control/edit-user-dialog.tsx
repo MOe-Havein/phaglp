@@ -12,7 +12,7 @@ import {
   EducationLevel,
   IQLevel,
 } from "@prisma/client"
-import { updateUser } from "@/lib/control-actions"
+import { updateUser, deleteUser } from "@/lib/control-actions"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -112,6 +112,31 @@ interface EditUserDialogProps {
 export function EditUserDialog({ user }: EditUserDialogProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
+  async function handleDelete() {
+    if (!confirmDelete) {
+      setConfirmDelete(true)
+      return
+    }
+    setDeleting(true)
+    try {
+      const result = await deleteUser(user.id)
+      if (result.success) {
+        toast.success("User deleted successfully")
+        setOpen(false)
+      } else {
+        toast.error(result.error || "Failed to delete user")
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred")
+      console.error(error)
+    } finally {
+      setDeleting(false)
+      setConfirmDelete(false)
+    }
+  }
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
@@ -993,23 +1018,40 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                 </ScrollArea>
               </Tabs>
 
-              <DialogFooter className="pt-4 border-t shrink-0 flex gap-3">
+              <DialogFooter className="pt-4 border-t shrink-0 flex justify-between items-center w-full gap-3">
                 <Button
                   type="button"
-                  variant="ghost"
-                  onClick={() => setOpen(false)}
-                  className="w-full sm:w-auto rounded-xl"
+                  variant={confirmDelete ? "destructive" : "outline"}
+                  onClick={handleDelete}
+                  disabled={loading || deleting}
+                  className={`rounded-xl shadow-sm text-xs font-semibold ${
+                    !confirmDelete ? "text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" : ""
+                  }`}
                 >
-                  Cancel
+                  {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {confirmDelete ? "Confirm Delete?" : "Delete Member"}
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full sm:w-auto bg-primary text-white rounded-xl shadow-md min-w-[125px]"
-                >
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Save Profile
-                </Button>
+                <div className="flex gap-2 sm:ml-auto">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      setOpen(false)
+                      setConfirmDelete(false)
+                    }}
+                    className="w-full sm:w-auto rounded-xl"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={loading || deleting}
+                    className="w-full sm:w-auto bg-primary text-white rounded-xl shadow-md min-w-[125px]"
+                  >
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Save Profile
+                  </Button>
+                </div>
               </DialogFooter>
             </form>
           </Form>

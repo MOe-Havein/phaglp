@@ -26,6 +26,7 @@ const formSchema = z.object({
   siteUrl: z.string().url(),
   description: z.string().min(10).max(500),
   maintenanceMode: z.boolean(),
+  allowRegistration: z.boolean(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   primaryColor: z.string().optional(),
@@ -37,6 +38,7 @@ interface SiteSettingsData {
   siteUrl?: string
   description?: string | null
   maintenanceMode?: boolean
+  allowRegistration?: boolean
   metaTitle?: string | null
   metaDescription?: string | null
   primaryColor?: string | null
@@ -53,6 +55,7 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
       siteUrl: initialData?.siteUrl || "https://phaglp.com",
       description: initialData?.description || "A modern application for philosophical education.",
       maintenanceMode: initialData?.maintenanceMode || false,
+      allowRegistration: initialData?.allowRegistration ?? true,
       metaTitle: initialData?.metaTitle || "",
       metaDescription: initialData?.metaDescription || "",
       primaryColor: initialData?.primaryColor || "#1E3A8A",
@@ -122,21 +125,39 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="maintenanceMode"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel>Maintenance Mode</FormLabel>
-                <FormDescription>Disable public access to the site.</FormDescription>
-              </div>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <div className="grid md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="maintenanceMode"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white/40 dark:bg-slate-900/10">
+                <div className="space-y-0.5">
+                  <FormLabel>Maintenance Mode</FormLabel>
+                  <FormDescription>Disable public access to the site.</FormDescription>
+                </div>
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="allowRegistration"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white/40 dark:bg-slate-900/10">
+                <div className="space-y-0.5">
+                  <FormLabel>Allow Public Registration</FormLabel>
+                  <FormDescription>Toggle registration access for new users.</FormDescription>
+                </div>
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">

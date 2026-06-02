@@ -45,6 +45,7 @@ export async function updateSiteSettings(data: any) {
           metaDescription: data.metaDescription,
           primaryColor: data.primaryColor,
           fullAddress: data.fullAddress,
+          allowRegistration: data.allowRegistration ?? true,
         },
         create: {
           id: "global",
@@ -56,6 +57,7 @@ export async function updateSiteSettings(data: any) {
           metaDescription: data.metaDescription,
           primaryColor: data.primaryColor,
           fullAddress: data.fullAddress,
+          allowRegistration: data.allowRegistration ?? true,
         },
       })
     })

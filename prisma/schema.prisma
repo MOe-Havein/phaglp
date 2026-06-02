@@ -234,6 +234,7 @@ model SiteSettings {
   enableGoogleAnalytics Boolean @default(false)
   maintenanceMode       Boolean @default(false)
   fullAddress           String?
+  allowRegistration     Boolean @default(true)
 }
 
 model FeatureFlag {
