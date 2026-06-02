@@ -139,4 +139,3 @@ export default async function LecturePage({ params }: PageProps) {
     </div>
   )
 }
-
