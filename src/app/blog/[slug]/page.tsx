@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           typeof lecture.updatedAt === "string"
             ? lecture.updatedAt
             : lecture.updatedAt.toISOString(),
-        authors: [lecture.author.name || ""],
+        authors: [lecture.author?.name || ""],
         tags: (lecture.tags as string[]) || undefined,
       },
     }
@@ -83,7 +83,7 @@ export default async function LecturePage({ params }: PageProps) {
           <span>•</span>
           <span>{lecture.readingTime} min read</span>
           <span>•</span>
-          <span>By {lecture.author.name}</span>
+          <span>By {lecture.author?.name || "Anonymous"}</span>
         </div>
       </header>
 

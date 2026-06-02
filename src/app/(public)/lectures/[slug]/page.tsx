@@ -49,7 +49,7 @@ export default async function LectureDetailPage({ params }: { params: Promise<{ 
             <div className="flex items-center gap-2">
               <User className="w-5 h-5" />
               <span className="font-medium text-foreground">
-                {lecture.author.name || "Anonymous"}
+                {lecture.author?.name || "Anonymous"}
               </span>
             </div>
             <div className="flex items-center gap-2">

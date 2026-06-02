@@ -351,7 +351,7 @@ export default async function DashboardPage() {
                   </div>
                   <CardFooter className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold">
                     <span className="text-muted-foreground">
-                      by {lec.author.name || "Anonymous"}
+                      by {lec.author?.name || "Anonymous"}
                     </span>
                     <Button
                       asChild
