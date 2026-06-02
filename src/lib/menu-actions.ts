@@ -13,7 +13,7 @@ async function ensureAdminAccess() {
   }
 }
 
-async function clearNavigationCache() {
+export async function clearNavigationCache() {
   try {
     revalidateTag("site-menus")
     revalidatePath("/control/navigation")

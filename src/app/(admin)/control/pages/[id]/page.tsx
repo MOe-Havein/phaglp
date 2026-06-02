@@ -13,6 +13,16 @@ interface EditPageProps {
 export default async function EditPage({ params }: EditPageProps) {
   const { id } = await params
 
+  // Bulletproof safeguard: If Next.js 15 routing group resolution matches 'new' to [id],
+  // render the create page form directly instead of throwing a 404.
+  if (id === "new") {
+    return (
+      <div className="container mx-auto py-6">
+        <PageForm />
+      </div>
+    )
+  }
+
   const page = await prisma.page.findUnique({
     where: { id },
   })
