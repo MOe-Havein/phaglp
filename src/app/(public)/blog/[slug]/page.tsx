@@ -1,4 +1,4 @@
-import { getLectureBySlug } from "@/lib/server/lectures"
+import prisma, { safeDbQuery } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
 import { format } from "date-fns"
@@ -7,6 +7,7 @@ import { ArrowLeft, Calendar, User, Clock } from "lucide-react"
 import Link from "next/link"
 import { RichTextViewer } from "@/components/editor/rich-text-viewer"
 import { FoxyLoader } from "@/components/foxy/foxy-loader"
+import { unstable_cache } from "next/cache"
 
 // Ensure dynamic rendering to handle database state safely at runtime
 export const dynamic = "force-dynamic"
@@ -15,54 +16,76 @@ interface PageProps {
   params: Promise<{ slug: string }>
 }
 
+const getBlogPostBySlug = async (slug: string) => {
+  return unstable_cache(
+    async () => {
+      const result = await safeDbQuery(async () => {
+        return prisma.post.findUnique({
+          where: { slug },
+          include: {
+            author: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        })
+      })
+      return result.data
+    },
+    [`blog-post-${slug}`],
+    { tags: ["blog-posts"], revalidate: 300 },
+  )()
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   try {
     const { slug } = await params
-    const lecture = await getLectureBySlug(slug)
-    if (!lecture) return {}
+    const post = await getBlogPostBySlug(slug)
+    if (!post) return {}
 
     return {
-      title: lecture.title,
-      description: lecture.excerpt,
+      title: post.title,
+      description: post.excerpt,
       openGraph: {
-        title: lecture.title,
-        description: lecture.excerpt || undefined,
+        title: post.title,
+        description: post.excerpt || undefined,
         type: "article",
         publishedTime:
-          typeof lecture.createdAt === "string"
-            ? lecture.createdAt
-            : lecture.createdAt.toISOString(),
+          typeof post.createdAt === "string"
+            ? post.createdAt
+            : post.createdAt.toISOString(),
         modifiedTime:
-          typeof lecture.updatedAt === "string"
-            ? lecture.updatedAt
-            : lecture.updatedAt.toISOString(),
-        authors: [lecture.author?.name || ""],
-        tags: (lecture.tags as string[]) || undefined,
+          typeof post.updatedAt === "string"
+            ? post.updatedAt
+            : post.updatedAt.toISOString(),
+        authors: [post.author?.name || ""],
+        tags: (post.tags as string[]) || undefined,
       },
     }
   } catch (error) {
     console.error("Blog metadata generation failed:", error)
     return {
-      title: "Lecture",
+      title: "Blog Post",
     }
   }
 }
 
-export default async function LecturePage({ params }: PageProps) {
+export default async function BlogPostDetailPage({ params }: PageProps) {
   const { slug } = await params
 
-  let lecture
+  let post
   try {
-    lecture = await getLectureBySlug(slug)
+    post = await getBlogPostBySlug(slug)
   } catch (error) {
-    console.error("Failed to fetch lecture:", error)
+    console.error("Failed to fetch blog post:", error)
   }
 
-  if (!lecture) {
+  if (!post) {
     notFound()
   }
 
-  const tags = (lecture.tags as string[]) || []
+  const tags = (post.tags as string[]) || []
 
   return (
     <div className="container mx-auto px-4 py-12 relative min-h-screen">
@@ -83,7 +106,7 @@ export default async function LecturePage({ params }: PageProps) {
           <header className="mb-10">
             <div className="flex flex-wrap gap-2 mb-4">
               <Badge className="bg-primary/10 hover:bg-primary/20 text-primary border-none px-3 font-semibold">
-                {lecture.category}
+                {post.category}
               </Badge>
               {tags.map((tag: string) => (
                 <Badge key={tag} variant="outline" className="text-slate-500 border-slate-200 dark:border-slate-800">
@@ -93,35 +116,35 @@ export default async function LecturePage({ params }: PageProps) {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-slate-900 dark:text-slate-50">
-              {lecture.title}
+              {post.title}
             </h1>
 
             <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y border-slate-100 dark:border-slate-900 py-4">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 <span className="font-semibold text-slate-800 dark:text-slate-200">
-                  {lecture.author?.name || "Anonymous"}
+                  {post.author?.name || "Anonymous"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>{format(new Date(lecture.createdAt), "MMMM d, yyyy")}</span>
+                <span>{format(new Date(post.createdAt), "MMMM d, yyyy")}</span>
               </div>
-              {lecture.readingTime && (
+              {post.readingTime && (
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
-                  <span>{lecture.readingTime} min read</span>
+                  <span>{post.readingTime} min read</span>
                 </div>
               )}
             </div>
           </header>
 
           {/* Cover Image */}
-          {lecture.coverImage && (
+          {post.coverImage && (
             <div className="mb-10 rounded-2xl overflow-hidden shadow-md max-h-96 w-full">
               <img
-                src={lecture.coverImage}
-                alt={lecture.title}
+                src={post.coverImage}
+                alt={post.title}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -129,7 +152,7 @@ export default async function LecturePage({ params }: PageProps) {
 
           {/* Body Content */}
           <div className="prose prose-blue dark:prose-invert max-w-none">
-            <RichTextViewer html={lecture.body} />
+            <RichTextViewer html={post.body} />
           </div>
         </article>
 

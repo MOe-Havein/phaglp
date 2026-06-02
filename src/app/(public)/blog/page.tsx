@@ -6,16 +6,16 @@ import { redis } from "@/lib/redis"
 // Ensure dynamic rendering to handle database state safely
 export const dynamic = "force-dynamic"
 
-const getCachedBlogLectures = unstable_cache(
+const getCachedBlogPosts = unstable_cache(
   async () => {
-    const cacheKey = "blog-lectures"
+    const cacheKey = "blog-posts"
     const cached = await redis.get<any[]>(cacheKey)
     if (cached) {
       return cached
     }
 
     const result = await safeDbQuery(async () => {
-      return prisma.lecture.findMany({
+      return prisma.post.findMany({
         where: {
           published: true,
         },
@@ -37,28 +37,28 @@ const getCachedBlogLectures = unstable_cache(
     await redis.set(cacheKey, data, { ex: 300 })
     return data
   },
-  ["blog-lectures"],
-  { tags: ["lectures"], revalidate: 300 },
+  ["blog-posts"],
+  { tags: ["blog-posts"], revalidate: 300 },
 )
 
-export default async function LecturesBlogPage() {
-  let lectures: any[] = []
+export default async function BlogPage() {
+  let posts: any[] = []
   try {
-    lectures = await getCachedBlogLectures()
+    posts = await getCachedBlogPosts()
   } catch (error) {
-    console.error("Failed to fetch cached blog lectures:", error)
+    console.error("Failed to fetch cached blog posts:", error)
   }
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mb-12">
-        <h1 className="text-4xl font-bold mb-4">Latest Insights & Lectures</h1>
+        <h1 className="text-4xl font-bold mb-4">Latest Insights & Blog</h1>
         <p className="text-lg text-muted-foreground">
-          Explore research, articles, and community updates from the PHAGLP academic ecosystem.
+          Explore articles, news, and community insights from the PHAGLP ecosystem.
         </p>
       </div>
 
-      <BlogListing lectures={lectures} />
+      <BlogListing lectures={posts} />
     </div>
   )
 }
