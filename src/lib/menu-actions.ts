@@ -4,11 +4,24 @@ import { prisma, safeDbQuery } from "@/lib/prisma"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { Role } from "@prisma/client"
 import { auth } from "@/auth"
+import { redis } from "@/lib/redis"
 
 async function ensureAdminAccess() {
   const session = await auth()
   if (session?.user?.role !== Role.ADMIN) {
     throw new Error("Unauthorized: Admin access required")
+  }
+}
+
+async function clearNavigationCache() {
+  try {
+    revalidateTag("site-menus")
+    revalidatePath("/control/navigation")
+    revalidatePath("/control/menus")
+    revalidatePath("/")
+    await redis.del("global:navigation")
+  } catch (error) {
+    console.error("Failed to clear navigation cache:", error)
   }
 }
 
@@ -67,9 +80,7 @@ export async function createMenu(data: {
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     } else if (
       result.error &&
       (result.error.includes("P2002") || result.error.includes("Unique constraint failed"))
@@ -121,9 +132,7 @@ export async function updateMenu(
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     }
     return result
   } catch (error: any) {
@@ -141,9 +150,7 @@ export async function deleteMenu(id: string) {
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     }
     return result
   } catch (error: any) {
@@ -188,9 +195,7 @@ export async function createSubItem(
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     }
     return result
   } catch (error: any) {
@@ -226,9 +231,7 @@ export async function updateSubItem(
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     }
     return result
   } catch (error: any) {
@@ -246,9 +249,7 @@ export async function deleteSubItem(id: string) {
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     }
     return result
   } catch (error: any) {
@@ -270,9 +271,7 @@ export async function reorderMenus(menuIds: string[]) {
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     }
     return result
   } catch (error: any) {
@@ -294,9 +293,7 @@ export async function reorderSubItems(subItemIds: string[]) {
     })
 
     if (result.success) {
-      revalidateTag("site-menus")
-      revalidatePath("/control/menus")
-      revalidatePath("/")
+      await clearNavigationCache()
     }
     return result
   } catch (error: any) {

@@ -15,6 +15,7 @@ import {
   Package,
   ClipboardCheck,
   Award,
+  Rocket,
 } from "lucide-react"
 import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -33,6 +34,7 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { title: "Dashboard", href: "/control", icon: LayoutDashboard },
   { title: "Implementation Plan", href: "/control/tasks", icon: ClipboardCheck },
+  { title: "Deployments", href: "/control/deployments", icon: Rocket },
   { title: "Homepage CMS", href: "/control/homepage", icon: Home },
   { title: "Users", href: "/control/users", icon: Users },
   { title: "Courses", href: "/control/courses", icon: BookOpen },

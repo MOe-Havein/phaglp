@@ -17,8 +17,8 @@
       "command": "node",
       "args": ["D:/testa-next15-app/mcp-vercel/build/index.js"],
       "env": {
-        "VERCEL_API_TOKEN": "vcp_32c4vOQGx1ecdKGu5g90wZWXKJnuukBurHriEmKO8SLxUgEptp48WifT",
-        "ALERT_WEBHOOK_URL": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+        "VERCEL_API_TOKEN": "vcp_32c4vOQGx1ecdKGu5g90wZWXKJnuukBurHriEmKO8SLxUgEptp48WifT"
+      
       }
     }
   }

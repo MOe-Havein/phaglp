@@ -54,9 +54,26 @@ const environment = targetEnv || "production"
 // Helper to delay execution
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-async function getLatestDeploymentId(projName) {
+async function getTeamIdForProject(projName) {
+  try {
+    const { handleListProjects } = await import("../mcp-vercel/build/tools/projects/handlers.js")
+    const res = await handleListProjects({ limit: 50 })
+    if (res.content && res.content[1]) {
+      const projects = JSON.parse(res.content[1].text)
+      const project = projects.find(p => p.name === projName || p.id === projName)
+      if (project && project.accountId && project.accountId.startsWith("team_")) {
+        return project.accountId
+      }
+    }
+  } catch (e) {
+    console.error("Failed to retrieve teamId for project:", e)
+  }
+  return null
+}
+
+async function getLatestDeploymentId(projName, teamId) {
   const { handleAllDeployments } = await import("../mcp-vercel/build/tools/deployments/handlers.js")
-  const result = await handleAllDeployments({ projectId: projName, limit: 1 })
+  const result = await handleAllDeployments({ projectId: projName, limit: 1, teamId })
   if (result.content && result.content[0]) {
     const deployments = JSON.parse(result.content[0].text)
     if (deployments && deployments.length > 0) {
@@ -66,14 +83,14 @@ async function getLatestDeploymentId(projName) {
   return null
 }
 
-async function trackDeployment(deploymentId) {
+async function trackDeployment(deploymentId, teamId) {
   const { handleGetDeployment } = await import("../mcp-vercel/build/tools/deployments/handlers.js")
   console.log(`\nTracking deployment ${deploymentId}...`)
 
   let previousState = ""
 
   while (true) {
-    const res = await handleGetDeployment({ idOrUrl: deploymentId })
+    const res = await handleGetDeployment({ idOrUrl: deploymentId, teamId })
     if (!res.content || !res.content[0]) {
       console.error("Failed to retrieve deployment state.")
       break
@@ -109,16 +126,21 @@ async function trackDeployment(deploymentId) {
 
 async function run() {
   try {
+    const teamId = await getTeamIdForProject(projectName)
+    if (teamId) {
+      console.log(`Discovered Team ID: ${teamId} for project ${projectName}`)
+    }
+
     switch (command) {
       case "status": {
-        const depId = await getLatestDeploymentId(projectName)
+        const depId = await getLatestDeploymentId(projectName, teamId)
         if (!depId) {
           console.error(`No deployments found for project ${projectName}`)
           return
         }
         const { handleGetDeployment } =
           await import("../mcp-vercel/build/tools/deployments/handlers.js")
-        const res = await handleGetDeployment({ idOrUrl: depId })
+        const res = await handleGetDeployment({ idOrUrl: depId, teamId })
         const data = JSON.parse(res.content[0].text)
         console.log("Latest Deployment Details:")
         console.log(`Project Name:   ${data.name}`)
@@ -131,7 +153,7 @@ async function run() {
       }
 
       case "redeploy": {
-        const latestId = await getLatestDeploymentId(projectName)
+        const latestId = await getLatestDeploymentId(projectName, teamId)
         if (!latestId) {
           console.error(`Could not find latest deployment to redeploy for project ${projectName}`)
           return
@@ -143,14 +165,16 @@ async function run() {
         const { handleCreateDeployment } =
           await import("../mcp-vercel/build/tools/deployments/handlers.js")
         const res = await handleCreateDeployment({
+          name: projectName,
           deploymentId: latestId,
           target: environment,
+          teamId,
         })
 
         if (res.content && res.content[1]) {
           const data = JSON.parse(res.content[1].text)
           console.log(`Deployment triggered successfully.`)
-          await trackDeployment(data.id || data.uid)
+          await trackDeployment(data.id || data.uid, teamId)
         } else {
           console.error("Redeploy trigger failed:", res.content?.[0]?.text || "Unknown error")
         }
@@ -166,14 +190,16 @@ async function run() {
 
         // This triggers a deploy of the project using its linked Git repository
         const res = await handleCreateDeployment({
+          name: projectName,
           project: projectName,
           target: environment,
+          teamId,
         })
 
         if (res.content && res.content[1]) {
           const data = JSON.parse(res.content[1].text)
           console.log(`Deployment triggered successfully.`)
-          await trackDeployment(data.id || data.uid)
+          await trackDeployment(data.id || data.uid, teamId)
         } else {
           console.error("Deploy trigger failed:", res.content?.[0]?.text || "Unknown error")
         }
