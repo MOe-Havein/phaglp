@@ -54,19 +54,17 @@ const environment = targetEnv || "production"
 // Helper to delay execution
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-async function getTeamIdForProject(projName) {
+async function getProjectDetails(projName) {
   try {
     const { handleListProjects } = await import("../mcp-vercel/build/tools/projects/handlers.js")
     const res = await handleListProjects({ limit: 50 })
     if (res.content && res.content[1]) {
       const projects = JSON.parse(res.content[1].text)
       const project = projects.find(p => p.name === projName || p.id === projName)
-      if (project && project.accountId && project.accountId.startsWith("team_")) {
-        return project.accountId
-      }
+      return project || null
     }
   } catch (e) {
-    console.error("Failed to retrieve teamId for project:", e)
+    console.error("Failed to retrieve project details:", e)
   }
   return null
 }
@@ -126,9 +124,21 @@ async function trackDeployment(deploymentId, teamId) {
 
 async function run() {
   try {
-    const teamId = await getTeamIdForProject(projectName)
+    const projectDetails = await getProjectDetails(projectName)
+    const teamId = projectDetails?.accountId?.startsWith("team_") ? projectDetails.accountId : null
     if (teamId) {
       console.log(`Discovered Team ID: ${teamId} for project ${projectName}`)
+    }
+
+    // Resolve gitSource dynamically if project is linked to Git
+    let gitSource = null
+    if (projectDetails && projectDetails.link) {
+      gitSource = {
+        type: projectDetails.link.type,
+        repoId: projectDetails.link.repoId || String(projectDetails.link.repoId),
+        ref: projectDetails.link.productionBranch || "main",
+      }
+      console.log(`Discovered Git Link: ${projectDetails.link.type} repository ID ${projectDetails.link.repoId}`)
     }
 
     switch (command) {
@@ -188,13 +198,22 @@ async function run() {
         const { handleCreateDeployment } =
           await import("../mcp-vercel/build/tools/deployments/handlers.js")
 
-        // This triggers a deploy of the project using its linked Git repository
-        const res = await handleCreateDeployment({
+        const deployParams = {
           name: projectName,
           project: projectName,
           target: environment,
           teamId,
-        })
+        }
+
+        if (gitSource) {
+          deployParams.gitSource = gitSource
+          if (environment !== "production") {
+            deployParams.gitSource.ref = "main" // fallback for preview/development triggers
+          }
+        }
+
+        // This triggers a deploy of the project using its linked Git repository
+        const res = await handleCreateDeployment(deployParams)
 
         if (res.content && res.content[1]) {
           const data = JSON.parse(res.content[1].text)
