@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, User, Clock } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 
 interface LectureCardProps {
   title: string
@@ -47,8 +46,11 @@ export function LectureCard({
       imageBg: "bg-slate-200",
     }
 
+  const safeTags = Array.isArray(tags) ? tags : []
+
   // Generate initials from title for placeholder
   const getInitials = (text: string) => {
+    if (!text) return "LE"
     const words = text.split(" ")
     const firstWord = words[0]
     const secondWord = words[1]
@@ -79,7 +81,7 @@ export function LectureCard({
         <div className="flex justify-center mb-6">
           {coverImage ? (
             <div className="relative w-32 h-32 rounded-full overflow-hidden">
-              <Image src={coverImage} alt={title} fill className="object-cover" />
+              <img src={coverImage} alt={title} className="w-full h-full object-cover" />
             </div>
           ) : (
             <div
@@ -121,7 +123,7 @@ export function LectureCard({
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {tags.slice(0, 3).map((tag) => (
+          {safeTags.slice(0, 3).map((tag) => (
             <span
               key={tag}
               className="text-[10px] font-medium uppercase tracking-wide text-slate-600 bg-white/70 px-2 py-1 rounded"
@@ -129,9 +131,9 @@ export function LectureCard({
               {tag}
             </span>
           ))}
-          {tags.length > 3 && (
+          {safeTags.length > 3 && (
             <span className="text-[10px] font-medium uppercase tracking-wide text-slate-600 bg-white/70 px-2 py-1 rounded">
-              +{tags.length - 3} more
+              +{safeTags.length - 3} more
             </span>
           )}
         </div>
