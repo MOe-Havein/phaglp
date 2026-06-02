@@ -121,12 +121,12 @@ export default async function CoursesPage() {
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/20 py-16">
       <div className="container mx-auto px-4">
         {/* Stunning Premium Hero */}
-        <div className="text-center max-w-3xl mx-auto mb-16 relative bg-gradient-to-r from-inferno via-celebration to-laser p-6 rounded-lg">
+        <div className="text-center max-w-3xl mx-auto mb-16 relative p-6 rounded-lg">
           <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 rounded-full blur-3xl opacity-50 dark:opacity-30" />
           <Badge className="bg-gradient-to-r from-inferno via-celebration to-laser text-white border-0 px-4 py-1.5 rounded-full mb-6 font-semibold tracking-wide uppercase">
             OUR ELITE COURSES?!
           </Badge>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-none">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-none">
             ELITE COURSES?!
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed font-medium">
