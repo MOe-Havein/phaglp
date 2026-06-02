@@ -7,6 +7,7 @@ import { ChatbotWidget } from "@/components/chatbot/chatbot-widget"
 import { SessionProvider } from "@/components/providers/session-provider"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { FoxyLoader } from "@/components/foxy/foxy-loader"
 import Script from "next/script"
 import "./globals.css"
 
@@ -72,6 +73,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <SessionProvider>{children}</SessionProvider>
           <Toaster position="top-center" richColors />
+          <FoxyLoader />
 
           <Analytics />
           <SpeedInsights />

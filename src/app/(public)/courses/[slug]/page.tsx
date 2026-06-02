@@ -8,6 +8,7 @@ import { CheckCircle, Clock, GraduationCap, BookOpen } from "lucide-react"
 import { MarkdownViewer } from "@/components/editor/markdown-viewer"
 import { auth } from "@/auth"
 import { EnrollButton } from "@/components/courses/enroll-button"
+import { getFoxyCartUrl } from "@/lib/foxy"
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -50,6 +51,16 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
   }
 
   const isEnrolled = course.enrollments?.length > 0
+
+  const foxyUrl = course.price > 0
+    ? getFoxyCartUrl({
+        code: course.id,
+        name: course.title,
+        price: course.price,
+        userId: session?.user?.id || undefined,
+        userEmail: session?.user?.email || undefined,
+      })
+    : undefined
 
   return (
     <div className="bg-background">
@@ -147,7 +158,13 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
               <div className="text-4xl font-bold mb-8 text-primary dark:text-blue-400">
                 {course.price === 0 ? "Free" : `$${course.price.toFixed(2)}`}
               </div>
-              <EnrollButton courseId={course.id} isEnrolled={isEnrolled} price={course.price} courseSlug={course.slug} />
+              <EnrollButton
+                courseId={course.id}
+                isEnrolled={isEnrolled}
+                price={course.price}
+                courseSlug={course.slug}
+                foxyUrl={foxyUrl}
+              />
               <Button variant="outline" size="lg" className="w-full mb-8 h-12">
                 Preview Course
               </Button>

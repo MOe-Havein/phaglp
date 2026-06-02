@@ -13,17 +13,18 @@ interface EnrollButtonProps {
   courseId: string
   isEnrolled: boolean
   price: number
-  courseSlug?: string
+  courseSlug?: string | undefined
+  foxyUrl?: string | undefined
 }
 
-export function EnrollButton({ courseId, isEnrolled, price, courseSlug }: EnrollButtonProps) {
+export function EnrollButton({ courseId, isEnrolled, price, courseSlug, foxyUrl }: EnrollButtonProps) {
   const [loading, setLoading] = useState(false)
   const { data: session } = useSession()
   const router = useRouter()
 
   async function handleEnroll() {
     if (!session) {
-      router.push(`/login?callbackUrl=/courses/${courseId}`)
+      router.push(`/login?callbackUrl=/courses/${courseSlug || courseId}`)
       return
     }
 
@@ -45,10 +46,35 @@ export function EnrollButton({ courseId, isEnrolled, price, courseSlug }: Enroll
 
   if (isEnrolled) {
     return (
-      <Button asChild className="w-full mb-4 bg-emerald-600 hover:bg-emerald-750 text-white h-12 text-lg font-bold">
+      <Button asChild className="w-full mb-4 bg-emerald-600 hover:bg-emerald-700 text-white h-12 text-lg font-bold">
         <Link href={`/courses/${courseSlug}/player`}>
           Go to Classroom
         </Link>
+      </Button>
+    )
+  }
+
+  // If it's a paid course, redirect to FoxyCart checkout if logged in, or prompt login if not
+  if (price > 0) {
+    if (!session) {
+      return (
+        <Button
+          onClick={() => router.push(`/login?callbackUrl=/courses/${courseSlug || courseId}`)}
+          className="w-full mb-4 bg-accent text-white hover:bg-accent/90 h-12 text-lg font-bold shadow-lg shadow-accent/20"
+        >
+          Sign in to Enroll
+        </Button>
+      )
+    }
+
+    return (
+      <Button
+        asChild
+        className="w-full mb-4 bg-accent text-white hover:bg-accent/90 h-12 text-lg font-bold shadow-lg shadow-accent/20"
+      >
+        <a href={foxyUrl || "#"}>
+          Enroll for ${price.toFixed(2)}
+        </a>
       </Button>
     )
   }
@@ -59,7 +85,7 @@ export function EnrollButton({ courseId, isEnrolled, price, courseSlug }: Enroll
       disabled={loading}
       className="w-full mb-4 bg-accent text-white hover:bg-accent/90 h-12 text-lg font-bold shadow-lg shadow-accent/20"
     >
-      {loading ? "Processing..." : price === 0 ? "Enroll for Free" : "Enroll Now"}
+      {loading ? "Processing..." : "Enroll for Free"}
     </Button>
   )
 }

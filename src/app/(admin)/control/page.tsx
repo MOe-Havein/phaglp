@@ -9,6 +9,7 @@ import {
   FileCode,
   TrendingUp,
   ArrowRight,
+  DollarSign,
 } from "lucide-react"
 import { StatsGrid } from "@/components/admin/StatsGrid"
 import { getAdminDashboardStats } from "@/lib/server/assets"
@@ -22,6 +23,7 @@ export const metadata = {
 const QUICK_LINKS = [
   { title: "Manage Users", href: "/control/users", icon: Users },
   { title: "Manage Courses", href: "/control/courses", icon: BookOpen },
+  { title: "Sales Reporting", href: "/control/sales", icon: DollarSign },
   { title: "Manage Lectures", href: "/control/lectures", icon: FileText },
   { title: "Asset Inventory", href: "/control/assets", icon: Package },
   { title: "CMS Pages", href: "/control/pages", icon: FileCode },

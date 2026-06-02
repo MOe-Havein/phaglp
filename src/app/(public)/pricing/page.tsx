@@ -11,6 +11,7 @@ import {
 import { SubscriptionTier } from "@prisma/client"
 import { CheckCircle2, Star, Sparkles, Building2 } from "lucide-react"
 import Link from "next/link"
+import { getFoxyCartUrl } from "@/lib/foxy"
 
 const tiers = [
   {
@@ -149,7 +150,20 @@ export default async function PricingPage() {
                     </Button>
                   ) : (
                     <Button asChild className="w-full" variant={tier.buttonVariant} size="lg">
-                      <Link href="/contact">{tier.buttonText}</Link>
+                      <a
+                        href={getFoxyCartUrl({
+                          code: "PRO_TIER",
+                          name: "Pro Subscription",
+                          price: 29.0,
+                          userId: session.user.id || undefined,
+                          userEmail: session.user.email || undefined,
+                          customParams: {
+                            sub_frequency: "1m",
+                          },
+                        })}
+                      >
+                        {tier.buttonText}
+                      </a>
                     </Button>
                   )}
                 </CardFooter>

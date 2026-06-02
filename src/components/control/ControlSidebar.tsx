@@ -16,6 +16,7 @@ import {
   ClipboardCheck,
   Award,
   Rocket,
+  DollarSign,
 } from "lucide-react"
 import { type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -33,6 +34,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { title: "Dashboard", href: "/control", icon: LayoutDashboard },
+  { title: "Sales (Foxy)", href: "/control/sales", icon: DollarSign },
   { title: "Implementation Plan", href: "/control/tasks", icon: ClipboardCheck },
   { title: "Deployments", href: "/control/deployments", icon: Rocket },
   { title: "Homepage CMS", href: "/control/homepage", icon: Home },
