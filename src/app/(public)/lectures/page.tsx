@@ -71,7 +71,7 @@ export default async function LecturesPage() {
               key={lecture.id}
               title={lecture.title}
               slug={lecture.slug}
-              author={lecture.author.name || "Anonymous"}
+              author={lecture.author?.name || "Anonymous"}
               category={lecture.category}
               excerpt={lecture.excerpt || lecture.body.substring(0, 150) + "..."}
               publishedAt={format(new Date(lecture.createdAt), "MMMM d, yyyy")}

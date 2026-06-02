@@ -126,7 +126,7 @@ export default async function CoursesPage() {
           <Badge className="bg-gradient-to-r from-inferno via-celebration to-laser text-white border-0 px-4 py-1.5 rounded-full mb-6 font-semibold tracking-wide uppercase">
             OUR ELITE COURSES?!
           </Badge>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-none">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-none">
             ELITE COURSES?!
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed font-medium">
