@@ -17,9 +17,120 @@ async function ensureControlAccess() {
 export async function deleteUser(userId: string) {
   try {
     await ensureControlAccess()
+    
     const result = await safeDbQuery(async () => {
+      // 1. Nullify authorId on Page records
+      await prisma.page.updateMany({
+        where: { authorId: userId },
+        data: { authorId: null },
+      })
+
+      // 2. Nullify userId on ChatMessage records
+      await prisma.chatMessage.updateMany({
+        where: { userId: userId },
+        data: { userId: null },
+      })
+
+      // 3. Nullify userId on Analytics records
+      await prisma.analytics.updateMany({
+        where: { userId: userId },
+        data: { userId: null },
+      })
+
+      // 4. Delete Sessions
+      await prisma.session.deleteMany({
+        where: { userId: userId },
+      })
+
+      // 5. Delete FoxyTransactions
+      await prisma.foxyTransaction.deleteMany({
+        where: { userId: userId },
+      })
+
+      // 6. Delete AssetAllocations
+      await prisma.assetAllocation.deleteMany({
+        where: { userId: userId },
+      })
+
+      // 7. Delete Comments (both authored by user and on posts authored by user)
+      await prisma.comment.deleteMany({
+        where: {
+          OR: [
+            { authorId: userId },
+            { post: { authorId: userId } }
+          ]
+        },
+      })
+
+      // 8. Delete Posts authored by the user
+      await prisma.post.deleteMany({
+        where: { authorId: userId },
+      })
+
+      // 9. Delete Lecture Revisions (both authored by user and belonging to lectures authored by user)
+      await prisma.lectureRevision.deleteMany({
+        where: {
+          OR: [
+            { authorId: userId },
+            { lecture: { authorId: userId } }
+          ]
+        },
+      })
+
+      // 10. Delete Lectures authored by the user
+      await prisma.lecture.deleteMany({
+        where: { authorId: userId },
+      })
+
+      // 11. Delete LessonProgress (both progress of the user and progress in lessons under courses instructed by user)
+      await prisma.lessonProgress.deleteMany({
+        where: {
+          OR: [
+            { userId: userId },
+            { lesson: { module: { course: { instructorId: userId } } } }
+          ]
+        },
+      })
+
+      // 12. Delete Certificates (both owned by user and for courses instructed by user)
+      await prisma.certificate.deleteMany({
+        where: {
+          OR: [
+            { userId: userId },
+            { course: { instructorId: userId } }
+          ]
+        },
+      })
+
+      // 13. Delete Enrollments (both enrollments of user and enrollments in courses instructed by user)
+      await prisma.enrollment.deleteMany({
+        where: {
+          OR: [
+            { userId: userId },
+            { course: { instructorId: userId } }
+          ]
+        },
+      })
+
+      // 14. Delete Lessons belonging to modules of courses instructed by user
+      await prisma.lesson.deleteMany({
+        where: { module: { course: { instructorId: userId } } },
+      })
+
+      // 15. Delete CourseModules of courses instructed by user
+      await prisma.courseModule.deleteMany({
+        where: { course: { instructorId: userId } },
+      })
+
+      // 16. Delete Courses instructed by the user
+      await prisma.course.deleteMany({
+        where: { instructorId: userId },
+      })
+
+      // 17. Finally delete the core User record
       return prisma.user.delete({ where: { id: userId } })
     })
+
     if (result.success) {
       revalidatePath("/control/users")
     }
