@@ -8,7 +8,9 @@ PHAGLP is a modern full-stack application designed for philosophical education, 
 
 - **Course Management:** Enroll in and manage philosophical and scientific courses (GP Programs).
 - **Lectures & Research:** Explore philosophical lectures, essays, and insights.
-- **Halal Marriage Matching:** A privacy-first, values-based matching system and curriculum tailored to Islamic principles.
+- **Certification Management:** Manage certification for completed courses.
+- **Pages Management:** Manage pages for the website.
+- **Blog Management:** A comprehensive, role-based (RBAC) Content Management System for managing users, courses, lectures, and global site settings.
 - **Admin Control Panel:** A comprehensive, role-based (RBAC) Content Management System for managing users, courses, lectures, and global site settings.
 - **AI Integration:** Tools for generating outlines, summaries, and exploring interactive logical models.
 
@@ -29,7 +31,7 @@ This platform is engineered using modern React and Node.js best practices, empha
 
 - **Main User Navigation:** Courses, Lectures, About, Contact
 - **User Dashboard:** Enrolled courses, saved lectures, AI interaction logs, and marriage profile management.
-- **Admin Control:** Users, Pages, Courses, Navigation Menus, Contact Messages, Homepage Sections, and Lectures.
+- **Admin Control:** Users, Pages, Courses, Certifications, Navigation Menus, Contact Messages, Homepage Sections, and Blog Posts.
 
 ## 🛠️ Getting Started
 
@@ -86,8 +88,21 @@ pnpm exec playwright test
 - **Atomic Transactions:** Multi-step database mutations are wrapped in `prisma.$transaction`.
 - # **N+1 Prevention:** Prisma relational data is prefetched using `include` blocks.
 
+
+## vercel app
+https://phaglp.com
+
+## local app
+http://localhost:3000
+
+
+## test vercel app
+
+
+
+
 # testa-phaglp2
 
-the latest one 25 May 26
+the latest one 6 June 2026
 
 > > > > > > > cde93fa32f3d902a6594179455d5cb7399acfe8a

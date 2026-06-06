@@ -5,6 +5,13 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1).catch("file:./dev.db"),
   NEXTAUTH_SECRET: z.string().min(32).optional(),
   AUTH_SECRET: z.string().min(32).optional(),
+  CLOUDINARY_URL: z.string().min(1),
+  CLOUDINARY_API_KEY: z.string().min(1),
+  CLOUDINARY_API_SECRET: z.string().min(1),
+  CLOUDINARY_CLOUD_NAME: z.string().min(1), // PHAGLP-CLOUDINARY
+  CLOUDINARY_FOLDER: z.string().min(1), // blog-images
+  CLOUDINARY_PRESET: z.string().min(1), // image-presets    
+
   // Add other required env vars here
 })
 

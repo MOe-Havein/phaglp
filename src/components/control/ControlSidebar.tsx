@@ -42,6 +42,8 @@ const sidebarItems: SidebarItem[] = [
   { title: "Courses", href: "/control/courses", icon: BookOpen },
   { title: "Certificates", href: "/control/certificates", icon: Award },
   { title: "Lectures", href: "/control/lectures", icon: FileText },
+  { title: "Blog Posts", href: "/control/blog", icon: FileText },
+  { title: "Monitoring", href: "/control/vercel-monitor", icon: Rocket },
   { title: "Assets", href: "/control/assets", icon: Package },
   { title: "Pages", href: "/control/pages", icon: FileCode },
   { title: "Messages", href: "/control/messages", icon: Mail },
@@ -56,8 +58,8 @@ interface SidebarContentProps {
 }
 
 const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps) => (
-  <div className="flex flex-col h-full bg-white dark:bg-gray-900">
-    <div className="p-6">
+  <div className="flex flex-col h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
+    <div className="p-6 border-b border-gray-100 dark:border-gray-800 shrink-0">
       <Link
         href="/"
         className="flex items-center gap-2 font-bold text-xl text-primary dark:text-blue-400"
@@ -68,7 +70,9 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
         <p className="text-xs text-muted-foreground mt-1 truncate">Logged as: {userName}</p>
       )}
     </div>
-    <nav className="flex-1 px-4 py-2">
+    
+    {/* Added overflow-y-auto to allow scrolling through long menu items */}
+    <nav className="flex-1 px-4 py-4 overflow-y-auto custom-scrollbar">
       <ul className="space-y-1">
         {sidebarItems.map((item) => {
           const isActive =
@@ -85,18 +89,19 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
                     : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white",
                 )}
               >
-                <item.icon className="w-4 h-4" />
-                {item.title}
+                <item.icon className="w-4 h-4 shrink-0" />
+                <span className="truncate">{item.title}</span>
               </Link>
             </li>
           )
         })}
       </ul>
     </nav>
-    <div className="p-4 border-t mt-auto flex items-center justify-between">
+    
+    <div className="p-4 border-t border-gray-200 dark:border-gray-800 mt-auto flex items-center justify-between shrink-0 bg-white dark:bg-gray-900">
       <ThemeToggle />
       <form action="/api/auth/signout" method="POST">
-        <Button variant="ghost" size="sm" type="submit">
+        <Button variant="ghost" size="sm" type="submit" className="text-gray-600 dark:text-gray-300">
           Sign Out
         </Button>
       </form>
@@ -104,7 +109,13 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
   </div>
 )
 
-export function ControlSidebar({ userName }: { userName?: string | null | undefined }) {
+export function ControlSidebar({ 
+  userName,
+  children
+}: { 
+  userName?: string | null | undefined
+  children?: React.ReactNode
+}) {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
@@ -114,25 +125,25 @@ export function ControlSidebar({ userName }: { userName?: string | null | undefi
   }, [])
 
   return (
-    <>
-      {/* Desktop Sidebar */}
-      <aside className="w-64 bg-white dark:bg-gray-900 border-r hidden md:block shrink-0">
+    <div className="flex flex-col md:flex-row min-h-screen w-full">
+      {/* Desktop Sidebar Layout */}
+      <aside className="fixed inset-y-0 left-0 z-20 w-64 hidden md:block shrink-0 h-screen">
         <SidebarContent userName={userName} pathname={pathname} onLinkClick={() => {}} />
       </aside>
 
-      {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between p-4 bg-white dark:bg-gray-900 border-b">
+      {/* Mobile Top Header */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between p-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 h-16">
         <Link href="/" className="font-bold text-lg text-primary dark:text-blue-400">
           PHAGLP Control
         </Link>
         {isMounted ? (
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-64">
+            <SheetContent side="left" className="p-0 w-64 border-none">
               <SidebarContent
                 userName={userName}
                 pathname={pathname}
@@ -146,6 +157,12 @@ export function ControlSidebar({ userName }: { userName?: string | null | undefi
           </Button>
         )}
       </header>
-    </>
+
+      {/* Main Content Layout Adjustments wrapper */}
+      <div className="flex-1 md:pl-64 pt-16 md:pt-0 min-h-screen w-full bg-gray-50 dark:bg-gray-950 flex flex-col">
+        {children}
+      </div>
+    </div>
   )
 }
+

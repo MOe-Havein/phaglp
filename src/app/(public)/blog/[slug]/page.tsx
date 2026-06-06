@@ -5,7 +5,7 @@ import { format } from "date-fns"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Calendar, User, Clock } from "lucide-react"
 import Link from "next/link"
-import { RichTextViewer } from "@/components/editor/rich-text-viewer"
+import { MarkdownViewer } from "@/components/editor/markdown-viewer"
 import { FoxyLoader } from "@/components/foxy/foxy-loader"
 import { unstable_cache } from "next/cache"
 
@@ -152,12 +152,30 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
 
           {/* Body Content */}
           <div className="prose prose-blue dark:prose-invert max-w-none">
-            <RichTextViewer html={post.body} />
+            <MarkdownViewer value={post.body} />
           </div>
         </article>
 
         {/* Global FoxyLoader ensures FoxyCart intercept is fully active */}
         <FoxyLoader />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Article',
+              headline: post.title,
+              image: post.coverImage ? [post.coverImage] : undefined,
+              datePublished: typeof post.createdAt === "string" ? post.createdAt : post.createdAt.toISOString(),
+              dateModified: typeof post.updatedAt === "string" ? post.updatedAt : post.updatedAt.toISOString(),
+              author: {
+                '@type': 'Person',
+                name: post.author?.name || 'Anonymous',
+              },
+            }),
+          }}
+        />
       </div>
     </div>
   )

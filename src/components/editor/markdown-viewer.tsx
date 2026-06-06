@@ -19,7 +19,11 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
 
   return (
     <div className={className} data-color-mode={theme === "dark" ? "dark" : "light"}>
-      <MarkdownPreview source={value} style={{ backgroundColor: "transparent" }} />
+      <MarkdownPreview 
+        source={value} 
+        style={{ backgroundColor: "transparent" }} 
+        rehypePlugins={[[require("rehype-raw")]]}
+      />
     </div>
   )
 }

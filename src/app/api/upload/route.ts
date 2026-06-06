@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary"
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
+import { Readable } from "stream"
 
 // --- Constants ---
 const UPLOAD_FOLDER = "phaglp/lectures"
@@ -49,24 +50,24 @@ export async function POST(request: Request) {
       )
     }
 
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    // Convert Web Stream to Node.js Readable stream
+    const nodeStream = Readable.fromWeb(file.stream() as any)
 
     const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder: UPLOAD_FOLDER,
-            transformation: [
-              { width: 1280, crop: "scale" }, // Resize to width 1280
-            ],
-          },
-          (error, result) => {
-            if (error) reject(error)
-            else resolve(result)
-          },
-        )
-        .end(buffer)
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: UPLOAD_FOLDER,
+          transformation: [
+            { width: 1280, crop: "scale" }, // Resize to width 1280
+          ],
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        },
+      )
+
+      nodeStream.pipe(uploadStream)
     })
 
     return NextResponse.json(result)

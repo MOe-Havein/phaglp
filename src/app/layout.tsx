@@ -24,6 +24,15 @@ const geistMono = Geist_Mono({
 // Revalidate root layout every hour
 export const revalidate = 3600
 
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const siteConfig = await getSiteSettings()
   return {
@@ -95,6 +104,20 @@ export default async function RootLayout({
               </Script>
             </>
           )}
+
+          {/* JSON-LD Structured Data */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: siteConfig.siteName,
+                url: siteConfig.siteUrl,
+                logo: `${siteConfig.siteUrl}/logo.png`,
+              }),
+            }}
+          />
 
           {/* AI Chatbot Widget */}
           <ChatbotWidget />

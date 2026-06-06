@@ -7,7 +7,6 @@ PHAGLP (Philosophical Academy for Geniuses Life Planning) is a modern full-stack
 - **Course Management**: Enroll in and manage philosophical and scientific courses
 - **Lectures Page**: Explore philosophical lectures and insights
 - **AI Assistant**: Generate outlines, summaries, and check for logical fallacies
-- **Halal Marriage Matching**: Privacy-first, values-based matching system
 - **Admin Dashboard**: Comprehensive CMS for managing content and users
 
 ## 🛠️ Tech Stack
@@ -24,7 +23,8 @@ PHAGLP (Philosophical Academy for Geniuses Life Planning) is a modern full-stack
 - **User**: Profile, role (USER, ADMIN, INSTRUCTOR)
 - **Course**: Title, slug, description, instructor, price
 - **Lecture**: Title, slug, tags[], body, author, category
-- **MarriageProfile**: Personal details, values, preferences
+- **Blog**: Title, slug, tags[], body, author, category
+
 
 ## 🗺️ Navigation
 

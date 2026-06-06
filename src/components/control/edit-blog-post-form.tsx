@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { RichTextEditor } from "@/components/editor/rich-text-editor"
+import { WysiwygMarkdownEditor } from "@/components/editor/wysiwyg-markdown-editor"
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,6 +36,7 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
   const [deleting, setDeleting] = useState(false)
   const [content, setContent] = useState(post.body || "")
   const [published, setPublished] = useState(post.published || false)
+  const [coverImage, setCoverImage] = useState(post.coverImage || "")
 
   // Format existing tags for display
   const initialTags = Array.isArray(post.tags) ? post.tags.join(", ") : ""
@@ -47,7 +49,6 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
     const title = formData.get("title") as string
     const category = formData.get("category") as string
     const excerpt = formData.get("excerpt") as string
-    const coverImage = formData.get("coverImage") as string
     const tagsInput = formData.get("tagsInput") as string
 
     const tags = tagsInput
@@ -188,7 +189,7 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
 
               <div className="space-y-2">
                 <Label className="font-semibold text-slate-700 dark:text-slate-300">Body</Label>
-                <RichTextEditor value={content} onChange={setContent} />
+                <WysiwygMarkdownEditor value={content} onChange={setContent} />
               </div>
 
               <div className="space-y-2">
@@ -240,13 +241,17 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
               {/* Cover Image URL */}
               <div className="space-y-2">
                 <Label htmlFor="coverImage" className="font-semibold text-slate-700 dark:text-slate-300">Cover Image URL</Label>
-                <Input
-                  id="coverImage"
-                  name="coverImage"
-                  defaultValue={post.coverImage || ""}
-                  placeholder="https://example.com/cover.jpg"
-                  className="rounded-xl h-10 border-slate-200 dark:border-slate-800"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="coverImage"
+                    name="coverImage"
+                    value={coverImage}
+                    onChange={(e) => setCoverImage(e.target.value)}
+                    placeholder="https://example.com/cover.jpg"
+                    className="rounded-xl h-10 border-slate-200 dark:border-slate-800 flex-1"
+                  />
+                  <CloudinaryUploadButton onUpload={setCoverImage} className="h-10 rounded-xl px-3" />
+                </div>
               </div>
 
               {/* Publish Toggle */}

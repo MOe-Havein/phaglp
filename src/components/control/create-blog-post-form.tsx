@@ -12,13 +12,15 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { RichTextEditor } from "@/components/editor/rich-text-editor"
+import { WysiwygMarkdownEditor } from "@/components/editor/wysiwyg-markdown-editor"
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button"
 
 export function CreateBlogPostForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [content, setContent] = useState("")
   const [published, setPublished] = useState(false)
+  const [coverImage, setCoverImage] = useState("")
 
   async function handleCreate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -28,7 +30,6 @@ export function CreateBlogPostForm() {
     const title = formData.get("title") as string
     const category = formData.get("category") as string
     const excerpt = formData.get("excerpt") as string
-    const coverImage = formData.get("coverImage") as string
     const tagsInput = formData.get("tagsInput") as string
 
     // Parse comma-separated tags into array
@@ -119,7 +120,7 @@ export function CreateBlogPostForm() {
 
               <div className="space-y-2">
                 <Label className="font-semibold text-slate-700 dark:text-slate-300">Body</Label>
-                <RichTextEditor value={content} onChange={setContent} />
+                <WysiwygMarkdownEditor value={content} onChange={setContent} />
               </div>
 
               <div className="space-y-2">
@@ -168,12 +169,17 @@ export function CreateBlogPostForm() {
               {/* Cover Image URL */}
               <div className="space-y-2">
                 <Label htmlFor="coverImage" className="font-semibold text-slate-700 dark:text-slate-300">Cover Image URL</Label>
-                <Input
-                  id="coverImage"
-                  name="coverImage"
-                  placeholder="https://example.com/cover.jpg"
-                  className="rounded-xl h-10 border-slate-200 dark:border-slate-800"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="coverImage"
+                    name="coverImage"
+                    value={coverImage}
+                    onChange={(e) => setCoverImage(e.target.value)}
+                    placeholder="https://example.com/cover.jpg"
+                    className="rounded-xl h-10 border-slate-200 dark:border-slate-800 flex-1"
+                  />
+                  <CloudinaryUploadButton onUpload={setCoverImage} className="h-10 rounded-xl px-3" />
+                </div>
               </div>
 
               {/* Publish Toggle */}
