@@ -111,7 +111,8 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full bg-slate-900 text-white rounded-md py-2 px-4 text-sm font-medium hover:bg-slate-800 disabled:opacity-50 transition-all duration-[8000ms] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+            className="w-full bg-slate-900 text-white rounded-md py-2 px-4 text-sm font-medium hover:bg-slate-800 disabled:opacity-50 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
+            style={{ transitionDuration: '8000ms' }}
           >
             {isPending ? "Processing..." : "Save Navigation Item"}
           </button>

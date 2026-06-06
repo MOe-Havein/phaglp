@@ -49,7 +49,7 @@ export function SaaSHero({
 
         {/* Large soft radial backgrounds (colors matching theme context: blue, orange, green) */}
         <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(31,123,198,0.15),transparent_65%)] blur-3xl pointer-events-none" />
-        <div className="absolute bottom-[20%] left-[20%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(230,92,35,0.06),transparent_60%)] blur-3xl pointer-events-none animate-pulse duration-[8s]" />
+        <div className="absolute bottom-[20%] left-[20%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(230,92,35,0.06),transparent_60%)] blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
         <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(124,182,37,0.08),transparent_60%)] blur-3xl pointer-events-none" />
 
         {/* Linear overlay to ground the gradient */}

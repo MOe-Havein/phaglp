@@ -6,11 +6,11 @@ const envSchema = z.object({
   NEXTAUTH_SECRET: z.string().min(32).optional(),
   AUTH_SECRET: z.string().min(32).optional(),
   CLOUDINARY_URL: z.string().min(1),
-  CLOUDINARY_API_KEY: z.string().min(1),
-  CLOUDINARY_API_SECRET: z.string().min(1),
-  CLOUDINARY_CLOUD_NAME: z.string().min(1), // PHAGLP-CLOUDINARY
-  CLOUDINARY_FOLDER: z.string().min(1), // blog-images
-  CLOUDINARY_PRESET: z.string().min(1), // image-presets    
+  CLOUDINARY_API_KEY: z.string().min(1).optional(),
+  CLOUDINARY_API_SECRET: z.string().min(1).optional(),
+  CLOUDINARY_CLOUD_NAME: z.string().min(1).optional(), // PHAGLP-CLOUDINARY
+  CLOUDINARY_FOLDER: z.string().min(1).optional(), // blog-images
+  CLOUDINARY_PRESET: z.string().min(1).optional(), // image-presets    
 
   // Add other required env vars here
 })
