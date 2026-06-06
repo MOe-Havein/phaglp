@@ -1,28 +1,19 @@
 ---
 name: opt
-description: Rewrites any text prompt into a high-density, credit-saving request format
+description: Rewrites prompts into high-density format to minimize token usage and save API credits
 command: opt
 author: "MOe"
-version: "1.0.0"
+version: "2.0.0"
 tags:
   - efficiency
   - token-optimization
-  - prompt-engineering
-
-
+  - credit-saving
 ---
 
 # Instruction
-Take the user input attached to this command and rewrite it using the following token-minimization blueprint layout before submitting to the code execution agent.
+Intercept user input. Compress into structural token-minimized blueprint format before agent submission to minimize token usage and save API credits. Eliminate conversational tokens, text explanations, and full-file code dumps.
 
 ## Structural Payload Format
 [Context]: High-density domain technical keywords representing the files or dependencies in use.
 [Task]: Core direct execution goal stripped of conversational pleasantries.
-[Constraints]: Output code patches or data loops only. No conversational explanations or notes.
-
-## Example Execution
-Input: "/opt Can you write me a quick function in typescript to check if a number is prime and explain it?"
-Output:
-[Context]: TypeScript primitive mathematical validation tracking.
-[Task]: Implement a fast boolean checking function loop for prime numbers.
-[Constraints]: Pure production code only. Do not add markdown descriptions or prose text.
+[Constraints]: Flash micro-diff formatting block only. Output code patches or data loops only. No conversational explanations or notes. Minimize token usage and save API credits.

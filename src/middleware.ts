@@ -11,9 +11,8 @@ export default auth((req) => {
   if (req.nextUrl.pathname.startsWith("/control")) {
     res.headers.set(
       "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:;",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.foxycart.com https://vercel.live https://phaglp.foxycart.com; style-src 'self' 'unsafe-inline' https://cdn.foxycart.com; img-src 'self' data: blob:; font-src 'self' data:; frame-src 'self' https://vercel.live; connect-src 'self' https://cdn.foxycart.com https://vercel.live;",
     )
-    res.headers.set("X-Frame-Options", "DENY")
     res.headers.set("X-Content-Type-Options", "nosniff")
     res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
   }
