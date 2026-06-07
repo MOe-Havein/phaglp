@@ -15,7 +15,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import { Markdown } from "tiptap-markdown";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { common, createLowlight } from "lowlight";
-import "highlight.js/styles/github-dark.css"; 
+import "highlight.js/styles/github-dark.css"; // Add styles for syntax highlighting
 import CustomTextDirection from "@/components/editor/custom-text-direction";
 import { CldUploadWidget } from "next-cloudinary";
 import { useEffect, useRef, useCallback, useMemo } from "react";
@@ -31,8 +31,8 @@ import {
   Image as ImageIcon,
   Video,
   AlignLeft,
-  AlignCenter,
   AlignRight,
+  AlignCenter,
   Link as LinkIcon,
   Quote,
   Minus,
@@ -42,6 +42,9 @@ import {
 } from "lucide-react";
 
 const lowlight = createLowlight(common);
+
+// Custom extension for RTL/LTR direction on paragraphs
+
 
 interface WysiwygMarkdownEditorProps {
   value: string;
@@ -62,7 +65,7 @@ export function WysiwygMarkdownEditor({
     () => [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
-        codeBlock: false, 
+        codeBlock: false, // We use the lowlight code block instead
       }),
       CodeBlockLowlight.configure({
         lowlight,
@@ -108,6 +111,7 @@ export function WysiwygMarkdownEditor({
     },
   });
 
+  // Sync external value changes without causing loops
   useEffect(() => {
     if (!editor) return;
     if (isInternalChange.current) {
@@ -141,17 +145,18 @@ export function WysiwygMarkdownEditor({
   }, [editor]);
 
   const insertLink = useCallback(() => {
-    const previousUrl = editor?.getAttributes("link").href;
-    const url = window.prompt("Enter URL:", previousUrl);
-    
-    if (url === null) return; // cancelled
-    if (url === "") {
-      editor?.chain().focus().extendMarkRange("link").unsetLink().run();
-      return;
+    const url = window.prompt("Enter URL:");
+    if (url) {
+      editor
+        ?.chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
     }
-    
-    editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   }, [editor]);
+
+  
 
   const ToolbarButton = ({
     onClick,
@@ -186,53 +191,28 @@ export function WysiwygMarkdownEditor({
     }),
     [],
   );
-
-  // Safe early return conditional execution safely structured at the bottom
-  if (!editor) {
-    return <div className="animate-pulse bg-muted rounded-lg" style={{ height: `${height}px` }} />;
-  }
-
+if (!editor) return null;
   return (
     <div className="border rounded-lg overflow-hidden bg-background">
-      {/* Complete Toolbar Wrapper */}
+      {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30">
-        
-        {/* Undo/Redo Group */}
-        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} title="Undo">
+        {/* History */}
+        <ToolbarButton
+          onClick={() => editor.chain().focus().undo().run()}
+          title="Undo"
+        >
           <Undo className="w-4 h-4" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} title="Redo">
+        <ToolbarButton
+          onClick={() => editor.chain().focus().redo().run()}
+          title="Redo"
+        >
           <Redo className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
 
-        {/* Headings Group */}
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          active={editor.isActive("heading", { level: 1 })}
-          title="Heading 1"
-        >
-          <Heading1 className="w-4 h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          active={editor.isActive("heading", { level: 2 })}
-          title="Heading 2"
-        >
-          <Heading2 className="w-4 h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          active={editor.isActive("heading", { level: 3 })}
-          title="Heading 3"
-        >
-          <Heading3 className="w-4 h-4" />
-        </ToolbarButton>
-
-        <Divider />
-
-        {/* Inline Formatting Group */}
+        {/* Text formatting */}
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           active={editor.isActive("bold")}
@@ -263,18 +243,49 @@ export function WysiwygMarkdownEditor({
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          title="Horizontal Line"
+          title="Horizontal Rule"
         >
           <Minus className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
 
-        {/* Lists Group */}
+        {/* Headings */}
+        <ToolbarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
+          active={editor.isActive("heading", { level: 1 })}
+          title="Heading 1"
+        >
+          <Heading1 className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          active={editor.isActive("heading", { level: 2 })}
+          title="Heading 2"
+        >
+          <Heading2 className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          active={editor.isActive("heading", { level: 3 })}
+          title="Heading 3"
+        >
+          <Heading3 className="w-4 h-4" />
+        </ToolbarButton>
+
+        <Divider />
+
+        {/* Lists */}
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           active={editor.isActive("bulletList")}
-          title="Bulleted List"
+          title="Bullet List"
         >
           <List className="w-4 h-4" />
         </ToolbarButton>
@@ -288,11 +299,11 @@ export function WysiwygMarkdownEditor({
 
         <Divider />
 
-        {/* Text Alignment Group */}
+        {/* Alignment */}
         <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
           active={editor.isActive({ textAlign: "left" })}
-          title="Align Left"
+          title="Align Left (LTR)"
         >
           <AlignLeft className="w-4 h-4" />
         </ToolbarButton>
@@ -306,19 +317,69 @@ export function WysiwygMarkdownEditor({
         <ToolbarButton
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
           active={editor.isActive({ textAlign: "right" })}
-          title="Align Right"
+          title="Align Right (RTL)"
         >
           <AlignRight className="w-4 h-4" />
         </ToolbarButton>
 
+        {/* RTL / LTR direction buttons */}
+        <ToolbarButton
+          onClick={() => (editor.commands as any).setTextDirection("rtl")}
+          title="Right-to-Left (Arabic)"
+        >
+          <span className="text-xs font-bold px-1">RTL</span>
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => (editor.commands as any).setTextDirection("ltr")}
+          title="Left-to-Right (English)"
+        >
+          <span className="text-xs font-bold px-1">LTR</span>
+        </ToolbarButton>
+
         <Divider />
 
-        {/* Interactive Media Elements Group */}
-        <ToolbarButton onClick={insertLink} active={editor.isActive("link")} title="Hyperlink">
+        {/* Link */}
+        <ToolbarButton
+          onClick={insertLink}
+          active={editor.isActive("link")}
+          title="Insert Link"
+        >
           <LinkIcon className="w-4 h-4" />
         </ToolbarButton>
-        
-        <ToolbarButton onClick={insertTable} active={editor.isActive("table")} title="Insert 3x3 Table">
+
+        {/* Table */}
+        <ToolbarButton onClick={insertTable} title="Insert Table">
           <TableIcon className="w-4 h-4" />
         </ToolbarButton>
-        
+
+        {/* Image upload widget */}
+        <CldUploadWidget
+          signatureEndpoint="/api/sign-cloudinary-params"
+          options={cloudinaryOptions}
+          onSuccess={(result: any) => {
+            if (result?.info?.secure_url) {
+              insertImage(result.info.secure_url);
+            }
+          }}
+        >
+          {({ open }) => (
+            <ToolbarButton onClick={() => open()} title="Insert Image">
+              <ImageIcon className="w-4 h-4" />
+            </ToolbarButton>
+          )}
+        </CldUploadWidget>
+
+        {/* Video embed */}
+        <ToolbarButton
+          onClick={insertYoutube}
+          title="Embed YouTube / Vimeo Video"
+        >
+          <Video className="w-4 h-4" />
+        </ToolbarButton>
+      </div>
+
+      {/* Editor content area */}
+      <EditorContent editor={editor} />
+    </div>
+  );
+}
