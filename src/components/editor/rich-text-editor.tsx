@@ -13,7 +13,7 @@ import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Extension } from "@tiptap/core";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Bold,
   Italic,
@@ -84,8 +84,8 @@ export function RichTextEditor({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isInternalChange = useRef(false);
 
-  const editor = useEditor({
-    extensions: [
+  const extensions = useMemo(
+    () => [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
       }),
@@ -106,6 +106,12 @@ export function RichTextEditor({
         HTMLAttributes: { class: "underline text-blue-600" },
       }),
     ],
+    [placeholder],
+  );
+
+  const editor = useEditor({
+    immediatelyRender: false,
+    extensions,
     content: value,
     onUpdate: ({ editor }) => {
       isInternalChange.current = true;

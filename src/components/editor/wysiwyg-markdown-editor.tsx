@@ -18,7 +18,7 @@ import { common, createLowlight } from "lowlight";
 import "highlight.js/styles/github-dark.css"; // Add styles for syntax highlighting
 import { Extension } from "@tiptap/core";
 import { CldUploadWidget } from "next-cloudinary";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Bold,
   Italic,
@@ -91,8 +91,8 @@ export function WysiwygMarkdownEditor({
 }: WysiwygMarkdownEditorProps) {
   const isInternalChange = useRef(false);
 
-  const editor = useEditor({
-    extensions: [
+  const extensions = useMemo(
+    () => [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
         codeBlock: false, // We use the lowlight code block instead
@@ -121,6 +121,12 @@ export function WysiwygMarkdownEditor({
         transformPastedText: true,
       }),
     ],
+    [placeholder],
+  );
+
+  const editor = useEditor({
+    immediatelyRender: false,
+    extensions,
     content: value,
     onUpdate: ({ editor }) => {
       isInternalChange.current = true;
@@ -207,6 +213,14 @@ export function WysiwygMarkdownEditor({
   );
 
   const Divider = () => <div className="w-px h-5 bg-border mx-1 self-center" />;
+
+  const cloudinaryOptions = useMemo(
+    () => ({
+      multiple: false,
+      folder: "phaglp/lectures",
+    }),
+    [],
+  );
 
   return (
     <div className="border rounded-lg overflow-hidden bg-background">
@@ -371,10 +385,7 @@ export function WysiwygMarkdownEditor({
         {/* Image upload widget */}
         <CldUploadWidget
           signatureEndpoint="/api/sign-cloudinary-params"
-          options={{
-            multiple: false,
-            folder: "phaglp/lectures",
-          }}
+          options={cloudinaryOptions}
           onSuccess={(result: any) => {
             if (result?.info?.secure_url) {
               insertImage(result.info.secure_url);

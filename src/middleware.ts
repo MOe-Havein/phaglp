@@ -11,7 +11,7 @@ export default auth((req) => {
   if (req.nextUrl.pathname.startsWith("/control")) {
     res.headers.set(
       "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.foxycart.com https://vercel.live https://phaglp.foxycart.com; style-src 'self' 'unsafe-inline' https://cdn.foxycart.com; img-src 'self' data: blob: https://cdn.foxycart.com; font-src 'self' data: https://cdn.foxycart.com; frame-src 'self' https://vercel.live https://phaglp.foxycart.com https://cdn.foxycart.com; connect-src 'self' https://cdn.foxycart.com https://vercel.live https://phaglp.foxycart.com;",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.foxycart.com https://vercel.live https://phaglp.foxycart.com https://widget.cloudinary.com; style-src 'self' 'unsafe-inline' https://cdn.foxycart.com https://fonts.googleapis.com; img-src 'self' data: blob: https://cdn.foxycart.com https://res.cloudinary.com; font-src 'self' data: https://cdn.foxycart.com https://fonts.gstatic.com; frame-src 'self' https://vercel.live https://phaglp.foxycart.com https://cdn.foxycart.com https://widget.cloudinary.com; connect-src 'self' https://cdn.foxycart.com https://vercel.live https://phaglp.foxycart.com https://api.cloudinary.com;",
     );
     res.headers.set("X-Content-Type-Options", "nosniff");
     res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
