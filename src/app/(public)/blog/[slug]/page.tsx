@@ -5,15 +5,16 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
-import { MarkdownViewer } from "@/components/editor/markdown-viewer";
 import { FoxyLoader } from "@/components/foxy/foxy-loader";
 import { unstable_cache } from "next/cache";
+import nextDynamic from "next/dynamic";
+const WysiwygEditor = nextDynamic(() => import("@/components/editor/wysiwyg-markdown-editor").then(mod => mod.WysiwygMarkdownEditor), { ssr: false });
 
 // Ensure dynamic rendering to handle database state safely at runtime
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 const getBlogPostBySlug = async (slug: string) => {
@@ -38,39 +39,39 @@ const getBlogPostBySlug = async (slug: string) => {
   )();
 };
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  try {
-    const { slug } = await params;
-    const post = await getBlogPostBySlug(slug);
-    if (!post) return {};
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  // Always return a valid Metadata object – fallback values are used when the post is missing.
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
 
+  // Guard: if the post cannot be found, return minimal metadata to avoid a blank page.
+  if (!post) {
     return {
-      title: post.title,
-      description: post.excerpt,
-      openGraph: {
-        title: post.title,
-        description: post.excerpt || undefined,
-        type: "article",
-        publishedTime:
-          typeof post.createdAt === "string"
-            ? post.createdAt
-            : post.createdAt.toISOString(),
-        modifiedTime:
-          typeof post.updatedAt === "string"
-            ? post.updatedAt
-            : post.updatedAt.toISOString(),
-        authors: [post.author?.name || ""],
-        tags: (post.tags as string[]) || undefined,
-      },
-    };
-  } catch (error) {
-    console.error("Blog metadata generation failed:", error);
-    return {
-      title: "Blog Post",
+      title: "Blog post not found",
+      description: "The requested blog entry could not be located.",
     };
   }
+
+  // Build full metadata from the retrieved post.
+  return {
+    title: post.title,
+    description: post.excerpt ?? post.title,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt ?? post.title,
+      type: "article",
+      publishedTime:
+        typeof post.createdAt === "string"
+          ? post.createdAt
+          : post.createdAt.toISOString(),
+      modifiedTime:
+        typeof post.updatedAt === "string"
+          ? post.updatedAt
+          : post.updatedAt.toISOString(),
+      authors: [post.author?.name ?? ""],
+      tags: (post.tags as string[]) ?? undefined,
+    },
+  };
 }
 
 export default async function BlogPostDetailPage({ params }: PageProps) {
@@ -158,7 +159,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
 
           {/* Body Content */}
           <div className="prose prose-blue dark:prose-invert max-w-none">
-            <MarkdownViewer value={typeof post.body === 'string' ? post.body : ''} />
+            <WysiwygEditor value={typeof post.body === 'string' ? post.body : ''} onChange={() => {}} height={500} />
           </div>
         </article>
 
