@@ -31,8 +31,8 @@ import {
   Image as ImageIcon,
   Video,
   AlignLeft,
-  AlignRight,
   AlignCenter,
+  AlignRight,
   Link as LinkIcon,
   Quote,
   Minus,
@@ -141,15 +141,16 @@ export function WysiwygMarkdownEditor({
   }, [editor]);
 
   const insertLink = useCallback(() => {
-    const url = window.prompt("Enter URL:");
-    if (url) {
-      editor
-        ?.chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
-        .run();
+    const previousUrl = editor?.getAttributes("link").href;
+    const url = window.prompt("Enter URL:", previousUrl);
+    
+    if (url === null) return; // cancelled
+    if (url === "") {
+      editor?.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
     }
+    
+    editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   }, [editor]);
 
   const ToolbarButton = ({
@@ -186,32 +187,52 @@ export function WysiwygMarkdownEditor({
     [],
   );
 
-  // Safe conditional render: Ensure this is at the VERY bottom of the component logic
+  // Safe early return conditional execution safely structured at the bottom
   if (!editor) {
     return <div className="animate-pulse bg-muted rounded-lg" style={{ height: `${height}px` }} />;
   }
 
   return (
     <div className="border rounded-lg overflow-hidden bg-background">
-      {/* Toolbar */}
+      {/* Complete Toolbar Wrapper */}
       <div className="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30">
-        {/* History */}
-        <ToolbarButton
-          onClick={() => editor.chain().focus().undo().run()}
-          title="Undo"
-        >
+        
+        {/* Undo/Redo Group */}
+        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} title="Undo">
           <Undo className="w-4 h-4" />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().redo().run()}
-          title="Redo"
-        >
+        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} title="Redo">
           <Redo className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
 
-        {/* Text formatting */}
+        {/* Headings Group */}
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          active={editor.isActive("heading", { level: 1 })}
+          title="Heading 1"
+        >
+          <Heading1 className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          active={editor.isActive("heading", { level: 2 })}
+          title="Heading 2"
+        >
+          <Heading2 className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          active={editor.isActive("heading", { level: 3 })}
+          title="Heading 3"
+        >
+          <Heading3 className="w-4 h-4" />
+        </ToolbarButton>
+
+        <Divider />
+
+        {/* Inline Formatting Group */}
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
           active={editor.isActive("bold")}
@@ -242,34 +263,62 @@ export function WysiwygMarkdownEditor({
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          title="Horizontal Rule"
+          title="Horizontal Line"
         >
           <Minus className="w-4 h-4" />
         </ToolbarButton>
 
         <Divider />
 
-        {/* Headings */}
+        {/* Lists Group */}
         <ToolbarButton
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          active={editor.isActive("heading", { level: 1 })}
-          title="Heading 1"
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          active={editor.isActive("bulletList")}
+          title="Bulleted List"
         >
-          <Heading1 className="w-4 h-4" />
+          <List className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          active={editor.isActive("heading", { level: 2 })}
-          title="Heading 2"
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          active={editor.isActive("orderedList")}
+          title="Ordered List"
         >
-          <Heading2 className="w-4 h-4" />
+          <ListOrdered className="w-4 h-4" />
         </ToolbarButton>
-      </div>
-      <EditorContent editor={editor} />
-    </div>
-  );
-}
+
+        <Divider />
+
+        {/* Text Alignment Group */}
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          active={editor.isActive({ textAlign: "left" })}
+          title="Align Left"
+        >
+          <AlignLeft className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          active={editor.isActive({ textAlign: "center" })}
+          title="Align Center"
+        >
+          <AlignCenter className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          active={editor.isActive({ textAlign: "right" })}
+          title="Align Right"
+        >
+          <AlignRight className="w-4 h-4" />
+        </ToolbarButton>
+
+        <Divider />
+
+        {/* Interactive Media Elements Group */}
+        <ToolbarButton onClick={insertLink} active={editor.isActive("link")} title="Hyperlink">
+          <LinkIcon className="w-4 h-4" />
+        </ToolbarButton>
+        
+        <ToolbarButton onClick={insertTable} active={editor.isActive("table")} title="Insert 3x3 Table">
+          <TableIcon className="w-4 h-4" />
+        </ToolbarButton>
+        
