@@ -1,4 +1,4 @@
-# Project Context: FreshNextJS
+# Project Context: phaglp
 
 This project is a Next.js 15 application using TypeScript, Prisma, and TailwindCSS. It aims to be a robust, secure, and modern full-stack application with a clean architecture.
 
