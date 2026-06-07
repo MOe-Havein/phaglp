@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { ArrowRight, BookOpen } from "lucide-react"
-import { BlogCard, type Post } from "@/components/home/BlogCard"
+import { ArrowRight, BookOpen } from "lucide-react";
+import { BlogCard, type Post } from "@/components/home/BlogCard";
 
 interface BlogSectionProps {
-  posts?: Post[]
+  posts?: Post[];
 }
 
 export function BlogSection({ posts }: BlogSectionProps) {
-  const safePosts = Array.isArray(posts) && posts.length > 0 ? posts : []
+  const safePosts = Array.isArray(posts) && posts.length > 0 ? posts : [];
 
   return (
     <section
@@ -29,7 +29,8 @@ export function BlogSection({ posts }: BlogSectionProps) {
               Latest Articles
             </h2>
             <p className="mt-3 text-base text-muted-foreground font-sans leading-relaxed text-pretty max-w-md">
-              Perspectives on design, engineering, and the craft of building things that last.
+              Perspectives on design, engineering, and the craft of building
+              things that last.
             </p>
           </div>
 
@@ -75,17 +76,21 @@ export function BlogSection({ posts }: BlogSectionProps) {
           /* Empty state */
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary border border-border mb-5">
-              <BookOpen className="w-7 h-7 text-muted-foreground" aria-hidden="true" />
+              <BookOpen
+                className="w-7 h-7 text-muted-foreground"
+                aria-hidden="true"
+              />
             </div>
             <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
               No articles yet
             </h3>
             <p className="text-sm text-muted-foreground font-sans max-w-xs leading-relaxed">
-              We&apos;re working on some great content. Check back soon for our first articles.
+              We&apos;re working on some great content. Check back soon for our
+              first articles.
             </p>
           </div>
         )}
       </div>
     </section>
-  )
+  );
 }

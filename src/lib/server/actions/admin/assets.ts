@@ -1,11 +1,11 @@
-"use server"
+"use server";
 
-import { prisma, safeDbQuery } from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
-import { z } from "zod"
-import { AssetCategory, AssetCondition, AssetStatus } from "@prisma/client"
-import { requireAdmin } from "./_shared"
-import type { ActionResponseState, AcademyAsset } from "@/types"
+import { prisma, safeDbQuery } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { AssetCategory, AssetCondition, AssetStatus } from "@prisma/client";
+import { requireAdmin } from "./_shared";
+import type { ActionResponseState, AcademyAsset } from "@/types";
 
 // ─── Zod Schemas ──────────────────────────────────────────────────────────────
 
@@ -24,22 +24,22 @@ const assetSchema = z.object({
   purchasePrice: z.coerce.number().optional().nullable(),
   notes: z.string().optional().nullable(),
   courseId: z.string().optional().nullable(),
-})
+});
 
 const allocateSchema = z.object({
   userId: z.string().min(1, "User is required"),
   quantity: z.coerce.number().int().min(1, "Quantity must be at least 1"),
   notes: z.string().optional().nullable(),
-})
+});
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function parseFormData(formData: FormData): Record<string, string | null> {
-  const out: Record<string, string | null> = {}
+  const out: Record<string, string | null> = {};
   formData.forEach((value, key) => {
-    out[key] = value === "" ? null : String(value)
-  })
-  return out
+    out[key] = value === "" ? null : String(value);
+  });
+  return out;
 }
 
 // ─── CRUD Server Actions ───────────────────────────────────────────────────────
@@ -52,18 +52,21 @@ export async function createAcademyAsset(
   formData: FormData,
 ): Promise<ActionResponseState<AcademyAsset>> {
   try {
-    await requireAdmin()
-    const raw = parseFormData(formData)
-    const parsed = assetSchema.safeParse(raw)
+    await requireAdmin();
+    const raw = parseFormData(formData);
+    const parsed = assetSchema.safeParse(raw);
     if (!parsed.success) {
       return {
         success: false,
         error: "Validation failed",
-        fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
-      }
+        fieldErrors: parsed.error.flatten().fieldErrors as Record<
+          string,
+          string[]
+        >,
+      };
     }
 
-    const data = parsed.data
+    const data = parsed.data;
     const result = await safeDbQuery(() =>
       prisma.academyAsset.create({
         data: {
@@ -83,14 +86,14 @@ export async function createAcademyAsset(
           courseId: data.courseId ?? null,
         },
       }),
-    )
+    );
 
     if (result.success) {
-      revalidatePath("/control/assets")
+      revalidatePath("/control/assets");
     }
-    return result as ActionResponseState<AcademyAsset>
+    return result as ActionResponseState<AcademyAsset>;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to create asset" }
+    return { success: false, error: error.message || "Failed to create asset" };
   }
 }
 
@@ -103,18 +106,21 @@ export async function updateAcademyAsset(
   formData: FormData,
 ): Promise<ActionResponseState<AcademyAsset>> {
   try {
-    await requireAdmin()
-    const raw = parseFormData(formData)
-    const parsed = assetSchema.safeParse(raw)
+    await requireAdmin();
+    const raw = parseFormData(formData);
+    const parsed = assetSchema.safeParse(raw);
     if (!parsed.success) {
       return {
         success: false,
         error: "Validation failed",
-        fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
-      }
+        fieldErrors: parsed.error.flatten().fieldErrors as Record<
+          string,
+          string[]
+        >,
+      };
     }
 
-    const data = parsed.data
+    const data = parsed.data;
     const result = await safeDbQuery(() =>
       prisma.academyAsset.update({
         where: { id },
@@ -135,31 +141,35 @@ export async function updateAcademyAsset(
           courseId: data.courseId ?? null,
         },
       }),
-    )
+    );
 
     if (result.success) {
-      revalidatePath("/control/assets")
-      revalidatePath(`/control/assets/${id}`)
+      revalidatePath("/control/assets");
+      revalidatePath(`/control/assets/${id}`);
     }
-    return result as ActionResponseState<AcademyAsset>
+    return result as ActionResponseState<AcademyAsset>;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to update asset" }
+    return { success: false, error: error.message || "Failed to update asset" };
   }
 }
 
 /**
  * Delete an AcademyAsset by id.
  */
-export async function deleteAcademyAsset(id: string): Promise<ActionResponseState> {
+export async function deleteAcademyAsset(
+  id: string,
+): Promise<ActionResponseState> {
   try {
-    await requireAdmin()
-    const result = await safeDbQuery(() => prisma.academyAsset.delete({ where: { id } }))
+    await requireAdmin();
+    const result = await safeDbQuery(() =>
+      prisma.academyAsset.delete({ where: { id } }),
+    );
     if (result.success) {
-      revalidatePath("/control/assets")
+      revalidatePath("/control/assets");
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to delete asset" }
+    return { success: false, error: error.message || "Failed to delete asset" };
   }
 }
 
@@ -172,18 +182,21 @@ export async function allocateAsset(
   formData: FormData,
 ): Promise<ActionResponseState> {
   try {
-    await requireAdmin()
-    const raw = parseFormData(formData)
-    const parsed = allocateSchema.safeParse(raw)
+    await requireAdmin();
+    const raw = parseFormData(formData);
+    const parsed = allocateSchema.safeParse(raw);
     if (!parsed.success) {
       return {
         success: false,
         error: "Validation failed",
-        fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
-      }
+        fieldErrors: parsed.error.flatten().fieldErrors as Record<
+          string,
+          string[]
+        >,
+      };
     }
 
-    const data = parsed.data
+    const data = parsed.data;
     const result = await safeDbQuery(() =>
       prisma.assetAllocation.create({
         data: {
@@ -193,34 +206,42 @@ export async function allocateAsset(
           notes: data.notes ?? null,
         },
       }),
-    )
+    );
 
     if (result.success) {
-      revalidatePath("/control/assets")
+      revalidatePath("/control/assets");
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to allocate asset" }
+    return {
+      success: false,
+      error: error.message || "Failed to allocate asset",
+    };
   }
 }
 
 /**
  * Return all allocated units from a specific allocation record.
  */
-export async function returnAllocation(allocationId: string): Promise<ActionResponseState> {
+export async function returnAllocation(
+  allocationId: string,
+): Promise<ActionResponseState> {
   try {
-    await requireAdmin()
+    await requireAdmin();
     const result = await safeDbQuery(() =>
       prisma.assetAllocation.update({
         where: { id: allocationId },
         data: { returnedAt: new Date() },
       }),
-    )
+    );
     if (result.success) {
-      revalidatePath("/control/assets")
+      revalidatePath("/control/assets");
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to return allocation" }
+    return {
+      success: false,
+      error: error.message || "Failed to return allocation",
+    };
   }
 }

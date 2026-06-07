@@ -1,56 +1,67 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { BlogSection } from "@/components/home/BlogSection"
-import type { Post } from "@/components/home/BlogCard"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { AlertTriangle, RefreshCw } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import { BlogSection } from "@/components/home/BlogSection";
+import type { Post } from "@/components/home/BlogCard";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
 export function LatestBlogPosts() {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchPosts = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch("/api/posts")
+      const response = await fetch("/api/posts");
       if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`)
+        throw new Error(
+          `Failed to fetch: ${response.status} ${response.statusText}`,
+        );
       }
-      const payload = await response.json()
+      const payload = await response.json();
       if (payload.success) {
         // Safely map database Lecture model to Post schema
         const mapped: Post[] = (payload.data || []).map((item: any) => ({
           id: item.id,
           title: item.title,
-          excerpt: item.excerpt || item.body.replace(/[#*`]/g, "").substring(0, 150) + "...",
+          excerpt:
+            item.excerpt ||
+            item.body.replace(/[#*`]/g, "").substring(0, 150) + "...",
           slug: item.slug,
           coverImage: item.coverImage || "",
           category: item.category,
           readingTime: `${item.readingTime || 5} min read`,
           createdAt: item.createdAt,
-        }))
-        setPosts(mapped)
+        }));
+        setPosts(mapped);
       } else {
-        throw new Error(payload.error || "Failed to load blog posts.")
+        throw new Error(payload.error || "Failed to load blog posts.");
       }
     } catch (err: any) {
-      console.error("Error fetching latest blog posts:", err)
-      setError(err?.message || "An unexpected error occurred while loading posts.")
+      console.error("Error fetching latest blog posts:", err);
+      setError(
+        err?.message || "An unexpected error occurred while loading posts.",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchPosts()
-  }, [])
+    fetchPosts();
+  }, []);
 
   if (loading) {
-    return <LatestBlogPostsSkeleton />
+    return <LatestBlogPostsSkeleton />;
   }
 
   if (error) {
@@ -65,7 +76,8 @@ export function LatestBlogPosts() {
               Could Not Load Latest Insights
             </h3>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-              We encountered a temporary disruption while retrieving our database updates.
+              We encountered a temporary disruption while retrieving our
+              database updates.
             </p>
             <Button
               onClick={fetchPosts}
@@ -77,11 +89,11 @@ export function LatestBlogPosts() {
           </div>
         </div>
       </section>
-    )
+    );
   }
 
   // Gracefully handle empty states using the BlogSection's semantic empty layout
-  return <BlogSection posts={posts} />
+  return <BlogSection posts={posts} />;
 }
 
 function LatestBlogPostsSkeleton() {
@@ -129,5 +141,5 @@ function LatestBlogPostsSkeleton() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,25 +1,33 @@
-"use server"
+"use server";
 
-import prisma, { safeDbQuery } from "@/lib/prisma"
-import { nanoid } from "nanoid"
+import prisma, { safeDbQuery } from "@/lib/prisma";
+import { nanoid } from "nanoid";
 
 /**
  * Issue a new Calligraphic Certificate for a scholar completing a course.
  */
-export async function issueCertificate(userId: string, courseId: string, grade: string = "Completed") {
+export async function issueCertificate(
+  userId: string,
+  courseId: string,
+  grade: string = "Completed",
+) {
   try {
     // Check if certificate already exists for this user and course
     const existing = await prisma.certificate.findFirst({
       where: { userId, courseId },
-    })
+    });
 
     if (existing) {
-      return { success: true, certificateCode: existing.certificateCode }
+      return { success: true, certificateCode: existing.certificateCode };
     }
 
     // Generate unique code in uppercase, E.g., "CERT-2026-X7Y2-A9Z1"
-    const randomCode = nanoid(8).toUpperCase().match(/.{1,4}/g)?.join("-") || "ABCD-1234"
-    const certificateCode = `CERT-2026-${randomCode}`
+    const randomCode =
+      nanoid(8)
+        .toUpperCase()
+        .match(/.{1,4}/g)
+        ?.join("-") || "ABCD-1234";
+    const certificateCode = `CERT-2026-${randomCode}`;
 
     const result = await safeDbQuery(async () => {
       return prisma.certificate.create({
@@ -29,17 +37,23 @@ export async function issueCertificate(userId: string, courseId: string, grade: 
           certificateCode,
           grade,
         },
-      })
-    })
+      });
+    });
 
     if (!result.success || !result.data) {
-      return { success: false, error: result.error || "Failed to create certificate" }
+      return {
+        success: false,
+        error: result.error || "Failed to create certificate",
+      };
     }
 
-    return { success: true, certificateCode }
+    return { success: true, certificateCode };
   } catch (error: any) {
-    console.error("Issue Certificate Error:", error)
-    return { success: false, error: error.message || "Failed to issue certificate" }
+    console.error("Issue Certificate Error:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to issue certificate",
+    };
   }
 }
 
@@ -66,8 +80,8 @@ export async function verifyCertificate(code: string) {
           },
         },
       },
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -87,8 +101,8 @@ export async function getUserCertificates(userId: string) {
         },
       },
       orderBy: { issueDate: "desc" },
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -113,8 +127,8 @@ export async function getAllCertificates() {
         },
       },
       orderBy: { issueDate: "desc" },
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -125,14 +139,20 @@ export async function revokeCertificate(id: string) {
     const result = await safeDbQuery(async () => {
       return prisma.certificate.delete({
         where: { id },
-      })
-    })
+      });
+    });
     if (!result.success) {
-      return { success: false, error: result.error || "Failed to revoke certificate" }
+      return {
+        success: false,
+        error: result.error || "Failed to revoke certificate",
+      };
     }
-    return { success: true }
+    return { success: true };
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to revoke certificate" }
+    return {
+      success: false,
+      error: error.message || "Failed to revoke certificate",
+    };
   }
 }
 
@@ -148,36 +168,53 @@ export async function getCourseProgress(userId: string, courseId: string) {
         modules: {
           include: {
             lessons: {
-              select: { id: true }
-            }
-          }
-        }
-      }
-    })
+              select: { id: true },
+            },
+          },
+        },
+      },
+    });
 
     if (!course) {
-      return { success: false, error: "Course not found", data: { percent: 0, completedCount: 0, totalCount: 0, completedLessonIds: [] } }
+      return {
+        success: false,
+        error: "Course not found",
+        data: {
+          percent: 0,
+          completedCount: 0,
+          totalCount: 0,
+          completedLessonIds: [],
+        },
+      };
     }
 
-    const lessons = course.modules.flatMap((m) => m.lessons)
-    const totalCount = lessons.length
+    const lessons = course.modules.flatMap((m) => m.lessons);
+    const totalCount = lessons.length;
 
     if (totalCount === 0) {
-      return { success: true, data: { percent: 0, completedCount: 0, totalCount: 0, completedLessonIds: [] } }
+      return {
+        success: true,
+        data: {
+          percent: 0,
+          completedCount: 0,
+          totalCount: 0,
+          completedLessonIds: [],
+        },
+      };
     }
 
-    const lessonIds = lessons.map((l) => l.id)
+    const lessonIds = lessons.map((l) => l.id);
 
     // 2. Get completed progress records for these lessons
     const completedProgress = await prisma.lessonProgress.findMany({
       where: {
         userId,
-        lessonId: { in: lessonIds }
-      }
-    })
+        lessonId: { in: lessonIds },
+      },
+    });
 
-    const completedCount = completedProgress.length
-    const percent = Math.round((completedCount / totalCount) * 100)
+    const completedCount = completedProgress.length;
+    const percent = Math.round((completedCount / totalCount) * 100);
 
     return {
       success: true,
@@ -185,12 +222,21 @@ export async function getCourseProgress(userId: string, courseId: string) {
         percent,
         completedCount,
         totalCount,
-        completedLessonIds: completedProgress.map((p) => p.lessonId)
-      }
-    }
+        completedLessonIds: completedProgress.map((p) => p.lessonId),
+      },
+    };
   } catch (error: any) {
-    console.error("Get Course Progress Error:", error)
-    return { success: false, error: error.message, data: { percent: 0, completedCount: 0, totalCount: 0, completedLessonIds: [] } }
+    console.error("Get Course Progress Error:", error);
+    return {
+      success: false,
+      error: error.message,
+      data: {
+        percent: 0,
+        completedCount: 0,
+        totalCount: 0,
+        completedLessonIds: [],
+      },
+    };
   }
 }
 
@@ -198,47 +244,55 @@ export async function getCourseProgress(userId: string, courseId: string) {
  * Toggle a lesson's completion status.
  * Automatically issues a certificate if course completion hits 100%.
  */
-export async function toggleLessonProgress(userId: string, lessonId: string, courseId: string) {
+export async function toggleLessonProgress(
+  userId: string,
+  lessonId: string,
+  courseId: string,
+) {
   try {
     // 1. Check if progress record exists
     const existing = await prisma.lessonProgress.findUnique({
       where: {
-        userId_lessonId: { userId, lessonId }
-      }
-    })
+        userId_lessonId: { userId, lessonId },
+      },
+    });
 
-    let completed = false
+    let completed = false;
 
     if (existing) {
       // Toggle off -> Delete record
       await prisma.lessonProgress.delete({
-        where: { id: existing.id }
-      })
-      completed = false
+        where: { id: existing.id },
+      });
+      completed = false;
     } else {
       // Toggle on -> Create record
       await prisma.lessonProgress.create({
-        data: { userId, lessonId }
-      })
-      completed = true
+        data: { userId, lessonId },
+      });
+      completed = true;
     }
 
     // 2. Recalculate course progress
-    const progressResult = await getCourseProgress(userId, courseId)
+    const progressResult = await getCourseProgress(userId, courseId);
     if (!progressResult.success || !progressResult.data) {
-      return { success: false, error: "Failed to recalculate progress" }
+      return { success: false, error: "Failed to recalculate progress" };
     }
 
-    const { percent } = progressResult.data
-    let certificateIssued = false
-    let certificateCode = ""
+    const { percent } = progressResult.data;
+    let certificateIssued = false;
+    let certificateCode = "";
 
     // 3. If progress is 100%, automatically award certificate
     if (percent === 100) {
-      const certResult = await issueCertificate(userId, courseId, "Pass with Distinction (A)")
+      const certResult = await issueCertificate(
+        userId,
+        courseId,
+        "Pass with Distinction (A)",
+      );
       if (certResult.success && certResult.certificateCode) {
-        certificateIssued = true
-        certificateCode = certResult.certificateCode
+        certificateIssued = true;
+        certificateCode = certResult.certificateCode;
       }
     }
 
@@ -247,10 +301,10 @@ export async function toggleLessonProgress(userId: string, lessonId: string, cou
       completed,
       progressPercent: percent,
       certificateIssued,
-      certificateCode
-    }
+      certificateCode,
+    };
   } catch (error: any) {
-    console.error("Toggle Lesson Progress Error:", error)
-    return { success: false, error: error.message }
+    console.error("Toggle Lesson Progress Error:", error);
+    return { success: false, error: error.message };
   }
 }

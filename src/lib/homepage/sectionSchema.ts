@@ -1,5 +1,5 @@
-import { z } from "zod"
-import DOMPurify from "isomorphic-dompurify"
+import { z } from "zod";
+import DOMPurify from "isomorphic-dompurify";
 
 export const sectionTypeSchema = z.enum([
   "hero",
@@ -8,7 +8,7 @@ export const sectionTypeSchema = z.enum([
   "media",
   "testimonials",
   "lectures",
-])
+]);
 
 const sanitizedString = () =>
   z
@@ -16,7 +16,7 @@ const sanitizedString = () =>
     .nullable()
     .optional()
     .transform((val) => {
-      if (!val) return val
+      if (!val) return val;
       return DOMPurify.sanitize(val, {
         ALLOWED_TAGS: [
           "b",
@@ -35,8 +35,8 @@ const sanitizedString = () =>
           "span",
         ],
         ALLOWED_ATTR: ["href", "target", "rel", "class"],
-      })
-    })
+      });
+    });
 
 export const sectionSchema = z.object({
   type: sectionTypeSchema,
@@ -50,6 +50,6 @@ export const sectionSchema = z.object({
   seoDescription: z.string().nullable().optional(),
   visible: z.boolean().default(true).optional(),
   order: z.number().int().default(0).optional(),
-})
+});
 
-export const updateSectionSchema = sectionSchema.partial()
+export const updateSectionSchema = sectionSchema.partial();

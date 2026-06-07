@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useTransition, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   createMenu,
   updateMenu,
@@ -11,20 +11,26 @@ import {
   deleteSubItem,
   reorderMenus,
   reorderSubItems,
-} from "@/lib/menu-actions"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Badge } from "@/components/ui/badge"
+} from "@/lib/menu-actions";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 import {
   Dialog,
@@ -34,7 +40,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   ArrowUp,
   ArrowDown,
@@ -45,185 +51,196 @@ import {
   ChevronRight,
   FolderOpen,
   Info,
-} from "lucide-react"
-import * as Icons from "lucide-react"
+} from "lucide-react";
+import * as Icons from "lucide-react";
 
-function MenuIcon({ name, className }: { name: string | null; className?: string }) {
-  if (!name) return <Icons.Menu className={className} />
-  const IconComponent = (Icons as any)[name]
-  if (!IconComponent) return <Icons.Globe className={className} />
-  return <IconComponent className={className} />
+function MenuIcon({
+  name,
+  className,
+}: {
+  name: string | null;
+  className?: string;
+}) {
+  if (!name) return <Icons.Menu className={className} />;
+  const IconComponent = (Icons as any)[name];
+  if (!IconComponent) return <Icons.Globe className={className} />;
+  return <IconComponent className={className} />;
 }
 
 interface SubItem {
-  id: string
-  menuId: string
-  name: string
-  href: string
-  order: number
-  isOpenNewTab: boolean
-  isActive: boolean
-  icon: string | null
+  id: string;
+  menuId: string;
+  name: string;
+  href: string;
+  order: number;
+  isOpenNewTab: boolean;
+  isActive: boolean;
+  icon: string | null;
 }
 
 interface Menu {
-  id: string
-  name: string
-  href: string | null
-  order: number
-  isOpenNewTab: boolean
-  isActive: boolean
-  showInHeader: boolean
-  showInFooter: boolean
-  icon: string | null
-  items: SubItem[]
+  id: string;
+  name: string;
+  href: string | null;
+  order: number;
+  isOpenNewTab: boolean;
+  isActive: boolean;
+  showInHeader: boolean;
+  showInFooter: boolean;
+  icon: string | null;
+  items: SubItem[];
 }
 
 interface PageItem {
-  id: string
-  title: string
-  slug: string
+  id: string;
+  title: string;
+  slug: string;
 }
 
 interface MenuManagerProps {
-  initialMenus: Menu[]
-  pages: PageItem[]
+  initialMenus: Menu[];
+  pages: PageItem[];
 }
 
 export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
-  const router = useRouter()
-  const [menus, setMenus] = useState<Menu[]>(initialMenus)
-  const [selectedMenuId, setSelectedMenuId] = useState<string | null>(initialMenus[0]?.id ?? null)
-  const [isPending, startTransition] = useTransition()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const router = useRouter();
+  const [menus, setMenus] = useState<Menu[]>(initialMenus);
+  const [selectedMenuId, setSelectedMenuId] = useState<string | null>(
+    initialMenus[0]?.id ?? null,
+  );
+  const [isPending, startTransition] = useTransition();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Sync state with props
   useEffect(() => {
-    setMenus(initialMenus)
+    setMenus(initialMenus);
     if (selectedMenuId && !initialMenus.some((m) => m.id === selectedMenuId)) {
-      setSelectedMenuId(initialMenus[0]?.id ?? null)
+      setSelectedMenuId(initialMenus[0]?.id ?? null);
     } else if (!selectedMenuId && initialMenus.length > 0) {
-      setSelectedMenuId(initialMenus[0]?.id ?? null)
+      setSelectedMenuId(initialMenus[0]?.id ?? null);
     }
-  }, [initialMenus])
+  }, [initialMenus]);
 
   // Dialog states for Create Menu
-  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false)
-  const [newMenuName, setNewMenuName] = useState("")
-  const [newMenuHref, setNewMenuHref] = useState("")
-  const [newMenuIcon, setNewMenuIcon] = useState("Folder")
-  const [newMenuOpenNewTab, setNewMenuOpenNewTab] = useState(false)
-  const [newMenuShowInHeader, setNewMenuShowInHeader] = useState(true)
-  const [newMenuShowInFooter, setNewMenuShowInFooter] = useState(true)
-  const [newMenuIsPage, setNewMenuIsPage] = useState(false)
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [newMenuName, setNewMenuName] = useState("");
+  const [newMenuHref, setNewMenuHref] = useState("");
+  const [newMenuIcon, setNewMenuIcon] = useState("Folder");
+  const [newMenuOpenNewTab, setNewMenuOpenNewTab] = useState(false);
+  const [newMenuShowInHeader, setNewMenuShowInHeader] = useState(true);
+  const [newMenuShowInFooter, setNewMenuShowInFooter] = useState(true);
+  const [newMenuIsPage, setNewMenuIsPage] = useState(false);
 
   // Dialog states for Edit Menu
-  const [isEditMenuOpen, setIsEditMenuOpen] = useState(false)
-  const [editingMenu, setEditingMenu] = useState<Menu | null>(null)
-  const [editMenuIsPage, setEditMenuIsPage] = useState(false)
+  const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
+  const [editingMenu, setEditingMenu] = useState<Menu | null>(null);
+  const [editMenuIsPage, setEditMenuIsPage] = useState(false);
 
   // Dialog states for Create SubItem
-  const [isCreateSubOpen, setIsCreateSubOpen] = useState(false)
-  const [subName, setSubName] = useState("")
-  const [subHref, setSubHref] = useState("")
-  const [subIcon, setSubIcon] = useState("")
-  const [subOpenNewTab, setSubOpenNewTab] = useState(false)
-  const [newSubIsPage, setNewSubIsPage] = useState(false)
+  const [isCreateSubOpen, setIsCreateSubOpen] = useState(false);
+  const [subName, setSubName] = useState("");
+  const [subHref, setSubHref] = useState("");
+  const [subIcon, setSubIcon] = useState("");
+  const [subOpenNewTab, setSubOpenNewTab] = useState(false);
+  const [newSubIsPage, setNewSubIsPage] = useState(false);
 
   // Dialog states for Edit SubItem
-  const [isEditSubOpen, setIsEditSubOpen] = useState(false)
-  const [editingSub, setEditingSub] = useState<SubItem | null>(null)
-  const [editSubIsPage, setEditSubIsPage] = useState(false)
+  const [isEditSubOpen, setIsEditSubOpen] = useState(false);
+  const [editingSub, setEditingSub] = useState<SubItem | null>(null);
+  const [editSubIsPage, setEditSubIsPage] = useState(false);
 
-  const selectedMenu = menus.find((m) => m.id === selectedMenuId) || null
+  const selectedMenu = menus.find((m) => m.id === selectedMenuId) || null;
 
-  const handleAction = async (actionFn: () => Promise<any>, successCallback?: () => void) => {
-    setErrorMessage(null)
+  const handleAction = async (
+    actionFn: () => Promise<any>,
+    successCallback?: () => void,
+  ) => {
+    setErrorMessage(null);
     startTransition(async () => {
       try {
-        const res = await actionFn()
+        const res = await actionFn();
         if (res.success) {
-          router.refresh()
-          if (successCallback) successCallback()
+          router.refresh();
+          if (successCallback) successCallback();
         } else {
-          setErrorMessage(res.error || "Action failed")
+          setErrorMessage(res.error || "Action failed");
         }
       } catch (err: any) {
-        setErrorMessage(err.message || "An unexpected error occurred")
+        setErrorMessage(err.message || "An unexpected error occurred");
       }
-    })
-  }
+    });
+  };
 
   const moveMenuUp = (index: number) => {
-    if (index === 0) return
-    const newMenus = [...menus]
-    const temp = newMenus[index]
-    const prev = newMenus[index - 1]
+    if (index === 0) return;
+    const newMenus = [...menus];
+    const temp = newMenus[index];
+    const prev = newMenus[index - 1];
     if (temp !== undefined && prev !== undefined) {
-      newMenus[index] = prev
-      newMenus[index - 1] = temp
+      newMenus[index] = prev;
+      newMenus[index - 1] = temp;
 
-      setMenus(newMenus)
-      const ids = newMenus.map((m) => m.id)
-      handleAction(() => reorderMenus(ids))
+      setMenus(newMenus);
+      const ids = newMenus.map((m) => m.id);
+      handleAction(() => reorderMenus(ids));
     }
-  }
+  };
 
   const moveMenuDown = (index: number) => {
-    if (index === menus.length - 1) return
-    const newMenus = [...menus]
-    const temp = newMenus[index]
-    const next = newMenus[index + 1]
+    if (index === menus.length - 1) return;
+    const newMenus = [...menus];
+    const temp = newMenus[index];
+    const next = newMenus[index + 1];
     if (temp !== undefined && next !== undefined) {
-      newMenus[index] = next
-      newMenus[index + 1] = temp
+      newMenus[index] = next;
+      newMenus[index + 1] = temp;
 
-      setMenus(newMenus)
-      const ids = newMenus.map((m) => m.id)
-      handleAction(() => reorderMenus(ids))
+      setMenus(newMenus);
+      const ids = newMenus.map((m) => m.id);
+      handleAction(() => reorderMenus(ids));
     }
-  }
+  };
 
   const moveSubUp = (menuIndex: number, subIndex: number) => {
-    if (subIndex === 0) return
-    const newMenus = [...menus]
-    const menu = newMenus[menuIndex]
-    if (!menu) return
-    const items = [...menu.items]
-    const temp = items[subIndex]
-    const prev = items[subIndex - 1]
+    if (subIndex === 0) return;
+    const newMenus = [...menus];
+    const menu = newMenus[menuIndex];
+    if (!menu) return;
+    const items = [...menu.items];
+    const temp = items[subIndex];
+    const prev = items[subIndex - 1];
     if (temp !== undefined && prev !== undefined) {
-      items[subIndex] = prev
-      items[subIndex - 1] = temp
-      menu.items = items
+      items[subIndex] = prev;
+      items[subIndex - 1] = temp;
+      menu.items = items;
 
-      setMenus(newMenus)
-      const ids = items.map((item) => item.id)
-      handleAction(() => reorderSubItems(ids))
+      setMenus(newMenus);
+      const ids = items.map((item) => item.id);
+      handleAction(() => reorderSubItems(ids));
     }
-  }
+  };
 
   const moveSubDown = (menuIndex: number, subIndex: number) => {
-    const newMenus = [...menus]
-    const menu = newMenus[menuIndex]
-    if (!menu) return
-    const items = [...menu.items]
-    if (subIndex === items.length - 1) return
-    const temp = items[subIndex]
-    const next = items[subIndex + 1]
+    const newMenus = [...menus];
+    const menu = newMenus[menuIndex];
+    if (!menu) return;
+    const items = [...menu.items];
+    if (subIndex === items.length - 1) return;
+    const temp = items[subIndex];
+    const next = items[subIndex + 1];
     if (temp !== undefined && next !== undefined) {
-      items[subIndex] = next
-      items[subIndex + 1] = temp
-      menu.items = items
+      items[subIndex] = next;
+      items[subIndex + 1] = temp;
+      menu.items = items;
 
-      setMenus(newMenus)
-      const ids = items.map((item) => item.id)
-      handleAction(() => reorderSubItems(ids))
+      setMenus(newMenus);
+      const ids = items.map((item) => item.id);
+      handleAction(() => reorderSubItems(ids));
     }
-  }
+  };
 
   const handleCreateMenu = () => {
-    if (!newMenuName) return
+    if (!newMenuName) return;
     handleAction(
       () =>
         createMenu({
@@ -236,21 +253,21 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
           isActive: true,
         }),
       () => {
-        setIsCreateMenuOpen(false)
-        setNewMenuName("")
-        setNewMenuHref("")
-        setNewMenuIcon("Folder")
-        setNewMenuOpenNewTab(false)
-        setNewMenuShowInHeader(true)
-        setNewMenuShowInFooter(true)
-        setNewMenuIsPage(false)
-        router.refresh()
+        setIsCreateMenuOpen(false);
+        setNewMenuName("");
+        setNewMenuHref("");
+        setNewMenuIcon("Folder");
+        setNewMenuOpenNewTab(false);
+        setNewMenuShowInHeader(true);
+        setNewMenuShowInFooter(true);
+        setNewMenuIsPage(false);
+        router.refresh();
       },
-    )
-  }
+    );
+  };
 
   const handleUpdateMenu = () => {
-    if (!editingMenu) return
+    if (!editingMenu) return;
     handleAction(
       () =>
         updateMenu(editingMenu.id, {
@@ -263,31 +280,36 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
           isActive: editingMenu.isActive,
         }),
       () => {
-        setIsEditMenuOpen(false)
-        setEditingMenu(null)
+        setIsEditMenuOpen(false);
+        setEditingMenu(null);
       },
-    )
-  }
+    );
+  };
 
   const toggleMenuState = (menu: Menu, active: boolean) => {
-    handleAction(() => updateMenu(menu.id, { isActive: active }))
-  }
+    handleAction(() => updateMenu(menu.id, { isActive: active }));
+  };
 
   const toggleMenuHeader = (menu: Menu, visible: boolean) => {
-    handleAction(() => updateMenu(menu.id, { showInHeader: visible }))
-  }
+    handleAction(() => updateMenu(menu.id, { showInHeader: visible }));
+  };
 
   const toggleMenuFooter = (menu: Menu, visible: boolean) => {
-    handleAction(() => updateMenu(menu.id, { showInFooter: visible }))
-  }
+    handleAction(() => updateMenu(menu.id, { showInFooter: visible }));
+  };
 
   const handleDeleteMenu = (id: string) => {
-    if (!confirm("Are you sure you want to delete this navigation category? This will delete all sub-items inside it.")) return
-    handleAction(() => deleteMenu(id))
-  }
+    if (
+      !confirm(
+        "Are you sure you want to delete this navigation category? This will delete all sub-items inside it.",
+      )
+    )
+      return;
+    handleAction(() => deleteMenu(id));
+  };
 
   const handleCreateSub = () => {
-    if (!selectedMenu || !subName || !subHref) return
+    if (!selectedMenu || !subName || !subHref) return;
     handleAction(
       () =>
         createSubItem(selectedMenu.id, {
@@ -298,18 +320,18 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
           isActive: true,
         }),
       () => {
-        setIsCreateSubOpen(false)
-        setSubName("")
-        setSubHref("")
-        setSubIcon("")
-        setSubOpenNewTab(false)
-        setNewSubIsPage(false)
+        setIsCreateSubOpen(false);
+        setSubName("");
+        setSubHref("");
+        setSubIcon("");
+        setSubOpenNewTab(false);
+        setNewSubIsPage(false);
       },
-    )
-  }
+    );
+  };
 
   const handleUpdateSub = () => {
-    if (!editingSub) return
+    if (!editingSub) return;
     handleAction(
       () =>
         updateSubItem(editingSub.id, {
@@ -320,20 +342,20 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
           isActive: editingSub.isActive,
         }),
       () => {
-        setIsEditSubOpen(false)
-        setEditingSub(null)
+        setIsEditSubOpen(false);
+        setEditingSub(null);
       },
-    )
-  }
+    );
+  };
 
   const toggleSubState = (sub: SubItem, active: boolean) => {
-    handleAction(() => updateSubItem(sub.id, { isActive: active }))
-  }
+    handleAction(() => updateSubItem(sub.id, { isActive: active }));
+  };
 
   const handleDeleteSub = (id: string) => {
-    if (!confirm("Delete this sub-menu item?")) return
-    handleAction(() => deleteSubItem(id))
-  }
+    if (!confirm("Delete this sub-menu item?")) return;
+    handleAction(() => deleteSubItem(id));
+  };
 
   return (
     <div className="space-y-6">
@@ -350,9 +372,14 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <div>
                 <CardTitle className="text-lg">Navigation Menus</CardTitle>
-                <CardDescription>Drag-free sorting & structural control</CardDescription>
+                <CardDescription>
+                  Drag-free sorting & structural control
+                </CardDescription>
               </div>
-              <Dialog open={isCreateMenuOpen} onOpenChange={setIsCreateMenuOpen}>
+              <Dialog
+                open={isCreateMenuOpen}
+                onOpenChange={setIsCreateMenuOpen}
+              >
                 <DialogTrigger asChild>
                   <Button size="sm" className="gap-1 shadow-sm rounded-xl">
                     <Plus className="w-4 h-4" /> Add Menu
@@ -385,8 +412,8 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                             variant={!newMenuIsPage ? "default" : "outline"}
                             size="sm"
                             onClick={() => {
-                              setNewMenuIsPage(false)
-                              setNewMenuHref("")
+                              setNewMenuIsPage(false);
+                              setNewMenuHref("");
                             }}
                             className="w-full text-xs rounded-xl"
                           >
@@ -397,9 +424,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                             variant={newMenuIsPage ? "default" : "outline"}
                             size="sm"
                             onClick={() => {
-                              setNewMenuIsPage(true)
+                              setNewMenuIsPage(true);
                               if (pages.length > 0) {
-                                setNewMenuHref(`/${pages[0]?.slug || ""}`)
+                                setNewMenuHref(`/${pages[0]?.slug || ""}`);
                               }
                             }}
                             className="w-full text-xs rounded-xl"
@@ -413,10 +440,16 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                         <div className="space-y-1.5">
                           <Label htmlFor="menuPageSelect">Select Page</Label>
                           <Select
-                            value={pages.find((p) => `/${p.slug}` === newMenuHref)?.slug || ""}
+                            value={
+                              pages.find((p) => `/${p.slug}` === newMenuHref)
+                                ?.slug || ""
+                            }
                             onValueChange={(val) => setNewMenuHref(`/${val}`)}
                           >
-                            <SelectTrigger id="menuPageSelect" className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200">
+                            <SelectTrigger
+                              id="menuPageSelect"
+                              className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200"
+                            >
                               <SelectValue placeholder="Choose a page..." />
                             </SelectTrigger>
                             <SelectContent>
@@ -430,7 +463,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                         </div>
                       ) : (
                         <div className="space-y-1.5">
-                          <Label htmlFor="menuHref">Direct URL / Path (Optional)</Label>
+                          <Label htmlFor="menuHref">
+                            Direct URL / Path (Optional)
+                          </Label>
                           <Input
                             id="menuHref"
                             placeholder="e.g. /contact (leave blank for dropdown menu)"
@@ -451,7 +486,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                       />
                     </div>
                     <div className="flex items-center justify-between pt-1">
-                      <Label htmlFor="menuNewTab" className="cursor-pointer text-xs">
+                      <Label
+                        htmlFor="menuNewTab"
+                        className="cursor-pointer text-xs"
+                      >
                         Open in New Tab?
                       </Label>
                       <Switch
@@ -461,7 +499,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                       />
                     </div>
                     <div className="flex items-center justify-between pt-1">
-                      <Label htmlFor="menuShowInHeader" className="cursor-pointer text-xs">
+                      <Label
+                        htmlFor="menuShowInHeader"
+                        className="cursor-pointer text-xs"
+                      >
                         Show in Navbar Header?
                       </Label>
                       <Switch
@@ -471,7 +512,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                       />
                     </div>
                     <div className="flex items-center justify-between pt-1">
-                      <Label htmlFor="menuShowInFooter" className="cursor-pointer text-xs">
+                      <Label
+                        htmlFor="menuShowInFooter"
+                        className="cursor-pointer text-xs"
+                      >
                         Show in Footer Link List?
                       </Label>
                       <Switch
@@ -482,10 +526,16 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsCreateMenuOpen(false)}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsCreateMenuOpen(false)}
+                    >
                       Cancel
                     </Button>
-                    <Button onClick={handleCreateMenu} disabled={!newMenuName || isPending}>
+                    <Button
+                      onClick={handleCreateMenu}
+                      disabled={!newMenuName || isPending}
+                    >
                       {isPending ? "Creating..." : "Create Category"}
                     </Button>
                   </DialogFooter>
@@ -495,13 +545,15 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
             <CardContent className="p-0">
               <div className="divide-y divide-gray-100 dark:divide-gray-800">
                 {menus.map((menu, index) => {
-                  const isSelected = menu.id === selectedMenuId
+                  const isSelected = menu.id === selectedMenuId;
                   return (
                     <div
                       key={menu.id}
                       onClick={() => setSelectedMenuId(menu.id)}
                       className={`p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all ${
-                        isSelected ? "bg-slate-50 dark:bg-slate-900 border-l-2 border-primary" : ""
+                        isSelected
+                          ? "bg-slate-50 dark:bg-slate-900 border-l-2 border-primary"
+                          : ""
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
@@ -558,10 +610,12 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                           size="icon"
                           className="w-7 h-7 text-blue-600 hover:text-blue-700"
                           onClick={() => {
-                            setEditingMenu(menu)
-                            const isPage = menu.href ? pages.some((p) => `/${p.slug}` === menu.href) : false
-                            setEditMenuIsPage(isPage)
-                            setIsEditMenuOpen(true)
+                            setEditingMenu(menu);
+                            const isPage = menu.href
+                              ? pages.some((p) => `/${p.slug}` === menu.href)
+                              : false;
+                            setEditMenuIsPage(isPage);
+                            setIsEditMenuOpen(true);
                           }}
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -577,7 +631,7 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                         </Button>
                       </div>
                     </div>
-                  )
+                  );
                 })}
 
                 {menus.length === 0 && (
@@ -599,7 +653,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                     <MenuIcon name={selectedMenu.icon} className="w-5 h-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg">Category: {selectedMenu.name}</CardTitle>
+                    <CardTitle className="text-lg">
+                      Category: {selectedMenu.name}
+                    </CardTitle>
                     <CardDescription>
                       {selectedMenu.href
                         ? `Points directly to URL: ${selectedMenu.href}`
@@ -616,7 +672,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                     <Switch
                       checked={selectedMenu.isActive}
                       className="scale-75"
-                      onCheckedChange={(checked) => toggleMenuState(selectedMenu, checked)}
+                      onCheckedChange={(checked) =>
+                        toggleMenuState(selectedMenu, checked)
+                      }
                     />
                   </div>
                   <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-900 border px-2 py-1 rounded-xl shadow-sm text-xs">
@@ -626,7 +684,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                     <Switch
                       checked={selectedMenu.showInHeader}
                       className="scale-75"
-                      onCheckedChange={(checked) => toggleMenuHeader(selectedMenu, checked)}
+                      onCheckedChange={(checked) =>
+                        toggleMenuHeader(selectedMenu, checked)
+                      }
                     />
                   </div>
                   <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-900 border px-2 py-1 rounded-xl shadow-sm text-xs">
@@ -636,7 +696,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                     <Switch
                       checked={selectedMenu.showInFooter}
                       className="scale-75"
-                      onCheckedChange={(checked) => toggleMenuFooter(selectedMenu, checked)}
+                      onCheckedChange={(checked) =>
+                        toggleMenuFooter(selectedMenu, checked)
+                      }
                     />
                   </div>
                 </div>
@@ -647,7 +709,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                     <FolderOpen className="w-4 h-4 text-primary" />
                     Submenu Items ({selectedMenu.items.length})
                   </h3>
-                  <Dialog open={isCreateSubOpen} onOpenChange={setIsCreateSubOpen}>
+                  <Dialog
+                    open={isCreateSubOpen}
+                    onOpenChange={setIsCreateSubOpen}
+                  >
                     <DialogTrigger asChild>
                       <Button size="sm" className="gap-1 shadow-sm rounded-xl">
                         <Plus className="w-4 h-4" /> Add Sub-Item
@@ -680,8 +745,8 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                                 variant={!newSubIsPage ? "default" : "outline"}
                                 size="sm"
                                 onClick={() => {
-                                  setNewSubIsPage(false)
-                                  setSubHref("")
+                                  setNewSubIsPage(false);
+                                  setSubHref("");
                                 }}
                                 className="w-full text-xs rounded-xl"
                               >
@@ -692,9 +757,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                                 variant={newSubIsPage ? "default" : "outline"}
                                 size="sm"
                                 onClick={() => {
-                                  setNewSubIsPage(true)
+                                  setNewSubIsPage(true);
                                   if (pages.length > 0) {
-                                    setSubHref(`/${pages[0]?.slug || ""}`)
+                                    setSubHref(`/${pages[0]?.slug || ""}`);
                                   }
                                 }}
                                 className="w-full text-xs rounded-xl"
@@ -708,10 +773,16 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                             <div className="space-y-1.5">
                               <Label htmlFor="subPageSelect">Select Page</Label>
                               <Select
-                                value={pages.find((p) => `/${p.slug}` === subHref)?.slug || ""}
+                                value={
+                                  pages.find((p) => `/${p.slug}` === subHref)
+                                    ?.slug || ""
+                                }
                                 onValueChange={(val) => setSubHref(`/${val}`)}
                               >
-                                <SelectTrigger id="subPageSelect" className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200">
+                                <SelectTrigger
+                                  id="subPageSelect"
+                                  className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200"
+                                >
                                   <SelectValue placeholder="Choose a page..." />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -757,7 +828,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                         </div>
                       </div>
                       <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsCreateSubOpen(false)}>
+                        <Button
+                          variant="outline"
+                          onClick={() => setIsCreateSubOpen(false)}
+                        >
                           Cancel
                         </Button>
                         <Button
@@ -806,7 +880,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                         <Switch
                           checked={item.isActive}
                           className="scale-75 mr-2"
-                          onCheckedChange={(checked) => toggleSubState(item, checked)}
+                          onCheckedChange={(checked) =>
+                            toggleSubState(item, checked)
+                          }
                         />
                         <Button
                           variant="ghost"
@@ -814,8 +890,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                           className="w-7 h-7 text-muted-foreground hover:text-foreground"
                           disabled={subIndex === 0 || isPending}
                           onClick={() => {
-                            const menuIdx = menus.findIndex((m) => m.id === selectedMenu.id)
-                            moveSubUp(menuIdx, subIndex)
+                            const menuIdx = menus.findIndex(
+                              (m) => m.id === selectedMenu.id,
+                            );
+                            moveSubUp(menuIdx, subIndex);
                           }}
                         >
                           <ArrowUp className="w-3.5 h-3.5" />
@@ -824,10 +902,15 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                           variant="ghost"
                           size="icon"
                           className="w-7 h-7 text-muted-foreground hover:text-foreground"
-                          disabled={subIndex === selectedMenu.items.length - 1 || isPending}
+                          disabled={
+                            subIndex === selectedMenu.items.length - 1 ||
+                            isPending
+                          }
                           onClick={() => {
-                            const menuIdx = menus.findIndex((m) => m.id === selectedMenu.id)
-                            moveSubDown(menuIdx, subIndex)
+                            const menuIdx = menus.findIndex(
+                              (m) => m.id === selectedMenu.id,
+                            );
+                            moveSubDown(menuIdx, subIndex);
                           }}
                         >
                           <ArrowDown className="w-3.5 h-3.5" />
@@ -837,10 +920,12 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                           size="icon"
                           className="w-7 h-7 text-blue-600 hover:text-blue-700"
                           onClick={() => {
-                            setEditingSub(item)
-                            const isPage = item.href ? pages.some((p) => `/${p.slug}` === item.href) : false
-                            setEditSubIsPage(isPage)
-                            setIsEditSubOpen(true)
+                            setEditingSub(item);
+                            const isPage = item.href
+                              ? pages.some((p) => `/${p.slug}` === item.href)
+                              : false;
+                            setEditSubIsPage(isPage);
+                            setIsEditSubOpen(true);
                           }}
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -860,7 +945,8 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
 
                   {selectedMenu.items.length === 0 && (
                     <div className="border-2 border-dashed border-slate-100 dark:border-slate-800 p-8 text-center text-muted-foreground text-sm rounded-xl">
-                      No links added to this group yet. Click Add Sub-Item to start.
+                      No links added to this group yet. Click Add Sub-Item to
+                      start.
                     </div>
                   )}
                 </div>
@@ -869,7 +955,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
           ) : (
             <Card className="border-primary/10 shadow-sm border-2 border-dashed h-[360px] flex flex-col justify-center items-center">
               <ChevronRight className="w-8 h-8 text-muted-foreground/30 animate-pulse" />
-              <div className="font-semibold text-muted-foreground mt-2">Select a menu category</div>
+              <div className="font-semibold text-muted-foreground mt-2">
+                Select a menu category
+              </div>
               <div className="text-xs text-muted-foreground/80">
                 Manage sub-items and settings dynamically
               </div>
@@ -893,7 +981,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                 <Input
                   id="editMenuName"
                   value={editingMenu.name}
-                  onChange={(e) => setEditingMenu({ ...editingMenu, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditingMenu({ ...editingMenu, name: e.target.value })
+                  }
                 />
               </div>
 
@@ -906,8 +996,8 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                       variant={!editMenuIsPage ? "default" : "outline"}
                       size="sm"
                       onClick={() => {
-                        setEditMenuIsPage(false)
-                        setEditingMenu({ ...editingMenu, href: "" })
+                        setEditMenuIsPage(false);
+                        setEditingMenu({ ...editingMenu, href: "" });
                       }}
                       className="w-full text-xs rounded-xl"
                     >
@@ -918,9 +1008,12 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                       variant={editMenuIsPage ? "default" : "outline"}
                       size="sm"
                       onClick={() => {
-                        setEditMenuIsPage(true)
+                        setEditMenuIsPage(true);
                         if (pages.length > 0) {
-                          setEditingMenu({ ...editingMenu, href: `/${pages[0]?.slug || ""}` })
+                          setEditingMenu({
+                            ...editingMenu,
+                            href: `/${pages[0]?.slug || ""}`,
+                          });
                         }
                       }}
                       className="w-full text-xs rounded-xl"
@@ -934,10 +1027,19 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                   <div className="space-y-1.5">
                     <Label htmlFor="editMenuPageSelect">Select Page</Label>
                     <Select
-                      value={pages.find((p) => `/${p.slug}` === (editingMenu.href || ""))?.slug || ""}
-                      onValueChange={(val) => setEditingMenu({ ...editingMenu, href: `/${val}` })}
+                      value={
+                        pages.find(
+                          (p) => `/${p.slug}` === (editingMenu.href || ""),
+                        )?.slug || ""
+                      }
+                      onValueChange={(val) =>
+                        setEditingMenu({ ...editingMenu, href: `/${val}` })
+                      }
                     >
-                      <SelectTrigger id="editMenuPageSelect" className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200">
+                      <SelectTrigger
+                        id="editMenuPageSelect"
+                        className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200"
+                      >
                         <SelectValue placeholder="Choose a page..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -951,12 +1053,19 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    <Label htmlFor="editMenuHref">Direct URL / Path (Optional)</Label>
+                    <Label htmlFor="editMenuHref">
+                      Direct URL / Path (Optional)
+                    </Label>
                     <Input
                       id="editMenuHref"
                       placeholder="e.g. /contact (leave blank for dropdown)"
                       value={editingMenu.href || ""}
-                      onChange={(e) => setEditingMenu({ ...editingMenu, href: e.target.value || null })}
+                      onChange={(e) =>
+                        setEditingMenu({
+                          ...editingMenu,
+                          href: e.target.value || null,
+                        })
+                      }
                     />
                   </div>
                 )}
@@ -968,11 +1077,19 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                   id="editMenuIcon"
                   placeholder="e.g. Cpu, BookOpen"
                   value={editingMenu.icon || ""}
-                  onChange={(e) => setEditingMenu({ ...editingMenu, icon: e.target.value || null })}
+                  onChange={(e) =>
+                    setEditingMenu({
+                      ...editingMenu,
+                      icon: e.target.value || null,
+                    })
+                  }
                 />
               </div>
               <div className="flex items-center justify-between pt-1">
-                <Label htmlFor="editMenuNewTab" className="cursor-pointer text-xs">
+                <Label
+                  htmlFor="editMenuNewTab"
+                  className="cursor-pointer text-xs"
+                >
                   Open in New Tab?
                 </Label>
                 <Switch
@@ -984,7 +1101,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                 />
               </div>
               <div className="flex items-center justify-between pt-1">
-                <Label htmlFor="editMenuShowInHeader" className="cursor-pointer text-xs">
+                <Label
+                  htmlFor="editMenuShowInHeader"
+                  className="cursor-pointer text-xs"
+                >
                   Show in Navbar Header?
                 </Label>
                 <Switch
@@ -996,7 +1116,10 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                 />
               </div>
               <div className="flex items-center justify-between pt-1">
-                <Label htmlFor="editMenuShowInFooter" className="cursor-pointer text-xs">
+                <Label
+                  htmlFor="editMenuShowInFooter"
+                  className="cursor-pointer text-xs"
+                >
                   Show in Footer Link List?
                 </Label>
                 <Switch
@@ -1009,10 +1132,16 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditMenuOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsEditMenuOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleUpdateMenu} disabled={!editingMenu.name || isPending}>
+              <Button
+                onClick={handleUpdateMenu}
+                disabled={!editingMenu.name || isPending}
+              >
                 {isPending ? "Saving..." : "Save Changes"}
               </Button>
             </DialogFooter>
@@ -1035,7 +1164,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                 <Input
                   id="editSubName"
                   value={editingSub.name}
-                  onChange={(e) => setEditingSub({ ...editingSub, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditingSub({ ...editingSub, name: e.target.value })
+                  }
                 />
               </div>
 
@@ -1048,8 +1179,8 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                       variant={!editSubIsPage ? "default" : "outline"}
                       size="sm"
                       onClick={() => {
-                        setEditSubIsPage(false)
-                        setEditingSub({ ...editingSub, href: "" })
+                        setEditSubIsPage(false);
+                        setEditingSub({ ...editingSub, href: "" });
                       }}
                       className="w-full text-xs rounded-xl"
                     >
@@ -1060,9 +1191,12 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                       variant={editSubIsPage ? "default" : "outline"}
                       size="sm"
                       onClick={() => {
-                        setEditSubIsPage(true)
+                        setEditSubIsPage(true);
                         if (pages.length > 0) {
-                          setEditingSub({ ...editingSub, href: `/${pages[0]?.slug || ""}` })
+                          setEditingSub({
+                            ...editingSub,
+                            href: `/${pages[0]?.slug || ""}`,
+                          });
                         }
                       }}
                       className="w-full text-xs rounded-xl"
@@ -1076,10 +1210,18 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                   <div className="space-y-1.5">
                     <Label htmlFor="editSubPageSelect">Select Page</Label>
                     <Select
-                      value={pages.find((p) => `/${p.slug}` === editingSub.href)?.slug || ""}
-                      onValueChange={(val) => setEditingSub({ ...editingSub, href: `/${val}` })}
+                      value={
+                        pages.find((p) => `/${p.slug}` === editingSub.href)
+                          ?.slug || ""
+                      }
+                      onValueChange={(val) =>
+                        setEditingSub({ ...editingSub, href: `/${val}` })
+                      }
                     >
-                      <SelectTrigger id="editSubPageSelect" className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200">
+                      <SelectTrigger
+                        id="editSubPageSelect"
+                        className="rounded-xl bg-gray-50 dark:bg-gray-900 border-gray-200"
+                      >
                         <SelectValue placeholder="Choose a page..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -1097,7 +1239,9 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                     <Input
                       id="editSubHref"
                       value={editingSub.href}
-                      onChange={(e) => setEditingSub({ ...editingSub, href: e.target.value })}
+                      onChange={(e) =>
+                        setEditingSub({ ...editingSub, href: e.target.value })
+                      }
                     />
                   </div>
                 )}
@@ -1109,7 +1253,12 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
                   id="editSubIcon"
                   placeholder="e.g. Laptop, HelpCircle"
                   value={editingSub.icon || ""}
-                  onChange={(e) => setEditingSub({ ...editingSub, icon: e.target.value || null })}
+                  onChange={(e) =>
+                    setEditingSub({
+                      ...editingSub,
+                      icon: e.target.value || null,
+                    })
+                  }
                 />
               </div>
               <div className="flex items-center justify-between pt-2">
@@ -1140,5 +1289,5 @@ export function MenuManager({ initialMenus, pages }: MenuManagerProps) {
         </Dialog>
       )}
     </div>
-  )
+  );
 }

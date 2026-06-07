@@ -10,7 +10,7 @@
       "maxDuration": 60
     }
   },
- "git": {
+  "git": {
     "deploymentEnabled": {
       "main": true,
       "preview": true

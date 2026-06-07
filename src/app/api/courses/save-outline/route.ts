@@ -1,28 +1,34 @@
-import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/auth"
-import prisma from "@/lib/prisma"
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import prisma from "@/lib/prisma";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const session = await auth();
     if (!session || !session.user || !session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json()
-    const { title, description, duration, durationMonths, modules } = body
+    const body = await request.json();
+    const { title, description, duration, durationMonths, modules } = body;
 
     if (!title || !modules || !Array.isArray(modules)) {
-      return NextResponse.json({ error: "Invalid course outline payload" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invalid course outline payload" },
+        { status: 400 },
+      );
     }
 
     // Generate unique slug
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "") + "-" + Math.random().toString(36).substring(2, 7)
+    const slug =
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "") +
+      "-" +
+      Math.random().toString(36).substring(2, 7);
 
     // Save Course, Modules, and Lessons within a single transaction
     const savedCourse = await prisma.$transaction(async (tx) => {
@@ -38,7 +44,7 @@ export async function POST(request: NextRequest) {
           duration,
           durationMonths: durationMonths || 1,
         },
-      })
+      });
 
       // 2. Add Modules and nested Lessons sequentially
       for (const mod of modules) {
@@ -48,7 +54,7 @@ export async function POST(request: NextRequest) {
             title: mod.title,
             order: mod.order || 1,
           },
-        })
+        });
 
         if (mod.lessons && Array.isArray(mod.lessons)) {
           for (const les of mod.lessons) {
@@ -59,21 +65,24 @@ export async function POST(request: NextRequest) {
                 content: les.content || "",
                 order: les.order || 1,
               },
-            })
+            });
           }
         }
       }
 
-      return course
-    })
+      return course;
+    });
 
     return NextResponse.json({
       success: true,
       courseId: savedCourse.id,
       slug: savedCourse.slug,
-    })
+    });
   } catch (error: any) {
-    console.error("Save Course Outline API Error:", error)
-    return NextResponse.json({ error: error.message || "Failed to save course outline" }, { status: 500 })
+    console.error("Save Course Outline API Error:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to save course outline" },
+      { status: 500 },
+    );
   }
 }

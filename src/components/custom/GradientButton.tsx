@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface GradientButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
@@ -17,7 +17,7 @@ interface GradientButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
  */
 export const GradientButton: React.FC<GradientButtonProps> = ({
   children,
-  className = '',
+  className = "",
   ...rest
 }) => {
   return (

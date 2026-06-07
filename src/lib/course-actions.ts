@@ -1,26 +1,29 @@
-"use server"
+"use server";
 
-import { prisma, safeDbQuery } from "@/lib/prisma"
-import { auth } from "@/auth"
-import { revalidatePath } from "next/cache"
+import { prisma, safeDbQuery } from "@/lib/prisma";
+import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function enrollInCourse(courseId: string) {
-  const session = await auth()
+  const session = await auth();
 
   if (!session?.user?.id) {
-    return { success: false, error: "You must be logged in to enroll in a course." }
+    return {
+      success: false,
+      error: "You must be logged in to enroll in a course.",
+    };
   }
 
-  const userId = session.user.id
+  const userId = session.user.id;
 
   return await safeDbQuery(async () => {
     // Check if course exists
     const course = await prisma.course.findUnique({
       where: { id: courseId },
-    })
+    });
 
     if (!course) {
-      throw new Error("Course not found.")
+      throw new Error("Course not found.");
     }
 
     // Check if already enrolled
@@ -31,10 +34,10 @@ export async function enrollInCourse(courseId: string) {
           courseId,
         },
       },
-    })
+    });
 
     if (existingEnrollment) {
-      throw new Error("You are already enrolled in this course.")
+      throw new Error("You are already enrolled in this course.");
     }
 
     // Create enrollment
@@ -43,20 +46,20 @@ export async function enrollInCourse(courseId: string) {
         userId,
         courseId,
       },
-    })
+    });
 
-    revalidatePath(`/courses/${course.slug}`)
-    revalidatePath("/dashboard")
+    revalidatePath(`/courses/${course.slug}`);
+    revalidatePath("/dashboard");
 
-    return { success: true }
-  })
+    return { success: true };
+  });
 }
 
 export async function getEnrolledCourses() {
-  const session = await auth()
+  const session = await auth();
 
   if (!session?.user?.id) {
-    return { success: true, data: [] }
+    return { success: true, data: [] };
   }
 
   const result = await safeDbQuery(async () => {
@@ -73,10 +76,10 @@ export async function getEnrolledCourses() {
           },
         },
       },
-    })
+    });
 
-    return enrollments.map((e) => e.course)
-  }, [])
+    return enrollments.map((e) => e.course);
+  }, []);
 
-  return result
+  return result;
 }

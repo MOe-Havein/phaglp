@@ -1,6 +1,6 @@
-import { cache } from "react"
-import { prisma } from "@/lib/prisma"
-import type { AcademyAsset, AdminDashboardStats } from "@/types"
+import { cache } from "react";
+import { prisma } from "@/lib/prisma";
+import type { AcademyAsset, AdminDashboardStats } from "@/types";
 
 /**
  * Fetch all academy assets for the admin inventory table.
@@ -20,77 +20,81 @@ export const getAssetsForAdmin = cache(async (): Promise<AcademyAsset[]> => {
           orderBy: { allocatedAt: "desc" },
         },
       },
-    })
-    return assets as unknown as AcademyAsset[]
+    });
+    return assets as unknown as AcademyAsset[];
   } catch {
-    return []
+    return [];
   }
-})
+});
 
 /**
  * Fetch a single asset by ID, including its full allocation history.
  */
-export const getAssetById = cache(async (id: string): Promise<AcademyAsset | null> => {
-  try {
-    const asset = await prisma.academyAsset.findUnique({
-      where: { id },
-      include: {
-        course: { select: { id: true, title: true, slug: true } },
-        allocations: {
-          include: {
-            user: { select: { id: true, name: true, email: true } },
+export const getAssetById = cache(
+  async (id: string): Promise<AcademyAsset | null> => {
+    try {
+      const asset = await prisma.academyAsset.findUnique({
+        where: { id },
+        include: {
+          course: { select: { id: true, title: true, slug: true } },
+          allocations: {
+            include: {
+              user: { select: { id: true, name: true, email: true } },
+            },
+            orderBy: { allocatedAt: "desc" },
           },
-          orderBy: { allocatedAt: "desc" },
         },
-      },
-    })
-    return asset ? (asset as unknown as AcademyAsset) : null
-  } catch {
-    return null
-  }
-})
+      });
+      return asset ? (asset as unknown as AcademyAsset) : null;
+    } catch {
+      return null;
+    }
+  },
+);
 
 /**
  * Aggregate statistics for the admin dashboard overview.
  */
-export const getAdminDashboardStats = cache(async (): Promise<AdminDashboardStats> => {
-  try {
-    const [
-      userCount,
-      courseCount,
-      lectureCount,
-      pageCount,
-      assetCount,
-      messageCount,
-      unreadMessageCount,
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.course.count(),
-      prisma.lecture.count(),
-      prisma.page.count(),
-      prisma.academyAsset.count(),
-      prisma.contactMessage.count(),
-      prisma.contactMessage.count({ where: { isRead: false } }),
-    ])
+export const getAdminDashboardStats = cache(
+  async (): Promise<AdminDashboardStats> => {
+    try {
+      const [
+        userCount,
+        courseCount,
+        lectureCount,
+        pageCount,
+        assetCount,
+        messageCount,
+        unreadMessageCount,
+      ] = await Promise.all([
+        prisma.user.count(),
+        prisma.course.count(),
+        prisma.lecture.count(),
+        prisma.page.count(),
+        prisma.academyAsset.count(),
+        prisma.contactMessage.count(),
+        prisma.contactMessage.count({ where: { isRead: false } }),
+      ]);
 
-    return {
-      userCount,
-      courseCount,
-      lectureCount,
-      pageCount,
-      assetCount,
-      messageCount,
-      unreadMessageCount,
+      return {
+        userCount,
+        courseCount,
+        lectureCount,
+        pageCount,
+        assetCount,
+        messageCount,
+        unreadMessageCount,
+      };
+    } catch {
+      return {
+        userCount: 0,
+        courseCount: 0,
+        lectureCount: 0,
+        pageCount: 0,
+        assetCount: 0,
+        messageCount: 0,
+        unreadMessageCount: 0,
+      };
     }
-  } catch {
-    return {
-      userCount: 0,
-      courseCount: 0,
-      lectureCount: 0,
-      pageCount: 0,
-      assetCount: 0,
-      messageCount: 0,
-      unreadMessageCount: 0,
-    }
-  }
-})
+  },
+);

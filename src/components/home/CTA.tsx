@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import React from "react"
-import { motion } from "framer-motion"
-import { ArrowRight, Sparkles } from "lucide-react"
+import React from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 interface CTAProps {
-  title?: string | null
-  body?: string | null
-  ctaLabel?: string | null
-  ctaHref?: string | null
+  title?: string | null;
+  body?: string | null;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
 }
 
 export function CTA({
@@ -20,7 +20,10 @@ export function CTA({
   return (
     <section className="relative py-24 px-6 overflow-hidden bg-slate-950 text-slate-100 flex items-center justify-center">
       {/* Background neon flares */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.16),transparent_60%)] blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: "12s" }} />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.16),transparent_60%)] blur-3xl pointer-events-none animate-pulse"
+        style={{ animationDuration: "12s" }}
+      />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.10),transparent_60%)] blur-3xl pointer-events-none" />
 
       <div className="container mx-auto max-w-5xl relative z-10">
@@ -60,5 +63,5 @@ export function CTA({
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

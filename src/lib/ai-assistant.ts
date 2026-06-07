@@ -1,26 +1,26 @@
-"use server"
+"use server";
 
-import { CohereClient } from "cohere-ai"
+import { CohereClient } from "cohere-ai";
 
-let cohereInstance: CohereClient | null = null
+let cohereInstance: CohereClient | null = null;
 
 function getCohereClient() {
-  if (cohereInstance) return cohereInstance
+  if (cohereInstance) return cohereInstance;
 
-  const token = process.env.COHERE_API_KEY?.trim()
+  const token = process.env.COHERE_API_KEY?.trim();
   if (!token) {
-    throw new Error("COHERE_API_KEY environment variable is required")
+    throw new Error("COHERE_API_KEY environment variable is required");
   }
 
   cohereInstance = new CohereClient({
     token,
-  })
-  return cohereInstance
+  });
+  return cohereInstance;
 }
 
 export async function generateOutline(title: string, category?: string) {
   try {
-    const cohere = getCohereClient()
+    const cohere = getCohereClient();
     const prompt = `Create a detailed outline for a lecture titled "${title}"${category ? ` in the category of ${category}` : ""}. 
     
 The outline should:
@@ -29,7 +29,7 @@ The outline should:
 - Be focused on philosophical or intellectual depth
 - Provide clear, hierarchical structure
 
-Format the outline using Markdown with proper heading levels (##, ###).`
+Format the outline using Markdown with proper heading levels (##, ###).`;
 
     const response = await cohere.v2.chat({
       model: "command-a-reasoning-08-2025",
@@ -39,21 +39,24 @@ Format the outline using Markdown with proper heading levels (##, ###).`
           content: prompt,
         },
       ],
-    })
+    });
 
-    const textContent = response.message?.content?.find((item) => item.type === "text")
-    const generatedText = textContent?.type === "text" ? textContent.text : "No content generated"
+    const textContent = response.message?.content?.find(
+      (item) => item.type === "text",
+    );
+    const generatedText =
+      textContent?.type === "text" ? textContent.text : "No content generated";
 
     return {
       success: true,
       data: generatedText,
-    }
+    };
   } catch (error: any) {
-    console.error("Error generating outline:", error)
+    console.error("Error generating outline:", error);
     return {
       success: false,
       error: error.message || "Failed to generate outline. Please try again.",
-    }
+    };
   }
 }
 
@@ -63,13 +66,13 @@ export async function summarizeContent(content: string) {
       return {
         success: false,
         error: "No content provided to summarize.",
-      }
+      };
     }
 
-    const cohere = getCohereClient()
+    const cohere = getCohereClient();
     const prompt = `Summarize the following lecture content in 2-3 concise paragraphs. Focus on the main ideas, key arguments, and conclusions:
 
-${content}`
+${content}`;
 
     const response = await cohere.v2.chat({
       model: "command-a-reasoning-08-2025",
@@ -79,21 +82,24 @@ ${content}`
           content: prompt,
         },
       ],
-    })
+    });
 
-    const textContent = response.message?.content?.find((item) => item.type === "text")
-    const generatedText = textContent?.type === "text" ? textContent.text : "No content generated"
+    const textContent = response.message?.content?.find(
+      (item) => item.type === "text",
+    );
+    const generatedText =
+      textContent?.type === "text" ? textContent.text : "No content generated";
 
     return {
       success: true,
       data: generatedText,
-    }
+    };
   } catch (error: any) {
-    console.error("Error summarizing content:", error)
+    console.error("Error summarizing content:", error);
     return {
       success: false,
       error: error.message || "Failed to summarize content. Please try again.",
-    }
+    };
   }
 }
 
@@ -103,10 +109,10 @@ export async function checkLogicalFallacies(content: string) {
       return {
         success: false,
         error: "No content provided to analyze.",
-      }
+      };
     }
 
-    const cohere = getCohereClient()
+    const cohere = getCohereClient();
     const prompt = `Analyze the following text for logical fallacies. For each fallacy found:
 1. Name the fallacy
 2. Quote the specific passage
@@ -116,7 +122,7 @@ export async function checkLogicalFallacies(content: string) {
 If no fallacies are found, explain why the argumentation is sound.
 
 Text to analyze:
-${content}`
+${content}`;
 
     const response = await cohere.v2.chat({
       model: "command-a-reasoning-08-2025",
@@ -126,21 +132,24 @@ ${content}`
           content: prompt,
         },
       ],
-    })
+    });
 
-    const textContent = response.message?.content?.find((item) => item.type === "text")
-    const generatedText = textContent?.type === "text" ? textContent.text : "No content generated"
+    const textContent = response.message?.content?.find(
+      (item) => item.type === "text",
+    );
+    const generatedText =
+      textContent?.type === "text" ? textContent.text : "No content generated";
 
     return {
       success: true,
       data: generatedText,
-    }
+    };
   } catch (error: any) {
-    console.error("Error checking logical fallacies:", error)
+    console.error("Error checking logical fallacies:", error);
     return {
       success: false,
       error: error.message || "Failed to analyze content. Please try again.",
-    }
+    };
   }
 }
 
@@ -150,10 +159,10 @@ export async function writeLecture(topic: string, category?: string) {
       return {
         success: false,
         error: "No topic provided for lecture writing.",
-      }
+      };
     }
 
-    const cohere = getCohereClient()
+    const cohere = getCohereClient();
     const prompt = `Write a comprehensive, engaging lecture on "${topic}"${category ? ` in the category of ${category}` : ""}. 
 
 The lecture should:
@@ -168,7 +177,7 @@ Do NOT include:
 - Closing paragraphs about SEO optimization or best practices
 - Any meta-commentary about the lecture itself
 
-Just write the lecture content naturally, starting with the title as an H1, followed by the introduction and body sections.`
+Just write the lecture content naturally, starting with the title as an H1, followed by the introduction and body sections.`;
 
     const response = await cohere.v2.chat({
       model: "command-a-reasoning-08-2025",
@@ -178,20 +187,23 @@ Just write the lecture content naturally, starting with the title as an H1, foll
           content: prompt,
         },
       ],
-    })
+    });
 
-    const textContent = response.message?.content?.find((item) => item.type === "text")
-    const generatedText = textContent?.type === "text" ? textContent.text : "No content generated"
+    const textContent = response.message?.content?.find(
+      (item) => item.type === "text",
+    );
+    const generatedText =
+      textContent?.type === "text" ? textContent.text : "No content generated";
 
     return {
       success: true,
       data: generatedText,
-    }
+    };
   } catch (error: any) {
-    console.error("Error writing lecture:", error)
+    console.error("Error writing lecture:", error);
     return {
       success: false,
       error: error.message || "Failed to write lecture. Please try again.",
-    }
+    };
   }
 }

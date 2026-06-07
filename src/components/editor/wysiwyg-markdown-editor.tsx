@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useEditor, EditorContent } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import { Table } from "@tiptap/extension-table"
-import { TableRow } from "@tiptap/extension-table-row"
-import { TableHeader } from "@tiptap/extension-table-header"
-import { TableCell } from "@tiptap/extension-table-cell"
-import Image from "@tiptap/extension-image"
-import Youtube from "@tiptap/extension-youtube"
-import Placeholder from "@tiptap/extension-placeholder"
-import Link from "@tiptap/extension-link"
-import TextAlign from "@tiptap/extension-text-align"
-import { TextStyle } from "@tiptap/extension-text-style"
-import { Markdown } from "tiptap-markdown"
-import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
-import { common, createLowlight } from "lowlight"
-import "highlight.js/styles/github-dark.css" // Add styles for syntax highlighting
-import { Extension } from "@tiptap/core"
-import { CldUploadWidget } from "next-cloudinary"
-import { useEffect, useRef, useCallback } from "react"
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { Table } from "@tiptap/extension-table";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableCell } from "@tiptap/extension-table-cell";
+import Image from "@tiptap/extension-image";
+import Youtube from "@tiptap/extension-youtube";
+import Placeholder from "@tiptap/extension-placeholder";
+import Link from "@tiptap/extension-link";
+import TextAlign from "@tiptap/extension-text-align";
+import { TextStyle } from "@tiptap/extension-text-style";
+import { Markdown } from "tiptap-markdown";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { common, createLowlight } from "lowlight";
+import "highlight.js/styles/github-dark.css"; // Add styles for syntax highlighting
+import { Extension } from "@tiptap/core";
+import { CldUploadWidget } from "next-cloudinary";
+import { useEffect, useRef, useCallback } from "react";
 import {
   Bold,
   Italic,
@@ -39,15 +39,15 @@ import {
   Undo,
   Redo,
   CodeSquare,
-} from "lucide-react"
+} from "lucide-react";
 
-const lowlight = createLowlight(common)
+const lowlight = createLowlight(common);
 
 // Custom extension for RTL/LTR direction on paragraphs
 const TextDirection = Extension.create({
   name: "textDirection",
   addOptions() {
-    return { types: ["paragraph", "heading", "blockquote"] }
+    return { types: ["paragraph", "heading", "blockquote"] };
   },
   addGlobalAttributes() {
     return [
@@ -61,7 +61,7 @@ const TextDirection = Extension.create({
           },
         },
       },
-    ]
+    ];
   },
   addCommands() {
     return {
@@ -70,17 +70,17 @@ const TextDirection = Extension.create({
         ({ commands }: any) => {
           return this.options.types.every((type: string) =>
             commands.updateAttributes(type, { dir: direction }),
-          )
+          );
         },
-    } as any
+    } as any;
   },
-})
+});
 
 interface WysiwygMarkdownEditorProps {
-  value: string
-  onChange: (value: string) => void
-  height?: number
-  placeholder?: string
+  value: string;
+  onChange: (value: string) => void;
+  height?: number;
+  placeholder?: string;
 }
 
 export function WysiwygMarkdownEditor({
@@ -89,7 +89,7 @@ export function WysiwygMarkdownEditor({
   height = 500,
   placeholder = "Start typing here... Visual editor that outputs pure Markdown!",
 }: WysiwygMarkdownEditorProps) {
-  const isInternalChange = useRef(false)
+  const isInternalChange = useRef(false);
 
   const editor = useEditor({
     extensions: [
@@ -102,7 +102,9 @@ export function WysiwygMarkdownEditor({
       }),
       TextStyle,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      TextDirection.configure({ types: ["paragraph", "heading", "blockquote"] }),
+      TextDirection.configure({
+        types: ["paragraph", "heading", "blockquote"],
+      }),
       Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
@@ -110,7 +112,10 @@ export function WysiwygMarkdownEditor({
       Image.configure({ inline: false, allowBase64: true }),
       Youtube.configure({ width: 640, height: 360, nocookie: true }),
       Placeholder.configure({ placeholder }),
-      Link.configure({ openOnClick: false, HTMLAttributes: { class: "underline text-blue-600" } }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { class: "underline text-blue-600" },
+      }),
       Markdown.configure({
         html: true,
         transformPastedText: true,
@@ -118,8 +123,8 @@ export function WysiwygMarkdownEditor({
     ],
     content: value,
     onUpdate: ({ editor }) => {
-      isInternalChange.current = true
-      onChange((editor.storage as any).markdown.getMarkdown())
+      isInternalChange.current = true;
+      onChange((editor.storage as any).markdown.getMarkdown());
     },
     editorProps: {
       attributes: {
@@ -128,47 +133,54 @@ export function WysiwygMarkdownEditor({
         style: `min-height: ${height}px`,
       },
     },
-  })
+  });
 
   // Sync external value changes without causing loops
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
     if (isInternalChange.current) {
-      isInternalChange.current = false
-      return
+      isInternalChange.current = false;
+      return;
     }
-    const current = (editor.storage as any).markdown.getMarkdown()
+    const current = (editor.storage as any).markdown.getMarkdown();
     if (current !== value) {
-      editor.commands.setContent(value || "")
+      editor.commands.setContent(value || "");
     }
-  }, [editor, value])
+  }, [editor, value]);
 
   const insertTable = useCallback(() => {
-    editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
-  }, [editor])
+    editor
+      ?.chain()
+      .focus()
+      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+      .run();
+  }, [editor]);
 
   const insertImage = useCallback(
     (src: string, alt = "Image") => {
-      editor?.chain().focus().setImage({ src, alt }).run()
+      editor?.chain().focus().setImage({ src, alt }).run();
     },
     [editor],
-  )
-
-
+  );
 
   const insertYoutube = useCallback(() => {
-    const url = window.prompt("Enter YouTube or Vimeo URL:")
-    if (url) editor?.chain().focus().setYoutubeVideo({ src: url }).run()
-  }, [editor])
+    const url = window.prompt("Enter YouTube or Vimeo URL:");
+    if (url) editor?.chain().focus().setYoutubeVideo({ src: url }).run();
+  }, [editor]);
 
   const insertLink = useCallback(() => {
-    const url = window.prompt("Enter URL:")
+    const url = window.prompt("Enter URL:");
     if (url) {
-      editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
+      editor
+        ?.chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
     }
-  }, [editor])
+  }, [editor]);
 
-  if (!editor) return null
+  if (!editor) return null;
 
   const ToolbarButton = ({
     onClick,
@@ -176,35 +188,41 @@ export function WysiwygMarkdownEditor({
     title,
     children,
   }: {
-    onClick: () => void
-    active?: boolean
-    title: string
-    children: React.ReactNode
+    onClick: () => void;
+    active?: boolean;
+    title: string;
+    children: React.ReactNode;
   }) => (
     <button
       type="button"
       onMouseDown={(e) => {
-        e.preventDefault()
-        onClick()
+        e.preventDefault();
+        onClick();
       }}
       title={title}
       className={`p-1.5 rounded hover:bg-accent transition-colors ${active ? "bg-accent text-accent-foreground" : "text-muted-foreground"}`}
     >
       {children}
     </button>
-  )
+  );
 
-  const Divider = () => <div className="w-px h-5 bg-border mx-1 self-center" />
+  const Divider = () => <div className="w-px h-5 bg-border mx-1 self-center" />;
 
   return (
     <div className="border rounded-lg overflow-hidden bg-background">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30">
         {/* History */}
-        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} title="Undo">
+        <ToolbarButton
+          onClick={() => editor.chain().focus().undo().run()}
+          title="Undo"
+        >
           <Undo className="w-4 h-4" />
         </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} title="Redo">
+        <ToolbarButton
+          onClick={() => editor.chain().focus().redo().run()}
+          title="Redo"
+        >
           <Redo className="w-4 h-4" />
         </ToolbarButton>
 
@@ -250,21 +268,27 @@ export function WysiwygMarkdownEditor({
 
         {/* Headings */}
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 1 }).run()
+          }
           active={editor.isActive("heading", { level: 1 })}
           title="Heading 1"
         >
           <Heading1 className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
           active={editor.isActive("heading", { level: 2 })}
           title="Heading 2"
         >
           <Heading2 className="w-4 h-4" />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
           active={editor.isActive("heading", { level: 3 })}
           title="Heading 3"
         >
@@ -331,7 +355,11 @@ export function WysiwygMarkdownEditor({
         <Divider />
 
         {/* Link */}
-        <ToolbarButton onClick={insertLink} active={editor.isActive("link")} title="Insert Link">
+        <ToolbarButton
+          onClick={insertLink}
+          active={editor.isActive("link")}
+          title="Insert Link"
+        >
           <LinkIcon className="w-4 h-4" />
         </ToolbarButton>
 
@@ -349,7 +377,7 @@ export function WysiwygMarkdownEditor({
           }}
           onSuccess={(result: any) => {
             if (result?.info?.secure_url) {
-              insertImage(result.info.secure_url)
+              insertImage(result.info.secure_url);
             }
           }}
         >
@@ -361,7 +389,10 @@ export function WysiwygMarkdownEditor({
         </CldUploadWidget>
 
         {/* Video embed */}
-        <ToolbarButton onClick={insertYoutube} title="Embed YouTube / Vimeo Video">
+        <ToolbarButton
+          onClick={insertYoutube}
+          title="Embed YouTube / Vimeo Video"
+        >
           <Video className="w-4 h-4" />
         </ToolbarButton>
       </div>
@@ -369,5 +400,5 @@ export function WysiwygMarkdownEditor({
       {/* Editor content area */}
       <EditorContent editor={editor} />
     </div>
-  )
+  );
 }

@@ -1,27 +1,27 @@
-import { Suspense } from "react"
-import { BookOpen, Plus } from "lucide-react"
-import Link from "next/link"
-import { prisma, serializePrisma } from "@/lib/prisma"
+import { Suspense } from "react";
+import { BookOpen, Plus } from "lucide-react";
+import Link from "next/link";
+import { prisma, serializePrisma } from "@/lib/prisma";
 
 export const metadata = {
   title: "Blog — PHAGLP Control",
-}
+};
 
 async function getBlogPosts() {
   try {
     const posts = await prisma.post.findMany({
       orderBy: { createdAt: "desc" },
       include: { author: { select: { id: true, name: true, email: true } } },
-    })
-    return serializePrisma(posts)
+    });
+    return serializePrisma(posts);
   } catch (error) {
-    console.error("Failed to fetch admin blog posts:", error)
-    return []
+    console.error("Failed to fetch admin blog posts:", error);
+    return [];
   }
 }
 
 async function BlogPostsTable() {
-  const posts = await getBlogPosts()
+  const posts = await getBlogPosts();
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
       <div className="overflow-x-auto">
@@ -65,7 +65,9 @@ async function BlogPostsTable() {
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-white max-w-[240px] truncate">
                     {post.title}
                   </td>
-                  <td className="px-4 py-3 text-xs text-gray-500">{post.category}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500">
+                    {post.category}
+                  </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {post.author?.name ?? post.author?.email ?? "—"}
                   </td>
@@ -105,7 +107,7 @@ async function BlogPostsTable() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export default async function BlogPage() {
@@ -137,7 +139,10 @@ export default async function BlogPage() {
         fallback={
           <div className="space-y-2">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div
+                key={i}
+                className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse"
+              />
             ))}
           </div>
         }
@@ -145,5 +150,5 @@ export default async function BlogPage() {
         <BlogPostsTable />
       </Suspense>
     </div>
-  )
+  );
 }

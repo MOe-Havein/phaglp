@@ -1,12 +1,12 @@
-import { Suspense } from "react"
-import { FileCode, Plus } from "lucide-react"
-import Link from "next/link"
-import { prisma, serializePrisma } from "@/lib/prisma"
-import { DeletePageButton } from "@/components/control/delete-page-button"
+import { Suspense } from "react";
+import { FileCode, Plus } from "lucide-react";
+import Link from "next/link";
+import { prisma, serializePrisma } from "@/lib/prisma";
+import { DeletePageButton } from "@/components/control/delete-page-button";
 
 export const metadata = {
   title: "Pages — PHAGLP Control",
-}
+};
 
 async function getPages() {
   try {
@@ -17,15 +17,15 @@ async function getPages() {
         tags: { select: { id: true, name: true } },
         _count: { select: { revisions: true } },
       },
-    })
-    return serializePrisma(pages)
+    });
+    return serializePrisma(pages);
   } catch {
-    return []
+    return [];
   }
 }
 
 async function PagesTable() {
-  const pages = await getPages()
+  const pages = await getPages();
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
       <div className="overflow-x-auto">
@@ -69,7 +69,9 @@ async function PagesTable() {
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-white max-w-[200px] truncate">
                     {page.title}
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-gray-500">/{page.slug}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-gray-500">
+                    /{page.slug}
+                  </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {page.author?.name ?? "System"}
                   </td>
@@ -112,7 +114,7 @@ async function PagesTable() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export default async function PagesPage() {
@@ -124,7 +126,9 @@ export default async function PagesPage() {
             <FileCode className="w-4 h-4" />
             <span>CMS</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Pages</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            Pages
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Manage site content pages.
           </p>
@@ -142,7 +146,10 @@ export default async function PagesPage() {
         fallback={
           <div className="space-y-2">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div
+                key={i}
+                className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse"
+              />
             ))}
           </div>
         }
@@ -150,5 +157,5 @@ export default async function PagesPage() {
         <PagesTable />
       </Suspense>
     </div>
-  )
+  );
 }

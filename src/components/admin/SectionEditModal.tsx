@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { sectionSchema } from "@/lib/homepage/sectionSchema"
-import { CreateSectionInput, HomepageSection } from "@/types/homepage"
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { sectionSchema } from "@/lib/homepage/sectionSchema";
+import { CreateSectionInput, HomepageSection } from "@/types/homepage";
 
 interface SectionEditModalProps {
-  isOpen: boolean
-  onClose: () => void
-  sectionToEdit: HomepageSection | null
-  defaultType: CreateSectionInput["type"] | null
-  onSaved: (section: HomepageSection) => void
+  isOpen: boolean;
+  onClose: () => void;
+  sectionToEdit: HomepageSection | null;
+  defaultType: CreateSectionInput["type"] | null;
+  onSaved: (section: HomepageSection) => void;
 }
 
 export function SectionEditModal({
@@ -29,41 +29,44 @@ export function SectionEditModal({
   } = useForm<CreateSectionInput>({
     resolver: zodResolver(sectionSchema),
     defaultValues: { visible: true },
-  })
+  });
 
   useEffect(() => {
     if (isOpen) {
       if (sectionToEdit) {
-        reset({ ...sectionToEdit, type: sectionToEdit.type as CreateSectionInput["type"] })
+        reset({
+          ...sectionToEdit,
+          type: sectionToEdit.type as CreateSectionInput["type"],
+        });
       } else {
-        reset({ type: defaultType || "hero", visible: true })
+        reset({ type: defaultType || "hero", visible: true });
       }
     }
-  }, [isOpen, sectionToEdit, defaultType, reset])
+  }, [isOpen, sectionToEdit, defaultType, reset]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const onSubmit = async (data: CreateSectionInput) => {
     try {
       const url = sectionToEdit
         ? `/api/homepage/sections/${sectionToEdit.id}`
-        : `/api/homepage/sections`
-      const method = sectionToEdit ? "PUT" : "POST"
+        : `/api/homepage/sections`;
+      const method = sectionToEdit ? "PUT" : "POST";
 
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
+      });
 
-      if (!res.ok) throw new Error("Failed to save section")
-      const savedSection = await res.json()
-      onSaved(savedSection)
+      if (!res.ok) throw new Error("Failed to save section");
+      const savedSection = await res.json();
+      onSaved(savedSection);
     } catch (error) {
-      console.error(error)
-      alert("Failed to save. Please try again.")
+      console.error(error);
+      alert("Failed to save. Please try again.");
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -81,65 +84,93 @@ export function SectionEditModal({
         </div>
 
         <div className="overflow-y-auto p-6">
-          <form id="section-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            id="section-form"
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <input type="hidden" {...register("type")} />
 
             <div>
-              <label className="block text-sm font-medium text-text-muted mb-1">Title</label>
+              <label className="block text-sm font-medium text-text-muted mb-1">
+                Title
+              </label>
               <input
                 {...register("title")}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Section Headline"
               />
-              {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+              {errors.title && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.title.message}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-muted mb-1">Body Text</label>
+              <label className="block text-sm font-medium text-text-muted mb-1">
+                Body Text
+              </label>
               <textarea
                 {...register("body")}
                 rows={4}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Add text content here..."
               />
-              {errors.body && <p className="text-red-500 text-xs mt-1">{errors.body.message}</p>}
+              {errors.body && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.body.message}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-text-muted mb-1">CTA Label</label>
+                <label className="block text-sm font-medium text-text-muted mb-1">
+                  CTA Label
+                </label>
                 <input
                   {...register("ctaLabel")}
                   className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g. Get Started"
                 />
                 {errors.ctaLabel && (
-                  <p className="text-red-500 text-xs mt-1">{errors.ctaLabel.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.ctaLabel.message}
+                  </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-muted mb-1">CTA Href</label>
+                <label className="block text-sm font-medium text-text-muted mb-1">
+                  CTA Href
+                </label>
                 <input
                   {...register("ctaHref")}
                   className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g. /signup"
                 />
                 {errors.ctaHref && (
-                  <p className="text-red-500 text-xs mt-1">{errors.ctaHref.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.ctaHref.message}
+                  </p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-text-muted mb-1">Media URL</label>
+                <label className="block text-sm font-medium text-text-muted mb-1">
+                  Media URL
+                </label>
                 <input
                   {...register("mediaUrl")}
                   className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="https://..."
                 />
                 {errors.mediaUrl && (
-                  <p className="text-red-500 text-xs mt-1">{errors.mediaUrl.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.mediaUrl.message}
+                  </p>
                 )}
               </div>
               <div>
@@ -152,13 +183,17 @@ export function SectionEditModal({
                   placeholder="Description of media"
                 />
                 {errors.mediaAlt && (
-                  <p className="text-red-500 text-xs mt-1">{errors.mediaAlt.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.mediaAlt.message}
+                  </p>
                 )}
               </div>
             </div>
 
             <div className="border-t border-border pt-4 mt-4">
-              <h3 className="text-sm font-semibold text-foreground mb-3">SEO Overrides</h3>
+              <h3 className="text-sm font-semibold text-foreground mb-3">
+                SEO Overrides
+              </h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-1">
@@ -188,7 +223,9 @@ export function SectionEditModal({
                   {...register("visible")}
                   className="w-4 h-4 rounded text-primary focus:ring-primary bg-background border-border"
                 />
-                <span className="text-sm font-medium text-foreground">Visible publicly</span>
+                <span className="text-sm font-medium text-foreground">
+                  Visible publicly
+                </span>
               </label>
             </div>
           </form>
@@ -213,5 +250,5 @@ export function SectionEditModal({
         </div>
       </div>
     </div>
-  )
+  );
 }

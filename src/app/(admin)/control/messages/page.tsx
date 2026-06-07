@@ -1,26 +1,26 @@
-import { Suspense } from "react"
-import { Mail } from "lucide-react"
-import { prisma, serializePrisma } from "@/lib/prisma"
-import { MessageActions } from "@/components/control/message-actions"
+import { Suspense } from "react";
+import { Mail } from "lucide-react";
+import { prisma, serializePrisma } from "@/lib/prisma";
+import { MessageActions } from "@/components/control/message-actions";
 
 export const metadata = {
   title: "Messages — PHAGLP Control",
-}
+};
 
 async function getMessages() {
   try {
     const messages = await prisma.contactMessage.findMany({
       orderBy: { createdAt: "desc" },
-    })
-    return serializePrisma(messages)
+    });
+    return serializePrisma(messages);
   } catch {
-    return []
+    return [];
   }
 }
 
 async function MessagesTable() {
-  const messages = await getMessages()
-  const unreadCount = messages.filter((m: any) => !m.isRead).length
+  const messages = await getMessages();
+  const unreadCount = messages.filter((m: any) => !m.isRead).length;
 
   return (
     <div className="space-y-4">
@@ -59,7 +59,8 @@ async function MessagesTable() {
                       </p>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                      From: <span className="font-medium">{msg.name}</span> &lt;{msg.email}&gt;
+                      From: <span className="font-medium">{msg.name}</span> &lt;
+                      {msg.email}&gt;
                       {" · "}
                       {new Date(msg.createdAt).toLocaleDateString("en-US", {
                         month: "short",
@@ -88,7 +89,7 @@ async function MessagesTable() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 export default async function MessagesPage() {
@@ -111,7 +112,10 @@ export default async function MessagesPage() {
         fallback={
           <div className="space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-24 rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div
+                key={i}
+                className="h-24 rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse"
+              />
             ))}
           </div>
         }
@@ -119,5 +123,5 @@ export default async function MessagesPage() {
         <MessagesTable />
       </Suspense>
     </div>
-  )
+  );
 }

@@ -1,52 +1,65 @@
-"use client"
+"use client";
 
-import React from "react"
-import type { ComponentType } from "react"
-import { cn } from "@/lib/utils"
+import React from "react";
+import type { ComponentType } from "react";
+import { cn } from "@/lib/utils";
 
 export interface DashboardStatsCardProps {
-  title: string
-  value: string | number
-  description: string
-  icon: ComponentType<{ className?: string }>
-  colorTheme?: "blue" | "violet" | "emerald" | "amber" | "rose" | "cyan" | undefined
-  badgeText?: string | undefined
-  isLoading?: boolean | undefined
-  onClick?: (() => void) | undefined
+  title: string;
+  value: string | number;
+  description: string;
+  icon: ComponentType<{ className?: string }>;
+  colorTheme?:
+    | "blue"
+    | "violet"
+    | "emerald"
+    | "amber"
+    | "rose"
+    | "cyan"
+    | undefined;
+  badgeText?: string | undefined;
+  isLoading?: boolean | undefined;
+  onClick?: (() => void) | undefined;
 }
 
 const THEME_MAP = {
   blue: {
     gradient: "from-blue-500 to-blue-600",
     shadow: "shadow-blue-500/20",
-    badge: "text-blue-600 dark:text-blue-400 bg-blue-500/10 dark:bg-blue-500/15",
+    badge:
+      "text-blue-600 dark:text-blue-400 bg-blue-500/10 dark:bg-blue-500/15",
   },
   violet: {
     gradient: "from-violet-500 to-violet-600",
     shadow: "shadow-violet-500/20",
-    badge: "text-violet-600 dark:text-violet-400 bg-violet-500/10 dark:bg-violet-500/15",
+    badge:
+      "text-violet-600 dark:text-violet-400 bg-violet-500/10 dark:bg-violet-500/15",
   },
   emerald: {
     gradient: "from-emerald-500 to-emerald-600",
     shadow: "shadow-emerald-500/20",
-    badge: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15",
+    badge:
+      "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15",
   },
   amber: {
     gradient: "from-amber-500 to-amber-600",
     shadow: "shadow-amber-500/20",
-    badge: "text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15",
+    badge:
+      "text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15",
   },
   rose: {
     gradient: "from-rose-500 to-rose-600",
     shadow: "shadow-rose-500/20",
-    badge: "text-rose-600 dark:text-rose-400 bg-rose-500/10 dark:bg-rose-500/15",
+    badge:
+      "text-rose-600 dark:text-rose-400 bg-rose-500/10 dark:bg-rose-500/15",
   },
   cyan: {
     gradient: "from-cyan-500 to-cyan-600",
     shadow: "shadow-cyan-500/20",
-    badge: "text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 dark:bg-cyan-500/15",
+    badge:
+      "text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 dark:bg-cyan-500/15",
   },
-}
+};
 
 export function DashboardStatsCard({
   title,
@@ -72,12 +85,12 @@ export function DashboardStatsCard({
           <div className="h-3 w-40 rounded bg-neutral-200 dark:bg-neutral-800" />
         </div>
       </div>
-    )
+    );
   }
 
-  const theme = THEME_MAP[colorTheme] || THEME_MAP.blue
-  const CardWrapper = onClick ? "button" : "div"
-  const wrapperProps = onClick ? { type: "button" as const, onClick } : {}
+  const theme = THEME_MAP[colorTheme] || THEME_MAP.blue;
+  const CardWrapper = onClick ? "button" : "div";
+  const wrapperProps = onClick ? { type: "button" as const, onClick } : {};
 
   return (
     <CardWrapper
@@ -89,7 +102,12 @@ export function DashboardStatsCard({
           : "cursor-default",
       )}
     >
-      <div className={cn("absolute top-0 left-0 right-0 h-1 bg-gradient-to-r", theme.gradient)} />
+      <div
+        className={cn(
+          "absolute top-0 left-0 right-0 h-1 bg-gradient-to-r",
+          theme.gradient,
+        )}
+      />
       <div className="flex items-center justify-between mb-4">
         <div
           className={cn(
@@ -125,5 +143,5 @@ export function DashboardStatsCard({
       </p>
       <p className="text-xs text-muted-foreground/75 mt-1">{description}</p>
     </CardWrapper>
-  )
+  );
 }

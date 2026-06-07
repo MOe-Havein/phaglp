@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import DOMPurify from "isomorphic-dompurify"
+import DOMPurify from "isomorphic-dompurify";
 
 interface RichTextViewerProps {
-  html: string
-  className?: string
+  html: string;
+  className?: string;
 }
 
 // Tailwind prose + custom RTL / table styles injected as a style tag
@@ -50,13 +50,20 @@ const viewerStyles = `
   .dark .rich-viewer td {
     border-color: #334155;
   }
-`
+`;
 
 export function RichTextViewer({ html, className }: RichTextViewerProps) {
   const clean = DOMPurify.sanitize(html, {
     ADD_TAGS: ["iframe"],
-    ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "dir", "style"],
-  })
+    ADD_ATTR: [
+      "allow",
+      "allowfullscreen",
+      "frameborder",
+      "scrolling",
+      "dir",
+      "style",
+    ],
+  });
 
   return (
     <>
@@ -66,5 +73,5 @@ export function RichTextViewer({ html, className }: RichTextViewerProps) {
         dangerouslySetInnerHTML={{ __html: clean }}
       />
     </>
-  )
+  );
 }

@@ -1,56 +1,56 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { markMessageAsRead, deleteContactMessage } from "@/lib/contact-actions"
-import { Button } from "@/components/ui/button"
-import { Trash2, CheckCircle2, Circle, Loader2 } from "lucide-react"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { markMessageAsRead, deleteContactMessage } from "@/lib/contact-actions";
+import { Button } from "@/components/ui/button";
+import { Trash2, CheckCircle2, Circle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface MessageActionsProps {
-  id: string
-  isRead: boolean
+  id: string;
+  isRead: boolean;
 }
 
 export function MessageActions({ id, isRead }: MessageActionsProps) {
-  const [loading, setLoading] = useState<"read" | "delete" | null>(null)
-  const router = useRouter()
+  const [loading, setLoading] = useState<"read" | "delete" | null>(null);
+  const router = useRouter();
 
   const handleToggleRead = async () => {
-    setLoading("read")
+    setLoading("read");
     try {
-      const result = await markMessageAsRead(id, !isRead)
+      const result = await markMessageAsRead(id, !isRead);
       if (result.success) {
-        toast.success(isRead ? "Marked as unread" : "Marked as read")
-        router.refresh()
+        toast.success(isRead ? "Marked as unread" : "Marked as read");
+        router.refresh();
       } else {
-        toast.error("Failed to update status")
+        toast.error("Failed to update status");
       }
     } catch (error) {
-      toast.error("An error occurred")
+      toast.error("An error occurred");
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
-  }
+  };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this message?")) return
+    if (!confirm("Are you sure you want to delete this message?")) return;
 
-    setLoading("delete")
+    setLoading("delete");
     try {
-      const result = await deleteContactMessage(id)
+      const result = await deleteContactMessage(id);
       if (result.success) {
-        toast.success("Message deleted")
-        router.refresh()
+        toast.success("Message deleted");
+        router.refresh();
       } else {
-        toast.error("Failed to delete message")
+        toast.error("Failed to delete message");
       }
     } catch (error) {
-      toast.error("An error occurred")
+      toast.error("An error occurred");
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
-  }
+  };
 
   return (
     <>
@@ -84,5 +84,5 @@ export function MessageActions({ id, isRead }: MessageActionsProps) {
         )}
       </Button>
     </>
-  )
+  );
 }

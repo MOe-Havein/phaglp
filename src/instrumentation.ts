@@ -1,19 +1,19 @@
-import { prisma } from "@/lib/prisma"
-import { logger } from "@/server/utils/logger.util"
+import { prisma } from "@/lib/prisma";
+import { logger } from "@/server/utils/logger.util";
 
 export async function register() {
   // Graceful Shutdown Handler
   if (process.env.NEXT_RUNTIME === "nodejs") {
     process.on("SIGTERM", async () => {
-      logger.info("SIGTERM received. Closing backend connections...")
+      logger.info("SIGTERM received. Closing backend connections...");
 
       try {
-        await prisma.$disconnect()
-        logger.info("Connections closed successfully.")
+        await prisma.$disconnect();
+        logger.info("Connections closed successfully.");
       } catch (error) {
-        logger.error("Error during graceful shutdown", error)
+        logger.error("Error during graceful shutdown", error);
       }
       // Note: Do NOT call process.exit() here — Next.js handles its own shutdown sequence.
-    })
+    });
   }
 }

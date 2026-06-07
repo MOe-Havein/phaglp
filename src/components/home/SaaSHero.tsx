@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import { motion } from "framer-motion"
-import { ArrowRight, Brain } from "lucide-react"
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, Brain } from "lucide-react";
 
 interface SaaSHeroProps {
-  badgeText?: string | undefined
-  headlinePre?: string | undefined
-  headlineHighlight?: string | undefined
-  headlinePost?: string | undefined
-  subheadline?: string | undefined
-  primaryCtaText?: string | undefined
-  primaryCtaHref?: string | undefined
-  secondaryCtaText?: string | undefined
-  secondaryCtaHref?: string | undefined
+  badgeText?: string | undefined;
+  headlinePre?: string | undefined;
+  headlineHighlight?: string | undefined;
+  headlinePost?: string | undefined;
+  subheadline?: string | undefined;
+  primaryCtaText?: string | undefined;
+  primaryCtaHref?: string | undefined;
+  secondaryCtaText?: string | undefined;
+  secondaryCtaHref?: string | undefined;
 }
 
 export function SaaSHero({
@@ -25,14 +25,14 @@ export function SaaSHero({
   primaryCtaText = "Start Mapping Free",
   primaryCtaHref = "/register",
 }: SaaSHeroProps) {
-  const [emailInput, setEmailInput] = useState("")
+  const [emailInput, setEmailInput] = useState("");
 
   const handleCtaSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (emailInput) {
-      window.location.href = `${primaryCtaHref}?email=${encodeURIComponent(emailInput)}`
+      window.location.href = `${primaryCtaHref}?email=${encodeURIComponent(emailInput)}`;
     }
-  }
+  };
 
   return (
     <section className="relative min-h-screen bg-[#030712] text-slate-100 flex flex-col justify-center items-center py-20 px-4 overflow-hidden select-none">
@@ -42,14 +42,18 @@ export function SaaSHero({
         <div
           className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
           style={{
-            backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px)",
+            backgroundImage:
+              "radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px)",
             backgroundSize: "24px 24px",
           }}
         />
 
         {/* Large soft radial backgrounds (colors matching theme context: blue, orange, green) */}
         <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(31,123,198,0.15),transparent_65%)] blur-3xl pointer-events-none" />
-        <div className="absolute bottom-[20%] left-[20%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(230,92,35,0.06),transparent_60%)] blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
+        <div
+          className="absolute bottom-[20%] left-[20%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(230,92,35,0.06),transparent_60%)] blur-3xl pointer-events-none animate-pulse"
+          style={{ animationDuration: "8s" }}
+        />
         <div className="absolute bottom-[10%] right-[10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(124,182,37,0.08),transparent_60%)] blur-3xl pointer-events-none" />
 
         {/* Linear overlay to ground the gradient */}
@@ -141,5 +145,5 @@ export function SaaSHero({
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

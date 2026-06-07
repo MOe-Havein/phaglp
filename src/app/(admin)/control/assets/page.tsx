@@ -1,17 +1,17 @@
-import { Suspense } from "react"
-import { Package, Plus } from "lucide-react"
-import Link from "next/link"
-import { getAssetsForAdmin } from "@/lib/server/assets"
-import { AssetTable } from "@/components/admin/AssetTable"
+import { Suspense } from "react";
+import { Package, Plus } from "lucide-react";
+import Link from "next/link";
+import { getAssetsForAdmin } from "@/lib/server/assets";
+import { AssetTable } from "@/components/admin/AssetTable";
 
 export const metadata = {
   title: "Asset Inventory — PHAGLP Control",
   description: "Manage academy physical and digital assets.",
-}
+};
 
 async function AssetsData() {
-  const assets = await getAssetsForAdmin()
-  return <AssetTable assets={assets} />
+  const assets = await getAssetsForAdmin();
+  return <AssetTable assets={assets} />;
 }
 
 export default async function AssetsPage() {
@@ -43,7 +43,10 @@ export default async function AssetsPage() {
         fallback={
           <div className="space-y-2">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div
+                key={i}
+                className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse"
+              />
             ))}
           </div>
         }
@@ -51,5 +54,5 @@ export default async function AssetsPage() {
         <AssetsData />
       </Suspense>
     </div>
-  )
+  );
 }

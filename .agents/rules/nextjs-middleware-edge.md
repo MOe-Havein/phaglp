@@ -5,6 +5,7 @@ trigger: always_on
 You are an expert in Next.js Middleware and Edge Functions.
 
 Key Principles:
+
 - Use middleware for request/response manipulation
 - Run logic before request completes
 - Use Edge Runtime for global performance
@@ -12,6 +13,7 @@ Key Principles:
 - Keep middleware lightweight
 
 Middleware Basics:
+
 - Create middleware.ts in root directory
 - Export middleware function
 - Use NextRequest and NextResponse
@@ -19,6 +21,7 @@ Middleware Basics:
 - Run before cached content
 
 Common Use Cases:
+
 - Authentication and authorization
 - Redirects and rewrites
 - Geolocation-based routing
@@ -29,6 +32,7 @@ Common Use Cases:
 - Cookie management
 
 Authentication:
+
 - Check auth token in middleware
 - Redirect to login if unauthorized
 - Add user info to request headers
@@ -36,6 +40,7 @@ Authentication:
 - Use next-auth middleware
 
 Redirects and Rewrites:
+
 - Use NextResponse.redirect()
 - Use NextResponse.rewrite()
 - Implement locale-based redirects
@@ -43,6 +48,7 @@ Redirects and Rewrites:
 - Implement custom routing logic
 
 Geolocation:
+
 - Access geo data from request
 - Route based on country/city
 - Implement region-specific content
@@ -50,6 +56,7 @@ Geolocation:
 - Personalize user experience
 
 A/B Testing:
+
 - Assign users to variants
 - Use cookies for persistence
 - Rewrite to variant pages
@@ -57,6 +64,7 @@ A/B Testing:
 - Implement gradual rollouts
 
 Headers and Cookies:
+
 - Set custom headers
 - Read and set cookies
 - Implement security headers
@@ -64,6 +72,7 @@ Headers and Cookies:
 - Set cache headers
 
 Matcher Configuration:
+
 - Use matcher to filter routes
 - Support glob patterns
 - Exclude static files
@@ -71,6 +80,7 @@ Matcher Configuration:
 - Match specific paths only
 
 Edge Runtime:
+
 - Runs globally on edge network
 - Use for low-latency responses
 - Limited Node.js APIs
@@ -78,6 +88,7 @@ Edge Runtime:
 - Optimize for cold starts
 
 Edge Functions:
+
 - Create in app/api with edge runtime
 - Export runtime = 'edge'
 - Use for dynamic content
@@ -85,6 +96,7 @@ Edge Functions:
 - Use for real-time features
 
 Performance:
+
 - Keep middleware fast (<50ms)
 - Avoid heavy computations
 - Use edge-compatible libraries
@@ -92,6 +104,7 @@ Performance:
 - Cache when possible
 
 Security:
+
 - Validate all inputs
 - Implement rate limiting
 - Add security headers
@@ -100,6 +113,7 @@ Security:
 - Implement bot protection
 
 Testing Middleware:
+
 - Test locally with next dev
 - Mock NextRequest/NextResponse
 - Test matcher patterns
@@ -107,6 +121,7 @@ Testing Middleware:
 - Use integration tests
 
 Debugging:
+
 - Use console.log (appears in terminal)
 - Test in production-like environment
 - Use Vercel deployment previews
@@ -114,6 +129,7 @@ Debugging:
 - Monitor performance metrics
 
 Best Practices:
+
 - Keep middleware lightweight
 - Use matcher to limit execution
 - Avoid blocking operations

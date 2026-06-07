@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,13 +13,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { updateSiteSettings } from "@/lib/control-actions"
-import { toast } from "sonner"
-import { Loader2, Save } from "lucide-react"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { updateSiteSettings } from "@/lib/control-actions";
+import { toast } from "sonner";
+import { Loader2, Save } from "lucide-react";
 
 const formSchema = z.object({
   siteName: z.string().min(2).max(50),
@@ -31,29 +31,35 @@ const formSchema = z.object({
   metaDescription: z.string().optional(),
   primaryColor: z.string().optional(),
   fullAddress: z.string().optional(),
-})
+});
 
 interface SiteSettingsData {
-  siteName?: string
-  siteUrl?: string
-  description?: string | null
-  maintenanceMode?: boolean
-  allowRegistration?: boolean
-  metaTitle?: string | null
-  metaDescription?: string | null
-  primaryColor?: string | null
-  fullAddress?: string | null
+  siteName?: string;
+  siteUrl?: string;
+  description?: string | null;
+  maintenanceMode?: boolean;
+  allowRegistration?: boolean;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  primaryColor?: string | null;
+  fullAddress?: string | null;
 }
 
-export function SettingsForm({ initialData }: { initialData: SiteSettingsData | null }) {
-  const [loading, setLoading] = useState(false)
+export function SettingsForm({
+  initialData,
+}: {
+  initialData: SiteSettingsData | null;
+}) {
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       siteName: initialData?.siteName || "PHAGLP Platform",
       siteUrl: initialData?.siteUrl || "https://phaglp.com",
-      description: initialData?.description || "A modern application for philosophical education.",
+      description:
+        initialData?.description ||
+        "A modern application for philosophical education.",
       maintenanceMode: initialData?.maintenanceMode || false,
       allowRegistration: initialData?.allowRegistration ?? true,
       metaTitle: initialData?.metaTitle || "",
@@ -61,21 +67,21 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
       primaryColor: initialData?.primaryColor || "#1E3A8A",
       fullAddress: initialData?.fullAddress || "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true)
+    setLoading(true);
     try {
-      const result = await updateSiteSettings(values)
+      const result = await updateSiteSettings(values);
       if (result.success) {
-        toast.success("Settings updated successfully")
+        toast.success("Settings updated successfully");
       } else {
-        toast.error(result.error || "Failed to update settings")
+        toast.error(result.error || "Failed to update settings");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -133,10 +139,15 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white/40 dark:bg-slate-900/10">
                 <div className="space-y-0.5">
                   <FormLabel>Maintenance Mode</FormLabel>
-                  <FormDescription>Disable public access to the site.</FormDescription>
+                  <FormDescription>
+                    Disable public access to the site.
+                  </FormDescription>
                 </div>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -149,10 +160,15 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white/40 dark:bg-slate-900/10">
                 <div className="space-y-0.5">
                   <FormLabel>Allow Public Registration</FormLabel>
-                  <FormDescription>Toggle registration access for new users.</FormDescription>
+                  <FormDescription>
+                    Toggle registration access for new users.
+                  </FormDescription>
                 </div>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -208,8 +224,8 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
                   />
                 </FormControl>
                 <FormDescription>
-                  This address will be displayed as the official physical address of the
-                  organization.
+                  This address will be displayed as the official physical
+                  address of the organization.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -227,5 +243,5 @@ export function SettingsForm({ initialData }: { initialData: SiteSettingsData | 
         </Button>
       </form>
     </Form>
-  )
+  );
 }

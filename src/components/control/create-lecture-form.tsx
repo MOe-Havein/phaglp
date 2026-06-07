@@ -1,33 +1,42 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import Link from "next/link"
-import { ChevronLeft, Save, Loader2, BookOpen } from "lucide-react"
-import { createLectureAction } from "@/lib/server/actions/admin/lectures"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import type { ActionResponseState } from "@/types"
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
+import { ChevronLeft, Save, Loader2, BookOpen } from "lucide-react";
+import { createLectureAction } from "@/lib/server/actions/admin/lectures";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import type { ActionResponseState } from "@/types";
 
-const initialState: ActionResponseState = { success: false }
+const initialState: ActionResponseState = { success: false };
 
 export function CreateLectureForm() {
-  const router = useRouter()
-  const [state, formAction, isPending] = useActionState(createLectureAction, initialState)
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(
+    createLectureAction,
+    initialState,
+  );
 
   useEffect(() => {
     if (state.success) {
-      toast.success("Lecture created successfully!")
-      router.push("/control/lectures")
-      router.refresh()
+      toast.success("Lecture created successfully!");
+      router.push("/control/lectures");
+      router.refresh();
     } else if (state.error && !state.fieldErrors) {
-      toast.error(state.error)
+      toast.error(state.error);
     }
-  }, [state, router])
+  }, [state, router]);
 
   return (
     <form action={formAction} className="space-y-8 max-w-5xl">
@@ -40,7 +49,9 @@ export function CreateLectureForm() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">New Lecture</h1>
-            <p className="text-muted-foreground text-sm">Add a new educational lecture page.</p>
+            <p className="text-muted-foreground text-sm">
+              Add a new educational lecture page.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -82,7 +93,9 @@ export function CreateLectureForm() {
                   required
                 />
                 {state.fieldErrors?.title && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.title[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.title[0]}
+                  </p>
                 )}
               </div>
 
@@ -96,7 +109,9 @@ export function CreateLectureForm() {
                   required
                 />
                 {state.fieldErrors?.body && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.body[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.body[0]}
+                  </p>
                 )}
               </div>
             </CardContent>
@@ -111,25 +126,45 @@ export function CreateLectureForm() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="slug">Slug</Label>
-                <Input id="slug" name="slug" placeholder="e.g. socratic-method" required />
+                <Input
+                  id="slug"
+                  name="slug"
+                  placeholder="e.g. socratic-method"
+                  required
+                />
                 {state.fieldErrors?.slug && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.slug[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.slug[0]}
+                  </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Input id="category" name="category" placeholder="e.g. Philosophy" required />
+                <Input
+                  id="category"
+                  name="category"
+                  placeholder="e.g. Philosophy"
+                  required
+                />
                 {state.fieldErrors?.category && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.category[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.category[0]}
+                  </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="tagsInput">Tags (Comma-separated)</Label>
-                <Input id="tagsInput" name="tagsInput" placeholder="e.g. logic, dialogue, greece" />
+                <Input
+                  id="tagsInput"
+                  name="tagsInput"
+                  placeholder="e.g. logic, dialogue, greece"
+                />
                 {state.fieldErrors?.tagsInput && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.tagsInput[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.tagsInput[0]}
+                  </p>
                 )}
               </div>
             </CardContent>
@@ -143,13 +178,13 @@ export function CreateLectureForm() {
             </CardHeader>
             <CardContent>
               <p className="text-xs leading-relaxed text-violet-600 dark:text-violet-500">
-                New lectures are created as drafts by default. You can publish them later from the
-                lecture list.
+                New lectures are created as drafts by default. You can publish
+                them later from the lecture list.
               </p>
             </CardContent>
           </Card>
         </div>
       </div>
     </form>
-  )
+  );
 }

@@ -1,35 +1,40 @@
-import { v2 as cloudinary } from "cloudinary"
-import { NextResponse } from "next/server"
-import { auth } from "@/auth"
+import { v2 as cloudinary } from "cloudinary";
+import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 
 // Only configure manually if CLOUDINARY_URL is NOT set (to avoid overriding with undefined)
 if (!process.env.CLOUDINARY_URL) {
   cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    cloud_name:
+      process.env.CLOUDINARY_CLOUD_NAME ||
+      process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
-  } as any)
+  } as any);
 }
 
 export async function POST(request: Request) {
   // --- Authentication ---
-  const session = await auth()
+  const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const body = await request.json()
-    const { paramsToSign } = body
+    const body = await request.json();
+    const { paramsToSign } = body;
 
     const signature = cloudinary.utils.api_sign_request(
       paramsToSign,
-      process.env.CLOUDINARY_API_SECRET!
-    )
+      process.env.CLOUDINARY_API_SECRET!,
+    );
 
-    return NextResponse.json({ signature })
+    return NextResponse.json({ signature });
   } catch (error) {
-    console.error("Failed to sign Cloudinary params:", error)
-    return NextResponse.json({ error: "Failed to sign params" }, { status: 500 })
+    console.error("Failed to sign Cloudinary params:", error);
+    return NextResponse.json(
+      { error: "Failed to sign params" },
+      { status: 500 },
+    );
   }
 }

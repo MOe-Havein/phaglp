@@ -1,10 +1,16 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Sparkles, Search, Filter, Eye, Zap } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Sparkles, Search, Filter, Eye, Zap } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function TemplatesPage() {
   const templates = [
@@ -14,7 +20,12 @@ export default function TemplatesPage() {
       description: "Perfect for software companies and startups",
       category: "SaaS",
       image: "/placeholder.svg?height=200&width=300",
-      features: ["Hero Section", "Pricing Table", "Feature Grid", "Testimonials"],
+      features: [
+        "Hero Section",
+        "Pricing Table",
+        "Feature Grid",
+        "Testimonials",
+      ],
       popular: true,
     },
     {
@@ -23,7 +34,12 @@ export default function TemplatesPage() {
       description: "Stunning online store template",
       category: "E-commerce",
       image: "/placeholder.svg?height=200&width=300",
-      features: ["Product Showcase", "Shopping Cart", "User Reviews", "Payment Integration"],
+      features: [
+        "Product Showcase",
+        "Shopping Cart",
+        "User Reviews",
+        "Payment Integration",
+      ],
     },
     {
       id: 3,
@@ -31,7 +47,12 @@ export default function TemplatesPage() {
       description: "Creative agency and portfolio showcase",
       category: "Agency",
       image: "/placeholder.svg?height=200&width=300",
-      features: ["Portfolio Grid", "Team Section", "Case Studies", "Contact Form"],
+      features: [
+        "Portfolio Grid",
+        "Team Section",
+        "Case Studies",
+        "Contact Form",
+      ],
     },
     {
       id: 4,
@@ -39,7 +60,12 @@ export default function TemplatesPage() {
       description: "Beautiful restaurant and food business",
       category: "Restaurant",
       image: "/placeholder.svg?height=200&width=300",
-      features: ["Menu Display", "Reservation System", "Gallery", "Location Map"],
+      features: [
+        "Menu Display",
+        "Reservation System",
+        "Gallery",
+        "Location Map",
+      ],
     },
     {
       id: 5,
@@ -47,7 +73,12 @@ export default function TemplatesPage() {
       description: "Gym and fitness center template",
       category: "Fitness",
       image: "/placeholder.svg?height=200&width=300",
-      features: ["Class Schedule", "Trainer Profiles", "Membership Plans", "Progress Tracking"],
+      features: [
+        "Class Schedule",
+        "Trainer Profiles",
+        "Membership Plans",
+        "Progress Tracking",
+      ],
     },
     {
       id: 6,
@@ -55,11 +86,24 @@ export default function TemplatesPage() {
       description: "Professional consulting services",
       category: "Consulting",
       image: "/placeholder.svg?height=200&width=300",
-      features: ["Service Pages", "Expert Profiles", "Case Studies", "Booking System"],
+      features: [
+        "Service Pages",
+        "Expert Profiles",
+        "Case Studies",
+        "Booking System",
+      ],
     },
-  ]
+  ];
 
-  const categories = ["All", "SaaS", "E-commerce", "Agency", "Restaurant", "Fitness", "Consulting"]
+  const categories = [
+    "All",
+    "SaaS",
+    "E-commerce",
+    "Agency",
+    "Restaurant",
+    "Fitness",
+    "Consulting",
+  ];
 
   return (
     <div className="min-h-screen bg-secondary">
@@ -70,7 +114,9 @@ export default function TemplatesPage() {
             <div className="w-8 h-8 bg-gradient-to-r from-primary to-blue-600 rounded-lg flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-primary">AI Builder Pro</span>
+            <span className="text-xl font-bold text-primary">
+              AI Builder Pro
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="outline" asChild>
@@ -90,8 +136,8 @@ export default function TemplatesPage() {
             Professional Website Templates
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Choose from our collection of professionally designed, AI-optimized templates. Each
-            template is fully responsive and conversion-focused.
+            Choose from our collection of professionally designed, AI-optimized
+            templates. Each template is fully responsive and conversion-focused.
           </p>
         </div>
 
@@ -139,7 +185,10 @@ export default function TemplatesPage() {
                   </Badge>
                 )}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <Button size="sm" className="bg-background text-foreground hover:bg-secondary">
+                  <Button
+                    size="sm"
+                    className="bg-background text-foreground hover:bg-secondary"
+                  >
                     <Eye className="w-4 h-4 mr-2" />
                     Preview
                   </Button>
@@ -152,25 +201,38 @@ export default function TemplatesPage() {
                       {template.name}
                       <Badge variant="outline">{template.category}</Badge>
                     </CardTitle>
-                    <CardDescription className="mt-2">{template.description}</CardDescription>
+                    <CardDescription className="mt-2">
+                      {template.description}
+                    </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-medium mb-2 text-foreground">Includes:</h4>
+                    <h4 className="text-sm font-medium mb-2 text-foreground">
+                      Includes:
+                    </h4>
                     <div className="flex flex-wrap gap-1">
                       {template.features.map((feature) => (
-                        <Badge key={feature} variant="secondary" className="text-xs">
+                        <Badge
+                          key={feature}
+                          variant="secondary"
+                          className="text-xs"
+                        >
                           {feature}
                         </Badge>
                       ))}
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button className="flex-1 bg-accent text-white hover:bg-accent/90" asChild>
-                      <Link href={`/builder?template=${template.id}`}>Use Template</Link>
+                    <Button
+                      className="flex-1 bg-accent text-white hover:bg-accent/90"
+                      asChild
+                    >
+                      <Link href={`/builder?template=${template.id}`}>
+                        Use Template
+                      </Link>
                     </Button>
                     <Button variant="outline" size="sm">
                       <Eye className="w-4 h-4" />
@@ -190,7 +252,11 @@ export default function TemplatesPage() {
           <p className="text-lg mb-6 text-blue-100">
             Use our AI-powered builder to create a custom website from scratch
           </p>
-          <Button size="lg" className="bg-accent text-white hover:bg-accent/90" asChild>
+          <Button
+            size="lg"
+            className="bg-accent text-white hover:bg-accent/90"
+            asChild
+          >
             <Link href="/builder">
               <Sparkles className="w-4 h-4 mr-2" />
               Create with AI
@@ -199,5 +265,5 @@ export default function TemplatesPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

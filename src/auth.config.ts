@@ -1,8 +1,9 @@
-import type { NextAuthConfig } from "next-auth"
+import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
   // 💡 الحل القاطع: تمرير المتغير السري هنا لضمان حقنه في كل مسارات التطبيق والـ Middleware
-  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "default-secret",
+  secret:
+    process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "default-secret",
   cookies: {
     sessionToken: {
       name:
@@ -22,32 +23,32 @@ export const authConfig = {
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user
-      const isOnControl = nextUrl.pathname.startsWith("/control")
-      const userRole = auth?.user?.role
+      const isLoggedIn = !!auth?.user;
+      const isOnControl = nextUrl.pathname.startsWith("/control");
+      const userRole = auth?.user?.role;
 
       if (isOnControl) {
-        if (isLoggedIn && userRole === "ADMIN") return true
-        return false // Redirect to login
+        if (isLoggedIn && userRole === "ADMIN") return true;
+        return false; // Redirect to login
       }
-      return true
+      return true;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role
-        token.tier = (user as any).tier
-        token.id = user.id as string
+        token.role = (user as any).role;
+        token.tier = (user as any).tier;
+        token.id = user.id as string;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as any
-        session.user.tier = token.tier as any
+        session.user.id = token.id as string;
+        session.user.role = token.role as any;
+        session.user.tier = token.tier as any;
       }
-      return session
+      return session;
     },
   },
   providers: [], // Add providers with an empty array for now
-} satisfies NextAuthConfig
+} satisfies NextAuthConfig;

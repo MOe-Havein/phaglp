@@ -1,5 +1,5 @@
-import { Suspense } from "react"
-import Link from "next/link"
+import { Suspense } from "react";
+import Link from "next/link";
 import {
   Users,
   BookOpen,
@@ -10,15 +10,16 @@ import {
   TrendingUp,
   ArrowRight,
   DollarSign,
-} from "lucide-react"
-import { StatsGrid } from "@/components/admin/StatsGrid"
-import { getAdminDashboardStats } from "@/lib/server/assets"
-import { StatsSkeleton } from "@/components/admin/StatsSkeleton"
+} from "lucide-react";
+import { StatsGrid } from "@/components/admin/StatsGrid";
+import { getAdminDashboardStats } from "@/lib/server/assets";
+import { StatsSkeleton } from "@/components/admin/StatsSkeleton";
 
 export const metadata = {
   title: "Admin Dashboard — PHAGLP Control Hub",
-  description: "Aggregate overview of platform stats for PHAGLP administrators.",
-}
+  description:
+    "Aggregate overview of platform stats for PHAGLP administrators.",
+};
 
 const QUICK_LINKS = [
   { title: "Manage Users", href: "/control/users", icon: Users },
@@ -28,11 +29,11 @@ const QUICK_LINKS = [
   { title: "Asset Inventory", href: "/control/assets", icon: Package },
   { title: "CMS Pages", href: "/control/pages", icon: FileCode },
   { title: "Messages", href: "/control/messages", icon: Mail },
-]
+];
 
 async function StatsGridWrapper() {
-  const stats = await getAdminDashboardStats()
-  return <StatsGrid stats={stats} />
+  const stats = await getAdminDashboardStats();
+  return <StatsGrid stats={stats} />;
 }
 
 export default async function AdminDashboardPage() {
@@ -81,5 +82,5 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

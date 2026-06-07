@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcryptjs"
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Starting comprehensive database seeding...")
+  console.log("🌱 Starting comprehensive database seeding...");
 
   // 1. Seed Site Settings
   await prisma.siteSettings.upsert({
@@ -20,7 +20,7 @@ async function main() {
       maintenanceMode: false,
       primaryColor: "#3b82f6",
     },
-  })
+  });
 
   // 2. Seed Default Navigation Menu
   await prisma.navigationMenu.upsert({
@@ -35,7 +35,7 @@ async function main() {
       showInHeader: true,
       showInFooter: true,
     },
-  })
+  });
 
   // 3. Seed Homepage Sections
   await prisma.homepageSection.upsert({
@@ -49,10 +49,10 @@ async function main() {
       visible: true,
       order: 1,
     },
-  })
+  });
 
   // 4. Seed admin@moe.com
-  const hashedMoe = await bcrypt.hash("adminpassword123", 10)
+  const hashedMoe = await bcrypt.hash("adminpassword123", 10);
   const adminMoe = await prisma.user.upsert({
     where: { email: "admin@moe.com" },
     update: {
@@ -66,11 +66,11 @@ async function main() {
       role: "ADMIN",
       lecturePreferences: [],
     },
-  })
-  console.log("✓ Seeded admin@moe.com")
+  });
+  console.log("✓ Seeded admin@moe.com");
 
   // 5. Seed admin@example.com
-  const hashedExample = await bcrypt.hash("SuperSecret123!", 10)
+  const hashedExample = await bcrypt.hash("SuperSecret123!", 10);
   await prisma.user.upsert({
     where: { email: "admin@example.com" },
     update: {
@@ -84,8 +84,8 @@ async function main() {
       role: "ADMIN",
       lecturePreferences: [],
     },
-  })
-  console.log("✓ Seeded admin@example.com")
+  });
+  console.log("✓ Seeded admin@example.com");
 
   // 6. Seed Lectures
   await prisma.lecture.upsert({
@@ -103,17 +103,17 @@ async function main() {
       isFeatured: true,
       authorId: adminMoe.id,
     },
-  })
-  console.log("✓ Seeded first lecture")
+  });
+  console.log("✓ Seeded first lecture");
 
-  console.log("✅ Database successfully seeded!")
+  console.log("✅ Database successfully seeded!");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seeding broken:", e)
-    process.exit(1)
+    console.error("❌ Seeding broken:", e);
+    process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });

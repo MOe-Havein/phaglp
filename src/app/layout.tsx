@@ -1,28 +1,28 @@
-import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
-import { getSiteSettings } from "@/lib/server/site-settings"
-import { ThemeProvider } from "@/components/ui/ThemeProvider"
-import { Toaster } from "@/components/ui/sonner"
-import { ChatbotWidget } from "@/components/chatbot/chatbot-widget"
-import { SessionProvider } from "@/components/providers/session-provider"
-import { Analytics } from "@vercel/analytics/react"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { FoxyLoader } from "@/components/foxy/foxy-loader"
-import Script from "next/script"
-import "./globals.css"
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { getSiteSettings } from "@/lib/server/site-settings";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
+import { ChatbotWidget } from "@/components/chatbot/chatbot-widget";
+import { SessionProvider } from "@/components/providers/session-provider";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { FoxyLoader } from "@/components/foxy/foxy-loader";
+import Script from "next/script";
+import "./globals.css";
 
 const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
-})
+});
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
-})
+});
 
 // Revalidate root layout every hour
-export const revalidate = 3600
+export const revalidate = 3600;
 
 export const viewport = {
   themeColor: [
@@ -31,10 +31,10 @@ export const viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-}
+};
 
 export async function generateMetadata(): Promise<Metadata> {
-  const siteConfig = await getSiteSettings()
+  const siteConfig = await getSiteSettings();
   return {
     title: {
       default: siteConfig.siteName,
@@ -63,15 +63,15 @@ export async function generateMetadata(): Promise<Metadata> {
       index: true,
       follow: true,
     },
-  }
+  };
 }
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
-  const siteConfig = await getSiteSettings()
+  const siteConfig = await getSiteSettings();
   return (
     <html
       lang="en"
@@ -110,8 +110,8 @@ export default async function RootLayout({
             type="application/ld+json"
             dangerouslySetInnerHTML={{
               __html: JSON.stringify({
-                '@context': 'https://schema.org',
-                '@type': 'Organization',
+                "@context": "https://schema.org",
+                "@type": "Organization",
                 name: siteConfig.siteName,
                 url: siteConfig.siteUrl,
                 logo: `${siteConfig.siteUrl}/logo.png`,
@@ -124,5 +124,5 @@ export default async function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

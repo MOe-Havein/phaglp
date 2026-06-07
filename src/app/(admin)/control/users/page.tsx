@@ -1,12 +1,12 @@
-import { Suspense } from "react"
-import { Users } from "lucide-react"
-import { prisma, serializePrisma } from "@/lib/prisma"
-import { AddUserDialog } from "@/components/control/add-user-dialog"
-import { EditUserDialog } from "@/components/control/edit-user-dialog"
+import { Suspense } from "react";
+import { Users } from "lucide-react";
+import { prisma, serializePrisma } from "@/lib/prisma";
+import { AddUserDialog } from "@/components/control/add-user-dialog";
+import { EditUserDialog } from "@/components/control/edit-user-dialog";
 
 export const metadata = {
   title: "User Management — PHAGLP Control",
-}
+};
 
 async function getUsersData() {
   try {
@@ -66,15 +66,15 @@ async function getUsersData() {
         guardianResidence: true,
         guardianIncome: true,
       },
-    })
-    return serializePrisma(users)
+    });
+    return serializePrisma(users);
   } catch {
-    return []
+    return [];
   }
 }
 
 async function UsersTable() {
-  const users = await getUsersData()
+  const users = await getUsersData();
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
       <div className="overflow-x-auto">
@@ -118,7 +118,9 @@ async function UsersTable() {
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
                     {user.name ?? "—"}
                   </td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{user.email}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                    {user.email}
+                  </td>
                   <td className="px-4 py-3">
                     <span
                       className={`px-2 py-0.5 text-xs rounded-full font-medium ${
@@ -155,7 +157,7 @@ async function UsersTable() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export default async function UsersPage() {
@@ -167,7 +169,9 @@ export default async function UsersPage() {
             <Users className="w-4 h-4" />
             <span>Management</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Users</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            Users
+          </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Manage platform members, roles, and tiers.
           </p>
@@ -179,7 +183,10 @@ export default async function UsersPage() {
         fallback={
           <div className="space-y-2">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div
+                key={i}
+                className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse"
+              />
             ))}
           </div>
         }
@@ -187,5 +194,5 @@ export default async function UsersPage() {
         <UsersTable />
       </Suspense>
     </div>
-  )
+  );
 }

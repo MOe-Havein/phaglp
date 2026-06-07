@@ -100,4 +100,3 @@ pnpm exec playwright test
 - **Responsive Admin Dashboard Redesign**: Restructured the control sidebar (`ControlSidebar.tsx`) and admin layouts to use a sleek mobile-friendly bottom/top sticky design alongside a fixed desktop navigation.
 - **Accessibility & Type Safety**: Replaced missing dialog descriptions for Radix UI, added `VisuallyHidden` fallbacks for screen-reader alerts, and fixed strict React type violations in drag-and-drop components.
 - **Content Security Policy (CSP)**: Integrated FoxyCart and Vercel domains securely in Next.js security headers.
-

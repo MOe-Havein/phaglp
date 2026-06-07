@@ -1,39 +1,39 @@
-import React from "react"
-import { Metadata } from "next"
-import prisma from "@/lib/db/prisma"
-import { HomepageSection } from "@/types/homepage"
+import React from "react";
+import { Metadata } from "next";
+import prisma from "@/lib/db/prisma";
+import { HomepageSection } from "@/types/homepage";
 
-import { SaaSHero } from "@/components/home/SaaSHero"
-import { Features } from "@/components/home/Features"
-import { CTA } from "@/components/home/CTA"
-import { Media } from "@/components/home/Media"
-import { Testimonials } from "@/components/home/testimonials"
-import { LatestBlogPosts } from "@/components/home/LatestBlogPosts"
-import { LatestLETURES } from "@/components/home/LatestLETURES"
-import { CoursesPricing } from "@/components/home/CoursesPricing"
+import { SaaSHero } from "@/components/home/SaaSHero";
+import { Features } from "@/components/home/Features";
+import { CTA } from "@/components/home/CTA";
+import { Media } from "@/components/home/Media";
+import { Testimonials } from "@/components/home/testimonials";
+import { LatestBlogPosts } from "@/components/home/LatestBlogPosts";
+import { LatestLETURES } from "@/components/home/LatestLETURES";
+import { CoursesPricing } from "@/components/home/CoursesPricing";
 
 // Component implementations
 function HeroSection({ data }: { data: HomepageSection }) {
   // Dynamically segment the database-configured title into pre, highlight, and post headings for the premium styling
-  let headlinePre = "Supercharge Your"
-  let headlineHighlight = "Intellectual Workflow"
-  let headlinePost = "with AI Socratic Mapping"
+  let headlinePre = "Supercharge Your";
+  let headlineHighlight = "Intellectual Workflow";
+  let headlinePost = "with AI Socratic Mapping";
 
   if (data.title) {
-    const words = data.title.split(" ")
+    const words = data.title.split(" ");
     if (words.length >= 3) {
-      const segmentSize = Math.ceil(words.length / 3)
-      headlinePre = words.slice(0, segmentSize).join(" ")
-      headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(" ")
-      headlinePost = words.slice(segmentSize * 2).join(" ")
+      const segmentSize = Math.ceil(words.length / 3);
+      headlinePre = words.slice(0, segmentSize).join(" ");
+      headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(" ");
+      headlinePost = words.slice(segmentSize * 2).join(" ");
     } else if (words.length === 2) {
-      headlinePre = words[0] ?? ""
-      headlineHighlight = words[1] ?? ""
-      headlinePost = ""
+      headlinePre = words[0] ?? "";
+      headlineHighlight = words[1] ?? "";
+      headlinePost = "";
     } else {
-      headlinePre = ""
-      headlineHighlight = words[0] ?? ""
-      headlinePost = ""
+      headlinePre = "";
+      headlineHighlight = words[0] ?? "";
+      headlinePost = "";
     }
   }
 
@@ -49,7 +49,7 @@ function HeroSection({ data }: { data: HomepageSection }) {
       secondaryCtaText="Watch Demo"
       secondaryCtaHref="#demo"
     />
-  )
+  );
 }
 
 const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
@@ -63,10 +63,20 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
     />
   ),
   cta: ({ data }) => (
-    <CTA title={data.title} body={data.body} ctaLabel={data.ctaLabel} ctaHref={data.ctaHref} />
+    <CTA
+      title={data.title}
+      body={data.body}
+      ctaLabel={data.ctaLabel}
+      ctaHref={data.ctaHref}
+    />
   ),
   media: ({ data }) => (
-    <Media title={data.title} body={data.body} mediaUrl={data.mediaUrl} mediaAlt={data.mediaAlt} />
+    <Media
+      title={data.title}
+      body={data.body}
+      mediaUrl={data.mediaUrl}
+      mediaAlt={data.mediaAlt}
+    />
   ),
   testimonials: ({ data }) => (
     <Testimonials
@@ -77,50 +87,53 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
     />
   ),
   lectures: ({ data }) => <LatestLETURES title={data.title || undefined} />,
-}
+};
 
 export async function generateMetadata(): Promise<Metadata> {
-  let firstSection = null
-  let settings = null
+  let firstSection = null;
+  let settings = null;
 
   try {
     firstSection = await prisma.homepageSection.findFirst({
       where: { visible: true },
       orderBy: { order: "asc" },
-    })
+    });
   } catch (error) {
-    console.error("Failed to fetch homepage section for SEO metadata", error)
+    console.error("Failed to fetch homepage section for SEO metadata", error);
   }
 
   try {
-    settings = await prisma.siteSettings.findFirst()
+    settings = await prisma.siteSettings.findFirst();
   } catch (error) {
-    console.error("Failed to fetch site settings for SEO metadata", error)
+    console.error("Failed to fetch site settings for SEO metadata", error);
   }
 
   const title =
-    firstSection?.seoTitle || firstSection?.title || settings?.metaTitle || "Welcome to FreshNextJS"
+    firstSection?.seoTitle ||
+    firstSection?.title ||
+    settings?.metaTitle ||
+    "Welcome to FreshNextJS";
   const description =
     firstSection?.seoDescription ||
     firstSection?.body?.slice(0, 150) ||
     settings?.metaDescription ||
-    ""
+    "";
 
   return {
     title,
     description,
-  }
+  };
 }
 
 export default async function PublicHomepage() {
-  let sections: HomepageSection[] = []
+  let sections: HomepageSection[] = [];
   try {
     sections = await prisma.homepageSection.findMany({
       where: { visible: true },
       orderBy: { order: "asc" },
-    })
+    });
   } catch (error) {
-    console.error("Failed to fetch homepage sections:", error)
+    console.error("Failed to fetch homepage sections:", error);
   }
 
   if (sections.length === 0) {
@@ -128,20 +141,22 @@ export default async function PublicHomepage() {
       <div className="min-h-screen flex items-center justify-center bg-tinfoil text-text-muted">
         <p className="text-xl">Homepage is currently under construction.</p>
       </div>
-    )
+    );
   }
 
   return (
     <main className="min-h-screen w-full flex flex-col">
       {sections.map((section) => {
-        const Component = ComponentMap[section.type]
-        if (!Component) return null
+        const Component = ComponentMap[section.type];
+        if (!Component) return null;
         return (
           <React.Fragment key={section.id}>
             <Component data={section} />
-            {section.type === "hero" && <div className="h-1 w-full bg-tinfoil" />}
+            {section.type === "hero" && (
+              <div className="h-1 w-full bg-tinfoil" />
+            )}
           </React.Fragment>
-        )
+        );
       })}
 
       {/* Render the Courses Pricing Plans dynamically */}
@@ -150,5 +165,5 @@ export default async function PublicHomepage() {
       {/* Render the newest blog posts dynamically */}
       <LatestBlogPosts />
     </main>
-  )
+  );
 }

@@ -1,28 +1,30 @@
-import { createClient } from "@libsql/client"
-import dotenv from "dotenv"
+import { createClient } from "@libsql/client";
+import dotenv from "dotenv";
 
 // Load env variables
-dotenv.config()
+dotenv.config();
 
 async function main() {
-  const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL
-  const token = process.env.TURSO_AUTH_TOKEN
+  const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL;
+  const token = process.env.TURSO_AUTH_TOKEN;
 
   if (!url) {
-    console.error("Error: TURSO_DATABASE_URL or DATABASE_URL is not defined in env")
-    process.exit(1)
+    console.error(
+      "Error: TURSO_DATABASE_URL or DATABASE_URL is not defined in env",
+    );
+    process.exit(1);
   }
 
-  console.log(`Connecting to Turso database at: ${url}`)
-  
+  console.log(`Connecting to Turso database at: ${url}`);
+
   const client = createClient({
     url: url,
     authToken: token,
-  })
+  });
 
   try {
-    console.log("Creating FoxyTransaction table...")
-    
+    console.log("Creating FoxyTransaction table...");
+
     await client.execute(`
       CREATE TABLE IF NOT EXISTS "FoxyTransaction" (
         "id" TEXT NOT NULL PRIMARY KEY,
@@ -37,28 +39,30 @@ async function main() {
         "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT "FoxyTransaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
-    `)
-    
-    console.log("Creating indexes for FoxyTransaction...")
-    
+    `);
+
+    console.log("Creating indexes for FoxyTransaction...");
+
     await client.execute(`
       CREATE UNIQUE INDEX IF NOT EXISTS "FoxyTransaction_foxyId_key" ON "FoxyTransaction"("foxyId");
-    `)
-    
+    `);
+
     await client.execute(`
       CREATE INDEX IF NOT EXISTS "FoxyTransaction_userId_idx" ON "FoxyTransaction"("userId");
-    `)
+    `);
 
     await client.execute(`
       CREATE INDEX IF NOT EXISTS "FoxyTransaction_foxyId_idx" ON "FoxyTransaction"("foxyId");
-    `)
+    `);
 
-    console.log("✓ FoxyTransaction table and indexes created successfully on Turso!")
+    console.log(
+      "✓ FoxyTransaction table and indexes created successfully on Turso!",
+    );
   } catch (error) {
-    console.error("✗ Failed to execute SQL on Turso:", error)
+    console.error("✗ Failed to execute SQL on Turso:", error);
   } finally {
-    client.close()
+    client.close();
   }
 }
 
-main().catch(console.error)
+main().catch(console.error);

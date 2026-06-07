@@ -1,18 +1,22 @@
-import prisma from "@/lib/prisma"
-import { notFound } from "next/navigation"
+import prisma from "@/lib/prisma";
+import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { CheckCircle, Clock, GraduationCap, BookOpen } from "lucide-react"
-import { MarkdownViewer } from "@/components/editor/markdown-viewer"
-import { auth } from "@/auth"
-import { EnrollButton } from "@/components/courses/enroll-button"
-import { getFoxyCartUrl } from "@/lib/foxy"
+export const dynamic = "force-dynamic";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, Clock, GraduationCap, BookOpen } from "lucide-react";
+import { MarkdownViewer } from "@/components/editor/markdown-viewer";
+import { auth } from "@/auth";
+import { EnrollButton } from "@/components/courses/enroll-button";
+import { getFoxyCartUrl } from "@/lib/foxy";
 
-export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
-  const session = await auth()
+export default async function CourseDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const session = await auth();
 
   const course = await prisma.course.findUnique({
     where: { slug },
@@ -44,23 +48,24 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
         },
       },
     },
-  })
+  });
 
   if (!course) {
-    notFound()
+    notFound();
   }
 
-  const isEnrolled = course.enrollments?.length > 0
+  const isEnrolled = course.enrollments?.length > 0;
 
-  const foxyUrl = course.price > 0
-    ? getFoxyCartUrl({
-        code: course.id,
-        name: course.title,
-        price: course.price,
-        userId: session?.user?.id || undefined,
-        userEmail: session?.user?.email || undefined,
-      })
-    : undefined
+  const foxyUrl =
+    course.price > 0
+      ? getFoxyCartUrl({
+          code: course.id,
+          name: course.title,
+          price: course.price,
+          userId: session?.user?.id || undefined,
+          userEmail: session?.user?.email || undefined,
+        })
+      : undefined;
 
   return (
     <div className="bg-background">
@@ -73,7 +78,11 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
             <section className="mb-12">
               <h2 className="text-2xl font-bold mb-6">About this course</h2>
               <div className="prose prose-slate dark:prose-invert max-w-none bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
-                <MarkdownViewer value={course.description || "No detailed description provided."} />
+                <MarkdownViewer
+                  value={
+                    course.description || "No detailed description provided."
+                  }
+                />
               </div>
             </section>
 
@@ -91,7 +100,9 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                     className="flex items-start gap-3 p-3 rounded-lg border border-slate-50 bg-slate-50/30"
                   >
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
-                    <span className="text-slate-700 dark:text-slate-300">{item}</span>
+                    <span className="text-slate-700 dark:text-slate-300">
+                      {item}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -117,7 +128,9 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                         <span className="text-primary font-bold font-mono">
                           {(i + 1).toString().padStart(2, "0")}
                         </span>
-                        <span className="font-semibold text-lg">{module.title}</span>
+                        <span className="font-semibold text-lg">
+                          {module.title}
+                        </span>
                       </div>
                       <Badge
                         variant="secondary"
@@ -141,11 +154,15 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
                   <GraduationCap className="w-10 h-10 text-primary" />
                 </div>
                 <div>
-                  <div className="font-bold text-xl">{course.instructor.name}</div>
-                  <p className="text-muted-foreground">Lead Academic Instructor at PHAGLP</p>
+                  <div className="font-bold text-xl">
+                    {course.instructor.name}
+                  </div>
+                  <p className="text-muted-foreground">
+                    Lead Academic Instructor at PHAGLP
+                  </p>
                   <p className="text-sm mt-2 text-slate-600 dark:text-slate-400 max-w-md">
-                    Dedicated to bringing rigorous philosophical inquiry and scientific methodology
-                    to modern life planning.
+                    Dedicated to bringing rigorous philosophical inquiry and
+                    scientific methodology to modern life planning.
                   </p>
                 </div>
               </div>
@@ -192,5 +209,5 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ s
         </div>
       </div>
     </div>
-  )
+  );
 }

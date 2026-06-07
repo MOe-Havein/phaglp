@@ -1,14 +1,19 @@
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface ControlHeaderProps {
-  title: string
-  description?: string
-  actionLabel?: string
-  onAction?: () => void
+  title: string;
+  description?: string;
+  actionLabel?: string;
+  onAction?: () => void;
 }
 
-export function ControlHeader({ title, description, actionLabel, onAction }: ControlHeaderProps) {
+export function ControlHeader({
+  title,
+  description,
+  actionLabel,
+  onAction,
+}: ControlHeaderProps) {
   return (
     <div className="flex items-center justify-between mb-8">
       <div>
@@ -22,5 +27,5 @@ export function ControlHeader({ title, description, actionLabel, onAction }: Con
         </Button>
       )}
     </div>
-  )
+  );
 }

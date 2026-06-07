@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react"
-import { Sun, Moon, Monitor } from "lucide-react"
-import { useTheme } from "@/hooks/useTheme"
+import React, { useEffect, useState } from "react";
+import { Sun, Moon, Monitor } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch by only rendering icons on the client
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   const cycleTheme = () => {
     if (theme === "light") {
-      setTheme("dark")
+      setTheme("dark");
     } else if (theme === "dark") {
-      setTheme("system")
+      setTheme("system");
     } else {
-      setTheme("light")
+      setTheme("light");
     }
-  }
+  };
 
   if (!mounted) {
-    return <div className="w-9 h-9 rounded-lg bg-secondary/50 animate-pulse" />
+    return <div className="w-9 h-9 rounded-lg bg-secondary/50 animate-pulse" />;
   }
 
   return (
@@ -34,9 +34,15 @@ export function ThemeToggle() {
       aria-label={`Current theme is ${theme}. Click to change theme.`}
       title={`Theme: ${theme}`}
     >
-      {theme === "light" && <Sun className="w-5 h-5 text-amber-500 animate-spin-slow" />}
-      {theme === "dark" && <Moon className="w-5 h-5 text-indigo-400 animate-bounce-subtle" />}
-      {theme === "system" && <Monitor className="w-5 h-5 text-muted-foreground" />}
+      {theme === "light" && (
+        <Sun className="w-5 h-5 text-amber-500 animate-spin-slow" />
+      )}
+      {theme === "dark" && (
+        <Moon className="w-5 h-5 text-indigo-400 animate-bounce-subtle" />
+      )}
+      {theme === "system" && (
+        <Monitor className="w-5 h-5 text-muted-foreground" />
+      )}
     </button>
-  )
+  );
 }

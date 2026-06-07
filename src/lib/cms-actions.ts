@@ -1,14 +1,14 @@
-"use server"
+"use server";
 
-import { prisma, serializePrisma } from "@/lib/prisma"
-import { revalidatePath, revalidateTag } from "next/cache"
-import { Role } from "@prisma/client"
+import { prisma, serializePrisma } from "@/lib/prisma";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { Role } from "@prisma/client";
 import {
   createLecture as createLectureDb,
   updateLecture as updateLectureDb,
-} from "./server/lectures"
-import { auth } from "@/auth"
-import { z } from "zod"
+} from "./server/lectures";
+import { auth } from "@/auth";
+import { z } from "zod";
 
 const courseSchema = z.object({
   title: z.string().min(1),
@@ -17,18 +17,18 @@ const courseSchema = z.object({
   duration: z.string().optional().default(""),
   price: z.coerce.number().optional().default(0),
   published: z.boolean().optional().default(false),
-})
+});
 
 const moduleSchema = z.object({
   title: z.string().min(1),
   courseId: z.string().min(1),
-})
+});
 
 const lessonSchema = z.object({
   title: z.string().min(1),
   moduleId: z.string().min(1),
   courseId: z.string().min(1),
-})
+});
 
 const lectureSchema = z.object({
   title: z.string().min(1),
@@ -38,12 +38,17 @@ const lectureSchema = z.object({
   isFeatured: z.boolean().optional().default(false),
   published: z.boolean().optional().default(false),
   tags: z.array(z.string()).optional().default([]),
-})
+});
 
 async function ensureAdminOrInstructor() {
-  const session = await auth()
-  if (session?.user?.role !== Role.ADMIN && session?.user?.role !== Role.INSTRUCTOR) {
-    throw new Error("Unauthorized: You do not have permission to perform this action.")
+  const session = await auth();
+  if (
+    session?.user?.role !== Role.ADMIN &&
+    session?.user?.role !== Role.INSTRUCTOR
+  ) {
+    throw new Error(
+      "Unauthorized: You do not have permission to perform this action.",
+    );
   }
 }
 
@@ -51,9 +56,9 @@ async function ensureAdminOrInstructor() {
 
 export async function createCourse(data: any) {
   try {
-    await ensureAdminOrInstructor()
-    const session = await auth()
-    const parsedData = courseSchema.parse(data)
+    await ensureAdminOrInstructor();
+    const session = await auth();
+    const parsedData = courseSchema.parse(data);
 
     const course = await prisma.course.create({
       data: {
@@ -65,23 +70,26 @@ export async function createCourse(data: any) {
         price: parsedData.price,
         published: parsedData.published,
       },
-    })
+    });
 
-    revalidatePath("/control/courses")
-    revalidatePath("/courses")
-    revalidatePath("/")
-    revalidateTag("courses")
-    return { success: true, data: serializePrisma(course) }
+    revalidatePath("/control/courses");
+    revalidatePath("/courses");
+    revalidatePath("/");
+    revalidateTag("courses");
+    return { success: true, data: serializePrisma(course) };
   } catch (error: any) {
-    console.error("Failed to create course:", error)
-    return { success: false, error: error.message || "Failed to create course" }
+    console.error("Failed to create course:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to create course",
+    };
   }
 }
 
 export async function updateCourse(id: string, data: any) {
   try {
-    await ensureAdminOrInstructor()
-    const parsedData = courseSchema.parse(data)
+    await ensureAdminOrInstructor();
+    const parsedData = courseSchema.parse(data);
 
     const course = await prisma.course.update({
       where: { id },
@@ -93,31 +101,37 @@ export async function updateCourse(id: string, data: any) {
         price: parsedData.price,
         published: parsedData.published,
       },
-    })
+    });
 
-    revalidatePath("/control/courses")
-    revalidatePath("/courses")
-    revalidatePath(`/courses/${course.slug}`)
-    revalidatePath("/")
-    revalidateTag("courses")
-    return { success: true, data: serializePrisma(course) }
+    revalidatePath("/control/courses");
+    revalidatePath("/courses");
+    revalidatePath(`/courses/${course.slug}`);
+    revalidatePath("/");
+    revalidateTag("courses");
+    return { success: true, data: serializePrisma(course) };
   } catch (error: any) {
-    console.error("Failed to update course:", error)
-    return { success: false, error: error.message || "Failed to update course" }
+    console.error("Failed to update course:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to update course",
+    };
   }
 }
 
 export async function deleteCourse(id: string) {
   try {
-    await ensureAdminOrInstructor()
-    await prisma.course.delete({ where: { id } })
-    revalidatePath("/control/courses")
-    revalidatePath("/courses")
-    revalidateTag("courses")
-    return { success: true }
+    await ensureAdminOrInstructor();
+    await prisma.course.delete({ where: { id } });
+    revalidatePath("/control/courses");
+    revalidatePath("/courses");
+    revalidateTag("courses");
+    return { success: true };
   } catch (error: any) {
-    console.error("Failed to delete course:", error)
-    return { success: false, error: error.message || "Failed to delete course" }
+    console.error("Failed to delete course:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to delete course",
+    };
   }
 }
 
@@ -125,14 +139,14 @@ export async function deleteCourse(id: string) {
 
 export async function createModule(courseId: string, title: string) {
   try {
-    await ensureAdminOrInstructor()
+    await ensureAdminOrInstructor();
 
-    const parsedData = moduleSchema.parse({ title, courseId })
+    const parsedData = moduleSchema.parse({ title, courseId });
 
     const lastModule = await prisma.courseModule.findFirst({
       where: { courseId: parsedData.courseId },
       orderBy: { order: "desc" },
-    })
+    });
 
     const courseModule = await prisma.courseModule.create({
       data: {
@@ -140,26 +154,33 @@ export async function createModule(courseId: string, title: string) {
         courseId: parsedData.courseId,
         order: (lastModule?.order ?? 0) + 1,
       },
-    })
+    });
 
-    revalidatePath(`/control/courses/${courseId}/curriculum`)
-    return { success: true, data: serializePrisma(courseModule) }
+    revalidatePath(`/control/courses/${courseId}/curriculum`);
+    return { success: true, data: serializePrisma(courseModule) };
   } catch (error: any) {
-    console.error("Failed to create module:", error)
-    return { success: false, error: error.message || "Failed to create module" }
+    console.error("Failed to create module:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to create module",
+    };
   }
 }
 
-export async function createLesson(moduleId: string, courseId: string, title: string) {
+export async function createLesson(
+  moduleId: string,
+  courseId: string,
+  title: string,
+) {
   try {
-    await ensureAdminOrInstructor()
+    await ensureAdminOrInstructor();
 
-    const parsedData = lessonSchema.parse({ title, moduleId, courseId })
+    const parsedData = lessonSchema.parse({ title, moduleId, courseId });
 
     const lastLesson = await prisma.lesson.findFirst({
       where: { moduleId: parsedData.moduleId },
       orderBy: { order: "desc" },
-    })
+    });
 
     const lesson = await prisma.lesson.create({
       data: {
@@ -167,13 +188,16 @@ export async function createLesson(moduleId: string, courseId: string, title: st
         moduleId: parsedData.moduleId,
         order: (lastLesson?.order ?? 0) + 1,
       },
-    })
+    });
 
-    revalidatePath(`/control/courses/${courseId}/curriculum`)
-    return { success: true, data: serializePrisma(lesson) }
+    revalidatePath(`/control/courses/${courseId}/curriculum`);
+    return { success: true, data: serializePrisma(lesson) };
   } catch (error: any) {
-    console.error("Failed to create lesson:", error)
-    return { success: false, error: error.message || "Failed to create lesson" }
+    console.error("Failed to create lesson:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to create lesson",
+    };
   }
 }
 
@@ -181,14 +205,17 @@ export async function createLesson(moduleId: string, courseId: string, title: st
 
 export async function createLecture(data: any) {
   try {
-    await ensureAdminOrInstructor()
-    const session = await auth()
+    await ensureAdminOrInstructor();
+    const session = await auth();
 
     if (!session?.user?.id) {
-      return { success: false, error: "User session is invalid. Please log in again." }
+      return {
+        success: false,
+        error: "User session is invalid. Please log in again.",
+      };
     }
 
-    const parsedData = lectureSchema.parse(data)
+    const parsedData = lectureSchema.parse(data);
 
     const lecture = await createLectureDb({
       title: parsedData.title,
@@ -199,23 +226,26 @@ export async function createLecture(data: any) {
       authorId: session.user.id,
       published: parsedData.published || false,
       tags: parsedData.tags || [],
-    })
+    });
 
-    revalidatePath("/control/lectures")
-    revalidatePath("/lectures")
-    revalidatePath("/")
-    revalidateTag("lectures")
-    return { success: true, data: serializePrisma(lecture) }
+    revalidatePath("/control/lectures");
+    revalidatePath("/lectures");
+    revalidatePath("/");
+    revalidateTag("lectures");
+    return { success: true, data: serializePrisma(lecture) };
   } catch (error: any) {
-    console.error("Failed to create lecture:", error)
-    return { success: false, error: error.message || "Failed to create lecture" }
+    console.error("Failed to create lecture:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to create lecture",
+    };
   }
 }
 
 export async function updateLecture(id: string, data: any) {
   try {
-    await ensureAdminOrInstructor()
-    const parsedData = lectureSchema.parse(data)
+    await ensureAdminOrInstructor();
+    const parsedData = lectureSchema.parse(data);
 
     const updateData: any = {
       title: parsedData.title,
@@ -223,39 +253,45 @@ export async function updateLecture(id: string, data: any) {
       category: parsedData.category,
       published: parsedData.published,
       tags: parsedData.tags || [],
-    }
+    };
     if (parsedData.coverImage !== undefined) {
-      updateData.coverImage = parsedData.coverImage
+      updateData.coverImage = parsedData.coverImage;
     }
     if (parsedData.isFeatured !== undefined) {
-      updateData.isFeatured = parsedData.isFeatured
+      updateData.isFeatured = parsedData.isFeatured;
     }
 
-    const lecture = await updateLectureDb(id, updateData)
+    const lecture = await updateLectureDb(id, updateData);
 
-    revalidatePath("/control/lectures")
-    revalidatePath("/lectures")
-    revalidatePath(`/lectures/${lecture.slug}`)
-    revalidatePath("/")
-    revalidateTag("lectures")
-    return { success: true, data: serializePrisma(lecture) }
+    revalidatePath("/control/lectures");
+    revalidatePath("/lectures");
+    revalidatePath(`/lectures/${lecture.slug}`);
+    revalidatePath("/");
+    revalidateTag("lectures");
+    return { success: true, data: serializePrisma(lecture) };
   } catch (error: any) {
-    console.error("Failed to update lecture:", error)
-    return { success: false, error: error.message || "Failed to update lecture" }
+    console.error("Failed to update lecture:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to update lecture",
+    };
   }
 }
 
 export async function deleteLecture(id: string) {
   try {
-    await ensureAdminOrInstructor()
-    await prisma.lecture.delete({ where: { id } })
-    revalidatePath("/control/lectures")
-    revalidatePath("/lectures")
-    revalidatePath("/")
-    revalidateTag("lectures")
-    return { success: true }
+    await ensureAdminOrInstructor();
+    await prisma.lecture.delete({ where: { id } });
+    revalidatePath("/control/lectures");
+    revalidatePath("/lectures");
+    revalidatePath("/");
+    revalidateTag("lectures");
+    return { success: true };
   } catch (error: any) {
-    console.error("Failed to delete lecture:", error)
-    return { success: false, error: error.message || "Failed to delete lecture" }
+    console.error("Failed to delete lecture:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to delete lecture",
+    };
   }
 }

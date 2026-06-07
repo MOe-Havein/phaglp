@@ -1,52 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { submitContactForm } from "@/lib/contact-actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "sonner"
-import { Loader2, Send, CheckCircle2 } from "lucide-react"
+import { useState } from "react";
+import { submitContactForm } from "@/lib/contact-actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { Loader2, Send, CheckCircle2 } from "lucide-react";
 
 export function ContactForm() {
-  const [loading, setLoading] = useState(false)
-  const [focusedField, setFocusedField] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setLoading(true)
+    event.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData(event.currentTarget);
     const data = {
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       subject: formData.get("subject") as string,
       message: formData.get("message") as string,
-    }
+    };
 
     try {
-      const result = await submitContactForm(data)
+      const result = await submitContactForm(data);
       if (result.success) {
-        toast.success("Message sent! We'll get back to you soon.")
-        ;(event.target as HTMLFormElement).reset()
+        toast.success("Message sent! We'll get back to you soon.");
+        (event.target as HTMLFormElement).reset();
       } else {
         if (typeof result.error === "string") {
-          toast.error(result.error)
+          toast.error(result.error);
         } else {
-          toast.error("Please check your input.")
+          toast.error("Please check your input.");
         }
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.")
+      toast.error("Something went wrong. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
     <div className="w-full max-w-xl mx-auto bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 rounded-3xl p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none transition-all duration-300">
       <div className="mb-8 text-center space-y-2">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground">Send us a message</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          Send us a message
+        </h2>
         <p className="text-muted-foreground">
           Have a question or feedback? We'd love to hear from you.
         </p>
@@ -154,5 +156,5 @@ export function ContactForm() {
         </Button>
       </form>
     </div>
-  )
+  );
 }

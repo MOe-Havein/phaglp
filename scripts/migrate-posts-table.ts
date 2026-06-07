@@ -1,30 +1,32 @@
-import { createClient } from "@libsql/client"
-import dotenv from "dotenv"
+import { createClient } from "@libsql/client";
+import dotenv from "dotenv";
 
 // Load env variables
-dotenv.config()
+dotenv.config();
 
 async function main() {
-  const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL
-  const token = process.env.TURSO_AUTH_TOKEN
+  const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL;
+  const token = process.env.TURSO_AUTH_TOKEN;
 
   if (!url) {
-    console.error("Error: TURSO_DATABASE_URL or DATABASE_URL is not defined in env")
-    process.exit(1)
+    console.error(
+      "Error: TURSO_DATABASE_URL or DATABASE_URL is not defined in env",
+    );
+    process.exit(1);
   }
 
-  console.log(`Connecting to Turso database at: ${url}`)
-  
+  console.log(`Connecting to Turso database at: ${url}`);
+
   const client = createClient({
     url: url,
     authToken: token,
-  })
+  });
 
   try {
-    console.log("Dropping existing Post table (if any)...")
-    await client.execute(`DROP TABLE IF EXISTS "Post";`)
-    
-    console.log("Creating new Post table with rich publication columns...")
+    console.log("Dropping existing Post table (if any)...");
+    await client.execute(`DROP TABLE IF EXISTS "Post";`);
+
+    console.log("Creating new Post table with rich publication columns...");
     await client.execute(`
       CREATE TABLE "Post" (
         "id" TEXT NOT NULL PRIMARY KEY,
@@ -43,18 +45,24 @@ async function main() {
         "authorId" TEXT NOT NULL,
         CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
-    `)
-    
-    console.log("Creating indexes for Post table...")
-    await client.execute(`CREATE UNIQUE INDEX "Post_slug_key" ON "Post"("slug");`)
-    await client.execute(`CREATE INDEX "Post_authorId_idx" ON "Post"("authorId");`)
-    
-    console.log("✓ Post table recreated successfully on Turso with full schema alignment!")
+    `);
+
+    console.log("Creating indexes for Post table...");
+    await client.execute(
+      `CREATE UNIQUE INDEX "Post_slug_key" ON "Post"("slug");`,
+    );
+    await client.execute(
+      `CREATE INDEX "Post_authorId_idx" ON "Post"("authorId");`,
+    );
+
+    console.log(
+      "✓ Post table recreated successfully on Turso with full schema alignment!",
+    );
   } catch (error) {
-    console.error("✗ Failed to execute Post migration SQL on Turso:", error)
+    console.error("✗ Failed to execute Post migration SQL on Turso:", error);
   } finally {
-    client.close()
+    client.close();
   }
 }
 
-main().catch(console.error)
+main().catch(console.error);

@@ -1,33 +1,42 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import Link from "next/link"
-import { ChevronLeft, Save, Loader2, BookOpen } from "lucide-react"
-import { createCourseAction } from "@/lib/server/actions/admin/courses"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import type { ActionResponseState } from "@/types"
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
+import { ChevronLeft, Save, Loader2, BookOpen } from "lucide-react";
+import { createCourseAction } from "@/lib/server/actions/admin/courses";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import type { ActionResponseState } from "@/types";
 
-const initialState: ActionResponseState = { success: false }
+const initialState: ActionResponseState = { success: false };
 
 export function CreateCourseForm() {
-  const router = useRouter()
-  const [state, formAction, isPending] = useActionState(createCourseAction, initialState)
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(
+    createCourseAction,
+    initialState,
+  );
 
   useEffect(() => {
     if (state.success) {
-      toast.success("Course created successfully!")
-      router.push("/control/courses")
-      router.refresh()
+      toast.success("Course created successfully!");
+      router.push("/control/courses");
+      router.refresh();
     } else if (state.error && !state.fieldErrors) {
-      toast.error(state.error)
+      toast.error(state.error);
     }
-  }, [state, router])
+  }, [state, router]);
 
   return (
     <form action={formAction} className="space-y-8 max-w-5xl">
@@ -40,7 +49,9 @@ export function CreateCourseForm() {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">New Course</h1>
-            <p className="text-muted-foreground text-sm">Add a new curriculum offering.</p>
+            <p className="text-muted-foreground text-sm">
+              Add a new curriculum offering.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -67,7 +78,9 @@ export function CreateCourseForm() {
           <Card>
             <CardHeader>
               <CardTitle>Course Details</CardTitle>
-              <CardDescription>Primary details for the new course.</CardDescription>
+              <CardDescription>
+                Primary details for the new course.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -80,7 +93,9 @@ export function CreateCourseForm() {
                   required
                 />
                 {state.fieldErrors?.title && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.title[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.title[0]}
+                  </p>
                 )}
               </div>
 
@@ -94,7 +109,9 @@ export function CreateCourseForm() {
                   required
                 />
                 {state.fieldErrors?.description && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.description[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.description[0]}
+                  </p>
                 )}
               </div>
             </CardContent>
@@ -109,9 +126,16 @@ export function CreateCourseForm() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="slug">Slug</Label>
-                <Input id="slug" name="slug" placeholder="e.g. intro-to-philosophy" required />
+                <Input
+                  id="slug"
+                  name="slug"
+                  placeholder="e.g. intro-to-philosophy"
+                  required
+                />
                 {state.fieldErrors?.slug && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.slug[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.slug[0]}
+                  </p>
                 )}
               </div>
 
@@ -127,7 +151,9 @@ export function CreateCourseForm() {
                   required
                 />
                 {state.fieldErrors?.price && (
-                  <p className="text-xs text-red-500 mt-1">{state.fieldErrors.price[0]}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    {state.fieldErrors.price[0]}
+                  </p>
                 )}
               </div>
             </CardContent>
@@ -141,13 +167,13 @@ export function CreateCourseForm() {
             </CardHeader>
             <CardContent>
               <p className="text-xs leading-relaxed text-violet-600 dark:text-violet-500">
-                New courses are created as drafts by default. You can publish the course and manage
-                its modules once it is saved.
+                New courses are created as drafts by default. You can publish
+                the course and manage its modules once it is saved.
               </p>
             </CardContent>
           </Card>
         </div>
       </div>
     </form>
-  )
+  );
 }

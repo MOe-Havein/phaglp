@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 /**
  * Pure Data Access Layer for Lectures
@@ -26,7 +26,7 @@ export const LectureRepository = {
           },
         },
       },
-    })
+    });
   },
 
   async findBySlug(slug: string) {
@@ -40,6 +40,6 @@ export const LectureRepository = {
           },
         },
       },
-    })
+    });
   },
-}
+};

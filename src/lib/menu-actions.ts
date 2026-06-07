@@ -1,33 +1,33 @@
-"use server"
+"use server";
 
-import { prisma, safeDbQuery } from "@/lib/prisma"
-import { revalidatePath, revalidateTag } from "next/cache"
-import { Role } from "@prisma/client"
-import { auth } from "@/auth"
-import { redis } from "@/lib/redis"
+import { prisma, safeDbQuery } from "@/lib/prisma";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { Role } from "@prisma/client";
+import { auth } from "@/auth";
+import { redis } from "@/lib/redis";
 
 async function ensureAdminAccess() {
-  const session = await auth()
+  const session = await auth();
   if (session?.user?.role !== Role.ADMIN) {
-    throw new Error("Unauthorized: Admin access required")
+    throw new Error("Unauthorized: Admin access required");
   }
 }
 
 export async function clearNavigationCache() {
   try {
-    revalidateTag("site-menus")
-    revalidatePath("/control/navigation")
-    revalidatePath("/control/menus")
-    revalidatePath("/")
-    await redis.del("global:navigation")
+    revalidateTag("site-menus");
+    revalidatePath("/control/navigation");
+    revalidatePath("/control/menus");
+    revalidatePath("/");
+    await redis.del("global:navigation");
   } catch (error) {
-    console.error("Failed to clear navigation cache:", error)
+    console.error("Failed to clear navigation cache:", error);
   }
 }
 
 export async function getAllMenusForAdmin() {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     return await safeDbQuery(async () => {
       return prisma.navigationMenu.findMany({
         orderBy: { order: "asc" },
@@ -36,33 +36,33 @@ export async function getAllMenusForAdmin() {
             orderBy: { order: "asc" },
           },
         },
-      })
-    })
+      });
+    });
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to fetch menus" }
+    return { success: false, error: error.message || "Failed to fetch menus" };
   }
 }
 
 export async function createMenu(data: {
-  name: string
-  order?: number
-  href?: string | null
-  isOpenNewTab?: boolean
-  isActive?: boolean
-  showInHeader?: boolean
-  showInFooter?: boolean
-  icon?: string | null
+  name: string;
+  order?: number;
+  href?: string | null;
+  isOpenNewTab?: boolean;
+  isActive?: boolean;
+  showInHeader?: boolean;
+  showInFooter?: boolean;
+  icon?: string | null;
 }) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
       // Find highest order if not provided
-      let order = data.order
+      let order = data.order;
       if (order === undefined) {
         const lastMenu = await prisma.navigationMenu.findFirst({
           orderBy: { order: "desc" },
-        })
-        order = lastMenu ? lastMenu.order + 1 : 1
+        });
+        order = lastMenu ? lastMenu.order + 1 : 1;
       }
 
       return prisma.navigationMenu.create({
@@ -76,45 +76,46 @@ export async function createMenu(data: {
           showInFooter: data.showInFooter !== false,
           icon: data.icon || null,
         },
-      })
-    })
+      });
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     } else if (
       result.error &&
-      (result.error.includes("P2002") || result.error.includes("Unique constraint failed"))
+      (result.error.includes("P2002") ||
+        result.error.includes("Unique constraint failed"))
     ) {
-      return { success: false, error: "A menu with this name already exists" }
+      return { success: false, error: "A menu with this name already exists" };
     }
-    return result
+    return result;
   } catch (error: any) {
     if (
       error.code === "P2002" ||
       error.message?.includes("P2002") ||
       error.message?.includes("Unique constraint failed")
     ) {
-      return { success: false, error: "A menu with this name already exists" }
+      return { success: false, error: "A menu with this name already exists" };
     }
-    return { success: false, error: error.message || "Failed to create menu" }
+    return { success: false, error: error.message || "Failed to create menu" };
   }
 }
 
 export async function updateMenu(
   id: string,
   data: {
-    name?: string
-    order?: number
-    href?: string | null
-    isOpenNewTab?: boolean
-    isActive?: boolean
-    showInHeader?: boolean
-    showInFooter?: boolean
-    icon?: string | null
+    name?: string;
+    order?: number;
+    href?: string | null;
+    isOpenNewTab?: boolean;
+    isActive?: boolean;
+    showInHeader?: boolean;
+    showInFooter?: boolean;
+    icon?: string | null;
   },
 ) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
       return prisma.navigationMenu.update({
         where: { id },
@@ -128,57 +129,57 @@ export async function updateMenu(
           showInFooter: data.showInFooter,
           icon: data.icon,
         } as any,
-      })
-    })
+      });
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to update menu" }
+    return { success: false, error: error.message || "Failed to update menu" };
   }
 }
 
 export async function deleteMenu(id: string) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
       return prisma.navigationMenu.delete({
         where: { id },
-      })
-    })
+      });
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to delete menu" }
+    return { success: false, error: error.message || "Failed to delete menu" };
   }
 }
 
 export async function createSubItem(
   menuId: string,
   data: {
-    name: string
-    href: string
-    order?: number
-    isOpenNewTab?: boolean
-    isActive?: boolean
-    icon?: string | null
+    name: string;
+    href: string;
+    order?: number;
+    isOpenNewTab?: boolean;
+    isActive?: boolean;
+    icon?: string | null;
   },
 ) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
-      let order = data.order
+      let order = data.order;
       if (order === undefined) {
         const lastItem = await prisma.navigationSubItem.findFirst({
           where: { menuId },
           orderBy: { order: "desc" },
-        })
-        order = lastItem ? lastItem.order + 1 : 1
+        });
+        order = lastItem ? lastItem.order + 1 : 1;
       }
 
       return prisma.navigationSubItem.create({
@@ -191,31 +192,34 @@ export async function createSubItem(
           isActive: data.isActive !== false,
           icon: data.icon || null,
         },
-      })
-    })
+      });
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to create sub-item" }
+    return {
+      success: false,
+      error: error.message || "Failed to create sub-item",
+    };
   }
 }
 
 export async function updateSubItem(
   id: string,
   data: {
-    name?: string
-    href?: string
-    order?: number
-    isOpenNewTab?: boolean
-    isActive?: boolean
-    icon?: string | null
+    name?: string;
+    href?: string;
+    order?: number;
+    isOpenNewTab?: boolean;
+    isActive?: boolean;
+    icon?: string | null;
   },
 ) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
       return prisma.navigationSubItem.update({
         where: { id },
@@ -227,76 +231,88 @@ export async function updateSubItem(
           isActive: data.isActive,
           icon: data.icon,
         } as any,
-      })
-    })
+      });
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to update sub-item" }
+    return {
+      success: false,
+      error: error.message || "Failed to update sub-item",
+    };
   }
 }
 
 export async function deleteSubItem(id: string) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
       return prisma.navigationSubItem.delete({
         where: { id },
-      })
-    })
+      });
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to delete sub-item" }
+    return {
+      success: false,
+      error: error.message || "Failed to delete sub-item",
+    };
   }
 }
 
 export async function reorderMenus(menuIds: string[]) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
       const updates = menuIds.map((id, index) =>
         prisma.navigationMenu.update({
           where: { id },
           data: { order: index + 1 },
         }),
-      )
-      return prisma.$transaction(updates)
-    })
+      );
+      return prisma.$transaction(updates);
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to reorder menus" }
+    return {
+      success: false,
+      error: error.message || "Failed to reorder menus",
+    };
   }
 }
 
 export async function reorderSubItems(subItemIds: string[]) {
   try {
-    await ensureAdminAccess()
+    await ensureAdminAccess();
     const result = await safeDbQuery(async () => {
       const updates = subItemIds.map((id, index) =>
         prisma.navigationSubItem.update({
           where: { id },
           data: { order: index + 1 },
         }),
-      )
-      return prisma.$transaction(updates)
-    })
+      );
+      return prisma.$transaction(updates);
+    });
 
     if (result.success) {
-      await clearNavigationCache()
+      await clearNavigationCache();
     }
-    return result
+    return result;
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to reorder sub-items" }
+    return {
+      success: false,
+      error: error.message || "Failed to reorder sub-items",
+    };
   }
 }

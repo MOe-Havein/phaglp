@@ -1,21 +1,21 @@
-import { Settings } from "lucide-react"
-import { prisma } from "@/lib/prisma"
-import { SettingsForm } from "@/components/control/settings-form"
+import { Settings } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import { SettingsForm } from "@/components/control/settings-form";
 
 export const metadata = {
   title: "Site Settings — PHAGLP Control",
-}
+};
 
 async function getSettings() {
   try {
-    return await prisma.siteSettings.findUnique({ where: { id: "global" } })
+    return await prisma.siteSettings.findUnique({ where: { id: "global" } });
   } catch {
-    return null
+    return null;
   }
 }
 
 export default async function SettingsPage() {
-  const settings = await getSettings()
+  const settings = await getSettings();
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -34,5 +34,5 @@ export default async function SettingsPage() {
 
       <SettingsForm initialData={settings} />
     </div>
-  )
+  );
 }

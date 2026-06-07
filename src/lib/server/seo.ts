@@ -1,22 +1,26 @@
-import "server-only"
-import { Metadata } from "next"
-import { getSiteSettings } from "./site-settings"
-import { SEOMetadata } from "@/lib/shared/types"
+import "server-only";
+import { Metadata } from "next";
+import { getSiteSettings } from "./site-settings";
+import { SEOMetadata } from "@/lib/shared/types";
 
-export async function getSEOMetadata(hostname?: string | null): Promise<SEOMetadata> {
-  const settings = await getSiteSettings(hostname)
+export async function getSEOMetadata(
+  hostname?: string | null,
+): Promise<SEOMetadata> {
+  const settings = await getSiteSettings(hostname);
 
   return {
     title: settings.siteName,
     description: settings.description,
     url: settings.siteUrl,
     ogImage: settings.ogImage || null,
-  }
+  };
 }
 
-export async function generateSiteMetadata(hostname?: string | null): Promise<Metadata> {
-  const seo = await getSEOMetadata(hostname)
-  const base = new URL(seo.url)
+export async function generateSiteMetadata(
+  hostname?: string | null,
+): Promise<Metadata> {
+  const seo = await getSEOMetadata(hostname);
+  const base = new URL(seo.url);
 
   return {
     title: {
@@ -39,5 +43,5 @@ export async function generateSiteMetadata(hostname?: string | null): Promise<Me
       description: seo.description,
       images: seo.ogImage ? [seo.ogImage] : [],
     },
-  }
+  };
 }

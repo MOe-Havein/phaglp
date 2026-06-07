@@ -1,36 +1,36 @@
-"use server"
+"use server";
 
-import { prisma, safeDbQuery } from "@/lib/prisma"
-import { generateTextEmbedding, cosineSimilarity } from "@/lib/embeddings"
-import { CohereClient } from "cohere-ai"
+import { prisma, safeDbQuery } from "@/lib/prisma";
+import { generateTextEmbedding, cosineSimilarity } from "@/lib/embeddings";
+import { CohereClient } from "cohere-ai";
 
-let cohereInstance: CohereClient | null = null
+let cohereInstance: CohereClient | null = null;
 
 function getCohereClient() {
-  if (cohereInstance) return cohereInstance
+  if (cohereInstance) return cohereInstance;
 
-  const token = process.env.COHERE_API_KEY?.trim()
+  const token = process.env.COHERE_API_KEY?.trim();
   if (!token) {
-    throw new Error("COHERE_API_KEY environment variable is required")
+    throw new Error("COHERE_API_KEY environment variable is required");
   }
 
   cohereInstance = new CohereClient({
     token,
-  })
-  return cohereInstance
+  });
+  return cohereInstance;
 }
 
 /**
  * Add knowledge to the knowledge base with embedding
  */
 export async function addKnowledge(data: {
-  title: string
-  content: string
-  type: string
-  metadata?: any
+  title: string;
+  content: string;
+  type: string;
+  metadata?: any;
 }) {
   try {
-    const embedding = await generateTextEmbedding(data.content)
+    const embedding = await generateTextEmbedding(data.content);
 
     return await safeDbQuery(async () => {
       return prisma.knowledgeBase.create({
@@ -41,11 +41,14 @@ export async function addKnowledge(data: {
           embedding,
           metadata: data.metadata,
         },
-      })
-    })
+      });
+    });
   } catch (error: any) {
-    console.error("Add knowledge error:", error)
-    return { success: false, error: error.message || "Failed to add knowledge" }
+    console.error("Add knowledge error:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to add knowledge",
+    };
   }
 }
 
@@ -55,28 +58,31 @@ export async function addKnowledge(data: {
 export async function findRelevantKnowledge(
   query: string,
   options: {
-    limit?: number | undefined
-    type?: string | undefined
-    minSimilarity?: number | undefined
+    limit?: number | undefined;
+    type?: string | undefined;
+    minSimilarity?: number | undefined;
   } = {},
 ) {
   try {
-    const { limit = 3, type, minSimilarity = 0.3 } = options
+    const { limit = 3, type, minSimilarity = 0.3 } = options;
 
     // Generate embedding for the query
-    const queryEmbedding = await generateTextEmbedding(query)
+    const queryEmbedding = await generateTextEmbedding(query);
 
     const result = await safeDbQuery(async () => {
       // Get all knowledge entries (filtered by type if specified)
-      const queryArgs: any = {}
+      const queryArgs: any = {};
       if (type) {
-        queryArgs.where = { type }
+        queryArgs.where = { type };
       }
-      return prisma.knowledgeBase.findMany(queryArgs)
-    }, [])
+      return prisma.knowledgeBase.findMany(queryArgs);
+    }, []);
 
     if (!result.success || !result.data) {
-      return { success: false, error: result.error || "Failed to fetch knowledge base" }
+      return {
+        success: false,
+        error: result.error || "Failed to fetch knowledge base",
+      };
     }
 
     // Calculate similarity scores
@@ -87,12 +93,15 @@ export async function findRelevantKnowledge(
       }))
       .filter((entry: any) => entry.similarity >= minSimilarity)
       .sort((a: any, b: any) => b.similarity - a.similarity)
-      .slice(0, limit)
+      .slice(0, limit);
 
-    return { success: true, data: knowledgeWithScores }
+    return { success: true, data: knowledgeWithScores };
   } catch (error: any) {
-    console.error("Find relevant knowledge error:", error)
-    return { success: false, error: error.message || "Failed to find relevant knowledge" }
+    console.error("Find relevant knowledge error:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to find relevant knowledge",
+    };
   }
 }
 
@@ -102,24 +111,28 @@ export async function findRelevantKnowledge(
 export async function answerQuestion(
   question: string,
   options: {
-    contextType?: string | undefined
-    sessionId?: string | undefined
-    userId?: string | undefined
+    contextType?: string | undefined;
+    sessionId?: string | undefined;
+    userId?: string | undefined;
   } = {},
 ) {
   try {
-    const { contextType, sessionId, userId } = options
+    const { contextType, sessionId, userId } = options;
 
     // Retrieve relevant knowledge
     const knowledgeResult = await findRelevantKnowledge(question, {
       type: contextType,
       limit: 3,
-    })
+    });
 
-    const relevantKnowledge = knowledgeResult.success ? knowledgeResult.data || [] : []
+    const relevantKnowledge = knowledgeResult.success
+      ? knowledgeResult.data || []
+      : [];
 
     // Build context from retrieved knowledge
-    const context = relevantKnowledge.map((k: any) => `### ${k.title}\n${k.content}`).join("\n\n")
+    const context = relevantKnowledge
+      .map((k: any) => `### ${k.title}\n${k.content}`)
+      .join("\n\n");
 
     // Create system message with context
     const systemMessage = `You are a helpful assistant for a marriage matching and educational platform. 
@@ -128,29 +141,29 @@ If the context doesn't contain enough information, say so and provide general gu
 
 Context:
 ${context}
-`
+`;
 
     // Get chat history if session provided
-    let chatHistory: any[] = []
+    let chatHistory: any[] = [];
     if (sessionId) {
       const historyResult = await safeDbQuery(async () => {
         return prisma.chatMessage.findMany({
           where: { sessionId },
           orderBy: { createdAt: "asc" },
           take: 10, // Last 10 messages for context
-        })
-      }, [])
+        });
+      }, []);
 
       if (historyResult.success && historyResult.data) {
         chatHistory = historyResult.data.map((m: any) => ({
           role: m.role,
           content: m.content,
-        }))
+        }));
       }
     }
 
     // Call Cohere for response
-    const cohere = getCohereClient()
+    const cohere = getCohereClient();
     const response = await cohere.v2.chat({
       model: "command-a-reasoning-08-2025",
       messages: [
@@ -167,11 +180,15 @@ ${context}
           content: question,
         },
       ],
-    })
+    });
 
-    const textContent = response.message?.content?.find((item) => item.type === "text")
+    const textContent = response.message?.content?.find(
+      (item) => item.type === "text",
+    );
     const answer =
-      textContent?.type === "text" ? textContent.text : "I couldn't generate a response."
+      textContent?.type === "text"
+        ? textContent.text
+        : "I couldn't generate a response.";
 
     // Save messages to database if session provided
     if (sessionId) {
@@ -192,8 +209,8 @@ ${context}
               content: answer,
             },
           }),
-        ])
-      })
+        ]);
+      });
     }
 
     return {
@@ -206,10 +223,13 @@ ${context}
           similarity: Math.round(k.similarity * 100),
         })),
       },
-    }
+    };
   } catch (error: any) {
-    console.error("Answer question error:", error)
-    return { success: false, error: error.message || "Failed to generate answer" }
+    console.error("Answer question error:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to generate answer",
+    };
   }
 }
 
@@ -229,6 +249,6 @@ export async function getChatHistory(sessionId: string) {
           },
         },
       },
-    })
-  }, [])
+    });
+  }, []);
 }

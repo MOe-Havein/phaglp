@@ -1,5 +1,5 @@
-import type { Config } from "tailwindcss"
-import tailwindAnimate from "tailwindcss-animate"
+import type { Config } from "tailwindcss";
+import tailwindAnimate from "tailwindcss-animate";
 
 // all in fixtures is set to tailwind v3 as interims solutions
 
@@ -115,5 +115,5 @@ const config: Config = {
     },
   },
   plugins: [tailwindAnimate],
-}
-export default config
+};
+export default config;

@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Role } from "@prisma/client"
-import { updateUserRole, deleteUser } from "@/lib/control-actions"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Role } from "@prisma/client";
+import { updateUserRole, deleteUser } from "@/lib/control-actions";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,56 +11,61 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Shield, Trash2, Loader2 } from "lucide-react"
-import { toast } from "sonner"
-import { EditUserDialog } from "./edit-user-dialog"
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Shield, Trash2, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { EditUserDialog } from "./edit-user-dialog";
 
 interface UserRoleManagerProps {
   user: {
-    id: string
-    name: string | null
-    email: string
-    role: Role
-  }
+    id: string;
+    name: string | null;
+    email: string;
+    role: Role;
+  };
 }
 
 export function UserRoleManager({ user }: UserRoleManagerProps) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const handleRoleChange = async (role: Role) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const result = await updateUserRole(user.id, role)
+      const result = await updateUserRole(user.id, role);
       if (result.success) {
-        toast.success(`User role updated to ${role}`)
+        toast.success(`User role updated to ${role}`);
       } else {
-        toast.error(result.error || "Failed to update user role")
+        toast.error(result.error || "Failed to update user role");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) return
+    if (
+      !confirm(
+        "Are you sure you want to delete this user? This action cannot be undone.",
+      )
+    )
+      return;
 
-    setLoading(true)
+    setLoading(true);
     try {
-      const result = await deleteUser(user.id)
+      const result = await deleteUser(user.id);
       if (result.success) {
-        toast.success("User deleted successfully")
+        toast.success("User deleted successfully");
       } else {
-        toast.error(result.error || "Failed to delete user")
+        toast.error(result.error || "Failed to delete user");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
   return (
     <>
       <DropdownMenu>
@@ -95,7 +100,10 @@ export function UserRoleManager({ user }: UserRoleManagerProps) {
             <Shield className="mr-2 h-4 w-4 text-red-500" /> Set as Admin
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleDelete} className="text-red-600 focus:text-red-600">
+          <DropdownMenuItem
+            onClick={handleDelete}
+            className="text-red-600 focus:text-red-600"
+          >
             <Trash2 className="mr-2 h-4 w-4" /> Delete User
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -103,5 +111,5 @@ export function UserRoleManager({ user }: UserRoleManagerProps) {
 
       <EditUserDialog user={user} />
     </>
-  )
+  );
 }

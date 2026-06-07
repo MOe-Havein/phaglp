@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import type { VercelDeployment } from "@/app/api/vercel-monitor/route"
-import { StatusBadge } from "./StatusBadge"
+import type { VercelDeployment } from "@/app/api/vercel-monitor/route";
+import { StatusBadge } from "./StatusBadge";
 
 interface DeploymentRowProps {
-  deployment: VercelDeployment
+  deployment: VercelDeployment;
 }
 
 function formatDuration(ms: number): string {
-  if (ms < 60_000) return `${Math.round(ms / 1000)}s`
-  const mins = Math.floor(ms / 60_000)
-  const secs = Math.round((ms % 60_000) / 1000)
-  return `${mins}m ${secs}s`
+  if (ms < 60_000) return `${Math.round(ms / 1000)}s`;
+  const mins = Math.floor(ms / 60_000);
+  const secs = Math.round((ms % 60_000) / 1000);
+  return `${mins}m ${secs}s`;
 }
 
 function timeAgo(ts: number): string {
-  const diff = Date.now() - ts
-  if (diff < 60_000) return "just now"
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`
-  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`
-  return `${Math.floor(diff / 86_400_000)}d ago`
+  const diff = Date.now() - ts;
+  if (diff < 60_000) return "just now";
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
+  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`;
+  return `${Math.floor(diff / 86_400_000)}d ago`;
 }
 
 export function DeploymentRow({ deployment: dep }: DeploymentRowProps) {
-  const commitMsg = dep.meta?.githubCommitMessage?.split("\n")[0]
-  const commitSha = dep.meta?.githubCommitSha?.slice(0, 7)
-  const author = dep.meta?.githubCommitAuthorLogin ?? dep.creator.username
+  const commitMsg = dep.meta?.githubCommitMessage?.split("\n")[0];
+  const commitSha = dep.meta?.githubCommitSha?.slice(0, 7);
+  const author = dep.meta?.githubCommitAuthorLogin ?? dep.creator.username;
 
   return (
     <div
@@ -41,7 +41,9 @@ export function DeploymentRow({ deployment: dep }: DeploymentRowProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="min-w-0">
-            <span className="text-sm font-medium text-white/80">{dep.name}</span>
+            <span className="text-sm font-medium text-white/80">
+              {dep.name}
+            </span>
             {dep.target && (
               <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-md bg-violet-500/15 text-violet-400 border border-violet-500/20">
                 {dep.target}
@@ -124,5 +126,5 @@ export function DeploymentRow({ deployment: dep }: DeploymentRowProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

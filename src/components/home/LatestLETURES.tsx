@@ -1,17 +1,17 @@
-import React from "react"
-import { prisma, safeDbQuery } from "@/lib/prisma"
-import { LatestLecturesClient } from "./LatestLecturesClient"
+import React from "react";
+import { prisma, safeDbQuery } from "@/lib/prisma";
+import { LatestLecturesClient } from "./LatestLecturesClient";
 
 // EXACT DATA SCHEMA REQUIRED BY THE SPECIFICATION
 export interface LETURES {
-  id: string
-  title: string
-  excerpt: string
-  slug: string
-  coverImage: string
-  category: string
-  readingTime: string
-  createdAt: string // ISO string format
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  coverImage: string;
+  category: string;
+  readingTime: string;
+  createdAt: string; // ISO string format
 }
 
 // Fallback Mock array using the exact LETURES interface
@@ -52,14 +52,16 @@ const FALLBACK_LECTURES: LETURES[] = [
     readingTime: "18 min read",
     createdAt: "2026-05-24T14:15:00.000Z",
   },
-]
+];
 
 interface LatestLETURESProps {
-  title?: string | undefined
+  title?: string | undefined;
 }
 
-export async function LatestLETURES({ title = "Latest Lectures" }: LatestLETURESProps) {
-  let lectures: LETURES[] = FALLBACK_LECTURES
+export async function LatestLETURES({
+  title = "Latest Lectures",
+}: LatestLETURESProps) {
+  let lectures: LETURES[] = FALLBACK_LECTURES;
 
   try {
     // Direct server-side SQLite query using safeDbQuery helper
@@ -71,14 +73,16 @@ export async function LatestLETURES({ title = "Latest Lectures" }: LatestLETURES
         orderBy: {
           createdAt: "desc",
         },
-      })
-    })
+      });
+    });
 
     if (result.success && result.data && result.data.length > 0) {
       lectures = result.data.map((item: any) => ({
         id: item.id,
         title: item.title,
-        excerpt: item.excerpt || item.body.replace(/[#*`]/g, "").substring(0, 150) + "...",
+        excerpt:
+          item.excerpt ||
+          item.body.replace(/[#*`]/g, "").substring(0, 150) + "...",
         slug: item.slug,
         coverImage:
           item.coverImage ||
@@ -86,12 +90,14 @@ export async function LatestLETURES({ title = "Latest Lectures" }: LatestLETURES
         category: item.category,
         readingTime: `${item.readingTime || 5} min read`,
         createdAt:
-          item.createdAt instanceof Date ? item.createdAt.toISOString() : String(item.createdAt),
-      }))
+          item.createdAt instanceof Date
+            ? item.createdAt.toISOString()
+            : String(item.createdAt),
+      }));
     }
   } catch (error) {
-    console.error("Error loading lectures on Server Component:", error)
+    console.error("Error loading lectures on Server Component:", error);
   }
 
-  return <LatestLecturesClient title={title} lectures={lectures} />
+  return <LatestLecturesClient title={title} lectures={lectures} />;
 }

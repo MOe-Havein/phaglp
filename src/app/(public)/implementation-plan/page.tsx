@@ -1,14 +1,14 @@
-import { auth } from "@/auth"
-import { ImplementationPlanClient } from "@/components/dashboard/implementation-plan-client"
+import { auth } from "@/auth";
+import { ImplementationPlanClient } from "@/components/dashboard/implementation-plan-client";
 
 export const metadata = {
   title: "PHAGLP — Interactive Implementation Plan",
   description:
     "Track implementation, security hardening, core features, and premium polish of the PHAGLP educational platforms dynamically.",
-}
+};
 
 export default async function ImplementationPlanPage() {
-  const session = await auth()
+  const session = await auth();
 
   return (
     <div className="min-h-screen bg-slate-50/40 dark:bg-slate-950/20 py-8">
@@ -16,5 +16,5 @@ export default async function ImplementationPlanPage() {
         <ImplementationPlanClient user={session?.user} />
       </div>
     </div>
-  )
+  );
 }

@@ -7,7 +7,12 @@ const nextConfig = {
   poweredByHeader: false,
 
   // Prevent native/server-only packages from leaking into client bundles
-  serverExternalPackages: ["@prisma/client", "prisma", "isomorphic-dompurify", "jsdom"],
+  serverExternalPackages: [
+    "@prisma/client",
+    "prisma",
+    "isomorphic-dompurify",
+    "jsdom",
+  ],
 
   typescript: {
     ignoreBuildErrors: false,
@@ -34,7 +39,7 @@ const nextConfig = {
       { module: /node_modules\/jose/ },
       { message: /CompressionStream/ },
       { message: /DecompressionStream/ },
-    ]
+    ];
 
     // Reduce Prisma bundle size on client
     if (!isServer) {
@@ -43,11 +48,11 @@ const nextConfig = {
         fs: false,
         path: false,
         os: false,
-      }
+      };
     }
 
-    return config
+    return config;
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;

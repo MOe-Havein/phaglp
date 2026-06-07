@@ -1,31 +1,37 @@
-"use client"
+"use client";
 
-import { updateCourse } from "@/lib/cms-actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ChevronLeft, Save, BookOpen, Loader2 } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { Course } from "@prisma/client"
+import { updateCourse } from "@/lib/cms-actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { ChevronLeft, Save, BookOpen, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Course } from "@prisma/client";
 
 interface EditCourseFormProps {
-  course: Course
+  course: Course;
 }
 
 export function EditCourseForm({ course }: EditCourseFormProps) {
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function handleUpdate(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setLoading(true)
+    event.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData(event.currentTarget);
     const data = {
       title: formData.get("title") as string,
       slug: formData.get("slug") as string,
@@ -33,27 +39,30 @@ export function EditCourseForm({ course }: EditCourseFormProps) {
       duration: formData.get("duration") as string,
       price: formData.get("price") as string,
       published: formData.get("published") === "on",
-    }
+    };
 
     try {
-      const result = await updateCourse(course.id, data)
+      const result = await updateCourse(course.id, data);
       if (result.success) {
-        toast.success("Course updated successfully!")
-        router.push("/control/courses")
-        router.refresh()
+        toast.success("Course updated successfully!");
+        router.push("/control/courses");
+        router.refresh();
       } else {
-        toast.error(result.error || "Failed to update course")
+        toast.error(result.error || "Failed to update course");
       }
     } catch (error) {
-      console.error("Failed to update course:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Failed to update course:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleUpdate} className="container mx-auto py-10 space-y-8 max-w-5xl">
+    <form
+      onSubmit={handleUpdate}
+      className="container mx-auto py-10 space-y-8 max-w-5xl"
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
@@ -63,7 +72,9 @@ export function EditCourseForm({ course }: EditCourseFormProps) {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Edit Course</h1>
-            <p className="text-muted-foreground text-sm">Update your philosophical curriculum.</p>
+            <p className="text-muted-foreground text-sm">
+              Update your philosophical curriculum.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -90,7 +101,9 @@ export function EditCourseForm({ course }: EditCourseFormProps) {
           <Card>
             <CardHeader>
               <CardTitle>Course Details</CardTitle>
-              <CardDescription>Primary information about the course.</CardDescription>
+              <CardDescription>
+                Primary information about the course.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -176,7 +189,8 @@ export function EditCourseForm({ course }: EditCourseFormProps) {
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-xs leading-relaxed text-orange-600 dark:text-orange-500">
-                Course modules and lessons are currently managed in a separate section.
+                Course modules and lessons are currently managed in a separate
+                section.
               </p>
               <Button
                 size="sm"
@@ -184,12 +198,14 @@ export function EditCourseForm({ course }: EditCourseFormProps) {
                 className="w-full bg-white border-orange-200 text-orange-700 hover:bg-orange-50"
                 asChild
               >
-                <Link href={`/control/courses/${course.id}/curriculum`}>Manage Modules</Link>
+                <Link href={`/control/courses/${course.id}/curriculum`}>
+                  Manage Modules
+                </Link>
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
     </form>
-  )
+  );
 }

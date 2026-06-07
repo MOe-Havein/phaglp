@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Clock, ArrowUpRight, Calendar } from "lucide-react"
+import { useState } from "react";
+import { Clock, ArrowUpRight, Calendar } from "lucide-react";
 
 export interface Post {
-  id: string
-  title: string
-  excerpt: string
-  slug: string
-  coverImage: string
-  category: string
-  readingTime: string
-  createdAt: string // ISO String format
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  coverImage: string;
+  category: string;
+  readingTime: string;
+  createdAt: string; // ISO String format
 }
 
 function formatDate(iso: string): string {
@@ -20,19 +20,19 @@ function formatDate(iso: string): string {
       year: "numeric",
       month: "long",
       day: "numeric",
-    }).format(new Date(iso))
+    }).format(new Date(iso));
   } catch {
-    return iso
+    return iso;
   }
 }
 
 interface BlogCardProps {
-  post: Post
+  post: Post;
 }
 
 export function BlogCard({ post }: BlogCardProps) {
-  const [imageLoaded, setImageLoaded] = useState(false)
-  const [imageError, setImageError] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <article className="group flex flex-col bg-card border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
@@ -45,7 +45,10 @@ export function BlogCard({ post }: BlogCardProps) {
       >
         {/* Skeleton placeholder */}
         {!imageLoaded && !imageError && (
-          <div className="absolute inset-0 bg-muted animate-pulse" aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-muted animate-pulse"
+            aria-hidden="true"
+          />
         )}
 
         {!imageError && post.coverImage ? (
@@ -58,13 +61,15 @@ export function BlogCard({ post }: BlogCardProps) {
             ].join(" ")}
             onLoad={() => setImageLoaded(true)}
             onError={() => {
-              setImageError(true)
-              setImageLoaded(true)
+              setImageError(true);
+              setImageLoaded(true);
             }}
           />
         ) : (
           <div className="absolute inset-0 bg-secondary flex items-center justify-center">
-            <span className="text-muted-foreground text-sm font-sans">No image</span>
+            <span className="text-muted-foreground text-sm font-sans">
+              No image
+            </span>
           </div>
         )}
 
@@ -93,7 +98,10 @@ export function BlogCard({ post }: BlogCardProps) {
 
         {/* Title */}
         <h3 className="font-serif text-lg font-bold leading-snug text-card-foreground group-hover:text-primary transition-colors duration-200 text-balance">
-          <a href={`/blog/${post.slug}`} className="focus:outline-none focus-visible:underline">
+          <a
+            href={`/blog/${post.slug}`}
+            className="focus:outline-none focus-visible:underline"
+          >
             {post.title}
           </a>
         </h3>
@@ -117,5 +125,5 @@ export function BlogCard({ post }: BlogCardProps) {
         </a>
       </div>
     </article>
-  )
+  );
 }

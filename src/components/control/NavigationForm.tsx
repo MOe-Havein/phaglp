@@ -1,60 +1,78 @@
-"use client"
+"use client";
 
-import { useState, useTransition } from "react"
-import { useRouter } from "next/navigation"
-import { createMenu, updateMenu } from "@/lib/menu-actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronLeft, Link2, FileCode, Folder } from "lucide-react"
-import Link from "next/link"
-import { toast } from "sonner"
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { createMenu, updateMenu } from "@/lib/menu-actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ChevronLeft, Link2, FileCode, Folder } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
 
 interface PageItem {
-  id: string
-  title: string
-  slug: string
+  id: string;
+  title: string;
+  slug: string;
 }
 
 interface NavigationFormProps {
   initialData?: {
-    id: string
-    name: string
-    href: string | null
-    icon: string | null
-    isOpenNewTab: boolean
-    isActive: boolean
-    showInHeader: boolean
-    showInFooter: boolean
-  }
-  pages: PageItem[]
+    id: string;
+    name: string;
+    href: string | null;
+    icon: string | null;
+    isOpenNewTab: boolean;
+    isActive: boolean;
+    showInHeader: boolean;
+    showInFooter: boolean;
+  };
+  pages: PageItem[];
 }
 
 export function NavigationForm({ initialData, pages }: NavigationFormProps) {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   // State variables
-  const [name, setName] = useState(initialData?.name || "")
-  const [href, setHref] = useState(initialData?.href || "")
-  const [icon, setIcon] = useState(initialData?.icon || "Folder")
-  const [isOpenNewTab, setIsOpenNewTab] = useState(initialData?.isOpenNewTab ?? false)
-  const [isActive, setIsActive] = useState(initialData?.isActive ?? true)
-  const [showInHeader, setShowInHeader] = useState(initialData?.showInHeader ?? true)
-  const [showInFooter, setShowInFooter] = useState(initialData?.showInFooter ?? true)
-  
+  const [name, setName] = useState(initialData?.name || "");
+  const [href, setHref] = useState(initialData?.href || "");
+  const [icon, setIcon] = useState(initialData?.icon || "Folder");
+  const [isOpenNewTab, setIsOpenNewTab] = useState(
+    initialData?.isOpenNewTab ?? false,
+  );
+  const [isActive, setIsActive] = useState(initialData?.isActive ?? true);
+  const [showInHeader, setShowInHeader] = useState(
+    initialData?.showInHeader ?? true,
+  );
+  const [showInFooter, setShowInFooter] = useState(
+    initialData?.showInFooter ?? true,
+  );
+
   // Determine if it is a dynamic page link or custom URL
-  const isPageLink = pages.some((p) => `/${p.slug}` === href)
-  const [isPageType, setIsPageType] = useState(isPageLink)
+  const isPageLink = pages.some((p) => `/${p.slug}` === href);
+  const [isPageType, setIsPageType] = useState(isPageLink);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!name) {
-      toast.error("Please enter a category name.")
-      return
+      toast.error("Please enter a category name.");
+      return;
     }
 
     startTransition(async () => {
@@ -67,30 +85,35 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
           isActive,
           showInHeader,
           showInFooter,
-        }
+        };
 
-        let result
+        let result;
         if (initialData) {
-          result = await updateMenu(initialData.id, menuData)
+          result = await updateMenu(initialData.id, menuData);
         } else {
-          result = await createMenu(menuData)
+          result = await createMenu(menuData);
         }
 
         if (result.success) {
-          toast.success(initialData ? "Navigation updated" : "Navigation created")
-          router.push("/control/navigation")
-          router.refresh()
+          toast.success(
+            initialData ? "Navigation updated" : "Navigation created",
+          );
+          router.push("/control/navigation");
+          router.refresh();
         } else {
-          toast.error(result.error || "Action failed")
+          toast.error(result.error || "Action failed");
         }
       } catch (error: any) {
-        toast.error(error.message || "An unexpected error occurred")
+        toast.error(error.message || "An unexpected error occurred");
       }
-    })
-  }
+    });
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="container mx-auto py-10 space-y-8 max-w-5xl px-4">
+    <form
+      onSubmit={handleSubmit}
+      className="container mx-auto py-10 space-y-8 max-w-5xl px-4"
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
@@ -103,7 +126,8 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
               {initialData ? "Edit Menu Link" : "Create Menu Link"}
             </h1>
             <p className="text-slate-500 dark:text-slate-400 text-sm">
-              Configure dynamic routing, icons, and visibility in header or footer.
+              Configure dynamic routing, icons, and visibility in header or
+              footer.
             </p>
           </div>
         </div>
@@ -112,7 +136,7 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
             type="submit"
             disabled={isPending}
             className="w-full bg-slate-900 text-white rounded-md py-2 px-4 text-sm font-medium hover:bg-slate-800 disabled:opacity-50 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900"
-            style={{ transitionDuration: '8000ms' }}
+            style={{ transitionDuration: "8000ms" }}
           >
             {isPending ? "Processing..." : "Save Navigation Item"}
           </button>
@@ -124,7 +148,9 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
           <Card className="border-primary/10 shadow-sm overflow-hidden">
             <CardHeader>
               <CardTitle>Link Configuration</CardTitle>
-              <CardDescription>Specify name and destination routing details.</CardDescription>
+              <CardDescription>
+                Specify name and destination routing details.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -141,15 +167,17 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-slate-500">Destination Type</Label>
+                  <Label className="text-xs font-semibold text-slate-500">
+                    Destination Type
+                  </Label>
                   <div className="flex gap-2">
                     <Button
                       type="button"
                       variant={!isPageType ? "default" : "outline"}
                       size="sm"
                       onClick={() => {
-                        setIsPageType(false)
-                        setHref("")
+                        setIsPageType(false);
+                        setHref("");
                       }}
                       className="w-full text-xs rounded-xl"
                     >
@@ -160,9 +188,9 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
                       variant={isPageType ? "default" : "outline"}
                       size="sm"
                       onClick={() => {
-                        setIsPageType(true)
+                        setIsPageType(true);
                         if (pages.length > 0) {
-                          setHref(`/${pages[0]?.slug || ""}`)
+                          setHref(`/${pages[0]?.slug || ""}`);
                         }
                       }}
                       className="w-full text-xs rounded-xl"
@@ -176,10 +204,15 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
                   <div className="space-y-2">
                     <Label htmlFor="pageSelect">Select Dynamic Page</Label>
                     <Select
-                      value={pages.find((p) => `/${p.slug}` === href)?.slug || ""}
+                      value={
+                        pages.find((p) => `/${p.slug}` === href)?.slug || ""
+                      }
                       onValueChange={(val) => setHref(`/${val}`)}
                     >
-                      <SelectTrigger id="pageSelect" className="rounded-xl bg-slate-50 dark:bg-slate-900 border-gray-200 dark:border-gray-800">
+                      <SelectTrigger
+                        id="pageSelect"
+                        className="rounded-xl bg-slate-50 dark:bg-slate-900 border-gray-200 dark:border-gray-800"
+                      >
                         <SelectValue placeholder="Choose an integrated page..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -239,8 +272,12 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between rounded-xl border p-3 bg-slate-50/50 dark:bg-slate-900/30">
                 <div className="space-y-0.5">
-                  <Label htmlFor="isActive" className="cursor-pointer">Active State</Label>
-                  <p className="text-[10px] text-muted-foreground">Enabled for visitors</p>
+                  <Label htmlFor="isActive" className="cursor-pointer">
+                    Active State
+                  </Label>
+                  <p className="text-[10px] text-muted-foreground">
+                    Enabled for visitors
+                  </p>
                 </div>
                 <Switch
                   id="isActive"
@@ -251,8 +288,12 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
 
               <div className="flex items-center justify-between rounded-xl border p-3 bg-slate-50/50 dark:bg-slate-900/30">
                 <div className="space-y-0.5">
-                  <Label htmlFor="showInHeader" className="cursor-pointer">Header Visibility</Label>
-                  <p className="text-[10px] text-muted-foreground">Show in navbar header</p>
+                  <Label htmlFor="showInHeader" className="cursor-pointer">
+                    Header Visibility
+                  </Label>
+                  <p className="text-[10px] text-muted-foreground">
+                    Show in navbar header
+                  </p>
                 </div>
                 <Switch
                   id="showInHeader"
@@ -263,8 +304,12 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
 
               <div className="flex items-center justify-between rounded-xl border p-3 bg-slate-50/50 dark:bg-slate-900/30">
                 <div className="space-y-0.5">
-                  <Label htmlFor="showInFooter" className="cursor-pointer">Footer Visibility</Label>
-                  <p className="text-[10px] text-muted-foreground">Show in footer directories</p>
+                  <Label htmlFor="showInFooter" className="cursor-pointer">
+                    Footer Visibility
+                  </Label>
+                  <p className="text-[10px] text-muted-foreground">
+                    Show in footer directories
+                  </p>
                 </div>
                 <Switch
                   id="showInFooter"
@@ -275,8 +320,12 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
 
               <div className="flex items-center justify-between rounded-xl border p-3 bg-slate-50/50 dark:bg-slate-900/30">
                 <div className="space-y-0.5">
-                  <Label htmlFor="isOpenNewTab" className="cursor-pointer">New Tab Link</Label>
-                  <p className="text-[10px] text-muted-foreground">Open in a separate window</p>
+                  <Label htmlFor="isOpenNewTab" className="cursor-pointer">
+                    New Tab Link
+                  </Label>
+                  <p className="text-[10px] text-muted-foreground">
+                    Open in a separate window
+                  </p>
                 </div>
                 <Switch
                   id="isOpenNewTab"
@@ -289,5 +338,5 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
         </div>
       </div>
     </form>
-  )
+  );
 }

@@ -1,19 +1,29 @@
-"use client"
+"use client";
 
-import { useState, useTransition } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Package, Search, Filter, Plus, Trash2, Eye, ChevronDown } from "lucide-react"
-import Link from "next/link"
-import { deleteAcademyAsset } from "@/lib/server/actions/admin/assets"
-import { cn } from "@/lib/utils"
-import type { AcademyAsset } from "@/types"
+import { useState, useTransition } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Package,
+  Search,
+  Filter,
+  Plus,
+  Trash2,
+  Eye,
+  ChevronDown,
+} from "lucide-react";
+import Link from "next/link";
+import { deleteAcademyAsset } from "@/lib/server/actions/admin/assets";
+import { cn } from "@/lib/utils";
+import type { AcademyAsset } from "@/types";
 
 const STATUS_COLORS: Record<string, string> = {
-  AVAILABLE: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+  AVAILABLE:
+    "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
   ALLOCATED: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  MAINTENANCE: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+  MAINTENANCE:
+    "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
   RETIRED: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
-}
+};
 
 const CATEGORY_LABELS: Record<string, string> = {
   COURSE_MATERIAL: "Course Material",
@@ -22,33 +32,34 @@ const CATEGORY_LABELS: Record<string, string> = {
   DIGITAL_LICENSE: "Digital License",
   FURNITURE: "Furniture",
   OTHER: "Other",
-}
+};
 
 interface AssetTableProps {
-  assets: AcademyAsset[]
+  assets: AcademyAsset[];
 }
 
 export function AssetTable({ assets }: AssetTableProps) {
-  const [search, setSearch] = useState("")
-  const [statusFilter, setStatusFilter] = useState("ALL")
-  const [categoryFilter, setCategoryFilter] = useState("ALL")
-  const [isPending, startTransition] = useTransition()
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [isPending, startTransition] = useTransition();
 
   const filtered = assets.filter((a) => {
     const matchSearch =
       a.name.toLowerCase().includes(search.toLowerCase()) ||
-      a.sku.toLowerCase().includes(search.toLowerCase())
-    const matchStatus = statusFilter === "ALL" || a.status === statusFilter
-    const matchCategory = categoryFilter === "ALL" || a.category === categoryFilter
-    return matchSearch && matchStatus && matchCategory
-  })
+      a.sku.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = statusFilter === "ALL" || a.status === statusFilter;
+    const matchCategory =
+      categoryFilter === "ALL" || a.category === categoryFilter;
+    return matchSearch && matchStatus && matchCategory;
+  });
 
   const handleDelete = (id: string, name: string) => {
-    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return
+    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
     startTransition(async () => {
-      await deleteAcademyAsset(id)
-    })
-  }
+      await deleteAcademyAsset(id);
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -142,7 +153,9 @@ export function AssetTable({ assets }: AssetTableProps) {
                     <td colSpan={7} className="py-16 text-center text-gray-400">
                       <Package className="w-10 h-10 mx-auto mb-3 opacity-30" />
                       <p className="font-medium">No assets found</p>
-                      <p className="text-xs mt-1">Try adjusting your filters or add a new asset.</p>
+                      <p className="text-xs mt-1">
+                        Try adjusting your filters or add a new asset.
+                      </p>
                     </td>
                   </tr>
                 ) : (
@@ -171,12 +184,15 @@ export function AssetTable({ assets }: AssetTableProps) {
                             STATUS_COLORS[asset.status],
                           )}
                         >
-                          {asset.status.charAt(0) + asset.status.slice(1).toLowerCase()}
+                          {asset.status.charAt(0) +
+                            asset.status.slice(1).toLowerCase()}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right tabular-nums text-gray-700 dark:text-gray-300">
                         {asset.quantity}
-                        <span className="text-xs text-gray-400 ml-1">{asset.quantityUnit}</span>
+                        <span className="text-xs text-gray-400 ml-1">
+                          {asset.quantityUnit}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-gray-600 dark:text-gray-400 max-w-[140px] truncate">
                         {asset.location ?? "—"}
@@ -216,5 +232,5 @@ export function AssetTable({ assets }: AssetTableProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

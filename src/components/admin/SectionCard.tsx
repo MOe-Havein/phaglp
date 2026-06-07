@@ -1,49 +1,54 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import { Draggable } from "@hello-pangea/dnd"
-import { GripVertical, Edit, Trash2, Eye, EyeOff } from "lucide-react"
-import { HomepageSection } from "@/types/homepage"
+import React, { useState } from "react";
+import { Draggable } from "@hello-pangea/dnd";
+import { GripVertical, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { HomepageSection } from "@/types/homepage";
 
 interface SectionCardProps {
-  section: HomepageSection
-  index: number
-  onEdit: (section: HomepageSection) => void
-  onDelete: (id: string) => void
+  section: HomepageSection;
+  index: number;
+  onEdit: (section: HomepageSection) => void;
+  onDelete: (id: string) => void;
 }
 
-export function SectionCard({ section, index, onEdit, onDelete }: SectionCardProps) {
-  const [isVisible, setIsVisible] = useState(section.visible)
-  const [isDeleting, setIsDeleting] = useState(false)
+export function SectionCard({
+  section,
+  index,
+  onEdit,
+  onDelete,
+}: SectionCardProps) {
+  const [isVisible, setIsVisible] = useState(section.visible);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleToggle = async () => {
-    setIsVisible(!isVisible) // Optimistic UI update
+    setIsVisible(!isVisible); // Optimistic UI update
     try {
       const res = await fetch(`/api/homepage/sections/${section.id}/toggle`, {
         method: "PATCH",
-      })
+      });
       if (!res.ok) {
-        setIsVisible(isVisible) // Revert on failure
+        setIsVisible(isVisible); // Revert on failure
       }
     } catch (e) {
-      setIsVisible(isVisible)
+      setIsVisible(isVisible);
     }
-  }
+  };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this section?")) return
-    setIsDeleting(true)
+    if (!confirm("Are you sure you want to delete this section?")) return;
+    setIsDeleting(true);
     try {
       const res = await fetch(`/api/homepage/sections/${section.id}`, {
         method: "DELETE",
-      })
+      });
       if (res.ok) {
-        onDelete(section.id)
+        onDelete(section.id);
       }
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
-  }
+  };
 
   return (
     <Draggable draggableId={section.id} index={index}>
@@ -53,7 +58,9 @@ export function SectionCard({ section, index, onEdit, onDelete }: SectionCardPro
           {...provided.draggableProps}
           style={provided.draggableProps.style as React.CSSProperties}
           className={`flex items-center justify-between p-4 mb-2 border rounded-md surface ${
-            snapshot.isDragging ? "shadow-lg border-primary opacity-90" : "border-border shadow-sm"
+            snapshot.isDragging
+              ? "shadow-lg border-primary opacity-90"
+              : "border-border shadow-sm"
           } bg-surface`}
         >
           <div className="flex items-center gap-4 flex-1">
@@ -104,5 +111,5 @@ export function SectionCard({ section, index, onEdit, onDelete }: SectionCardPro
         </div>
       )}
     </Draggable>
-  )
+  );
 }

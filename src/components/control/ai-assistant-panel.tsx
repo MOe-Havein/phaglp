@@ -1,31 +1,38 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Wand2, Loader2, FileText, AlertCircle, Copy, Check } from "lucide-react"
-import { toast } from "sonner"
+} from "@/components/ui/dialog";
+import {
+  Wand2,
+  Loader2,
+  FileText,
+  AlertCircle,
+  Copy,
+  Check,
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface AIAssistantPanelProps {
-  title?: string
-  category?: string
-  content?: string
-  onInsertContent?: (content: string) => void
-  onSetCategory?: (category: string) => void
-  onSetSlug?: (slug: string) => void
+  title?: string;
+  category?: string;
+  content?: string;
+  onInsertContent?: (content: string) => void;
+  onSetCategory?: (category: string) => void;
+  onSetSlug?: (slug: string) => void;
 }
 
 export function AIAssistantPanel({
@@ -36,66 +43,70 @@ export function AIAssistantPanel({
   onSetCategory,
   onSetSlug,
 }: AIAssistantPanelProps) {
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<string | null>(null)
-  const [resultDialogOpen, setResultDialogOpen] = useState(false)
-  const [resultType, setResultType] = useState<string>("")
-  const [copied, setCopied] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [resultDialogOpen, setResultDialogOpen] = useState(false);
+  const [resultType, setResultType] = useState<string>("");
+  const [copied, setCopied] = useState(false);
 
-  async function handleAIAction(type: "outline" | "summary" | "fallacy-check" | "write-lecture") {
-    setLoading(true)
-    setResultType(type)
+  async function handleAIAction(
+    type: "outline" | "summary" | "fallacy-check" | "write-lecture",
+  ) {
+    setLoading(true);
+    setResultType(type);
 
     try {
-      let data: Record<string, any> = {}
+      let data: Record<string, any> = {};
 
       if (type === "outline" || type === "write-lecture") {
         if (!title) {
-          toast.error("Please enter a title first")
-          setLoading(false)
-          return
+          toast.error("Please enter a title first");
+          setLoading(false);
+          return;
         }
-        data = { title, category }
+        data = { title, category };
       } else {
         if (!content || content.trim().length === 0) {
-          toast.error("Please write some content first")
-          setLoading(false)
-          return
+          toast.error("Please write some content first");
+          setLoading(false);
+          return;
         }
-        data = { content }
+        data = { content };
       }
 
       const response = await fetch("/api/ai/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type, data }),
-      })
+      });
 
-      const responseData = await response.json()
+      const responseData = await response.json();
 
       if (!response.ok || !responseData.success) {
-        throw new Error(responseData.error || "Failed to generate content")
+        throw new Error(responseData.error || "Failed to generate content");
       }
 
-      setResult(responseData.content)
-      setResultDialogOpen(true)
-      toast.success("AI generation complete!")
+      setResult(responseData.content);
+      setResultDialogOpen(true);
+      toast.success("AI generation complete!");
     } catch (error) {
-      console.error("AI generation error:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to generate content")
+      console.error("AI generation error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to generate content",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   const handleCopy = () => {
     if (result) {
-      navigator.clipboard.writeText(result)
-      setCopied(true)
-      toast.success("Copied to clipboard")
-      setTimeout(() => setCopied(false), 2000)
+      navigator.clipboard.writeText(result);
+      setCopied(true);
+      toast.success("Copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
     }
-  }
+  };
 
   const generateSlug = (text: string): string => {
     return text
@@ -104,63 +115,65 @@ export function AIAssistantPanel({
       .replace(/[^\w\s-]/g, "") // Remove special characters
       .replace(/\s+/g, "-") // Replace spaces with hyphens
       .replace(/-+/g, "-") // Replace multiple hyphens with single
-      .replace(/^-+|-+$/g, "") // Remove leading/trailing hyphens
-  }
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+  };
 
   const extractCategoryFromContent = (content: string): string => {
     // Try to find category in common patterns
-    const categoryMatch = content.match(/(?:category|topic|subject):\s*([\w\s,]+)/i)
-    const matchVal = categoryMatch?.[1]
+    const categoryMatch = content.match(
+      /(?:category|topic|subject):\s*([\w\s,]+)/i,
+    );
+    const matchVal = categoryMatch?.[1];
     if (matchVal) {
-      const parts = matchVal.split(",")
-      const firstPart = parts[0]
+      const parts = matchVal.split(",");
+      const firstPart = parts[0];
       if (firstPart) {
-        return firstPart.trim()
+        return firstPart.trim();
       }
     }
     // Default to the category prop if available
-    return category || ""
-  }
+    return category || "";
+  };
 
   const handleInsert = () => {
     if (result && onInsertContent) {
-      onInsertContent(result)
-      setResultDialogOpen(false)
-      toast.success("Inserted into editor")
+      onInsertContent(result);
+      setResultDialogOpen(false);
+      toast.success("Inserted into editor");
 
       // Auto-fill slug and category for write-lecture
       if (resultType === "write-lecture" && title) {
         // Generate slug from title
         if (onSetSlug) {
-          const slug = generateSlug(title)
-          onSetSlug(slug)
+          const slug = generateSlug(title);
+          onSetSlug(slug);
         }
 
         // Extract and set category if not already set
         if (onSetCategory && !category) {
-          const extractedCategory = extractCategoryFromContent(result)
+          const extractedCategory = extractCategoryFromContent(result);
           if (extractedCategory) {
-            onSetCategory(extractedCategory)
+            onSetCategory(extractedCategory);
           }
         }
       }
     }
-  }
+  };
 
   const getActionLabel = () => {
     switch (resultType) {
       case "outline":
-        return "Outline"
+        return "Outline";
       case "summary":
-        return "Summary"
+        return "Summary";
       case "fallacy-check":
-        return "Fallacy Analysis"
+        return "Fallacy Analysis";
       case "write-lecture":
-        return "Generated Lecture"
+        return "Generated Lecture";
       default:
-        return "Result"
+        return "Result";
     }
-  }
+  };
 
   return (
     <>
@@ -172,7 +185,8 @@ export function AIAssistantPanel({
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-xs leading-relaxed text-emerald-600 dark:text-emerald-500">
-            Generate outlines, summaries, or check for logical fallacies using our AI engine.
+            Generate outlines, summaries, or check for logical fallacies using
+            our AI engine.
           </p>
 
           <DropdownMenu>
@@ -223,12 +237,16 @@ export function AIAssistantPanel({
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>AI {getActionLabel()}</DialogTitle>
-            <DialogDescription>Review the AI-generated content below</DialogDescription>
+            <DialogDescription>
+              Review the AI-generated content below
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <div className="prose prose-sm dark:prose-invert max-w-none bg-slate-50 dark:bg-slate-900 p-4 rounded-lg">
-              <pre className="whitespace-pre-wrap font-sans text-sm">{result}</pre>
+              <pre className="whitespace-pre-wrap font-sans text-sm">
+                {result}
+              </pre>
             </div>
 
             <div className="flex gap-2 justify-end">
@@ -245,19 +263,20 @@ export function AIAssistantPanel({
                   </>
                 )}
               </Button>
-              {(resultType === "outline" || resultType === "write-lecture") && onInsertContent && (
-                <Button
-                  size="sm"
-                  onClick={handleInsert}
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                >
-                  Insert into Editor
-                </Button>
-              )}
+              {(resultType === "outline" || resultType === "write-lecture") &&
+                onInsertContent && (
+                  <Button
+                    size="sm"
+                    onClick={handleInsert}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Insert into Editor
+                  </Button>
+                )}
             </div>
           </div>
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

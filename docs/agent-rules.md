@@ -60,19 +60,21 @@ When configuring Antigravity tools for Gemini to execute functions:
 Add this implementation blueprint code block to your runtime files when binding your Antigravity workflows with Gemini:
 
 ```typescript
-import { GoogleGenAI } from "@google/genai" // Gemini SDK
-import { AssetCategory } from "@prisma/client"
-import { z } from "zod"
-import type { ActionResponseState } from "@/types"
+import { GoogleGenAI } from "@google/genai"; // Gemini SDK
+import { AssetCategory } from "@prisma/client";
+import { z } from "zod";
+import type { ActionResponseState } from "@/types";
 
 // Define strict structural rules matching the Prisma layer
 export const InventoryClassificationSchema = z.object({
   category: z.nativeEnum(AssetCategory),
   justification: z.string().min(5),
   confidenceScore: z.number().min(0).max(1),
-})
+});
 
-export type InventoryClassification = z.infer<typeof InventoryClassificationSchema>
+export type InventoryClassification = z.infer<
+  typeof InventoryClassificationSchema
+>;
 
 /**
  * Antigravity Agent Task Execution Wrapper using Gemini
@@ -81,7 +83,7 @@ export async function executeAntigravityInventoryAgent(
   userInput: string,
 ): Promise<ActionResponseState & { data?: InventoryClassification }> {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     // Force Gemini into a structured JSON configuration using system instructions
     const response = await ai.models.generateContent({
@@ -105,24 +107,25 @@ export async function executeAntigravityInventoryAgent(
           required: ["category", "justification", "confidenceScore"],
         },
       },
-    })
+    });
 
-    const rawText = response.text
-    if (!rawText) throw new Error("Empty agent payload returned")
+    const rawText = response.text;
+    if (!rawText) throw new Error("Empty agent payload returned");
 
     // Enforce our local Next.js validation rules
-    const parsedData = InventoryClassificationSchema.parse(JSON.parse(rawText))
+    const parsedData = InventoryClassificationSchema.parse(JSON.parse(rawText));
 
     return {
       success: true,
       data: parsedData,
-    }
+    };
   } catch (error) {
     // Graceful fallback prevents full app crashes if Upstash or Gemini experiences lag
     return {
       success: false,
-      error: "The inventory agent timed out or returned invalid structural properties.",
-    }
+      error:
+        "The inventory agent timed out or returned invalid structural properties.",
+    };
   }
 }
 ```

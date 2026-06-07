@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import Link from "next/link"
+import Link from "next/link";
 import {
   LayoutDashboard,
   Users,
@@ -17,24 +17,30 @@ import {
   Award,
   Rocket,
   DollarSign,
-} from "lucide-react"
-import { type LucideIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet"
-import { ThemeToggle } from "@/components/ui/ThemeToggle"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { type LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface SidebarItem {
-  title: string
-  href: string
-  icon: LucideIcon
+  title: string;
+  href: string;
+  icon: LucideIcon;
 }
 
 interface SidebarGroup {
-  label: string
-  items: SidebarItem[]
+  label: string;
+  items: SidebarItem[];
 }
 
 const sidebarGroups: SidebarGroup[] = [
@@ -69,15 +75,19 @@ const sidebarGroups: SidebarGroup[] = [
       { title: "Settings", href: "/control/settings", icon: Settings },
     ],
   },
-]
+];
 
 interface SidebarContentProps {
-  userName?: string | null | undefined
-  pathname: string
-  onLinkClick: () => void
+  userName?: string | null | undefined;
+  pathname: string;
+  onLinkClick: () => void;
 }
 
-const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps) => (
+const SidebarContent = ({
+  userName,
+  pathname,
+  onLinkClick,
+}: SidebarContentProps) => (
   <div className="flex flex-col h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
     <div className="p-6 border-b border-gray-100 dark:border-gray-800 shrink-0">
       <Link
@@ -93,7 +103,7 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
         </p>
       )}
     </div>
-    
+
     <nav className="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar space-y-8">
       {sidebarGroups.map((group) => (
         <div key={group.label}>
@@ -103,7 +113,9 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
           <ul className="space-y-1">
             {group.items.map((item) => {
               const isActive =
-                item.href === "/control" ? pathname === "/control" : pathname.startsWith(item.href)
+                item.href === "/control"
+                  ? pathname === "/control"
+                  : pathname.startsWith(item.href);
               return (
                 <li key={item.href}>
                   <Link
@@ -113,69 +125,101 @@ const SidebarContent = ({ userName, pathname, onLinkClick }: SidebarContentProps
                       "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200",
                       isActive
                         ? "bg-primary/10 text-primary dark:bg-primary/20"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100"
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100",
                     )}
                   >
-                    <item.icon className={cn("w-4 h-4 shrink-0", isActive ? "text-primary" : "")} />
+                    <item.icon
+                      className={cn(
+                        "w-4 h-4 shrink-0",
+                        isActive ? "text-primary" : "",
+                      )}
+                    />
                     <span className="truncate">{item.title}</span>
                   </Link>
                 </li>
-              )
+              );
             })}
           </ul>
         </div>
       ))}
     </nav>
-    
+
     <div className="p-4 border-t border-gray-200 dark:border-gray-800 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground px-2">Theme</span>
+        <span className="text-xs font-medium text-muted-foreground px-2">
+          Theme
+        </span>
         <ThemeToggle />
       </div>
       <form action="/api/auth/signout" method="POST" className="w-full">
-        <Button variant="outline" size="sm" type="submit" className="w-full justify-start text-red-600 dark:text-red-400 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30">
+        <Button
+          variant="outline"
+          size="sm"
+          type="submit"
+          className="w-full justify-start text-red-600 dark:text-red-400 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30"
+        >
           <Mail className="w-4 h-4 mr-2" />
           Sign Out
         </Button>
       </form>
     </div>
   </div>
-)
+);
 
-export function ControlSidebar({ userName }: { userName?: string | null | undefined }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
-  const pathname = usePathname()
+export function ControlSidebar({
+  userName,
+}: {
+  userName?: string | null | undefined;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   return (
     <>
       {/* Desktop Fixed Sidebar */}
       <aside className="w-64 shrink-0 hidden md:flex flex-col h-screen sticky top-0 shadow-sm z-20">
-        <SidebarContent userName={userName} pathname={pathname} onLinkClick={() => {}} />
+        <SidebarContent
+          userName={userName}
+          pathname={pathname}
+          onLinkClick={() => {}}
+        />
       </aside>
 
       {/* Mobile Sticky Top Navigation Menu */}
       <header className="md:hidden flex items-center justify-between p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b sticky top-0 z-30 shadow-sm">
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary dark:text-blue-400">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-bold text-lg text-primary dark:text-blue-400"
+        >
           <Rocket className="w-5 h-5 text-primary" />
           Control Panel
         </Link>
         {isMounted ? (
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-600 dark:text-gray-300"
+              >
                 <Menu className="w-6 h-6" />
                 <span className="sr-only">Toggle mobile menu</span>
               </Button>
             </SheetTrigger>
             {/* Mobile Overlay Drawer */}
-            <SheetContent side="left" className="p-0 w-[280px] border-none shadow-2xl">
+            <SheetContent
+              side="left"
+              className="p-0 w-[280px] border-none shadow-2xl"
+            >
               <SheetTitle className="sr-only">Sidebar Navigation</SheetTitle>
-              <SheetDescription className="sr-only">Access control panel sections</SheetDescription>
+              <SheetDescription className="sr-only">
+                Access control panel sections
+              </SheetDescription>
               <SidebarContent
                 userName={userName}
                 pathname={pathname}
@@ -190,5 +234,5 @@ export function ControlSidebar({ userName }: { userName?: string | null | undefi
         )}
       </header>
     </>
-  )
+  );
 }

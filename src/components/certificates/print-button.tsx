@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Printer } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
 
 export function PrintButton() {
   return (
@@ -12,5 +12,5 @@ export function PrintButton() {
       <Printer className="w-4 h-4" />
       Print Certificate
     </Button>
-  )
+  );
 }

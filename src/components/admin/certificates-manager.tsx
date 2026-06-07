@@ -1,45 +1,59 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Trash2, ExternalLink, Award, UserPlus, ShieldAlert, Sparkles, Loader2 } from "lucide-react"
-import { toast } from "sonner"
-import { issueCertificate, revokeCertificate } from "@/lib/certificate-actions"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Trash2,
+  ExternalLink,
+  Award,
+  UserPlus,
+  ShieldAlert,
+  Sparkles,
+  Loader2,
+} from "lucide-react";
+import { toast } from "sonner";
+import { issueCertificate, revokeCertificate } from "@/lib/certificate-actions";
 
 interface User {
-  id: string
-  name: string | null
-  email: string
+  id: string;
+  name: string | null;
+  email: string;
 }
 
 interface Course {
-  id: string
-  title: string
+  id: string;
+  title: string;
 }
 
 interface Certificate {
-  id: string
-  certificateCode: string
-  grade: string
-  issueDate: Date
+  id: string;
+  certificateCode: string;
+  grade: string;
+  issueDate: Date;
   user: {
-    id: string
-    name: string | null
-    email: string
-  }
+    id: string;
+    name: string | null;
+    email: string;
+  };
   course: {
-    id: string
-    title: string
-  }
+    id: string;
+    title: string;
+  };
 }
 
 interface CertificatesManagerProps {
-  users: User[]
-  courses: Course[]
-  initialCertificates: Certificate[]
+  users: User[];
+  courses: Course[];
+  initialCertificates: Certificate[];
 }
 
 export function CertificatesManager({
@@ -47,67 +61,77 @@ export function CertificatesManager({
   courses,
   initialCertificates,
 }: CertificatesManagerProps) {
-  const router = useRouter()
-  const [selectedUserId, setSelectedUserId] = useState("")
-  const [selectedCourseId, setSelectedCourseId] = useState("")
-  const [grade, setGrade] = useState("Completed with Distinction (A)")
-  
-  const [isIssuing, setIsIssuing] = useState(false)
-  const [revokingId, setRevokingId] = useState<string | null>(null)
+  const router = useRouter();
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [grade, setGrade] = useState("Completed with Distinction (A)");
+
+  const [isIssuing, setIsIssuing] = useState(false);
+  const [revokingId, setRevokingId] = useState<string | null>(null);
 
   // Handle manual issuance
   const handleIssue = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!selectedUserId) {
-      toast.error("Please select a scholar")
-      return
+      toast.error("Please select a scholar");
+      return;
     }
     if (!selectedCourseId) {
-      toast.error("Please select a course")
-      return
+      toast.error("Please select a course");
+      return;
     }
 
-    setIsIssuing(true)
+    setIsIssuing(true);
     try {
-      const result = await issueCertificate(selectedUserId, selectedCourseId, grade)
+      const result = await issueCertificate(
+        selectedUserId,
+        selectedCourseId,
+        grade,
+      );
       if (result.success && result.certificateCode) {
-        toast.success(`Certificate ${result.certificateCode} issued successfully!`)
+        toast.success(
+          `Certificate ${result.certificateCode} issued successfully!`,
+        );
         // Reset form
-        setSelectedUserId("")
-        setSelectedCourseId("")
-        setGrade("Completed with Distinction (A)")
-        router.refresh()
+        setSelectedUserId("");
+        setSelectedCourseId("");
+        setGrade("Completed with Distinction (A)");
+        router.refresh();
       } else {
-        toast.error(result.error || "Failed to issue certificate")
+        toast.error(result.error || "Failed to issue certificate");
       }
     } catch (err: any) {
-      toast.error(err.message || "An unexpected error occurred")
+      toast.error(err.message || "An unexpected error occurred");
     } finally {
-      setIsIssuing(false)
+      setIsIssuing(false);
     }
-  }
+  };
 
   // Handle certificate revocation
   const handleRevoke = async (id: string, code: string) => {
-    if (!confirm(`Are you absolutely sure you want to revoke and delete certificate ${code}? This action cannot be undone.`)) {
-      return
+    if (
+      !confirm(
+        `Are you absolutely sure you want to revoke and delete certificate ${code}? This action cannot be undone.`,
+      )
+    ) {
+      return;
     }
 
-    setRevokingId(id)
+    setRevokingId(id);
     try {
-      const result = await revokeCertificate(id)
+      const result = await revokeCertificate(id);
       if (result.success) {
-        toast.success(`Certificate ${code} has been successfully revoked.`)
-        router.refresh()
+        toast.success(`Certificate ${code} has been successfully revoked.`);
+        router.refresh();
       } else {
-        toast.error(result.error || "Failed to revoke certificate")
+        toast.error(result.error || "Failed to revoke certificate");
       }
     } catch (err: any) {
-      toast.error(err.message || "An unexpected error occurred")
+      toast.error(err.message || "An unexpected error occurred");
     } finally {
-      setRevokingId(null)
+      setRevokingId(null);
     }
-  }
+  };
 
   return (
     <div className="space-y-8">
@@ -119,7 +143,8 @@ export function CertificatesManager({
             Scholar Certificates Manager
           </h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-            Manually issue, audit, and revoke calligraphic platform certifications.
+            Manually issue, audit, and revoke calligraphic platform
+            certifications.
           </p>
         </div>
       </div>
@@ -133,7 +158,8 @@ export function CertificatesManager({
               Manual Issuance
             </CardTitle>
             <CardDescription>
-              Directly award a calligraphic completion credential to a verified scholar.
+              Directly award a calligraphic completion credential to a verified
+              scholar.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -222,7 +248,8 @@ export function CertificatesManager({
               Registry Log & Audit Audit
             </CardTitle>
             <CardDescription>
-              Audit all {initialCertificates.length} active certificates registered on the platform.
+              Audit all {initialCertificates.length} active certificates
+              registered on the platform.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
@@ -247,10 +274,18 @@ export function CertificatesManager({
                 <tbody>
                   {initialCertificates.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="py-20 text-center text-gray-400">
+                      <td
+                        colSpan={4}
+                        className="py-20 text-center text-gray-400"
+                      >
                         <Award className="w-12 h-12 mx-auto mb-3 opacity-25" />
-                        <p className="font-bold text-sm">No registered certificates found</p>
-                        <p className="text-xs text-gray-500 mt-1">Issue a manual certificate above to start the registry.</p>
+                        <p className="font-bold text-sm">
+                          No registered certificates found
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Issue a manual certificate above to start the
+                          registry.
+                        </p>
                       </td>
                     </tr>
                   ) : (
@@ -264,7 +299,9 @@ export function CertificatesManager({
                           <p className="font-bold text-gray-900 dark:text-white">
                             {cert.user.name || "Unnamed"}
                           </p>
-                          <p className="text-xs text-gray-500 font-semibold">{cert.user.email}</p>
+                          <p className="text-xs text-gray-500 font-semibold">
+                            {cert.user.email}
+                          </p>
                         </td>
 
                         {/* Course */}
@@ -273,13 +310,24 @@ export function CertificatesManager({
                             {cert.course.title}
                           </p>
                           <p className="text-[10px] text-gray-400 font-medium">
-                            Issued: {new Date(cert.issueDate).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                            Issued:{" "}
+                            {new Date(cert.issueDate).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              },
+                            )}
                           </p>
                         </td>
 
                         {/* Code & Grade */}
                         <td className="px-5 py-4">
-                          <Badge variant="outline" className="font-mono text-xs font-bold border-amber-500/25 bg-amber-500/[0.03] text-amber-600 dark:text-amber-400">
+                          <Badge
+                            variant="outline"
+                            className="font-mono text-xs font-bold border-amber-500/25 bg-amber-500/[0.03] text-amber-600 dark:text-amber-400"
+                          >
                             {cert.certificateCode}
                           </Badge>
                           <p className="text-xs text-gray-500 font-semibold mt-1 italic">
@@ -312,7 +360,9 @@ export function CertificatesManager({
                               variant="ghost"
                               size="icon"
                               disabled={revokingId === cert.id}
-                              onClick={() => handleRevoke(cert.id, cert.certificateCode)}
+                              onClick={() =>
+                                handleRevoke(cert.id, cert.certificateCode)
+                              }
                               className="rounded-full hover:bg-red-50 dark:hover:bg-red-950/20 text-red-500"
                               title="Revoke Certificate"
                             >
@@ -334,5 +384,5 @@ export function CertificatesManager({
         </Card>
       </div>
     </div>
-  )
+  );
 }

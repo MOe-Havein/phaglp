@@ -1,16 +1,16 @@
-import { prisma, safeDbQuery } from "@/lib/prisma"
-import { unstable_cache } from "next/cache"
+import { prisma, safeDbQuery } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
 export interface LectureSummary {
-  id: string
-  title: string
-  slug: string
-  body: string
-  category: string
-  createdAt: string
+  id: string;
+  title: string;
+  slug: string;
+  body: string;
+  category: string;
+  createdAt: string;
   author: {
-    name: string | null
-  }
+    name: string | null;
+  };
 }
 
 /**
@@ -21,7 +21,9 @@ export interface LectureSummary {
  * @param limit Number of lectures to fetch (default 3)
  * @returns Array of lectures with basic info
  */
-export async function getLatestLectures(limit: number = 3): Promise<LectureSummary[]> {
+export async function getLatestLectures(
+  limit: number = 3,
+): Promise<LectureSummary[]> {
   const fetcher = unstable_cache(
     async () => {
       const result = await safeDbQuery(async () => {
@@ -46,14 +48,14 @@ export async function getLatestLectures(limit: number = 3): Promise<LectureSumma
               },
             },
           },
-        })
-      }, [])
+        });
+      }, []);
 
-      return (result.data as any) || []
+      return (result.data as any) || [];
     },
     [`latest-lectures-${limit}`],
     { tags: ["lectures"], revalidate: 300 },
-  )
+  );
 
-  return fetcher()
+  return fetcher();
 }

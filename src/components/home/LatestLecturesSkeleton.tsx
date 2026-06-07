@@ -1,4 +1,9 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 
 export function LatestLecturesSkeleton() {
   return (
@@ -14,7 +19,10 @@ export function LatestLecturesSkeleton() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="flex flex-col border border-primary/5 bg-background h-[350px]">
+            <Card
+              key={i}
+              className="flex flex-col border border-primary/5 bg-background h-[350px]"
+            >
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-center mb-3">
                   <div className="h-6 bg-muted rounded w-20"></div>
@@ -37,5 +45,5 @@ export function LatestLecturesSkeleton() {
         </div>
       </div>
     </section>
-  )
+  );
 }

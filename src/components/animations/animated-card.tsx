@@ -1,14 +1,18 @@
-"use client"
+"use client";
 
-import { motion, HTMLMotionProps } from "framer-motion"
-import { ReactNode } from "react"
+import { motion, HTMLMotionProps } from "framer-motion";
+import { ReactNode } from "react";
 
 interface AnimatedCardProps extends HTMLMotionProps<"div"> {
-  children: ReactNode
-  delay?: number
+  children: ReactNode;
+  delay?: number;
 }
 
-export function AnimatedCard({ children, delay = 0, ...props }: AnimatedCardProps) {
+export function AnimatedCard({
+  children,
+  delay = 0,
+  ...props
+}: AnimatedCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -22,5 +26,5 @@ export function AnimatedCard({ children, delay = 0, ...props }: AnimatedCardProp
     >
       {children}
     </motion.div>
-  )
+  );
 }

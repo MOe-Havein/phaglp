@@ -1,19 +1,23 @@
-import { SubscriptionTier } from "@prisma/client"
+import { SubscriptionTier } from "@prisma/client";
 
 /**
  * Checks if a user's subscription tier grants access to Pro features.
  * (Pro and Enterprise tiers)
  */
-export function canAccessProFeatures(tier?: SubscriptionTier | string): boolean {
-  return tier === SubscriptionTier.PRO || tier === SubscriptionTier.ENTERPRISE
+export function canAccessProFeatures(
+  tier?: SubscriptionTier | string,
+): boolean {
+  return tier === SubscriptionTier.PRO || tier === SubscriptionTier.ENTERPRISE;
 }
 
 /**
  * Checks if a user's subscription tier grants access to Enterprise features.
  * (Enterprise tier only)
  */
-export function canAccessEnterpriseFeatures(tier?: SubscriptionTier | string): boolean {
-  return tier === SubscriptionTier.ENTERPRISE
+export function canAccessEnterpriseFeatures(
+  tier?: SubscriptionTier | string,
+): boolean {
+  return tier === SubscriptionTier.ENTERPRISE;
 }
 
 /**
@@ -24,16 +28,16 @@ export function hasMinimumTier(
   userTier: SubscriptionTier | string | undefined,
   requiredTier: SubscriptionTier,
 ): boolean {
-  if (!userTier) return false
+  if (!userTier) return false;
 
   const levels = {
     [SubscriptionTier.BASIC]: 0,
     [SubscriptionTier.PRO]: 1,
     [SubscriptionTier.ENTERPRISE]: 2,
-  }
+  };
 
-  const userLevel = levels[userTier as SubscriptionTier] ?? -1
-  const requiredLevel = levels[requiredTier]
+  const userLevel = levels[userTier as SubscriptionTier] ?? -1;
+  const requiredLevel = levels[requiredTier];
 
-  return userLevel >= requiredLevel
+  return userLevel >= requiredLevel;
 }

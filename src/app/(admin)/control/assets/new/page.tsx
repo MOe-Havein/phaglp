@@ -1,36 +1,45 @@
-"use client"
+"use client";
 
-import { useActionState } from "react"
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { ArrowLeft, Package } from "lucide-react"
-import { createAcademyAsset } from "@/lib/server/actions/admin/assets"
-import { AssetCategory, AssetCondition, AssetStatus } from "@prisma/client"
-import type { ActionResponseState } from "@/types"
+import { useActionState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowLeft, Package } from "lucide-react";
+import { createAcademyAsset } from "@/lib/server/actions/admin/assets";
+import { AssetCategory, AssetCondition, AssetStatus } from "@prisma/client";
+import type { ActionResponseState } from "@/types";
 
-const initialState: ActionResponseState = { success: false }
+const initialState: ActionResponseState = { success: false };
 
-const CATEGORIES = Object.values(AssetCategory)
-const CONDITIONS = Object.values(AssetCondition)
-const STATUSES = Object.values(AssetStatus)
+const CATEGORIES = Object.values(AssetCategory);
+const CONDITIONS = Object.values(AssetCondition);
+const STATUSES = Object.values(AssetStatus);
 
-function Label({ children, required }: { children: React.ReactNode; required?: boolean }) {
+function Label({
+  children,
+  required,
+}: {
+  children: React.ReactNode;
+  required?: boolean;
+}) {
   return (
     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
       {children}
       {required && <span className="text-red-500 ml-0.5">*</span>}
     </label>
-  )
+  );
 }
 
-function Input({ name, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { name: string }) {
+function Input({
+  name,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & { name: string }) {
   return (
     <input
       name={name}
       {...props}
       className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 placeholder:text-gray-400"
     />
-  )
+  );
 }
 
 function Select({
@@ -46,16 +55,19 @@ function Select({
     >
       {children}
     </select>
-  )
+  );
 }
 
 function FieldError({ errors }: { errors?: string[] | undefined }) {
-  if (!errors?.length) return null
-  return <p className="text-xs text-red-500 mt-1">{errors[0]}</p>
+  if (!errors?.length) return null;
+  return <p className="text-xs text-red-500 mt-1">{errors[0]}</p>;
 }
 
 export default function NewAssetPage() {
-  const [state, formAction, isPending] = useActionState(createAcademyAsset, initialState)
+  const [state, formAction, isPending] = useActionState(
+    createAcademyAsset,
+    initialState,
+  );
 
   if (state.success) {
     return (
@@ -67,7 +79,9 @@ export default function NewAssetPage() {
         <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
           <Package className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Asset Created!</h2>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          Asset Created!
+        </h2>
         <p className="text-gray-500 dark:text-gray-400 text-sm">
           The asset was added to the inventory.
         </p>
@@ -87,7 +101,7 @@ export default function NewAssetPage() {
           </Link>
         </div>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -191,12 +205,22 @@ export default function NewAssetPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label required>Quantity</Label>
-              <Input name="quantity" type="number" min={0} defaultValue={1} required />
+              <Input
+                name="quantity"
+                type="number"
+                min={0}
+                defaultValue={1}
+                required
+              />
               <FieldError errors={state.fieldErrors?.quantity} />
             </div>
             <div>
               <Label>Unit</Label>
-              <Input name="quantityUnit" placeholder="unit" defaultValue="unit" />
+              <Input
+                name="quantityUnit"
+                placeholder="unit"
+                defaultValue="unit"
+              />
             </div>
           </div>
 
@@ -218,7 +242,13 @@ export default function NewAssetPage() {
             </div>
             <div>
               <Label>Purchase Price</Label>
-              <Input name="purchasePrice" type="number" step="0.01" min={0} placeholder="0.00" />
+              <Input
+                name="purchasePrice"
+                type="number"
+                step="0.01"
+                min={0}
+                placeholder="0.00"
+              />
             </div>
           </div>
 
@@ -245,5 +275,5 @@ export default function NewAssetPage() {
         </div>
       </form>
     </div>
-  )
+  );
 }

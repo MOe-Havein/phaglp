@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import Script from "next/script"
+import Script from "next/script";
 
 export function FoxyLoader() {
-  const subdomain = process.env.NEXT_PUBLIC_FOXY_STORE_SUBDOMAIN
+  const subdomain = process.env.NEXT_PUBLIC_FOXY_STORE_SUBDOMAIN;
 
   if (!subdomain) {
-    return null
+    return null;
   }
 
   // Load the FoxyCart Loader script asynchronously
@@ -16,5 +16,5 @@ export function FoxyLoader() {
       strategy="lazyOnload"
       id="foxycart-loader"
     />
-  )
+  );
 }

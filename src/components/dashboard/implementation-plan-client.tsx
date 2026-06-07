@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { toast } from "sonner"
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
 import {
   CheckCircle2,
   ShieldAlert,
@@ -19,27 +25,27 @@ import {
   Database,
   Lock,
   GitBranch,
-} from "lucide-react"
+} from "lucide-react";
 
 // Types
 interface Task {
-  id: string
-  title: string
-  description: string
-  phase: number
-  weight: "Critical" | "Major" | "Minor"
-  duration: string
-  impact: string
+  id: string;
+  title: string;
+  description: string;
+  phase: number;
+  weight: "Critical" | "Major" | "Minor";
+  duration: string;
+  impact: string;
 }
 
 interface PhaseInfo {
-  number: number
-  title: string
-  shortTitle: string
-  status: string
-  duration: string
-  badgeColor: string
-  icon: any
+  number: number;
+  title: string;
+  shortTitle: string;
+  status: string;
+  duration: string;
+  badgeColor: string;
+  icon: any;
 }
 
 // Complete Task Definition
@@ -271,7 +277,7 @@ const ALL_TASKS: Task[] = [
     duration: "1.5 days",
     impact: "Release Readiness",
   },
-]
+];
 
 const PHASES: PhaseInfo[] = [
   {
@@ -314,109 +320,131 @@ const PHASES: PhaseInfo[] = [
       "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/30",
     icon: Sparkles,
   },
-]
+];
 
 interface Props {
-  user?: any
+  user?: any;
 }
 
 export function ImplementationPlanClient({ user: _user }: Props) {
-  const [activeTab, setActiveTab] = useState<string>("1")
-  const [checkedTasks, setCheckedTasks] = useState<string[]>([])
-  const [mounted, setMounted] = useState<boolean>(false)
+  const [activeTab, setActiveTab] = useState<string>("1");
+  const [checkedTasks, setCheckedTasks] = useState<string[]>([]);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   // Initialize checked items from LocalStorage
   useEffect(() => {
-    setMounted(true)
-    const stored = localStorage.getItem("phaglp_implementation_progress")
+    setMounted(true);
+    const stored = localStorage.getItem("phaglp_implementation_progress");
     if (stored) {
       try {
-        setCheckedTasks(JSON.parse(stored))
+        setCheckedTasks(JSON.parse(stored));
       } catch (e) {
-        console.error("Failed to parse stored implementation progress.", e)
+        console.error("Failed to parse stored implementation progress.", e);
       }
     }
-  }, [])
+  }, []);
 
   // Persist checked items
   const persistChecked = (newChecked: string[]) => {
-    setCheckedTasks(newChecked)
-    localStorage.setItem("phaglp_implementation_progress", JSON.stringify(newChecked))
-  }
+    setCheckedTasks(newChecked);
+    localStorage.setItem(
+      "phaglp_implementation_progress",
+      JSON.stringify(newChecked),
+    );
+  };
 
   // Toggle checklist item
   const toggleTask = (taskId: string, taskTitle: string) => {
-    const isCurrentlyChecked = checkedTasks.includes(taskId)
-    let updated: string[]
+    const isCurrentlyChecked = checkedTasks.includes(taskId);
+    let updated: string[];
 
     if (isCurrentlyChecked) {
-      updated = checkedTasks.filter((id) => id !== taskId)
-      toast.info(`Marked "${taskTitle}" as incomplete.`)
+      updated = checkedTasks.filter((id) => id !== taskId);
+      toast.info(`Marked "${taskTitle}" as incomplete.`);
     } else {
-      updated = [...checkedTasks, taskId]
-      toast.success(`Completed task: "${taskTitle}"!`)
+      updated = [...checkedTasks, taskId];
+      toast.success(`Completed task: "${taskTitle}"!`);
     }
 
-    persistChecked(updated)
+    persistChecked(updated);
 
     // Optional congratulations when a phase is complete
     if (!isCurrentlyChecked) {
-      const taskObj = ALL_TASKS.find((t) => t.id === taskId)
+      const taskObj = ALL_TASKS.find((t) => t.id === taskId);
       if (taskObj) {
-        const phaseTasks = ALL_TASKS.filter((t) => t.phase === taskObj.phase)
-        const isPhaseComplete = phaseTasks.every((t) => t.id === taskId || updated.includes(t.id))
+        const phaseTasks = ALL_TASKS.filter((t) => t.phase === taskObj.phase);
+        const isPhaseComplete = phaseTasks.every(
+          (t) => t.id === taskId || updated.includes(t.id),
+        );
         if (isPhaseComplete) {
-          toast.success(`🎉 Phase ${taskObj.phase} has been fully completed! Spectacular job!`, {
-            duration: 5000,
-          })
+          toast.success(
+            `🎉 Phase ${taskObj.phase} has been fully completed! Spectacular job!`,
+            {
+              duration: 5000,
+            },
+          );
         }
       }
     }
-  }
+  };
 
   // Complete entire current phase
   const completePhase = (phaseNum: number) => {
-    const phaseTasks = ALL_TASKS.filter((t) => t.phase === phaseNum).map((t) => t.id)
-    const uniqueChecked = Array.from(new Set([...checkedTasks, ...phaseTasks]))
-    persistChecked(uniqueChecked)
-    toast.success(`Completed all tasks in Phase ${phaseNum}!`)
-  }
+    const phaseTasks = ALL_TASKS.filter((t) => t.phase === phaseNum).map(
+      (t) => t.id,
+    );
+    const uniqueChecked = Array.from(new Set([...checkedTasks, ...phaseTasks]));
+    persistChecked(uniqueChecked);
+    toast.success(`Completed all tasks in Phase ${phaseNum}!`);
+  };
 
   // Reset entire current phase
   const resetPhase = (phaseNum: number) => {
-    const phaseTasks = ALL_TASKS.filter((t) => t.phase === phaseNum).map((t) => t.id)
-    const updated = checkedTasks.filter((id) => !phaseTasks.includes(id))
-    persistChecked(updated)
-    toast.info(`Reset progress for Phase ${phaseNum}.`)
-  }
+    const phaseTasks = ALL_TASKS.filter((t) => t.phase === phaseNum).map(
+      (t) => t.id,
+    );
+    const updated = checkedTasks.filter((id) => !phaseTasks.includes(id));
+    persistChecked(updated);
+    toast.info(`Reset progress for Phase ${phaseNum}.`);
+  };
 
   // Complete everything
   const completeAll = () => {
-    const allIds = ALL_TASKS.map((t) => t.id)
-    persistChecked(allIds)
-    toast.success("Completed all tasks across the entire roadmap! Ready for launch!")
-  }
+    const allIds = ALL_TASKS.map((t) => t.id);
+    persistChecked(allIds);
+    toast.success(
+      "Completed all tasks across the entire roadmap! Ready for launch!",
+    );
+  };
 
   // Reset everything
   const resetAll = () => {
-    persistChecked([])
-    toast.info("Implementation progress has been fully reset.")
-  }
+    persistChecked([]);
+    toast.info("Implementation progress has been fully reset.");
+  };
 
   // Computations
-  const totalTasksCount = ALL_TASKS.length
-  const completedTasksCount = checkedTasks.filter((id) => ALL_TASKS.some((t) => t.id === id)).length
+  const totalTasksCount = ALL_TASKS.length;
+  const completedTasksCount = checkedTasks.filter((id) =>
+    ALL_TASKS.some((t) => t.id === id),
+  ).length;
   const progressPercent =
-    totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0
+    totalTasksCount > 0
+      ? Math.round((completedTasksCount / totalTasksCount) * 100)
+      : 0;
 
   const getPhaseTasksCount = (phaseNum: number) =>
-    ALL_TASKS.filter((t) => t.phase === phaseNum).length
+    ALL_TASKS.filter((t) => t.phase === phaseNum).length;
   const getPhaseCompletedCount = (phaseNum: number) =>
-    checkedTasks.filter((id) => ALL_TASKS.some((t) => t.phase === phaseNum && t.id === id)).length
+    checkedTasks.filter((id) =>
+      ALL_TASKS.some((t) => t.phase === phaseNum && t.id === id),
+    ).length;
   const getPhasePercent = (phaseNum: number) => {
-    const total = getPhaseTasksCount(phaseNum)
-    return total > 0 ? Math.round((getPhaseCompletedCount(phaseNum) / total) * 100) : 0
-  }
+    const total = getPhaseTasksCount(phaseNum);
+    return total > 0
+      ? Math.round((getPhaseCompletedCount(phaseNum) / total) * 100)
+      : 0;
+  };
 
   if (!mounted) {
     return (
@@ -426,7 +454,7 @@ export function ImplementationPlanClient({ user: _user }: Props) {
           Loading Implementation Canvas...
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -447,8 +475,8 @@ export function ImplementationPlanClient({ user: _user }: Props) {
             PHAGLP — implementation plan
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-            Based on FreshNextJS guidelines audit · Next.js 15 · TypeScript strict · Prisma +
-            Auth.js v5
+            Based on FreshNextJS guidelines audit · Next.js 15 · TypeScript
+            strict · Prisma + Auth.js v5
           </p>
         </div>
 
@@ -488,8 +516,8 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 Overall Roadmap Progress
               </CardTitle>
               <CardDescription className="text-xs">
-                Check off structural engineering components dynamically. Your session progress is
-                saved.
+                Check off structural engineering components dynamically. Your
+                session progress is saved.
               </CardDescription>
             </div>
             <div className="text-right shrink-0">
@@ -521,9 +549,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
       {/* Interactive Tabs Row */}
       <div className="grid grid-cols-2 md:grid-flow-col md:auto-cols-fr gap-2 border p-2 rounded-2xl bg-white/40 dark:bg-slate-900/40">
         {PHASES.map((phase) => {
-          const isActive = activeTab === phase.number.toString()
-          const percent = getPhasePercent(phase.number)
-          const Icon = phase.icon
+          const isActive = activeTab === phase.number.toString();
+          const percent = getPhasePercent(phase.number);
+          const Icon = phase.icon;
 
           return (
             <button
@@ -544,11 +572,17 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <Icon
                   className={`w-4 h-4 ${isActive ? "text-primary animate-pulse" : "opacity-60"}`}
                 />
-                <span className={isActive ? "text-foreground font-extrabold" : "font-medium"}>
+                <span
+                  className={
+                    isActive ? "text-foreground font-extrabold" : "font-medium"
+                  }
+                >
                   {phase.shortTitle}
                 </span>
               </div>
-              <span className={`text-[10px] uppercase font-bold tracking-wider mb-2 leading-none`}>
+              <span
+                className={`text-[10px] uppercase font-bold tracking-wider mb-2 leading-none`}
+              >
                 {phase.number === 1
                   ? "Critical"
                   : phase.number === 2
@@ -571,7 +605,7 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 {percent}% done
               </span>
             </button>
-          )
+          );
         })}
 
         <button
@@ -588,7 +622,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
             />
             <span
               className={
-                activeTab === "overview" ? "text-foreground font-extrabold" : "font-medium"
+                activeTab === "overview"
+                  ? "text-foreground font-extrabold"
+                  : "font-medium"
               }
             >
               Overview
@@ -606,12 +642,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
 
       {/* Tab Panels */}
       {PHASES.map((phase) => {
-        if (activeTab !== phase.number.toString()) return null
+        if (activeTab !== phase.number.toString()) return null;
 
-        const phaseTasks = ALL_TASKS.filter((t) => t.phase === phase.number)
-        const completedCount = getPhaseCompletedCount(phase.number)
-        const totalCount = getPhaseTasksCount(phase.number)
-        const isPhaseFullyDone = completedCount === totalCount
+        const phaseTasks = ALL_TASKS.filter((t) => t.phase === phase.number);
+        const completedCount = getPhaseCompletedCount(phase.number);
+        const totalCount = getPhaseTasksCount(phase.number);
+        const isPhaseFullyDone = completedCount === totalCount;
 
         return (
           <div key={phase.number} className="space-y-6">
@@ -649,7 +685,10 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 </div>
               </div>
               <div className="flex items-center gap-3 shrink-0 self-start sm:self-center">
-                <Badge variant="secondary" className="text-xs font-semibold py-1 px-3 rounded-full">
+                <Badge
+                  variant="secondary"
+                  className="text-xs font-semibold py-1 px-3 rounded-full"
+                >
                   {phase.duration}
                 </Badge>
                 <div className="flex items-center gap-1.5">
@@ -680,7 +719,7 @@ export function ImplementationPlanClient({ user: _user }: Props) {
             {/* Task Cards Grid */}
             <div className="grid md:grid-cols-2 gap-4">
               {phaseTasks.map((task) => {
-                const isChecked = checkedTasks.includes(task.id)
+                const isChecked = checkedTasks.includes(task.id);
 
                 return (
                   <div
@@ -747,11 +786,11 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                       </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
-        )
+        );
       })}
 
       {/* Overview Panel */}
@@ -769,7 +808,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-black text-foreground">A+</div>
-                <p className="text-xs text-muted-foreground mt-1">Excellent compliance status</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Excellent compliance status
+                </p>
               </CardContent>
             </Card>
 
@@ -783,7 +824,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-black text-foreground">6 / 6</div>
-                <p className="text-xs text-muted-foreground mt-1">Phase 1 defenses deployed</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Phase 1 defenses deployed
+                </p>
               </CardContent>
             </Card>
 
@@ -796,8 +839,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <Timer className="w-4.5 h-4.5 text-indigo-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-black text-foreground">~14-21</div>
-                <p className="text-xs text-muted-foreground mt-1">Days total estimated scope</p>
+                <div className="text-3xl font-black text-foreground">
+                  ~14-21
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Days total estimated scope
+                </p>
               </CardContent>
             </Card>
 
@@ -816,7 +863,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                     / {totalTasksCount}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Dynamic live progress index</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Dynamic live progress index
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -833,9 +882,9 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               <div className="hidden md:block absolute top-[21px] left-[15%] right-[15%] h-0.5 bg-slate-200 dark:bg-slate-800 -z-10" />
 
               {PHASES.map((p) => {
-                const percent = getPhasePercent(p.number)
-                const isFullyComplete = percent === 100
-                const isStarted = percent > 0
+                const percent = getPhasePercent(p.number);
+                const isFullyComplete = percent === 100;
+                const isStarted = percent > 0;
 
                 return (
                   <div
@@ -852,7 +901,11 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                             : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-muted-foreground"
                       }`}
                     >
-                      {isFullyComplete ? <Check className="w-5 h-5 stroke-[3]" /> : p.number}
+                      {isFullyComplete ? (
+                        <Check className="w-5 h-5 stroke-[3]" />
+                      ) : (
+                        p.number
+                      )}
                     </div>
 
                     <div className="space-y-1">
@@ -877,14 +930,16 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                         >
                           {percent}%
                         </span>
-                        <span className="text-slate-300 dark:text-slate-700">•</span>
+                        <span className="text-slate-300 dark:text-slate-700">
+                          •
+                        </span>
                         <span className="text-muted-foreground">
                           {getPhaseCompletedCount(p.number)} done
                         </span>
                       </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </Card>
@@ -896,9 +951,10 @@ export function ImplementationPlanClient({ user: _user }: Props) {
               Technical Stack & Compliance Auditing
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed mb-6">
-              The PHAGLP Platform incorporates rigorous structural auditing, aligning itself with
-              strict development rulesets. We employ optimized client engines, strict compilation
-              filters, and baseline security validations to establish robust standalone containers.
+              The PHAGLP Platform incorporates rigorous structural auditing,
+              aligning itself with strict development rulesets. We employ
+              optimized client engines, strict compilation filters, and baseline
+              security validations to establish robust standalone containers.
             </p>
 
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs font-semibold">
@@ -906,10 +962,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                   Framework
                 </span>
-                <p className="text-sm font-black text-foreground">Next.js 15 (App Router)</p>
+                <p className="text-sm font-black text-foreground">
+                  Next.js 15 (App Router)
+                </p>
                 <p className="text-[10px] text-muted-foreground leading-tight">
-                  Server Components, dynamic Webpack ignore wrappers, edge jose compilation
-                  compatibility.
+                  Server Components, dynamic Webpack ignore wrappers, edge jose
+                  compilation compatibility.
                 </p>
               </div>
 
@@ -917,10 +975,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                   Type Safety
                 </span>
-                <p className="text-sm font-black text-foreground">TypeScript strict mode</p>
+                <p className="text-sm font-black text-foreground">
+                  TypeScript strict mode
+                </p>
                 <p className="text-[10px] text-muted-foreground leading-tight">
-                  Elimination of implicit parameters, robust helper utilities, clean local imports,
-                  zero build warning overrides.
+                  Elimination of implicit parameters, robust helper utilities,
+                  clean local imports, zero build warning overrides.
                 </p>
               </div>
 
@@ -928,10 +988,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                   Authentication
                 </span>
-                <p className="text-sm font-black text-foreground">Auth.js v5 (NextAuth)</p>
+                <p className="text-sm font-black text-foreground">
+                  Auth.js v5 (NextAuth)
+                </p>
                 <p className="text-[10px] text-muted-foreground leading-tight">
-                  httpOnly session tokens, redirect error propagation hooks, robust salt password
-                  hashing schemes.
+                  httpOnly session tokens, redirect error propagation hooks,
+                  robust salt password hashing schemes.
                 </p>
               </div>
 
@@ -939,10 +1001,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                   Database layer
                 </span>
-                <p className="text-sm font-black text-foreground">Prisma Client & SQLite</p>
+                <p className="text-sm font-black text-foreground">
+                  Prisma Client & SQLite
+                </p>
                 <p className="text-[10px] text-muted-foreground leading-tight">
-                  Optimized relation mappings, indexed user tier scopes, baseline migration setups,
-                  singleton instances.
+                  Optimized relation mappings, indexed user tier scopes,
+                  baseline migration setups, singleton instances.
                 </p>
               </div>
 
@@ -950,10 +1014,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                   Container Staging
                 </span>
-                <p className="text-sm font-black text-foreground">Docker Standalone Runner</p>
+                <p className="text-sm font-black text-foreground">
+                  Docker Standalone Runner
+                </p>
                 <p className="text-[10px] text-muted-foreground leading-tight">
-                  Prepackaged local CLI builders, standalone node configs, container healthcheck
-                  monitoring modules.
+                  Prepackaged local CLI builders, standalone node configs,
+                  container healthcheck monitoring modules.
                 </p>
               </div>
 
@@ -961,10 +1027,12 @@ export function ImplementationPlanClient({ user: _user }: Props) {
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                   Testing Suite
                 </span>
-                <p className="text-sm font-black text-foreground">Vitest & Playwright</p>
+                <p className="text-sm font-black text-foreground">
+                  Vitest & Playwright
+                </p>
                 <p className="text-[10px] text-muted-foreground leading-tight">
-                  Unit logic validators, automated browser regression tests, E2E checkouts,
-                  multi-browser configurations.
+                  Unit logic validators, automated browser regression tests, E2E
+                  checkouts, multi-browser configurations.
                 </p>
               </div>
             </div>
@@ -972,5 +1040,5 @@ export function ImplementationPlanClient({ user: _user }: Props) {
         </div>
       )}
     </div>
-  )
+  );
 }

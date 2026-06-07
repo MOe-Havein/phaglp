@@ -1,10 +1,10 @@
-import { Navigation } from "lucide-react"
-import { prisma } from "@/lib/prisma"
-import { MenuManager } from "@/components/control/menu-manager"
+import { Navigation } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import { MenuManager } from "@/components/control/menu-manager";
 
 export const metadata = {
   title: "Navigation Control — PHAGLP Control",
-}
+};
 
 async function getMenus() {
   try {
@@ -13,9 +13,9 @@ async function getMenus() {
       include: {
         items: { orderBy: { order: "asc" } },
       },
-    })
+    });
   } catch {
-    return []
+    return [];
   }
 }
 
@@ -24,14 +24,14 @@ async function getPages() {
     return await prisma.page.findMany({
       select: { id: true, title: true, slug: true },
       orderBy: { title: "asc" },
-    })
+    });
   } catch {
-    return []
+    return [];
   }
 }
 
 export default async function NavigationPage() {
-  const [menus, pages] = await Promise.all([getMenus(), getPages()])
+  const [menus, pages] = await Promise.all([getMenus(), getPages()]);
 
   return (
     <div className="space-y-6">
@@ -44,11 +44,12 @@ export default async function NavigationPage() {
           Navigation Control
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Manage header and footer menus and sub-links mapped to dynamic pages or custom URLs.
+          Manage header and footer menus and sub-links mapped to dynamic pages
+          or custom URLs.
         </p>
       </div>
 
       <MenuManager initialMenus={menus as any} pages={pages} />
     </div>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React from "react"
-import { SectionType } from "@/types/homepage"
+import React from "react";
+import { SectionType } from "@/types/homepage";
 import {
   LayoutTemplate,
   Image as ImageIcon,
@@ -9,18 +9,27 @@ import {
   Handshake,
   Columns,
   GraduationCap,
-} from "lucide-react"
+} from "lucide-react";
 
 interface SectionTypeModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSelect: (type: SectionType) => void
+  isOpen: boolean;
+  onClose: () => void;
+  onSelect: (type: SectionType) => void;
 }
 
-export function SectionTypeModal({ isOpen, onClose, onSelect }: SectionTypeModalProps) {
-  if (!isOpen) return null
+export function SectionTypeModal({
+  isOpen,
+  onClose,
+  onSelect,
+}: SectionTypeModalProps) {
+  if (!isOpen) return null;
 
-  const types: { type: SectionType; icon: React.ReactNode; label: string; desc: string }[] = [
+  const types: {
+    type: SectionType;
+    icon: React.ReactNode;
+    label: string;
+    desc: string;
+  }[] = [
     {
       type: "hero",
       icon: <LayoutTemplate size={24} />,
@@ -57,13 +66,15 @@ export function SectionTypeModal({ isOpen, onClose, onSelect }: SectionTypeModal
       label: "Latest Lectures",
       desc: "Horizontal Coursera-styled grid displaying the latest lectures",
     },
-  ]
+  ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-surface border border-border w-full max-w-lg rounded-xl shadow-xl overflow-hidden flex flex-col">
         <div className="flex justify-between items-center p-6 border-b border-border">
-          <h2 className="text-xl font-semibold text-foreground">Add New Section</h2>
+          <h2 className="text-xl font-semibold text-foreground">
+            Add New Section
+          </h2>
           <button
             onClick={onClose}
             className="text-muted hover:text-foreground text-2xl leading-none"
@@ -79,7 +90,9 @@ export function SectionTypeModal({ isOpen, onClose, onSelect }: SectionTypeModal
               onClick={() => onSelect(t.type)}
               className="flex items-center gap-4 p-4 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all text-left group"
             >
-              <div className="text-muted group-hover:text-primary transition-colors">{t.icon}</div>
+              <div className="text-muted group-hover:text-primary transition-colors">
+                {t.icon}
+              </div>
               <div>
                 <h3 className="font-semibold text-foreground">{t.label}</h3>
                 <p className="text-sm text-text-muted mt-0.5">{t.desc}</p>
@@ -89,5 +102,5 @@ export function SectionTypeModal({ isOpen, onClose, onSelect }: SectionTypeModal
         </div>
       </div>
     </div>
-  )
+  );
 }

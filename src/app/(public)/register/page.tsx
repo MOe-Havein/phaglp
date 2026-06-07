@@ -1,24 +1,30 @@
-import { prisma } from "@/lib/prisma"
-import { RegisterForm } from "@/components/auth/register-form"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ShieldAlert, MessageCircle } from "lucide-react"
-import Link from "next/link"
+import { prisma } from "@/lib/prisma";
+import { RegisterForm } from "@/components/auth/register-form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ShieldAlert, MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 // Ensure dynamic rendering to read database configuration
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function RegisterPage() {
-  let allowRegistration = true
+  let allowRegistration = true;
   try {
     const settings = await prisma.siteSettings.findUnique({
       where: { id: "global" },
       select: { allowRegistration: true },
-    })
+    });
     if (settings) {
-      allowRegistration = settings.allowRegistration
+      allowRegistration = settings.allowRegistration;
     }
   } catch (error) {
-    console.error("Failed to query registration site settings:", error)
+    console.error("Failed to query registration site settings:", error);
   }
 
   return (
@@ -36,11 +42,14 @@ export default async function RegisterPage() {
             <CardTitle className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
               Registration Closed
             </CardTitle>
-            <CardDescription>Public enrollment is currently paused.</CardDescription>
+            <CardDescription>
+              Public enrollment is currently paused.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 text-center">
             <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              We are currently not accepting new public member signups at this time. If you already have an account, you can log in below.
+              We are currently not accepting new public member signups at this
+              time. If you already have an account, you can log in below.
             </p>
 
             <div className="flex flex-col gap-2 pt-2">
@@ -62,5 +71,5 @@ export default async function RegisterPage() {
         </Card>
       )}
     </div>
-  )
+  );
 }

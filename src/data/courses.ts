@@ -35,4 +35,4 @@ export const courses = [
     rating: 4.9,
     category: "EDUCATION",
   },
-]
+];

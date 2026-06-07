@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Sparkles, Save, Eye, ArrowLeft, Share, Download } from "lucide-react"
-import { AIContentGenerator } from "@/components/ai-content-generator"
-import { WebsitePreview } from "@/components/website-preview"
-import Link from "next/link"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sparkles, Save, Eye, ArrowLeft, Share, Download } from "lucide-react";
+import { AIContentGenerator } from "@/components/ai-content-generator";
+import { WebsitePreview } from "@/components/website-preview";
+import Link from "next/link";
 
 export default function EditProjectPage() {
-  const [activeTab, setActiveTab] = useState("content")
+  const [activeTab, setActiveTab] = useState("content");
   const [websiteData, setWebsiteData] = useState({
     title: "Tech Startup Landing",
     subtitle: "Revolutionary SaaS platform for modern businesses",
@@ -28,29 +34,29 @@ export default function EditProjectPage() {
       "API Integration",
       "Custom Workflows",
     ],
-  })
+  });
 
-  const [isSaving, setIsSaving] = useState(false)
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
   const handleContentUpdate = (field: string, value: string | string[]) => {
     setWebsiteData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSave = async () => {
-    setIsSaving(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setLastSaved(new Date())
-    setIsSaving(false)
-  }
+    setIsSaving(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setLastSaved(new Date());
+    setIsSaving(false);
+  };
 
   const handlePublish = async () => {
-    await handleSave()
-    alert("Website published successfully!")
-  }
+    await handleSave();
+    alert("Website published successfully!");
+  };
 
   return (
     <div className="min-h-screen bg-secondary">
@@ -69,9 +75,13 @@ export default function EditProjectPage() {
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
-                <span className="text-xl font-bold text-foreground">Tech Startup Landing</span>
+                <span className="text-xl font-bold text-foreground">
+                  Tech Startup Landing
+                </span>
                 <div className="text-xs text-muted-foreground">
-                  {lastSaved ? `Saved ${lastSaved.toLocaleTimeString()}` : "Unsaved changes"}
+                  {lastSaved
+                    ? `Saved ${lastSaved.toLocaleTimeString()}`
+                    : "Unsaved changes"}
                 </div>
               </div>
             </div>
@@ -128,17 +138,25 @@ export default function EditProjectPage() {
                       <Sparkles className="w-5 h-5 text-primary" />
                       AI Content Generator
                     </CardTitle>
-                    <CardDescription>Generate and refine your content with AI</CardDescription>
+                    <CardDescription>
+                      Generate and refine your content with AI
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <AIContentGenerator onContentGenerated={handleContentUpdate} />
+                    <AIContentGenerator
+                      onContentGenerated={handleContentUpdate}
+                    />
                   </CardContent>
                 </Card>
 
                 <Card className="bg-background">
                   <CardHeader>
-                    <CardTitle className="text-foreground">Content Editor</CardTitle>
-                    <CardDescription>Manually edit your content</CardDescription>
+                    <CardTitle className="text-foreground">
+                      Content Editor
+                    </CardTitle>
+                    <CardDescription>
+                      Manually edit your content
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
@@ -147,7 +165,9 @@ export default function EditProjectPage() {
                       </label>
                       <Input
                         value={websiteData.title}
-                        onChange={(e) => handleContentUpdate("title", e.target.value)}
+                        onChange={(e) =>
+                          handleContentUpdate("title", e.target.value)
+                        }
                         placeholder="Your business title"
                       />
                     </div>
@@ -157,7 +177,9 @@ export default function EditProjectPage() {
                       </label>
                       <Input
                         value={websiteData.subtitle}
-                        onChange={(e) => handleContentUpdate("subtitle", e.target.value)}
+                        onChange={(e) =>
+                          handleContentUpdate("subtitle", e.target.value)
+                        }
                         placeholder="Compelling subtitle"
                       />
                     </div>
@@ -167,7 +189,9 @@ export default function EditProjectPage() {
                       </label>
                       <Textarea
                         value={websiteData.description}
-                        onChange={(e) => handleContentUpdate("description", e.target.value)}
+                        onChange={(e) =>
+                          handleContentUpdate("description", e.target.value)
+                        }
                         placeholder="Describe your business"
                         rows={4}
                       />
@@ -178,7 +202,9 @@ export default function EditProjectPage() {
                       </label>
                       <Input
                         value={websiteData.ctaText}
-                        onChange={(e) => handleContentUpdate("ctaText", e.target.value)}
+                        onChange={(e) =>
+                          handleContentUpdate("ctaText", e.target.value)
+                        }
                         placeholder="Get Started"
                       />
                     </div>
@@ -189,8 +215,12 @@ export default function EditProjectPage() {
               <TabsContent value="design" className="space-y-6 mt-6">
                 <Card className="bg-background">
                   <CardHeader>
-                    <CardTitle className="text-foreground">Theme & Colors</CardTitle>
-                    <CardDescription>Customize your website's appearance</CardDescription>
+                    <CardTitle className="text-foreground">
+                      Theme & Colors
+                    </CardTitle>
+                    <CardDescription>
+                      Customize your website's appearance
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-3 gap-3 mb-4">
@@ -206,20 +236,30 @@ export default function EditProjectPage() {
 
                 <Card className="bg-background">
                   <CardHeader>
-                    <CardTitle className="text-foreground">Typography</CardTitle>
-                    <CardDescription>Choose fonts for your website</CardDescription>
+                    <CardTitle className="text-foreground">
+                      Typography
+                    </CardTitle>
+                    <CardDescription>
+                      Choose fonts for your website
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
                       <div className="p-3 border rounded-lg cursor-pointer hover:bg-secondary border-primary/30 bg-primary/5">
-                        <div className="font-bold text-lg text-foreground">Inter</div>
-                        <div className="text-sm text-muted-foreground">Modern and clean</div>
+                        <div className="font-bold text-lg text-foreground">
+                          Inter
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Modern and clean
+                        </div>
                       </div>
                       <div className="p-3 border rounded-lg cursor-pointer hover:bg-secondary">
                         <div className="font-bold text-lg font-serif text-foreground">
                           Playfair Display
                         </div>
-                        <div className="text-sm text-muted-foreground">Elegant serif</div>
+                        <div className="text-sm text-muted-foreground">
+                          Elegant serif
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -229,8 +269,12 @@ export default function EditProjectPage() {
               <TabsContent value="settings" className="space-y-6 mt-6">
                 <Card className="bg-background">
                   <CardHeader>
-                    <CardTitle className="text-foreground">SEO Settings</CardTitle>
-                    <CardDescription>Optimize for search engines</CardDescription>
+                    <CardTitle className="text-foreground">
+                      SEO Settings
+                    </CardTitle>
+                    <CardDescription>
+                      Optimize for search engines
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
@@ -243,15 +287,22 @@ export default function EditProjectPage() {
                       <label className="text-sm font-medium mb-2 block text-foreground">
                         Meta Description
                       </label>
-                      <Textarea placeholder="Brief description for search results" rows={3} />
+                      <Textarea
+                        placeholder="Brief description for search results"
+                        rows={3}
+                      />
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="bg-background">
                   <CardHeader>
-                    <CardTitle className="text-foreground">Domain & Publishing</CardTitle>
-                    <CardDescription>Configure your website URL</CardDescription>
+                    <CardTitle className="text-foreground">
+                      Domain & Publishing
+                    </CardTitle>
+                    <CardDescription>
+                      Configure your website URL
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
@@ -276,5 +327,5 @@ export default function EditProjectPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,10 +1,11 @@
-import { ContactForm } from "@/components/contact-form"
-import { Mail, MapPin, Phone } from "lucide-react"
+import { ContactForm } from "@/components/contact-form";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 export const metadata = {
   title: "Contact Us | PHAGLP",
-  description: "Get in touch with the PHAGLP team for any inquiries or feedback.",
-}
+  description:
+    "Get in touch with the PHAGLP team for any inquiries or feedback.",
+};
 
 export default function ContactPage() {
   return (
@@ -12,8 +13,8 @@ export default function ContactPage() {
       <div className="text-center max-w-2xl mx-auto mb-16">
         <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
         <p className="text-lg text-muted-foreground">
-          Whether you have questions about our courses, research, or anything else, we're here to
-          help.
+          Whether you have questions about our courses, research, or anything
+          else, we're here to help.
         </p>
       </div>
 
@@ -37,7 +38,9 @@ export default function ContactPage() {
             </div>
             <div>
               <h3 className="font-bold">Location</h3>
-              <p className="text-muted-foreground">2501 Case Street, Batesville Arkansas US</p>
+              <p className="text-muted-foreground">
+                2501 Case Street, Batesville Arkansas US
+              </p>
             </div>
           </div>
 
@@ -57,5 +60,5 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

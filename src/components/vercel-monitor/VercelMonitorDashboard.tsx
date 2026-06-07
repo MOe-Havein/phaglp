@@ -1,59 +1,63 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import type { MonitorData } from "@/app/api/vercel-monitor/route"
-import { StatusBadge } from "./StatusBadge"
-import { AlertBanner } from "./AlertBanner"
-import { ProjectCard } from "./ProjectCard"
-import { DeploymentRow } from "./DeploymentRow"
-import { SummaryStats } from "./SummaryStats"
+import { useState, useEffect, useCallback } from "react";
+import type { MonitorData } from "@/app/api/vercel-monitor/route";
+import { StatusBadge } from "./StatusBadge";
+import { AlertBanner } from "./AlertBanner";
+import { ProjectCard } from "./ProjectCard";
+import { DeploymentRow } from "./DeploymentRow";
+import { SummaryStats } from "./SummaryStats";
 
-const REFRESH_INTERVAL = 30_000 // 30 seconds
+const REFRESH_INTERVAL = 30_000; // 30 seconds
 
 export function VercelMonitorDashboard() {
-  const [data, setData] = useState<MonitorData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null)
-  const [countdown, setCountdown] = useState(REFRESH_INTERVAL / 1000)
-  const [activeTab, setActiveTab] = useState<"projects" | "deployments" | "alerts">("projects")
+  const [data, setData] = useState<MonitorData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+  const [countdown, setCountdown] = useState(REFRESH_INTERVAL / 1000);
+  const [activeTab, setActiveTab] = useState<
+    "projects" | "deployments" | "alerts"
+  >("projects");
 
   const fetchData = useCallback(async () => {
     try {
-      setError(null)
-      const res = await fetch("/api/vercel-monitor", { cache: "no-store" })
+      setError(null);
+      const res = await fetch("/api/vercel-monitor", { cache: "no-store" });
       if (!res.ok) {
-        const body = await res.json()
-        throw new Error(body.error ?? `HTTP ${res.status}`)
+        const body = await res.json();
+        throw new Error(body.error ?? `HTTP ${res.status}`);
       }
-      const json: MonitorData = await res.json()
-      setData(json)
-      setLastRefreshed(new Date())
-      setCountdown(REFRESH_INTERVAL / 1000)
+      const json: MonitorData = await res.json();
+      setData(json);
+      setLastRefreshed(new Date());
+      setCountdown(REFRESH_INTERVAL / 1000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to fetch data")
+      setError(e instanceof Error ? e.message : "Failed to fetch data");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchData()
-    const interval = setInterval(fetchData, REFRESH_INTERVAL)
-    return () => clearInterval(interval)
-  }, [fetchData])
+    fetchData();
+    const interval = setInterval(fetchData, REFRESH_INTERVAL);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   // Countdown timer
   useEffect(() => {
     const timer = setInterval(() => {
-      setCountdown((c) => (c <= 1 ? REFRESH_INTERVAL / 1000 : c - 1))
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
+      setCountdown((c) => (c <= 1 ? REFRESH_INTERVAL / 1000 : c - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-  const criticalAlerts = data?.alerts.filter((a) => a.severity === "critical") ?? []
-  const warningAlerts = data?.alerts.filter((a) => a.severity === "warning") ?? []
-  const hasAlerts = (data?.alerts.length ?? 0) > 0
+  const criticalAlerts =
+    data?.alerts.filter((a) => a.severity === "critical") ?? [];
+  const warningAlerts =
+    data?.alerts.filter((a) => a.severity === "warning") ?? [];
+  const hasAlerts = (data?.alerts.length ?? 0) > 0;
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
@@ -72,8 +76,18 @@ export function VercelMonitorDashboard() {
           <div>
             <div className="flex items-center gap-3 mb-1">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center shadow-lg shadow-violet-500/25">
-                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
                 </svg>
               </div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
@@ -107,7 +121,12 @@ export function VercelMonitorDashboard() {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
               </svg>
               {loading ? "Refreshing..." : "Refresh"}
             </button>
@@ -124,11 +143,23 @@ export function VercelMonitorDashboard() {
         {/* Error state */}
         {error && (
           <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-3">
-            <svg className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <div>
-              <p className="text-sm font-medium text-red-300">Connection Error</p>
+              <p className="text-sm font-medium text-red-300">
+                Connection Error
+              </p>
               <p className="text-xs text-red-400/70 mt-1">{error}</p>
             </div>
           </div>
@@ -177,7 +208,7 @@ export function VercelMonitorDashboard() {
                       ? data.projects.length
                       : tab === "deployments"
                         ? data.recentDeployments.length
-                        : data.alerts.length
+                        : data.alerts.length;
                   return (
                     <button
                       key={tab}
@@ -199,7 +230,7 @@ export function VercelMonitorDashboard() {
                         {count}
                       </span>
                     </button>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -240,12 +271,26 @@ export function VercelMonitorDashboard() {
                 {data.alerts.length === 0 && (
                   <div className="text-center py-20 rounded-2xl border border-white/5 bg-white/[0.02]">
                     <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                      <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-6 h-6 text-emerald-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     </div>
-                    <p className="text-white/50 font-medium">All systems healthy</p>
-                    <p className="text-white/25 text-sm mt-1">No active alerts detected</p>
+                    <p className="text-white/50 font-medium">
+                      All systems healthy
+                    </p>
+                    <p className="text-white/25 text-sm mt-1">
+                      No active alerts detected
+                    </p>
                   </div>
                 )}
                 {data.alerts.map((alert) => (
@@ -268,5 +313,5 @@ export function VercelMonitorDashboard() {
         )}
       </div>
     </div>
-  )
+  );
 }

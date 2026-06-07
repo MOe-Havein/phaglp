@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useActionState } from "react"
-import { motion } from "framer-motion"
-import { allocateAsset } from "@/lib/server/actions/admin/assets"
-import type { ActionResponseState } from "@/types"
+import { useActionState } from "react";
+import { motion } from "framer-motion";
+import { allocateAsset } from "@/lib/server/actions/admin/assets";
+import type { ActionResponseState } from "@/types";
 
 interface User {
-  id: string
-  name: string | null
-  email: string
+  id: string;
+  name: string | null;
+  email: string;
 }
 
 interface AssetAllocateFormProps {
-  assetId: string
-  availableQty: number
-  users: User[]
-  onClose?: () => void
+  assetId: string;
+  availableQty: number;
+  users: User[];
+  onClose?: () => void;
 }
 
-const initialState: ActionResponseState = { success: false }
+const initialState: ActionResponseState = { success: false };
 
 export function AssetAllocateForm({
   assetId,
@@ -26,8 +26,11 @@ export function AssetAllocateForm({
   users,
   onClose,
 }: AssetAllocateFormProps) {
-  const boundAction = allocateAsset.bind(null, assetId)
-  const [state, formAction, isPending] = useActionState(boundAction, initialState)
+  const boundAction = allocateAsset.bind(null, assetId);
+  const [state, formAction, isPending] = useActionState(
+    boundAction,
+    initialState,
+  );
 
   return (
     <motion.div
@@ -35,7 +38,9 @@ export function AssetAllocateForm({
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 space-y-5"
     >
-      <h3 className="text-base font-semibold text-gray-900 dark:text-white">Allocate Asset</h3>
+      <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+        Allocate Asset
+      </h3>
 
       {state.success && (
         <motion.p
@@ -76,7 +81,9 @@ export function AssetAllocateForm({
             ))}
           </select>
           {state.fieldErrors?.userId && (
-            <p className="text-xs text-red-500 mt-1">{state.fieldErrors.userId[0]}</p>
+            <p className="text-xs text-red-500 mt-1">
+              {state.fieldErrors.userId[0]}
+            </p>
           )}
         </div>
 
@@ -84,7 +91,9 @@ export function AssetAllocateForm({
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Quantity <span className="text-red-500">*</span>
-            <span className="text-gray-400 font-normal ml-1">(max {availableQty})</span>
+            <span className="text-gray-400 font-normal ml-1">
+              (max {availableQty})
+            </span>
           </label>
           <input
             type="number"
@@ -96,7 +105,9 @@ export function AssetAllocateForm({
             className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           />
           {state.fieldErrors?.quantity && (
-            <p className="text-xs text-red-500 mt-1">{state.fieldErrors.quantity[0]}</p>
+            <p className="text-xs text-red-500 mt-1">
+              {state.fieldErrors.quantity[0]}
+            </p>
           )}
         </div>
 
@@ -133,5 +144,5 @@ export function AssetAllocateForm({
         </div>
       </form>
     </motion.div>
-  )
+  );
 }

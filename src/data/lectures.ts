@@ -47,4 +47,4 @@ export const lectures = [
       <p>As AI tools become more integrated into the classroom, the role of the teacher shifts from information provider to guide of wisdom.</p>
     `,
   },
-]
+];

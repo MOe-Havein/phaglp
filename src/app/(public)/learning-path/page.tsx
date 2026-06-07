@@ -1,6 +1,6 @@
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ArrowLeft,
   BookOpen,
@@ -16,14 +16,14 @@ import {
   Library,
   CompassIcon,
   GraduationCapIcon,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 export const metadata = {
   title: "START THE GENIUS’S WAY (GP) | PHAGLP",
   description:
     "Explore the General Program of Life Planning for geniuses, gifted, and talented, young and adult, formulated by Ibrahim Alomrani.",
-}
+};
 
 export default function LearningPathPage() {
   const educationSteps = [
@@ -67,7 +67,7 @@ export default function LearningPathPage() {
       title: "Costs",
       desc: "Transparent structures with socioeconomic class discounts to ensure universal access.",
     },
-  ]
+  ];
 
   const supportingPrograms = [
     { num: "1", name: "Public Library", icon: Library },
@@ -80,8 +80,12 @@ export default function LearningPathPage() {
     { num: "8", name: "General Sports", icon: Star },
     { num: "9", name: "Public Service", icon: CheckCircle2 },
     { num: "10", name: "Annual Scientific Conference", icon: AwardIcon },
-    { num: "11", name: "Transitional Scientific Conference", icon: GraduationCapIcon },
-  ]
+    {
+      num: "11",
+      name: "Transitional Scientific Conference",
+      icon: GraduationCapIcon,
+    },
+  ];
 
   const timelineStages = [
     {
@@ -114,7 +118,7 @@ export default function LearningPathPage() {
       color: "from-amber-600 to-orange-500",
       shadow: "shadow-amber-500/10",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/20 py-16 px-4 relative overflow-hidden animate-fade-in">
@@ -142,8 +146,9 @@ export default function LearningPathPage() {
             GENERAL PROGRAM OF LIFE PLANNING?!
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
-            General Program of Life Planning for geniuses, gifted, and talented, young and adult.
-            Discover the comprehensive pathways engineered to lead minds toward absolute excellence.
+            General Program of Life Planning for geniuses, gifted, and talented,
+            young and adult. Discover the comprehensive pathways engineered to
+            lead minds toward absolute excellence.
           </p>
         </div>
 
@@ -158,8 +163,8 @@ export default function LearningPathPage() {
                 The Appropriate Education Project (Daily Applied Lecture)?!
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                A system-driven education project built entirely on 8 robust methodological
-                dimensions:
+                A system-driven education project built entirely on 8 robust
+                methodological dimensions:
               </p>
             </div>
           </div>
@@ -202,15 +207,15 @@ export default function LearningPathPage() {
                 SUPPORTING PROGRAMS
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                Eleven supporting modules crafted to provide complete scientific and social
-                reinforcement:
+                Eleven supporting modules crafted to provide complete scientific
+                and social reinforcement:
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {supportingPrograms.map((prog) => {
-              const Icon = prog.icon
+              const Icon = prog.icon;
               return (
                 <div
                   key={prog.num}
@@ -220,13 +225,15 @@ export default function LearningPathPage() {
                     <Icon className="w-5 h-5 shrink-0" />
                   </div>
                   <div>
-                    <span className="text-xs text-muted-foreground font-mono">0{prog.num}</span>
+                    <span className="text-xs text-muted-foreground font-mono">
+                      0{prog.num}
+                    </span>
                     <h3 className="font-bold text-sm text-foreground tracking-tight mt-1 leading-snug">
                       {prog.name}
                     </h3>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -242,8 +249,8 @@ export default function LearningPathPage() {
                 The 10-Year General Program Series
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                The General Program Series continues to 10 (ten years) through the following
-                progressive developmental stages:
+                The General Program Series continues to 10 (ten years) through
+                the following progressive developmental stages:
               </p>
             </div>
           </div>
@@ -282,8 +289,8 @@ export default function LearningPathPage() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10" />
           <Quote className="absolute top-6 right-6 w-20 h-20 text-slate-100 dark:text-slate-800/50 -z-10" />
           <p className="text-slate-700 dark:text-slate-300 font-semibold italic mb-10 leading-relaxed text-lg md:text-xl max-w-2xl mx-auto">
-            &quot;you will come to know, experience, benefit from, and take pride in this legendary
-            program?!&quot;
+            &quot;you will come to know, experience, benefit from, and take
+            pride in this legendary program?!&quot;
           </p>
           <div className="flex flex-col items-center pt-6 border-t border-slate-100 dark:border-slate-800 max-w-md mx-auto">
             <span className="text-xs text-muted-foreground font-semibold uppercase tracking-widest">
@@ -299,5 +306,5 @@ export default function LearningPathPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

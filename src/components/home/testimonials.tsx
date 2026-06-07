@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Star, Quote, ArrowRight } from "lucide-react"
-import Image from "next/image"
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Star, Quote, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 const testimonials = [
   {
@@ -66,13 +66,13 @@ const testimonials = [
     avatar:
       "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=100&auto=format&fit=crop",
   },
-]
+];
 
 interface TestimonialsProps {
-  title?: string | null
-  body?: string | null
-  ctaLabel?: string | null
-  ctaHref?: string | null
+  title?: string | null;
+  body?: string | null;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
 }
 
 export function Testimonials({
@@ -89,7 +89,9 @@ export function Testimonials({
             {title}
           </h2>
           {body && (
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">{body}</p>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
+              {body}
+            </p>
           )}
         </div>
 
@@ -99,14 +101,19 @@ export function Testimonials({
             <Card
               key={index}
               className={`border-none shadow-md hover:shadow-xl transition-all duration-300 bg-background relative overflow-hidden group rounded-2xl ${
-                index === 6 ? "md:col-span-2 lg:col-span-3 max-w-2xl mx-auto w-full" : ""
+                index === 6
+                  ? "md:col-span-2 lg:col-span-3 max-w-2xl mx-auto w-full"
+                  : ""
               }`}
             >
               <div className="absolute top-0 left-0 w-1 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="pb-4">
                 <div className="flex gap-1 mb-2">
                   {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <Star
+                      key={i}
+                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                    />
                   ))}
                 </div>
               </CardHeader>
@@ -120,7 +127,12 @@ export function Testimonials({
 
                 <div className="flex items-center gap-4 border-t pt-6 border-slate-100 dark:border-slate-800">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-slate-100 shrink-0">
-                    <Image src={t.avatar} alt={t.name} fill className="object-cover" />
+                    <Image
+                      src={t.avatar}
+                      alt={t.name}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div>
                     <div className="font-bold text-slate-900 dark:text-slate-100 leading-tight">
@@ -148,5 +160,5 @@ export function Testimonials({
         )}
       </div>
     </section>
-  )
+  );
 }

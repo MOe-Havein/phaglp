@@ -1,8 +1,14 @@
-import prisma from "@/lib/prisma"
-import { DollarSign, ShoppingBag, BarChart3, Clock, ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import prisma from "@/lib/prisma";
+import {
+  DollarSign,
+  ShoppingBag,
+  BarChart3,
+  Clock,
+  ArrowLeft,
+} from "lucide-react";
+import Link from "next/link";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function SalesReportingPage() {
   // Retrieve FoxyCart transaction logs from the database
@@ -17,12 +23,12 @@ export default async function SalesReportingPage() {
         },
       },
     },
-  })
+  });
 
   // Calculate statistics
-  const totalOrders = transactions.length
-  const totalRevenue = transactions.reduce((acc, tx) => acc + tx.totalOrder, 0)
-  const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
+  const totalOrders = transactions.length;
+  const totalRevenue = transactions.reduce((acc, tx) => acc + tx.totalOrder, 0);
+  const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
   return (
     <div className="space-y-8">
@@ -136,7 +142,10 @@ export default async function SalesReportingPage() {
                       {tx.user?.name || "Unlinked User"}
                     </td>
                     <td className="px-6 py-4 font-bold text-gray-950 dark:text-gray-100">
-                      ${tx.totalOrder.toFixed(2)} <span className="text-xs text-muted-foreground font-normal">{tx.currency}</span>
+                      ${tx.totalOrder.toFixed(2)}{" "}
+                      <span className="text-xs text-muted-foreground font-normal">
+                        {tx.currency}
+                      </span>
                     </td>
                     <td className="px-6 py-4">
                       <span
@@ -160,5 +169,5 @@ export default async function SalesReportingPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

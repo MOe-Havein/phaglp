@@ -25,7 +25,6 @@ PHAGLP (Philosophical Academy for Geniuses Life Planning) is a modern full-stack
 - **Lecture**: Title, slug, tags[], body, author, category
 - **Blog**: Title, slug, tags[], body, author, category
 
-
 ## 🗺️ Navigation
 
 - **Main Navigation**: Courses, Lectures, Marriage, About, Contact

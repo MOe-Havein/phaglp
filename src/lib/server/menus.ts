@@ -1,29 +1,29 @@
-import "server-only"
-import { prisma } from "@/lib/prisma"
-import { cached } from "./cache"
-import { siteConfig } from "@/config/site"
+import "server-only";
+import { prisma } from "@/lib/prisma";
+import { cached } from "./cache";
+import { siteConfig } from "@/config/site";
 
 export interface DynamicSubItem {
-  id: string
-  name: string
-  href: string
-  order: number
-  isOpenNewTab: boolean
-  isActive: boolean
-  icon: string | null
+  id: string;
+  name: string;
+  href: string;
+  order: number;
+  isOpenNewTab: boolean;
+  isActive: boolean;
+  icon: string | null;
 }
 
 export interface DynamicMenu {
-  id: string
-  name: string
-  href: string | null
-  order: number
-  isOpenNewTab: boolean
-  isActive: boolean
-  showInHeader: boolean
-  showInFooter: boolean
-  icon: string | null
-  items: DynamicSubItem[]
+  id: string;
+  name: string;
+  href: string | null;
+  order: number;
+  isOpenNewTab: boolean;
+  isActive: boolean;
+  showInHeader: boolean;
+  showInFooter: boolean;
+  icon: string | null;
+  items: DynamicSubItem[];
 }
 
 export async function getNavigationMenus(): Promise<DynamicMenu[]> {
@@ -40,7 +40,7 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
               orderBy: { order: "asc" },
             },
           },
-        })
+        });
 
         if (!dbMenus || dbMenus.length === 0) {
           // Construct fallback menus based on static siteConfig if DB is empty
@@ -55,12 +55,14 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
             showInFooter: true,
             icon: null,
             items: [],
-          }))
+          }));
         }
 
-        return dbMenus as any[] as DynamicMenu[]
+        return dbMenus as any[] as DynamicMenu[];
       } catch (error) {
-        console.warn("Failed to fetch navigation menus from database, falling back to config.")
+        console.warn(
+          "Failed to fetch navigation menus from database, falling back to config.",
+        );
         return siteConfig.navItems.map((item, idx) => ({
           id: `fallback-${idx}`,
           name: item.title,
@@ -72,12 +74,12 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
           showInFooter: true,
           icon: null,
           items: [],
-        }))
+        }));
       }
     },
     {
       tags: ["site-menus", "navigation-menus"],
       revalidate: 3600, // Cache for 1 hour, cleared instantly on admin updates
     },
-  )
+  );
 }

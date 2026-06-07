@@ -6,7 +6,9 @@ export async function subscribeToNewsletter(email: string) {
     const FORM_ID = process.env.CONVERTKIT_FORM_ID;
 
     if (!API_KEY || !FORM_ID) {
-      console.error("Missing ConvertKit API Key or Form ID in environment variables.");
+      console.error(
+        "Missing ConvertKit API Key or Form ID in environment variables.",
+      );
       return { success: false, message: "Configuration error" };
     }
 
@@ -28,7 +30,10 @@ export async function subscribeToNewsletter(email: string) {
     } else {
       const errorData = await response.json();
       console.error("ConvertKit API Error:", errorData);
-      return { success: false, message: errorData.message || "Something went wrong" };
+      return {
+        success: false,
+        message: errorData.message || "Something went wrong",
+      };
     }
   } catch (error) {
     console.error("Subscription Error:", error);

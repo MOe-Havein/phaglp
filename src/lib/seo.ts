@@ -1,39 +1,47 @@
-import prisma from "@/lib/prisma"
-import { Metadata } from "next"
+import prisma from "@/lib/prisma";
+import { Metadata } from "next";
 
 export async function getSiteSettings() {
   if (!prisma) {
-    console.warn("Prisma client not initialized, returning null settings")
-    return null
+    console.warn("Prisma client not initialized, returning null settings");
+    return null;
   }
   try {
     const settings = await prisma.siteSettings.findUnique({
       where: { id: "global" },
-    })
-    return settings
+    });
+    return settings;
   } catch (error) {
-    console.warn("Failed to fetch site settings from DB, using fallback defaults.")
-    return null
+    console.warn(
+      "Failed to fetch site settings from DB, using fallback defaults.",
+    );
+    return null;
   }
 }
 
 export async function generateGlobalMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings()
+  const settings = await getSiteSettings();
 
-  const defaultTitle = settings?.siteName || "PHAGLP Platform"
+  const defaultTitle = settings?.siteName || "PHAGLP Platform";
   const defaultDescription =
-    settings?.metaDescription || "A modern platform for philosophical education."
-  const siteUrl = settings?.siteUrl || "https://phaglp.com"
+    settings?.metaDescription ||
+    "A modern platform for philosophical education.";
+  const siteUrl = settings?.siteUrl || "https://phaglp.com";
 
   // Ensure siteUrl has a protocol for the URL constructor
-  const safeSiteUrl = siteUrl.startsWith("http") ? siteUrl : `https://${siteUrl}`
+  const safeSiteUrl = siteUrl.startsWith("http")
+    ? siteUrl
+    : `https://${siteUrl}`;
 
-  let metadataBase: URL
+  let metadataBase: URL;
   try {
-    metadataBase = new URL(safeSiteUrl)
+    metadataBase = new URL(safeSiteUrl);
   } catch (error) {
-    console.error("Invalid siteUrl for metadataBase, falling back to default:", siteUrl)
-    metadataBase = new URL("https://phaglp.com")
+    console.error(
+      "Invalid siteUrl for metadataBase, falling back to default:",
+      siteUrl,
+    );
+    metadataBase = new URL("https://phaglp.com");
   }
 
   return {
@@ -58,5 +66,5 @@ export async function generateGlobalMetadata(): Promise<Metadata> {
       description: defaultDescription,
       images: settings?.ogImage ? [settings.ogImage] : [],
     },
-  }
+  };
 }

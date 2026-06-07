@@ -1,44 +1,44 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { Send, Bot, X, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
+import { useState, useRef, useEffect } from "react";
+import { Send, Bot, X, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 interface Message {
-  role: "user" | "assistant"
-  content: string
-  sources?: { title: string; type: string; similarity: number }[]
+  role: "user" | "assistant";
+  content: string;
+  sources?: { title: string; type: string; similarity: number }[];
 }
 
 export function ChatbotWidget() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [sessionId, setSessionId] = useState<string | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
   async function sendMessage() {
-    if (!input.trim() || loading) return
+    if (!input.trim() || loading) return;
 
     const userMessage: Message = {
       role: "user",
       content: input.trim(),
-    }
+    };
 
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setLoading(true)
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setLoading(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -48,40 +48,40 @@ export function ChatbotWidget() {
           question: userMessage.content,
           sessionId,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success) {
         // Save session ID for continuity
         if (data.sessionId && !sessionId) {
-          setSessionId(data.sessionId)
+          setSessionId(data.sessionId);
         }
 
         const assistantMessage: Message = {
           role: "assistant",
           content: data.answer,
           sources: data.sources,
-        }
+        };
 
-        setMessages((prev) => [...prev, assistantMessage])
+        setMessages((prev) => [...prev, assistantMessage]);
       } else {
-        toast.error(data.error || "Failed to get response")
+        toast.error(data.error || "Failed to get response");
       }
     } catch (error) {
-      console.error("Chat error:", error)
-      toast.error("Failed to send message")
+      console.error("Chat error:", error);
+      toast.error("Failed to send message");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
+      e.preventDefault();
+      sendMessage();
     }
-  }
+  };
 
   return (
     <>
@@ -122,7 +122,9 @@ export function ChatbotWidget() {
             {messages.length === 0 && (
               <div className="text-center text-muted-foreground py-8">
                 <Bot className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-sm">Ask me about courses or the matching process!</p>
+                <p className="text-sm">
+                  Ask me about courses or the matching process!
+                </p>
               </div>
             )}
 
@@ -138,7 +140,9 @@ export function ChatbotWidget() {
                       : "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-  wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-  wrap">
+                    {message.content}
+                  </p>
 
                   {message.sources && message.sources.length > 0 && (
                     <div className="mt-2 pt-2 border-t border-slate-300 dark:border-slate-600">
@@ -189,5 +193,5 @@ export function ChatbotWidget() {
         </div>
       )}
     </>
-  )
+  );
 }

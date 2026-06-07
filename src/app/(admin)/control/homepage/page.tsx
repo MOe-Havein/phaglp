@@ -1,24 +1,24 @@
-import { Home } from "lucide-react"
-import { prisma, serializePrisma } from "@/lib/prisma"
-import { HomepageEditor } from "@/components/admin/HomepageEditor"
+import { Home } from "lucide-react";
+import { prisma, serializePrisma } from "@/lib/prisma";
+import { HomepageEditor } from "@/components/admin/HomepageEditor";
 
 export const metadata = {
   title: "Homepage CMS — PHAGLP Control",
-}
+};
 
 async function getSections() {
   try {
     const sections = await prisma.homepageSection.findMany({
       orderBy: { order: "asc" },
-    })
-    return serializePrisma(sections)
+    });
+    return serializePrisma(sections);
   } catch {
-    return []
+    return [];
   }
 }
 
 export default async function HomepagePage() {
-  const sections = await getSections()
+  const sections = await getSections();
 
   return (
     <div className="space-y-6">
@@ -37,5 +37,5 @@ export default async function HomepagePage() {
 
       <HomepageEditor initialSections={sections as any} />
     </div>
-  )
+  );
 }

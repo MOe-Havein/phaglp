@@ -3,7 +3,6 @@ name: baoyu-article-illustrator
 description: Illustrate articles with AI.
 author: Baoyu Zhang
 version: 1.0.0
-
 ---
 
 # Smart Article Illustration Skill
@@ -27,35 +26,35 @@ Analyze article structure and content, identify positions requiring visual aids,
 
 ## Options
 
-| Option | Description |
-|--------|-------------|
+| Option           | Description                                          |
+| ---------------- | ---------------------------------------------------- |
 | `--style <name>` | Specify illustration style (see Style Gallery below) |
 
 ## Style Gallery
 
-| Style | Description | Best For |
-|-------|-------------|----------|
-| `notion` (Default) | Minimalist hand-drawn line art, intellectual | Knowledge sharing, SaaS, productivity |
-| `elegant` | Refined, sophisticated, professional | Business, thought leadership |
-| `warm` | Friendly, approachable, human-centered | Personal growth, lifestyle, education |
-| `minimal` | Ultra-clean, zen-like, focused | Philosophy, minimalism, core concepts |
-| `playful` | Fun, creative, whimsical | Tutorials, beginner guides, fun topics |
-| `nature` | Organic, calm, earthy | Sustainability, wellness, outdoor |
-| `sketch` | Raw, authentic, notebook-style | Ideas, brainstorming, drafts |
-| `watercolor` | Soft artistic with natural warmth | Lifestyle, travel, creative |
-| `vintage` | Nostalgic aged-paper aesthetic | Historical, biography, heritage |
-| `scientific` | Academic precise diagrams | Biology, chemistry, technical |
-| `chalkboard` | Classroom chalk drawing style | Education, tutorials, workshops |
-| `editorial` | Magazine-style infographic | Tech explainers, journalism |
-| `flat` | Modern flat vector illustration | Startups, digital, contemporary |
-| `flat-doodle` | Bold outlines, pastel colors, cute | Productivity, SaaS, workflows |
-| `retro` | 80s/90s vibrant nostalgic | Pop culture, gaming, entertainment |
-| `blueprint` | Technical schematics, engineering precision | Architecture, system design |
-| `vector-illustration` | Flat vector with black outlines, retro colors | Educational, creative, brand content |
-| `sketch-notes` | Soft hand-drawn, warm educational feel | Knowledge sharing, tutorials |
-| `pixel-art` | Retro 8-bit gaming aesthetic | Gaming, tech, developer content |
-| `intuition-machine` | Technical briefing with bilingual labels | Academic, technical, bilingual |
-| `fantasy-animation` | Ghibli/Disney whimsical style | Storytelling, children's, creative |
+| Style                 | Description                                   | Best For                               |
+| --------------------- | --------------------------------------------- | -------------------------------------- |
+| `notion` (Default)    | Minimalist hand-drawn line art, intellectual  | Knowledge sharing, SaaS, productivity  |
+| `elegant`             | Refined, sophisticated, professional          | Business, thought leadership           |
+| `warm`                | Friendly, approachable, human-centered        | Personal growth, lifestyle, education  |
+| `minimal`             | Ultra-clean, zen-like, focused                | Philosophy, minimalism, core concepts  |
+| `playful`             | Fun, creative, whimsical                      | Tutorials, beginner guides, fun topics |
+| `nature`              | Organic, calm, earthy                         | Sustainability, wellness, outdoor      |
+| `sketch`              | Raw, authentic, notebook-style                | Ideas, brainstorming, drafts           |
+| `watercolor`          | Soft artistic with natural warmth             | Lifestyle, travel, creative            |
+| `vintage`             | Nostalgic aged-paper aesthetic                | Historical, biography, heritage        |
+| `scientific`          | Academic precise diagrams                     | Biology, chemistry, technical          |
+| `chalkboard`          | Classroom chalk drawing style                 | Education, tutorials, workshops        |
+| `editorial`           | Magazine-style infographic                    | Tech explainers, journalism            |
+| `flat`                | Modern flat vector illustration               | Startups, digital, contemporary        |
+| `flat-doodle`         | Bold outlines, pastel colors, cute            | Productivity, SaaS, workflows          |
+| `retro`               | 80s/90s vibrant nostalgic                     | Pop culture, gaming, entertainment     |
+| `blueprint`           | Technical schematics, engineering precision   | Architecture, system design            |
+| `vector-illustration` | Flat vector with black outlines, retro colors | Educational, creative, brand content   |
+| `sketch-notes`        | Soft hand-drawn, warm educational feel        | Knowledge sharing, tutorials           |
+| `pixel-art`           | Retro 8-bit gaming aesthetic                  | Gaming, tech, developer content        |
+| `intuition-machine`   | Technical briefing with bilingual labels      | Academic, technical, bilingual         |
+| `fantasy-animation`   | Ghibli/Disney whimsical style                 | Storytelling, children's, creative     |
 
 Full style specifications in `references/styles/<style>.md`
 
@@ -63,30 +62,30 @@ Full style specifications in `references/styles/<style>.md`
 
 When no `--style` is specified, analyze content to select the best style:
 
-| Content Signals | Selected Style |
-|----------------|----------------|
-| Personal story, emotion, growth, life, feeling, relationship | `warm` |
-| Simple, zen, focus, essential, core, minimalist | `minimal` |
-| Fun, easy, beginner, tutorial, guide, how-to, learn | `playful` |
-| Nature, eco, wellness, health, organic, green, outdoor | `nature` |
-| Idea, thought, concept, draft, brainstorm, sketch | `sketch` |
-| Business, professional, strategy, analysis, corporate | `elegant` |
-| Knowledge, concept, productivity, SaaS, notion, tool | `notion` |
-| Lifestyle, travel, food, art, creative, artistic | `watercolor` |
-| History, heritage, vintage, biography, classic, expedition | `vintage` |
-| Biology, chemistry, medical, scientific, research, academic | `scientific` |
-| Education, classroom, teaching, school, lecture, workshop | `chalkboard` |
-| Explainer, journalism, magazine, in-depth, investigation | `editorial` |
-| Modern, startup, app, product, digital marketing, saas | `flat` |
-| Productivity, workflow, cute, tools, app tutorial | `flat-doodle` |
-| 80s, 90s, retro, pop culture, music, nostalgia | `retro` |
-| Architecture, system, infrastructure, engineering, technical | `blueprint` |
-| Brand, explainer, children, cute, toy, geometric | `vector-illustration` |
-| Notes, doodle, friendly, warm tutorial, onboarding | `sketch-notes` |
-| Gaming, 8-bit, pixel, developer, retro tech | `pixel-art` |
-| Bilingual, briefing, academic, research, documentation | `intuition-machine` |
-| Fantasy, story, magical, Ghibli, Disney, children | `fantasy-animation` |
-| Default | `notion` |
+| Content Signals                                              | Selected Style        |
+| ------------------------------------------------------------ | --------------------- |
+| Personal story, emotion, growth, life, feeling, relationship | `warm`                |
+| Simple, zen, focus, essential, core, minimalist              | `minimal`             |
+| Fun, easy, beginner, tutorial, guide, how-to, learn          | `playful`             |
+| Nature, eco, wellness, health, organic, green, outdoor       | `nature`              |
+| Idea, thought, concept, draft, brainstorm, sketch            | `sketch`              |
+| Business, professional, strategy, analysis, corporate        | `elegant`             |
+| Knowledge, concept, productivity, SaaS, notion, tool         | `notion`              |
+| Lifestyle, travel, food, art, creative, artistic             | `watercolor`          |
+| History, heritage, vintage, biography, classic, expedition   | `vintage`             |
+| Biology, chemistry, medical, scientific, research, academic  | `scientific`          |
+| Education, classroom, teaching, school, lecture, workshop    | `chalkboard`          |
+| Explainer, journalism, magazine, in-depth, investigation     | `editorial`           |
+| Modern, startup, app, product, digital marketing, saas       | `flat`                |
+| Productivity, workflow, cute, tools, app tutorial            | `flat-doodle`         |
+| 80s, 90s, retro, pop culture, music, nostalgia               | `retro`               |
+| Architecture, system, infrastructure, engineering, technical | `blueprint`           |
+| Brand, explainer, children, cute, toy, geometric             | `vector-illustration` |
+| Notes, doodle, friendly, warm tutorial, onboarding           | `sketch-notes`        |
+| Gaming, 8-bit, pixel, developer, retro tech                  | `pixel-art`           |
+| Bilingual, briefing, academic, research, documentation       | `intuition-machine`   |
+| Fantasy, story, magical, Ghibli, Disney, children            | `fantasy-animation`   |
+| Default                                                      | `notion`              |
 
 ## File Management
 
@@ -109,18 +108,21 @@ illustrations/{topic-slug}/
 ```
 
 **Slug Generation**:
+
 1. Extract main topic from content (2-4 words, kebab-case)
 2. Example: "The Future of AI" → `future-of-ai`
 
 ### Conflict Resolution
 
 If `illustrations/{topic-slug}/` already exists:
+
 - Append timestamp: `{topic-slug}-YYYYMMDD-HHMMSS`
 - Example: `ai-future` exists → `ai-future-20260118-143052`
 
 ### Source Files
 
 Copy all sources with naming `source-{slug}.{ext}`:
+
 - `source-article.md` (main text content)
 - `source-photo.jpg` (image from conversation)
 - `source-reference.pdf` (additional file)
@@ -146,11 +148,13 @@ Multiple sources supported: text, images, files from conversation.
 ### Step 2: Identify Illustration Positions
 
 **Three Purposes of Illustrations**:
+
 1. **Information Supplement**: Help understand abstract concepts
 2. **Concept Visualization**: Transform abstract ideas into concrete visuals
 3. **Imagination Guidance**: Create atmosphere, enhance reading experience
 
 **Content Suitable for Illustrations**:
+
 - Abstract concepts needing visualization
 - Processes/steps needing diagrams
 - Comparisons needing visual representation
@@ -158,6 +162,7 @@ Multiple sources supported: text, images, files from conversation.
 - Scenarios needing imagination guidance
 
 **Illustration Count**:
+
 - Consider at least 1 image per major section
 - Prioritize core arguments and abstract concepts
 - **Principle: More is better than fewer**
@@ -183,6 +188,7 @@ Multiple sources supported: text, images, files from conversation.
 ---
 
 ## Illustration 2
+
 ...
 ```
 
@@ -199,10 +205,10 @@ Multiple sources supported: text, images, files from conversation.
 
 2. **Determine which questions to ask**:
 
-   | Question | When to Ask |
-   |----------|-------------|
-   | Style variant | Always (required) |
-   | Language | Only if `source_language ≠ user_language` |
+   | Question      | When to Ask                               |
+   | ------------- | ----------------------------------------- |
+   | Style variant | Always (required)                         |
+   | Language      | Only if `source_language ≠ user_language` |
 
 3. **Present options** (use AskUserQuestion with all applicable questions):
 
@@ -242,16 +248,19 @@ Illustration theme: [concept in 2-3 words]
 Style: [style name]
 
 Visual composition:
+
 - Main visual: [description matching style]
 - Layout: [element positioning]
 - Decorative elements: [style-appropriate decorations]
 
 Color scheme:
+
 - Primary: [style primary color]
 - Background: [style background color]
 - Accent: [style accent color]
 
 Text content (if any):
+
 - [Any labels or captions in content language]
 
 Style notes: [specific style characteristics]
@@ -260,10 +269,12 @@ Style notes: [specific style characteristics]
 ### Step 6: Generate Images
 
 **Image Generation Skill Selection**:
+
 1. Check available image generation skills
 2. If multiple skills available, ask user to choose
 
 **Generation Flow**:
+
 1. Call selected image generation skill with prompt file and output path
 2. Generate images sequentially
 3. After each image, output progress: "Generated X/N"
@@ -279,6 +290,7 @@ Insert generated images at corresponding positions:
 ```
 
 **Insertion Rules**:
+
 - Insert image after corresponding paragraph
 - Leave one blank line before and after image
 - Alt text uses concise description in article's language
@@ -338,25 +350,28 @@ Remove an illustration from the article:
 ### File Naming Convention
 
 Files use meaningful slugs for better readability:
+
 ```
 illustration-[slug].png
 illustration-[slug].md (in prompts/)
 ```
 
 Examples:
+
 - `illustration-concept-overview.png`
 - `illustration-workflow-diagram.png`
 - `illustration-key-benefits.png`
 
 **Slug rules**:
+
 - Derived from illustration purpose/content (kebab-case)
 - Must be unique within the article
 - When content changes significantly, update slug accordingly
 
 ## References
 
-| File | Content |
-|------|---------|
+| File                           | Content                                                |
+| ------------------------------ | ------------------------------------------------------ |
 | `references/styles/<style>.md` | Full style specifications with colors, elements, rules |
 
 ## Notes
@@ -373,6 +388,7 @@ Examples:
 Custom styles and configurations via EXTEND.md.
 
 **Check paths** (priority order):
+
 1. `.baoyu-skills/baoyu-article-illustrator/EXTEND.md` (project)
 2. `~/.baoyu-skills/baoyu-article-illustrator/EXTEND.md` (user)
 

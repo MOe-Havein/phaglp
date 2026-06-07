@@ -1,6 +1,6 @@
-"use server"
+"use server";
 
-import { addKnowledge } from "@/lib/chatbot"
+import { addKnowledge } from "@/lib/chatbot";
 
 /**
  * Seed the knowledge base with course and matching information
@@ -257,34 +257,36 @@ For technical issues, email support@example.com with screenshots and  details.`,
 You can review our full Privacy Policy in your account settings or at www.example.com/privacy`,
       type: "general",
     },
-  ]
+  ];
 
-  console.log("Seeding knowledge base...")
+  console.log("Seeding knowledge base...");
   const results = {
     added: 0,
     failed: 0,
     errors: [] as string[],
-  }
+  };
 
   for (const entry of knowledgeEntries) {
     try {
-      const result = await addKnowledge(entry)
+      const result = await addKnowledge(entry);
       if (result.success) {
-        results.added++
+        results.added++;
       } else {
-        results.failed++
-        results.errors.push(`${entry.title}: ${result.error}`)
+        results.failed++;
+        results.errors.push(`${entry.title}: ${result.error}`);
       }
     } catch (error: any) {
-      results.failed++
-      results.errors.push(`${entry.title}: ${error.message}`)
+      results.failed++;
+      results.errors.push(`${entry.title}: ${error.message}`);
     }
   }
 
-  console.log(`Knowledge base seeding complete! Added: ${results.added}, Failed: ${results.failed}`)
+  console.log(
+    `Knowledge base seeding complete! Added: ${results.added}, Failed: ${results.failed}`,
+  );
 
   return {
     success: results.failed === 0,
     data: results,
-  }
+  };
 }

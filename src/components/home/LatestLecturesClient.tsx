@@ -1,40 +1,43 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Calendar, Clock, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import type { LETURES } from "./LatestLETURES"
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Calendar, Clock, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import type { LETURES } from "./LatestLETURES";
 
 function formatDate(isoString: string): string {
   try {
-    const date = new Date(isoString)
+    const date = new Date(isoString);
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-    }).format(date)
+    }).format(date);
   } catch {
-    return isoString
+    return isoString;
   }
 }
 
 interface LatestLecturesClientProps {
-  title: string
-  lectures: LETURES[]
+  title: string;
+  lectures: LETURES[];
 }
 
-export function LatestLecturesClient({ title, lectures }: LatestLecturesClientProps) {
-  const [visibleCount, setVisibleCount] = useState<number>(4)
+export function LatestLecturesClient({
+  title,
+  lectures,
+}: LatestLecturesClientProps) {
+  const [visibleCount, setVisibleCount] = useState<number>(4);
 
   const showMore = () => {
     if (visibleCount < lectures.length) {
-      setVisibleCount((prev) => Math.min(prev + 2, lectures.length))
+      setVisibleCount((prev) => Math.min(prev + 2, lectures.length));
     } else {
-      setVisibleCount(4)
+      setVisibleCount(4);
     }
-  }
+  };
 
   return (
     <section className="w-full py-16 px-4 bg-background border-t border-border/40">
@@ -46,7 +49,8 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
               {title}
             </h2>
             <p className="text-xs md:text-sm text-muted-foreground mt-1 hidden sm:block">
-              Gain top-tier knowledge from international academic and professional fields.
+              Gain top-tier knowledge from international academic and
+              professional fields.
             </p>
           </div>
           <Button
@@ -112,8 +116,13 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
                       •
                     </span>
                     <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 shrink-0" aria-hidden="true" />
-                      <time dateTime={lecture.createdAt}>{formatDate(lecture.createdAt)}</time>
+                      <Calendar
+                        className="w-3 h-3 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <time dateTime={lecture.createdAt}>
+                        {formatDate(lecture.createdAt)}
+                      </time>
                     </span>
                   </div>
                 </div>
@@ -136,5 +145,5 @@ export function LatestLecturesClient({ title, lectures }: LatestLecturesClientPr
         )}
       </div>
     </section>
-  )
+  );
 }

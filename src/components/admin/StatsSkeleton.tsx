@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/card"
+import { Card } from "@/components/ui/card";
 
 interface StatsSkeletonProps {
-  count?: number
+  count?: number;
 }
 
 export function StatsSkeleton({ count = 6 }: StatsSkeletonProps) {
@@ -39,5 +39,5 @@ export function StatsSkeleton({ count = 6 }: StatsSkeletonProps) {
         </Card>
       ))}
     </div>
-  )
+  );
 }

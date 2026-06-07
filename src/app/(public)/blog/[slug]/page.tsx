@@ -1,19 +1,19 @@
-import prisma, { safeDbQuery } from "@/lib/prisma"
-import { notFound } from "next/navigation"
-import { Metadata } from "next"
-import { format } from "date-fns"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, User, Clock } from "lucide-react"
-import Link from "next/link"
-import { MarkdownViewer } from "@/components/editor/markdown-viewer"
-import { FoxyLoader } from "@/components/foxy/foxy-loader"
-import { unstable_cache } from "next/cache"
+import prisma, { safeDbQuery } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
+import Link from "next/link";
+import { MarkdownViewer } from "@/components/editor/markdown-viewer";
+import { FoxyLoader } from "@/components/foxy/foxy-loader";
+import { unstable_cache } from "next/cache";
 
 // Ensure dynamic rendering to handle database state safely at runtime
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }
 
 const getBlogPostBySlug = async (slug: string) => {
@@ -29,20 +29,22 @@ const getBlogPostBySlug = async (slug: string) => {
               },
             },
           },
-        })
-      })
-      return result.data
+        });
+      });
+      return result.data;
     },
     [`blog-post-${slug}`],
     { tags: ["blog-posts"], revalidate: 300 },
-  )()
-}
+  )();
+};
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   try {
-    const { slug } = await params
-    const post = await getBlogPostBySlug(slug)
-    if (!post) return {}
+    const { slug } = await params;
+    const post = await getBlogPostBySlug(slug);
+    if (!post) return {};
 
     return {
       title: post.title,
@@ -62,30 +64,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         authors: [post.author?.name || ""],
         tags: (post.tags as string[]) || undefined,
       },
-    }
+    };
   } catch (error) {
-    console.error("Blog metadata generation failed:", error)
+    console.error("Blog metadata generation failed:", error);
     return {
       title: "Blog Post",
-    }
+    };
   }
 }
 
 export default async function BlogPostDetailPage({ params }: PageProps) {
-  const { slug } = await params
+  const { slug } = await params;
 
-  let post
+  let post;
   try {
-    post = await getBlogPostBySlug(slug)
+    post = await getBlogPostBySlug(slug);
   } catch (error) {
-    console.error("Failed to fetch blog post:", error)
+    console.error("Failed to fetch blog post:", error);
   }
 
   if (!post) {
-    notFound()
+    notFound();
   }
 
-  const tags = (post.tags as string[]) || []
+  const tags = (post.tags as string[]) || [];
 
   return (
     <div className="container mx-auto px-4 py-12 relative min-h-screen">
@@ -109,7 +111,11 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
                 {post.category}
               </Badge>
               {tags.map((tag: string) => (
-                <Badge key={tag} variant="outline" className="text-slate-500 border-slate-200 dark:border-slate-800">
+                <Badge
+                  key={tag}
+                  variant="outline"
+                  className="text-slate-500 border-slate-200 dark:border-slate-800"
+                >
                   #{tag}
                 </Badge>
               ))}
@@ -163,20 +169,26 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Article',
+              "@context": "https://schema.org",
+              "@type": "Article",
               headline: post.title,
               image: post.coverImage ? [post.coverImage] : undefined,
-              datePublished: typeof post.createdAt === "string" ? post.createdAt : post.createdAt.toISOString(),
-              dateModified: typeof post.updatedAt === "string" ? post.updatedAt : post.updatedAt.toISOString(),
+              datePublished:
+                typeof post.createdAt === "string"
+                  ? post.createdAt
+                  : post.createdAt.toISOString(),
+              dateModified:
+                typeof post.updatedAt === "string"
+                  ? post.updatedAt
+                  : post.updatedAt.toISOString(),
               author: {
-                '@type': 'Person',
-                name: post.author?.name || 'Anonymous',
+                "@type": "Person",
+                name: post.author?.name || "Anonymous",
               },
             }),
           }}
         />
       </div>
     </div>
-  )
+  );
 }

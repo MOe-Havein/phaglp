@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion"
-import { ReactNode } from "react"
+import { motion, AnimatePresence } from "framer-motion";
+import { ReactNode } from "react";
 
 interface AnimatedModalProps {
-  children: ReactNode
-  isOpen: boolean
+  children: ReactNode;
+  isOpen: boolean;
 }
 
 export function AnimatedModal({ children, isOpen }: AnimatedModalProps) {
@@ -22,5 +22,5 @@ export function AnimatedModal({ children, isOpen }: AnimatedModalProps) {
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

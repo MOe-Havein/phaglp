@@ -1,11 +1,11 @@
-import { Suspense } from "react"
-import { BookOpen, Plus, Sparkles } from "lucide-react"
-import Link from "next/link"
-import { prisma, serializePrisma } from "@/lib/prisma"
+import { Suspense } from "react";
+import { BookOpen, Plus, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { prisma, serializePrisma } from "@/lib/prisma";
 
 export const metadata = {
   title: "Courses — PHAGLP Control",
-}
+};
 
 async function getCourses() {
   try {
@@ -15,15 +15,15 @@ async function getCourses() {
         instructor: { select: { id: true, name: true, email: true } },
         _count: { select: { enrollments: true, modules: true } },
       },
-    })
-    return serializePrisma(courses)
+    });
+    return serializePrisma(courses);
   } catch {
-    return []
+    return [];
   }
 }
 
 async function CoursesTable() {
-  const courses = await getCourses()
+  const courses = await getCourses();
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
       <div className="overflow-x-auto">
@@ -115,7 +115,7 @@ async function CoursesTable() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export default async function CoursesPage() {
@@ -156,7 +156,10 @@ export default async function CoursesPage() {
         fallback={
           <div className="space-y-2">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div
+                key={i}
+                className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse"
+              />
             ))}
           </div>
         }
@@ -164,5 +167,5 @@ export default async function CoursesPage() {
         <CoursesTable />
       </Suspense>
     </div>
-  )
+  );
 }

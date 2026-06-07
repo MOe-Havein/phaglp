@@ -1,33 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Switch } from "@/components/ui/switch"
-import { toggleFeatureFlag } from "@/lib/control-actions"
-import { toast } from "sonner"
-import { Loader2 } from "lucide-react"
+import { useState } from "react";
+import { Switch } from "@/components/ui/switch";
+import { toggleFeatureFlag } from "@/lib/control-actions";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 interface FeatureFlag {
-  key: string
-  description: string | null
-  isEnabled: boolean
+  key: string;
+  description: string | null;
+  isEnabled: boolean;
 }
 
-export function FeaturesList({ initialFlags }: { initialFlags: FeatureFlag[] }) {
-  const [flags, setFlags] = useState(initialFlags)
-  const [updating, setUpdating] = useState<string | null>(null)
+export function FeaturesList({
+  initialFlags,
+}: {
+  initialFlags: FeatureFlag[];
+}) {
+  const [flags, setFlags] = useState(initialFlags);
+  const [updating, setUpdating] = useState<string | null>(null);
 
   const handleToggle = async (key: string, currentStatus: boolean) => {
-    setUpdating(key)
+    setUpdating(key);
     try {
-      await toggleFeatureFlag(key, !currentStatus)
-      setFlags(flags.map((f) => (f.key === key ? { ...f, isEnabled: !currentStatus } : f)))
-      toast.success(`Feature ${!currentStatus ? "enabled" : "disabled"}`)
+      await toggleFeatureFlag(key, !currentStatus);
+      setFlags(
+        flags.map((f) =>
+          f.key === key ? { ...f, isEnabled: !currentStatus } : f,
+        ),
+      );
+      toast.success(`Feature ${!currentStatus ? "enabled" : "disabled"}`);
     } catch (error) {
-      toast.error("Failed to update feature flag")
+      toast.error("Failed to update feature flag");
     } finally {
-      setUpdating(null)
+      setUpdating(null);
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -44,7 +52,9 @@ export function FeaturesList({ initialFlags }: { initialFlags: FeatureFlag[] }) 
           <div className="space-y-0.5">
             <div className="font-medium text-sm">{flag.key}</div>
             {flag.description && (
-              <div className="text-xs text-muted-foreground">{flag.description}</div>
+              <div className="text-xs text-muted-foreground">
+                {flag.description}
+              </div>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -60,5 +70,5 @@ export function FeaturesList({ initialFlags }: { initialFlags: FeatureFlag[] }) 
         </div>
       ))}
     </div>
-  )
+  );
 }

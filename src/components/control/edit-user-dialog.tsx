@@ -1,8 +1,8 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
+"use client";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Role,
   SubscriptionTier,
@@ -11,9 +11,9 @@ import {
   WorldTier,
   EducationLevel,
   IQLevel,
-} from "@prisma/client"
-import { updateUser, deleteUser } from "@/lib/control-actions"
-import { Button } from "@/components/ui/button"
+} from "@prisma/client";
+import { updateUser, deleteUser } from "@/lib/control-actions";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +21,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -30,19 +30,19 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Loader2, User } from "lucide-react"
-import { toast } from "sonner"
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2, User } from "lucide-react";
+import { toast } from "sonner";
 
 const userSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -101,40 +101,40 @@ const userSchema = z.object({
   guardianEmail: z.string().optional().nullable(),
   guardianResidence: z.string().optional().nullable(),
   guardianIncome: z.nativeEnum(IncomeLevel).optional().nullable(),
-})
+});
 
-type UserFormValues = z.infer<typeof userSchema>
+type UserFormValues = z.infer<typeof userSchema>;
 
 interface EditUserDialogProps {
-  user: any
+  user: any;
 }
 
 export function EditUserDialog({ user }: EditUserDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   async function handleDelete() {
     if (!confirmDelete) {
-      setConfirmDelete(true)
-      return
+      setConfirmDelete(true);
+      return;
     }
-    setDeleting(true)
+    setDeleting(true);
     try {
-      const result = await deleteUser(user.id)
+      const result = await deleteUser(user.id);
       if (result.success) {
-        toast.success("User deleted successfully")
-        setOpen(false)
+        toast.success("User deleted successfully");
+        setOpen(false);
       } else {
-        toast.error(result.error || "Failed to delete user")
+        toast.error(result.error || "Failed to delete user");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
-      console.error(error)
+      toast.error("An unexpected error occurred");
+      console.error(error);
     } finally {
-      setDeleting(false)
-      setConfirmDelete(false)
+      setDeleting(false);
+      setConfirmDelete(false);
     }
   }
 
@@ -153,7 +153,9 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
       nickname: user.nickname || "",
       photoUrl: user.photoUrl || "",
       sex: user.sex || null,
-      birthDate: user.birthDate ? new Date(user.birthDate).toISOString().split("T")[0] : "",
+      birthDate: user.birthDate
+        ? new Date(user.birthDate).toISOString().split("T")[0]
+        : "",
       birthCountry: user.birthCountry || "",
       birthState: user.birthState || "",
       birthCity: user.birthCity || "",
@@ -192,7 +194,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
       guardianResidence: user.guardianResidence || "",
       guardianIncome: user.guardianIncome || null,
     },
-  })
+  });
 
   useEffect(() => {
     if (open) {
@@ -209,7 +211,9 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
         nickname: user.nickname || "",
         photoUrl: user.photoUrl || "",
         sex: user.sex || null,
-        birthDate: user.birthDate ? new Date(user.birthDate).toISOString().split("T")[0] : "",
+        birthDate: user.birthDate
+          ? new Date(user.birthDate).toISOString().split("T")[0]
+          : "",
         birthCountry: user.birthCountry || "",
         birthState: user.birthState || "",
         birthCity: user.birthCity || "",
@@ -247,33 +251,33 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
         guardianEmail: user.guardianEmail || "",
         guardianResidence: user.guardianResidence || "",
         guardianIncome: user.guardianIncome || null,
-      })
+      });
     }
-  }, [user, open, form])
+  }, [user, open, form]);
 
   async function onSubmit(data: UserFormValues) {
-    setLoading(true)
+    setLoading(true);
     try {
-      const cleanedData = { ...data }
+      const cleanedData = { ...data };
       // Convert empty strings to null or omit
       Object.keys(cleanedData).forEach((key) => {
         if ((cleanedData as any)[key] === "") {
-          ;(cleanedData as any)[key] = null
+          (cleanedData as any)[key] = null;
         }
-      })
+      });
 
-      const result = await updateUser(user.id, cleanedData)
+      const result = await updateUser(user.id, cleanedData);
       if (result.success) {
-        toast.success("User profile updated successfully")
-        setOpen(false)
+        toast.success("User profile updated successfully");
+        setOpen(false);
       } else {
-        toast.error(result.error || "Failed to update user profile")
+        toast.error(result.error || "Failed to update user profile");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
-      console.error(error)
+      toast.error("An unexpected error occurred");
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -293,7 +297,8 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
               Edit User Profile
             </DialogTitle>
             <DialogDescription>
-              Update comprehensive personal, academic, financial and localization data.
+              Update comprehensive personal, academic, financial and
+              localization data.
             </DialogDescription>
           </DialogHeader>
 
@@ -302,21 +307,39 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-4 flex-grow overflow-hidden flex flex-col my-4"
             >
-              <Tabs defaultValue="core" className="w-full flex-grow flex flex-col overflow-hidden">
+              <Tabs
+                defaultValue="core"
+                className="w-full flex-grow flex flex-col overflow-hidden"
+              >
                 <TabsList className="grid grid-cols-5 w-full bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shrink-0">
-                  <TabsTrigger value="core" className="rounded-lg text-xs font-semibold">
+                  <TabsTrigger
+                    value="core"
+                    className="rounded-lg text-xs font-semibold"
+                  >
                     Core Auth
                   </TabsTrigger>
-                  <TabsTrigger value="personal" className="rounded-lg text-xs font-semibold">
+                  <TabsTrigger
+                    value="personal"
+                    className="rounded-lg text-xs font-semibold"
+                  >
                     Personal
                   </TabsTrigger>
-                  <TabsTrigger value="contact" className="rounded-lg text-xs font-semibold">
+                  <TabsTrigger
+                    value="contact"
+                    className="rounded-lg text-xs font-semibold"
+                  >
                     Address
                   </TabsTrigger>
-                  <TabsTrigger value="academic" className="rounded-lg text-xs font-semibold">
+                  <TabsTrigger
+                    value="academic"
+                    className="rounded-lg text-xs font-semibold"
+                  >
                     Academic
                   </TabsTrigger>
-                  <TabsTrigger value="guardian" className="rounded-lg text-xs font-semibold">
+                  <TabsTrigger
+                    value="guardian"
+                    className="rounded-lg text-xs font-semibold"
+                  >
                     Guardian
                   </TabsTrigger>
                 </TabsList>
@@ -345,7 +368,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Email Address</FormLabel>
                             <FormControl>
-                              <Input placeholder="john@example.com" {...field} />
+                              <Input
+                                placeholder="john@example.com"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -360,7 +386,10 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>System Role</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger className="rounded-xl">
                                   <SelectValue placeholder="Select role" />
@@ -368,8 +397,12 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value={Role.USER}>User</SelectItem>
-                                <SelectItem value={Role.INSTRUCTOR}>Instructor</SelectItem>
-                                <SelectItem value={Role.ADMIN}>Admin</SelectItem>
+                                <SelectItem value={Role.INSTRUCTOR}>
+                                  Instructor
+                                </SelectItem>
+                                <SelectItem value={Role.ADMIN}>
+                                  Admin
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -392,8 +425,12 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value={SubscriptionTier.BASIC}>Basic</SelectItem>
-                                <SelectItem value={SubscriptionTier.PRO}>Pro</SelectItem>
+                                <SelectItem value={SubscriptionTier.BASIC}>
+                                  Basic
+                                </SelectItem>
+                                <SelectItem value={SubscriptionTier.PRO}>
+                                  Pro
+                                </SelectItem>
                                 <SelectItem value={SubscriptionTier.ENTERPRISE}>
                                   Enterprise
                                 </SelectItem>
@@ -410,7 +447,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Password</FormLabel>
                             <FormControl>
-                              <Input type="password" placeholder="•••••• (optional)" {...field} />
+                              <Input
+                                type="password"
+                                placeholder="•••••• (optional)"
+                                {...field}
+                              />
                             </FormControl>
                             <FormDescription className="text-[10px]">
                               Omit to preserve current password.
@@ -432,7 +473,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="First" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="First"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -445,7 +490,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Father Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Father" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="Father"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -475,7 +524,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Family Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Family" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="Family"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -491,7 +544,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Nickname</FormLabel>
                             <FormControl>
-                              <Input placeholder="Nickname" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="Nickname"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -514,7 +571,9 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value={Sex.MALE}>Male</SelectItem>
-                                <SelectItem value={Sex.FEMALE}>Female</SelectItem>
+                                <SelectItem value={Sex.FEMALE}>
+                                  Female
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -528,7 +587,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Birth Date</FormLabel>
                             <FormControl>
-                              <Input type="date" {...field} value={field.value || ""} />
+                              <Input
+                                type="date"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -546,9 +609,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="birthCountry"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Country</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Country
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="Country" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="Country"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -558,9 +627,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="birthState"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">State</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                State
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="State" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="State"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -570,9 +645,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="birthCity"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">City</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                City
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="City" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="City"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -582,9 +663,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="birthTown"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Town</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Town
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="Town" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="Town"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -594,9 +681,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="birthVillage"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Village</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Village
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="Village" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="Village"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -615,7 +708,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Mobile 1</FormLabel>
                             <FormControl>
-                              <Input placeholder="+1..." {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="+1..."
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -628,7 +725,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Mobile 2</FormLabel>
                             <FormControl>
-                              <Input placeholder="+1..." {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="+1..."
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -641,7 +742,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Telephone</FormLabel>
                             <FormControl>
-                              <Input placeholder="+1..." {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="+1..."
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -659,9 +764,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="homeCountry"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Country</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Country
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="Country" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="Country"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -671,9 +782,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="homeState"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">State</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                State
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="State" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="State"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -683,9 +800,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="homeCity"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">City</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                City
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="City" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="City"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -695,9 +818,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="homeStreet"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Street</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Street
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="Street" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="Street"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -709,7 +838,9 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="homeBuilding"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Building No</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Building No
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   placeholder="Building"
@@ -725,9 +856,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="homeUnit"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Unit No</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Unit No
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="Unit" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="Unit"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -737,9 +874,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           name="residenceNo"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-[11px]">Contract/House ID</FormLabel>
+                              <FormLabel className="text-[11px]">
+                                Contract/House ID
+                              </FormLabel>
                               <FormControl>
-                                <Input placeholder="ID No" {...field} value={field.value || ""} />
+                                <Input
+                                  placeholder="ID No"
+                                  {...field}
+                                  value={field.value || ""}
+                                />
                               </FormControl>
                             </FormItem>
                           )}
@@ -835,10 +978,18 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value={IQLevel.GENIUS}>Superior / Genius</SelectItem>
-                                <SelectItem value={IQLevel.GIFTED}>Highly Gifted</SelectItem>
-                                <SelectItem value={IQLevel.TALENTED}>Talented</SelectItem>
-                                <SelectItem value={IQLevel.AVERAGE}>Normal / Average</SelectItem>
+                                <SelectItem value={IQLevel.GENIUS}>
+                                  Superior / Genius
+                                </SelectItem>
+                                <SelectItem value={IQLevel.GIFTED}>
+                                  Highly Gifted
+                                </SelectItem>
+                                <SelectItem value={IQLevel.TALENTED}>
+                                  Talented
+                                </SelectItem>
+                                <SelectItem value={IQLevel.AVERAGE}>
+                                  Normal / Average
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -861,9 +1012,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value={IncomeLevel.HIGH}>High Income</SelectItem>
-                                <SelectItem value={IncomeLevel.MEDIUM}>Medium Income</SelectItem>
-                                <SelectItem value={IncomeLevel.LOW}>Low Income</SelectItem>
+                                <SelectItem value={IncomeLevel.HIGH}>
+                                  High Income
+                                </SelectItem>
+                                <SelectItem value={IncomeLevel.MEDIUM}>
+                                  Medium Income
+                                </SelectItem>
+                                <SelectItem value={IncomeLevel.LOW}>
+                                  Low Income
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -927,7 +1084,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Organization</FormLabel>
                             <FormControl>
-                              <Input placeholder="NASA" {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="NASA"
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                           </FormItem>
                         )}
@@ -982,7 +1143,11 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                           <FormItem>
                             <FormLabel>Guardian Mobile</FormLabel>
                             <FormControl>
-                              <Input placeholder="+1..." {...field} value={field.value || ""} />
+                              <Input
+                                placeholder="+1..."
+                                {...field}
+                                value={field.value || ""}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1004,9 +1169,15 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value={IncomeLevel.HIGH}>High Income</SelectItem>
-                                <SelectItem value={IncomeLevel.MEDIUM}>Medium Income</SelectItem>
-                                <SelectItem value={IncomeLevel.LOW}>Low Income</SelectItem>
+                                <SelectItem value={IncomeLevel.HIGH}>
+                                  High Income
+                                </SelectItem>
+                                <SelectItem value={IncomeLevel.MEDIUM}>
+                                  Medium Income
+                                </SelectItem>
+                                <SelectItem value={IncomeLevel.LOW}>
+                                  Low Income
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -1025,10 +1196,14 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                   onClick={handleDelete}
                   disabled={loading || deleting}
                   className={`rounded-xl shadow-sm text-xs font-semibold ${
-                    !confirmDelete ? "text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" : ""
+                    !confirmDelete
+                      ? "text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                      : ""
                   }`}
                 >
-                  {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {deleting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
                   {confirmDelete ? "Confirm Delete?" : "Delete Member"}
                 </Button>
                 <div className="flex gap-2 sm:ml-auto">
@@ -1036,8 +1211,8 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                     type="button"
                     variant="ghost"
                     onClick={() => {
-                      setOpen(false)
-                      setConfirmDelete(false)
+                      setOpen(false);
+                      setConfirmDelete(false);
                     }}
                     className="w-full sm:w-auto rounded-xl"
                   >
@@ -1048,7 +1223,9 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                     disabled={loading || deleting}
                     className="w-full sm:w-auto bg-primary text-white rounded-xl shadow-md min-w-[125px]"
                   >
-                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    {loading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
                     Save Profile
                   </Button>
                 </div>
@@ -1058,5 +1235,5 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

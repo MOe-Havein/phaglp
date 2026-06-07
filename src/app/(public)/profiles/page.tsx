@@ -1,5 +1,10 @@
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ProfilesPage() {
   return (
@@ -18,5 +23,5 @@ export default function ProfilesPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

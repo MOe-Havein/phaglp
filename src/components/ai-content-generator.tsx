@@ -1,31 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Sparkles, Wand2, Copy, RefreshCw } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, Wand2, Copy, RefreshCw } from "lucide-react";
 
 interface AIContentGeneratorProps {
-  onContentGenerated: (field: string, value: string | string[]) => void
+  onContentGenerated: (field: string, value: string | string[]) => void;
 }
 
-export function AIContentGenerator({ onContentGenerated }: AIContentGeneratorProps) {
-  const [prompt, setPrompt] = useState("")
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedContent, setGeneratedContent] = useState<any>(null)
+export function AIContentGenerator({
+  onContentGenerated,
+}: AIContentGeneratorProps) {
+  const [prompt, setPrompt] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedContent, setGeneratedContent] = useState<any>(null);
 
   const contentTypes = [
-    { id: "hero", label: "Hero Section", description: "Main headline and subtitle" },
-    { id: "features", label: "Features List", description: "Product/service features" },
+    {
+      id: "hero",
+      label: "Hero Section",
+      description: "Main headline and subtitle",
+    },
+    {
+      id: "features",
+      label: "Features List",
+      description: "Product/service features",
+    },
     { id: "about", label: "About Section", description: "Company description" },
     { id: "cta", label: "Call to Action", description: "Compelling CTA text" },
-  ]
+  ];
 
   const handleGenerate = async (type: string) => {
-    setIsGenerating(true)
-    setGeneratedContent(null)
+    setIsGenerating(true);
+    setGeneratedContent(null);
 
     try {
       const response = await fetch("/api/generate-content", {
@@ -37,38 +47,40 @@ export function AIContentGenerator({ onContentGenerated }: AIContentGeneratorPro
           prompt: prompt || `Create content for a ${type} section`,
           type,
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to generate content")
+        throw new Error("Failed to generate content");
       }
 
-      const data = await response.json()
-      setGeneratedContent(data)
+      const data = await response.json();
+      setGeneratedContent(data);
     } catch (error) {
-      console.error("Error generating content:", error)
+      console.error("Error generating content:", error);
     } finally {
-      setIsGenerating(false)
+      setIsGenerating(false);
     }
-  }
+  };
 
   const handleUseContent = () => {
-    if (!generatedContent) return
+    if (!generatedContent) return;
 
-    const { content } = generatedContent
+    const { content } = generatedContent;
 
     Object.entries(content).forEach(([key, value]) => {
-      onContentGenerated(key, value as string | string[])
-    })
+      onContentGenerated(key, value as string | string[]);
+    });
 
-    setGeneratedContent(null)
-  }
+    setGeneratedContent(null);
+  };
 
   return (
     <div className="space-y-6">
       {/* Quick Generate Buttons */}
       <div>
-        <h3 className="text-sm font-medium mb-3 text-foreground">Quick Generate</h3>
+        <h3 className="text-sm font-medium mb-3 text-foreground">
+          Quick Generate
+        </h3>
         <div className="grid grid-cols-2 gap-2">
           {contentTypes.map((type) => (
             <Button
@@ -79,8 +91,12 @@ export function AIContentGenerator({ onContentGenerated }: AIContentGeneratorPro
               disabled={isGenerating}
               className="h-auto p-3 flex flex-col items-start text-left bg-transparent"
             >
-              <div className="font-medium text-xs text-foreground">{type.label}</div>
-              <div className="text-xs text-muted-foreground mt-1">{type.description}</div>
+              <div className="font-medium text-xs text-foreground">
+                {type.label}
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {type.description}
+              </div>
             </Button>
           ))}
         </div>
@@ -88,7 +104,9 @@ export function AIContentGenerator({ onContentGenerated }: AIContentGeneratorPro
 
       {/* Custom Prompt */}
       <div>
-        <h3 className="text-sm font-medium mb-3 text-foreground">Custom Prompt</h3>
+        <h3 className="text-sm font-medium mb-3 text-foreground">
+          Custom Prompt
+        </h3>
         <div className="space-y-3">
           <Textarea
             placeholder="Describe your business and what content you need... (e.g., 'Create a hero section for a sustainable fashion brand targeting millennials')"
@@ -129,7 +147,9 @@ export function AIContentGenerator({ onContentGenerated }: AIContentGeneratorPro
           <CardContent className="space-y-3">
             {Object.entries(generatedContent.content).map(([key, value]) => (
               <div key={key} className="space-y-1">
-                <div className="text-xs font-medium text-muted-foreground capitalize">{key}</div>
+                <div className="text-xs font-medium text-muted-foreground capitalize">
+                  {key}
+                </div>
                 <div className="text-sm bg-background p-2 rounded border text-foreground">
                   {Array.isArray(value) ? (
                     <ul className="list-disc list-inside space-y-1">
@@ -152,7 +172,11 @@ export function AIContentGenerator({ onContentGenerated }: AIContentGeneratorPro
                 <Copy className="w-3 h-3 mr-1" />
                 Use This Content
               </Button>
-              <Button size="sm" variant="outline" onClick={() => setGeneratedContent(null)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setGeneratedContent(null)}
+              >
                 Discard
               </Button>
             </div>
@@ -168,11 +192,13 @@ export function AIContentGenerator({ onContentGenerated }: AIContentGeneratorPro
             <ul className="text-primary/80 space-y-1 text-xs">
               <li>- Be specific about your industry and target audience</li>
               <li>- Mention your unique value proposition</li>
-              <li>- Include the tone you want (professional, friendly, etc.)</li>
+              <li>
+                - Include the tone you want (professional, friendly, etc.)
+              </li>
             </ul>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

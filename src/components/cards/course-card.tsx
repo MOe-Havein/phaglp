@@ -1,37 +1,43 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Clock, GraduationCap, Star, Percent } from "lucide-react"
-import Link from "next/link"
-import { CourseType } from "@prisma/client"
-import { applyDiscount } from "@/lib/discount"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Clock, GraduationCap, Star, Percent } from "lucide-react";
+import Link from "next/link";
+import { CourseType } from "@prisma/client";
+import { applyDiscount } from "@/lib/discount";
 
 interface CourseCardProps {
-  id?: string
-  title: string
-  instructor: string
-  price: number
-  rating: number
-  category: string
-  slug: string
-  duration?: string | null
-  description?: string | null
-  courseType?: CourseType | null
-  discountPct?: number
+  id?: string;
+  title: string;
+  instructor: string;
+  price: number;
+  rating: number;
+  category: string;
+  slug: string;
+  duration?: string | null;
+  description?: string | null;
+  courseType?: CourseType | null;
+  discountPct?: number;
 }
 
 const getCourseTypeLabel = (type?: CourseType | null) => {
   switch (type) {
     case CourseType.GP_GENERAL:
-      return "General Program"
+      return "General Program";
     case CourseType.GP_GROUPS:
-      return "Groups"
+      return "Groups";
     case CourseType.GP_SUBJECTS:
-      return "Subjects"
+      return "Subjects";
     default:
-      return "Other Program"
+      return "Other Program";
   }
-}
+};
 
 export function CourseCard({
   title,
@@ -45,7 +51,7 @@ export function CourseCard({
   courseType,
   discountPct = 0,
 }: CourseCardProps) {
-  const finalPrice = applyDiscount(price, discountPct)
+  const finalPrice = applyDiscount(price, discountPct);
 
   return (
     <Card className="flex flex-col h-full hover:shadow-lg transition-shadow relative overflow-hidden">
@@ -58,7 +64,9 @@ export function CourseCard({
       <CardHeader className="p-0">
         <div className="aspect-video w-full bg-slate-200 rounded-t-xl flex items-center justify-center overflow-hidden relative">
           <GraduationCap className="w-12 h-12 text-slate-400" />
-          <Badge className="absolute top-2 right-2 bg-primary">{category}</Badge>
+          <Badge className="absolute top-2 right-2 bg-primary">
+            {category}
+          </Badge>
         </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
@@ -96,7 +104,9 @@ export function CourseCard({
         <div className="flex flex-col">
           {discountPct > 0 ? (
             <>
-              <span className="text-xs text-muted-foreground line-through">${price}</span>
+              <span className="text-xs text-muted-foreground line-through">
+                ${price}
+              </span>
               <span className="text-lg font-bold text-red-600 dark:text-red-400">
                 ${finalPrice}
               </span>
@@ -105,10 +115,14 @@ export function CourseCard({
             <span className="text-lg font-bold">${price}</span>
           )}
         </div>
-        <Button asChild size="sm" className="bg-primary text-white hover:bg-primary/90">
+        <Button
+          asChild
+          size="sm"
+          className="bg-primary text-white hover:bg-primary/90"
+        >
           <Link href={`/courses/${slug}`}>View Details</Link>
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

@@ -1,12 +1,14 @@
-import "server-only"
-import { prisma } from "@/lib/prisma"
-import { cached } from "./cache"
-import { siteConfig } from "@/config/site"
-import { SiteSettings } from "@/lib/shared/types"
-import { logger } from "./logger"
+import "server-only";
+import { prisma } from "@/lib/prisma";
+import { cached } from "./cache";
+import { siteConfig } from "@/config/site";
+import { SiteSettings } from "@/lib/shared/types";
+import { logger } from "./logger";
 
-export async function getSiteSettings(hostname?: string | null): Promise<SiteSettings> {
-  const hostKey = hostname || "default"
+export async function getSiteSettings(
+  hostname?: string | null,
+): Promise<SiteSettings> {
+  const hostKey = hostname || "default";
 
   return cached<SiteSettings>(
     `site-settings-${hostKey}`,
@@ -20,11 +22,13 @@ export async function getSiteSettings(hostname?: string | null): Promise<SiteSet
             // e.g. domain: hostname
             id: "global",
           },
-        })
+        });
 
         if (!settings) {
-          logger.warn(`No DB settings found for host: ${hostKey}, using static default`)
-          return siteConfig
+          logger.warn(
+            `No DB settings found for host: ${hostKey}, using static default`,
+          );
+          return siteConfig;
         }
 
         return {
@@ -37,15 +41,15 @@ export async function getSiteSettings(hostname?: string | null): Promise<SiteSet
           googleAnalyticsId: settings.googleAnalyticsId,
           primaryColor: settings.primaryColor,
           ogImage: settings.ogImage,
-        }
+        };
       } catch (error) {
-        logger.error("Failed to fetch site settings from DB", error)
-        return siteConfig
+        logger.error("Failed to fetch site settings from DB", error);
+        return siteConfig;
       }
     },
     {
       tags: ["site-settings", `site-settings-${hostKey}`],
       revalidate: 3600, // 1 hour default
     },
-  )
+  );
 }

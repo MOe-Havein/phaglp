@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
 const STATE_CONFIG: Record<
   string,
   {
-    label: string
-    bg: string
-    text: string
-    dot: string
-    border: string
-    pulse?: boolean
+    label: string;
+    bg: string;
+    text: string;
+    dot: string;
+    border: string;
+    pulse?: boolean;
   }
 > = {
   READY: {
@@ -70,15 +70,15 @@ const STATE_CONFIG: Record<
     dot: "bg-white/30",
     border: "border-white/10",
   },
-}
+};
 
 interface StatusBadgeProps {
-  state: string
-  small?: boolean
+  state: string;
+  small?: boolean;
 }
 
 export function StatusBadge({ state, small = false }: StatusBadgeProps) {
-  const cfg = STATE_CONFIG[state] ?? STATE_CONFIG["UNKNOWN"]!
+  const cfg = STATE_CONFIG[state] ?? STATE_CONFIG["UNKNOWN"]!;
 
   return (
     <span
@@ -92,9 +92,11 @@ export function StatusBadge({ state, small = false }: StatusBadgeProps) {
             className={`animate-ping absolute inline-flex h-full w-full rounded-full ${cfg.dot} opacity-75`}
           />
         )}
-        <span className={`relative inline-flex rounded-full ${cfg.dot} ${small ? "w-1.5 h-1.5" : "w-2 h-2"}`} />
+        <span
+          className={`relative inline-flex rounded-full ${cfg.dot} ${small ? "w-1.5 h-1.5" : "w-2 h-2"}`}
+        />
       </span>
       {cfg.label}
     </span>
-  )
+  );
 }

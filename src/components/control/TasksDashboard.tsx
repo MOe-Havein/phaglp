@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ClipboardCheck,
   Database,
@@ -14,7 +14,7 @@ import {
   Clock,
   Compass,
   ArrowRight,
-} from "lucide-react"
+} from "lucide-react";
 
 // Types
 type ConcernType =
@@ -24,24 +24,24 @@ type ConcernType =
   | "Quality"
   | "Performance"
   | "Accessibility"
-  | "Polish/DX"
+  | "Polish/DX";
 
 interface Task {
-  id: number
-  text: string
-  concern: ConcernType
+  id: number;
+  text: string;
+  concern: ConcernType;
 }
 
 interface Phase {
-  id: number
-  name: string
-  duration: string
-  status: string
-  description: string
-  color: string
-  textColor: string
-  bgColor: string
-  tasks: Task[]
+  id: number;
+  name: string;
+  duration: string;
+  status: string;
+  description: string;
+  color: string;
+  textColor: string;
+  bgColor: string;
+  tasks: Task[];
 }
 
 // Complete 52 Tasks Catalog split into 4 phases of 13 tasks each
@@ -55,7 +55,8 @@ const PHASES: Phase[] = [
       "Critical security gaps and guideline alignment: purging obsolete JWT auth libraries, resolving administrative sidebar leaks, enforcing server API handler controls, hardening cookies, and deleting conflicting schemas.",
     color: "from-red-500 to-orange-500",
     textColor: "text-red-500 dark:text-red-400",
-    bgColor: "bg-red-50/50 dark:bg-red-950/10 border-red-200/60 dark:border-red-900/30",
+    bgColor:
+      "bg-red-50/50 dark:bg-red-950/10 border-red-200/60 dark:border-red-900/30",
     tasks: [
       {
         id: 1,
@@ -133,7 +134,8 @@ const PHASES: Phase[] = [
       "Strict typescript configurations, static environment type validations, Prisma connection pooling checks, relational transaction wraps, converting dynamic rendering to Server Components, and Zod assertions.",
     color: "from-blue-500 to-indigo-500",
     textColor: "text-blue-500 dark:text-blue-400",
-    bgColor: "bg-blue-50/50 dark:bg-blue-950/10 border-blue-200/60 dark:border-blue-900/30",
+    bgColor:
+      "bg-blue-50/50 dark:bg-blue-950/10 border-blue-200/60 dark:border-blue-900/30",
     tasks: [
       {
         id: 14,
@@ -211,7 +213,8 @@ const PHASES: Phase[] = [
       "Comprehensive end-to-end integration test runs, low-latency Redis cache lookups, graceful database query fallback, visual loading shimmer blocks, Prisma N+1 query joins, and strict accessibility tags.",
     color: "from-purple-500 to-pink-500",
     textColor: "text-purple-500 dark:text-purple-400",
-    bgColor: "bg-purple-50/50 dark:bg-purple-950/10 border-purple-200/60 dark:border-purple-900/30",
+    bgColor:
+      "bg-purple-50/50 dark:bg-purple-950/10 border-purple-200/60 dark:border-purple-900/30",
     tasks: [
       {
         id: 27,
@@ -359,10 +362,15 @@ const PHASES: Phase[] = [
       },
     ],
   },
-]
+];
 
 // Concern filter mapping
-const CONCERNS: { value: "all" | ConcernType; label: string; icon: string; color: string }[] = [
+const CONCERNS: {
+  value: "all" | ConcernType;
+  label: string;
+  icon: string;
+  color: string;
+}[] = [
   {
     value: "all",
     label: "All Concerns",
@@ -418,79 +426,88 @@ const CONCERNS: { value: "all" | ConcernType; label: string; icon: string; color
     color:
       "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-900/30",
   },
-]
+];
 
 export function TasksDashboard() {
-  const [activeTab, setActiveTab] = useState<"overview" | 1 | 2 | 3 | 4>("overview")
-  const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({})
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeConcernFilter, setActiveConcernFilter] = useState<"all" | ConcernType>("all")
-  const [isMounted, setIsMounted] = useState(false)
+  const [activeTab, setActiveTab] = useState<"overview" | 1 | 2 | 3 | 4>(
+    "overview",
+  );
+  const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeConcernFilter, setActiveConcernFilter] = useState<
+    "all" | ConcernType
+  >("all");
+  const [isMounted, setIsMounted] = useState(false);
 
   // Initialize checklist state from localStorage
   useEffect(() => {
-    setIsMounted(true)
-    const stored = localStorage.getItem("phagpl_tasks_status")
+    setIsMounted(true);
+    const stored = localStorage.getItem("phagpl_tasks_status");
     if (stored) {
       try {
-        setCheckedTasks(JSON.parse(stored))
+        setCheckedTasks(JSON.parse(stored));
       } catch (e) {
-        console.error("Failed to parse stored task status", e)
+        console.error("Failed to parse stored task status", e);
       }
     }
-  }, [])
+  }, []);
 
   // Persist status when modified
   const toggleTask = (id: number) => {
     const updated = {
       ...checkedTasks,
       [id]: !checkedTasks[id],
-    }
-    setCheckedTasks(updated)
-    localStorage.setItem("phagpl_tasks_status", JSON.stringify(updated))
-  }
+    };
+    setCheckedTasks(updated);
+    localStorage.setItem("phagpl_tasks_status", JSON.stringify(updated));
+  };
 
   // Bulk check or uncheck tasks in active filter/tab view
   const bulkToggle = (phaseId: number, check: boolean) => {
-    const phase = PHASES.find((p) => p.id === phaseId)
-    if (!phase) return
+    const phase = PHASES.find((p) => p.id === phaseId);
+    if (!phase) return;
 
-    const updated = { ...checkedTasks }
+    const updated = { ...checkedTasks };
     phase.tasks.forEach((task) => {
       // Respect current filter and search queries when doing bulk modifications
-      const matchesFilter = activeConcernFilter === "all" || task.concern === activeConcernFilter
-      const matchesSearch = task.text.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesFilter =
+        activeConcernFilter === "all" || task.concern === activeConcernFilter;
+      const matchesSearch = task.text
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       if (matchesFilter && matchesSearch) {
-        updated[task.id] = check
+        updated[task.id] = check;
       }
-    })
-    setCheckedTasks(updated)
-    localStorage.setItem("phagpl_tasks_status", JSON.stringify(updated))
-  }
+    });
+    setCheckedTasks(updated);
+    localStorage.setItem("phagpl_tasks_status", JSON.stringify(updated));
+  };
 
   // Reset all 52 tasks
   const resetAllTasks = () => {
-    if (window.confirm("Are you sure you want to reset all 52 tasks progress?")) {
-      setCheckedTasks({})
-      localStorage.removeItem("phagpl_tasks_status")
+    if (
+      window.confirm("Are you sure you want to reset all 52 tasks progress?")
+    ) {
+      setCheckedTasks({});
+      localStorage.removeItem("phagpl_tasks_status");
     }
-  }
+  };
 
   // Calculate statistics
   const getPhaseStats = (phase: Phase) => {
-    const total = phase.tasks.length
-    const completed = phase.tasks.filter((t) => checkedTasks[t.id]).length
-    const percent = total > 0 ? Math.round((completed / total) * 100) : 0
-    return { total, completed, percent }
-  }
+    const total = phase.tasks.length;
+    const completed = phase.tasks.filter((t) => checkedTasks[t.id]).length;
+    const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+    return { total, completed, percent };
+  };
 
-  const globalTotal = 52
-  const globalCompleted = Object.values(checkedTasks).filter(Boolean).length
-  const globalPercent = Math.round((globalCompleted / globalTotal) * 100)
+  const globalTotal = 52;
+  const globalCompleted = Object.values(checkedTasks).filter(Boolean).length;
+  const globalPercent = Math.round((globalCompleted / globalTotal) * 100);
 
   // Retrieve concern icon helper
   const getConcernBadge = (concern: ConcernType) => {
-    const match = CONCERNS.find((c) => c.value === concern)
+    const match = CONCERNS.find((c) => c.value === concern);
     return (
       <span
         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${match?.color}`}
@@ -498,16 +515,18 @@ export function TasksDashboard() {
         <span>{match?.icon}</span>
         <span>{concern}</span>
       </span>
-    )
-  }
+    );
+  };
 
   if (!isMounted) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[500px]">
         <RefreshCw className="w-8 h-8 text-primary animate-spin mb-4" />
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Loading task framework...</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          Loading task framework...
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -517,21 +536,26 @@ export function TasksDashboard() {
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary font-semibold text-sm">
             <ClipboardCheck className="w-4 h-4 text-blue-500" />
-            <span className="text-blue-500">Interactive Implementation Guide</span>
+            <span className="text-blue-500">
+              Interactive Implementation Guide
+            </span>
           </div>
           <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             PHAGLP Development Dashboard
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Track execution across 4 structured phases containing 52 technical milestone check
-            items.
+            Track execution across 4 structured phases containing 52 technical
+            milestone check items.
           </p>
         </div>
 
         {/* Global Stats Board */}
         <div className="flex items-center gap-5 bg-gray-50 dark:bg-gray-800/40 p-4 rounded-xl border border-gray-100 dark:border-gray-800/60 min-w-[280px]">
           <div className="relative w-14 h-14 flex-shrink-0">
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+            <svg
+              className="w-full h-full transform -rotate-90"
+              viewBox="0 0 36 36"
+            >
               <path
                 className="text-gray-200 dark:text-gray-700"
                 strokeWidth="3.5"
@@ -587,7 +611,7 @@ export function TasksDashboard() {
         </button>
 
         {PHASES.map((phase) => {
-          const stats = getPhaseStats(phase)
+          const stats = getPhaseStats(phase);
           return (
             <button
               key={phase.id}
@@ -609,7 +633,7 @@ export function TasksDashboard() {
                 {stats.completed}/{stats.total}
               </span>
             </button>
-          )
+          );
         })}
 
         <button
@@ -636,8 +660,8 @@ export function TasksDashboard() {
             {/* Overview Cards Dashboard Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {PHASES.map((phase) => {
-                const stats = getPhaseStats(phase)
-                const isBlocked = phase.status === "block deploy"
+                const stats = getPhaseStats(phase);
+                const isBlocked = phase.status === "block deploy";
                 return (
                   <div
                     key={phase.id}
@@ -673,7 +697,10 @@ export function TasksDashboard() {
 
                       {/* Circle Gauge */}
                       <div className="relative w-16 h-16">
-                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <svg
+                          className="w-full h-full transform -rotate-90"
+                          viewBox="0 0 36 36"
+                        >
                           <path
                             className="text-gray-100 dark:text-gray-800"
                             strokeWidth="3.5"
@@ -717,7 +744,7 @@ export function TasksDashboard() {
                       </span>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
 
@@ -734,8 +761,9 @@ export function TasksDashboard() {
                     <span>Security Integrity</span>
                   </h4>
                   <p className="leading-relaxed">
-                    All public-facing features require robust Auth.js verification routes. Restrict
-                    layouts from leaking before routing finishes.
+                    All public-facing features require robust Auth.js
+                    verification routes. Restrict layouts from leaking before
+                    routing finishes.
                   </p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-800/30 p-4 rounded-xl border border-gray-100 dark:border-gray-800/50 space-y-1">
@@ -744,8 +772,8 @@ export function TasksDashboard() {
                     <span>Database Consistency</span>
                   </h4>
                   <p className="leading-relaxed">
-                    Use unified client instantiations for PostgreSQL queries. Wrap database
-                    modifications inside Prisma transactions.
+                    Use unified client instantiations for PostgreSQL queries.
+                    Wrap database modifications inside Prisma transactions.
                   </p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-800/30 p-4 rounded-xl border border-gray-100 dark:border-gray-800/50 space-y-1">
@@ -754,8 +782,8 @@ export function TasksDashboard() {
                     <span>Performance Speed</span>
                   </h4>
                   <p className="leading-relaxed">
-                    Switch client useEffect data loops over to direct Server Components, and
-                    leverage Upstash Redis clusters.
+                    Switch client useEffect data loops over to direct Server
+                    Components, and leverage Upstash Redis clusters.
                   </p>
                 </div>
               </div>
@@ -764,21 +792,24 @@ export function TasksDashboard() {
         ) : (
           // Individual Phase Tab Layout
           (() => {
-            const phase = PHASES.find((p) => p.id === activeTab)
-            if (!phase) return null
+            const phase = PHASES.find((p) => p.id === activeTab);
+            if (!phase) return null;
 
-            const stats = getPhaseStats(phase)
-            const isBlocked = phase.status === "block deploy"
+            const stats = getPhaseStats(phase);
+            const isBlocked = phase.status === "block deploy";
 
             // Filter tasks by concern AND search query
             const filteredTasks = phase.tasks.filter((task) => {
               const matchesConcern =
-                activeConcernFilter === "all" || task.concern === activeConcernFilter
-              const matchesSearch = task.text.toLowerCase().includes(searchQuery.toLowerCase())
-              return matchesConcern && matchesSearch
-            })
+                activeConcernFilter === "all" ||
+                task.concern === activeConcernFilter;
+              const matchesSearch = task.text
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+              return matchesConcern && matchesSearch;
+            });
 
-            const activeFilterMatchCount = filteredTasks.length
+            const activeFilterMatchCount = filteredTasks.length;
 
             return (
               <motion.div
@@ -825,7 +856,10 @@ export function TasksDashboard() {
                   {/* Phase Stats Gauge */}
                   <div className="flex items-center gap-4 bg-white/60 dark:bg-gray-900/60 p-4 rounded-xl border border-white/40 dark:border-gray-800/40 shadow-sm min-w-[240px]">
                     <div className="relative w-12 h-12 flex-shrink-0">
-                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                      <svg
+                        className="w-full h-full transform -rotate-90"
+                        viewBox="0 0 36 36"
+                      >
                         <path
                           className="text-gray-200 dark:text-gray-700"
                           strokeWidth="3.5"
@@ -904,10 +938,12 @@ export function TasksDashboard() {
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {CONCERNS.map((concern) => {
-                      const isActive = activeConcernFilter === concern.value
+                      const isActive = activeConcernFilter === concern.value;
                       const countInPhase = phase.tasks.filter(
-                        (t) => concern.value === "all" || t.concern === concern.value,
-                      ).length
+                        (t) =>
+                          concern.value === "all" ||
+                          t.concern === concern.value,
+                      ).length;
 
                       return (
                         <button
@@ -931,7 +967,7 @@ export function TasksDashboard() {
                             {countInPhase}
                           </span>
                         </button>
-                      )
+                      );
                     })}
                   </div>
                 </div>
@@ -945,12 +981,13 @@ export function TasksDashboard() {
                         No tasks match selected filter parameters
                       </p>
                       <p className="text-xs mt-1 text-gray-500">
-                        Try modifying your query or selecting another concern tag.
+                        Try modifying your query or selecting another concern
+                        tag.
                       </p>
                     </div>
                   ) : (
                     filteredTasks.map((task) => {
-                      const isChecked = checkedTasks[task.id]
+                      const isChecked = checkedTasks[task.id];
                       return (
                         <div
                           key={task.id}
@@ -967,7 +1004,11 @@ export function TasksDashboard() {
                               <motion.div
                                 initial={{ scale: 0.6 }}
                                 animate={{ scale: 1 }}
-                                transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                                transition={{
+                                  type: "spring",
+                                  stiffness: 350,
+                                  damping: 20,
+                                }}
                                 className="w-5 h-5 rounded border border-emerald-500 bg-emerald-500 dark:bg-emerald-600 flex items-center justify-center text-white"
                               >
                                 <svg
@@ -1010,7 +1051,7 @@ export function TasksDashboard() {
                             </div>
                           </div>
                         </div>
-                      )
+                      );
                     })
                   )}
                 </div>
@@ -1018,14 +1059,15 @@ export function TasksDashboard() {
                 {/* Filter statistics counter */}
                 {activeFilterMatchCount > 0 && (
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Showing {activeFilterMatchCount} of {phase.tasks.length} tasks in {phase.name}
+                    Showing {activeFilterMatchCount} of {phase.tasks.length}{" "}
+                    tasks in {phase.name}
                   </p>
                 )}
               </motion.div>
-            )
+            );
           })()
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

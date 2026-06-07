@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -11,77 +11,89 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Plus, GripVertical, Edit, Trash2, BookOpen, Video, FileText, Loader2 } from "lucide-react"
-import { createModule, createLesson } from "@/lib/cms-actions"
-import { toast } from "sonner"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Plus,
+  GripVertical,
+  Edit,
+  Trash2,
+  BookOpen,
+  Video,
+  FileText,
+  Loader2,
+} from "lucide-react";
+import { createModule, createLesson } from "@/lib/cms-actions";
+import { toast } from "sonner";
 
 interface Lesson {
-  id: string
-  title: string
-  order: number
-  videoUrl: string | null
+  id: string;
+  title: string;
+  order: number;
+  videoUrl: string | null;
 }
 
 interface Module {
-  id: string
-  title: string
-  order: number
-  lessons: Lesson[]
+  id: string;
+  title: string;
+  order: number;
+  lessons: Lesson[];
 }
 
 interface CurriculumManagerProps {
-  courseId: string
-  initialModules: Module[]
+  courseId: string;
+  initialModules: Module[];
 }
 
-export function CurriculumManager({ courseId, initialModules }: CurriculumManagerProps) {
-  const [loading, setLoading] = useState(false)
-  const [moduleTitle, setModuleTitle] = useState("")
-  const [lessonTitle, setLessonTitle] = useState("")
-  const [activeModuleId, setActiveModuleId] = useState<string | null>(null)
-  const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false)
-  const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false)
+export function CurriculumManager({
+  courseId,
+  initialModules,
+}: CurriculumManagerProps) {
+  const [loading, setLoading] = useState(false);
+  const [moduleTitle, setModuleTitle] = useState("");
+  const [lessonTitle, setLessonTitle] = useState("");
+  const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
+  const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
+  const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
 
   async function handleAddModule() {
-    if (!moduleTitle.trim()) return
-    setLoading(true)
+    if (!moduleTitle.trim()) return;
+    setLoading(true);
     try {
-      const result = await createModule(courseId, moduleTitle)
+      const result = await createModule(courseId, moduleTitle);
       if (result.success) {
-        toast.success("Module added successfully")
-        setModuleTitle("")
-        setIsModuleDialogOpen(false)
+        toast.success("Module added successfully");
+        setModuleTitle("");
+        setIsModuleDialogOpen(false);
       } else {
-        toast.error(result.error || "Failed to add module")
+        toast.error(result.error || "Failed to add module");
       }
     } catch (error) {
-      console.error("Failed to add module:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Failed to add module:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function handleAddLesson() {
-    if (!lessonTitle.trim() || !activeModuleId) return
-    setLoading(true)
+    if (!lessonTitle.trim() || !activeModuleId) return;
+    setLoading(true);
     try {
-      const result = await createLesson(activeModuleId, courseId, lessonTitle)
+      const result = await createLesson(activeModuleId, courseId, lessonTitle);
       if (result.success) {
-        toast.success("Lesson added successfully")
-        setLessonTitle("")
-        setIsLessonDialogOpen(false)
+        toast.success("Lesson added successfully");
+        setLessonTitle("");
+        setIsLessonDialogOpen(false);
       } else {
-        toast.error(result.error || "Failed to add lesson")
+        toast.error(result.error || "Failed to add lesson");
       }
     } catch (error) {
-      console.error("Failed to add lesson:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Failed to add lesson:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -111,7 +123,10 @@ export function CurriculumManager({ courseId, initialModules }: CurriculumManage
               />
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsModuleDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsModuleDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button onClick={handleAddModule} disabled={loading}>
@@ -149,8 +164,8 @@ export function CurriculumManager({ courseId, initialModules }: CurriculumManage
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      setActiveModuleId(module.id)
-                      setIsLessonDialogOpen(true)
+                      setActiveModuleId(module.id);
+                      setIsLessonDialogOpen(true);
                     }}
                   >
                     <Plus className="mr-2 h-4 w-4" /> Add Lesson
@@ -158,7 +173,11 @@ export function CurriculumManager({ courseId, initialModules }: CurriculumManage
                   <Button variant="ghost" size="icon" className="h-8 w-8">
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive"
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -181,13 +200,23 @@ export function CurriculumManager({ courseId, initialModules }: CurriculumManage
                           ) : (
                             <FileText className="h-4 w-4 text-slate-400" />
                           )}
-                          <span className="text-sm font-medium">{lesson.title}</span>
+                          <span className="text-sm font-medium">
+                            {lesson.title}
+                          </span>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button variant="ghost" size="icon" className="h-7 w-7">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                          >
                             <Edit className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-destructive"
+                          >
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
                         </div>
@@ -205,7 +234,9 @@ export function CurriculumManager({ courseId, initialModules }: CurriculumManage
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Lesson</DialogTitle>
-            <DialogDescription>Add a new lesson to your module.</DialogDescription>
+            <DialogDescription>
+              Add a new lesson to your module.
+            </DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <Label htmlFor="lessonTitle">Lesson Title</Label>
@@ -217,7 +248,10 @@ export function CurriculumManager({ courseId, initialModules }: CurriculumManage
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsLessonDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsLessonDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button onClick={handleAddLesson} disabled={loading}>
@@ -228,5 +262,5 @@ export function CurriculumManager({ courseId, initialModules }: CurriculumManage
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

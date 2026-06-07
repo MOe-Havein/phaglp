@@ -1,13 +1,13 @@
-import { MetadataRoute } from "next"
-import { siteConfig } from "@/config/site"
+import { MetadataRoute } from "next";
+import { siteConfig } from "@/config/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["login","/control/", "/api/", "/dashboard/"],
+      disallow: ["login", "/control/", "/api/", "/dashboard/"],
     },
     sitemap: `${siteConfig.siteUrl}/sitemap.xml`,
-  }
+  };
 }

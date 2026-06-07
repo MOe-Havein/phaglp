@@ -1,59 +1,74 @@
-"use client"
+"use client";
 
-import { updateLecture } from "@/lib/cms-actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ChevronLeft, Save, Image as ImageIcon, Wand2, Loader2 } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { Lecture } from "@prisma/client"
-import { RichTextEditor } from "@/components/editor/rich-text-editor"
+import { updateLecture } from "@/lib/cms-actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  ChevronLeft,
+  Save,
+  Image as ImageIcon,
+  Wand2,
+  Loader2,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Lecture } from "@prisma/client";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 
 interface EditLectureFormProps {
-  lecture: Lecture
+  lecture: Lecture;
 }
 
 export function EditLectureForm({ lecture }: EditLectureFormProps) {
-  const [loading, setLoading] = useState(false)
-  const [content, setContent] = useState(lecture.body)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState(lecture.body);
+  const router = useRouter();
 
   async function handleUpdate(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setLoading(true)
+    event.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData(event.currentTarget);
     const data = {
       title: formData.get("title") as string,
       slug: formData.get("slug") as string,
       body: content,
       category: formData.get("category") as string,
       published: lecture.published, // Preserve existing publish state
-    }
+    };
 
     try {
-      const result = await updateLecture(lecture.id, data)
+      const result = await updateLecture(lecture.id, data);
       if (result.success) {
-        toast.success("Lecture updated successfully!")
-        router.push("/control/lectures")
-        router.refresh()
+        toast.success("Lecture updated successfully!");
+        router.push("/control/lectures");
+        router.refresh();
       } else {
-        toast.error(result.error || "Failed to update lecture")
+        toast.error(result.error || "Failed to update lecture");
       }
     } catch (error) {
-      console.error("Failed to update lecture:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Failed to update lecture:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleUpdate} className="container mx-auto py-10 space-y-8 max-w-5xl">
+    <form
+      onSubmit={handleUpdate}
+      className="container mx-auto py-10 space-y-8 max-w-5xl"
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
@@ -63,7 +78,9 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
           </Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Edit Lecture</h1>
-            <p className="text-muted-foreground text-sm">Refine your philosophical insight.</p>
+            <p className="text-muted-foreground text-sm">
+              Refine your philosophical insight.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -90,7 +107,9 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
           <Card>
             <CardHeader>
               <CardTitle>Lecture Content</CardTitle>
-              <CardDescription>The core text and narrative of your piece.</CardDescription>
+              <CardDescription>
+                The core text and narrative of your piece.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -138,7 +157,12 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
                     placeholder="ethics-of-ai"
                     required
                   />
-                  <Button type="button" variant="ghost" size="icon" className="shrink-0">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0"
+                  >
                     <Wand2 className="h-4 w-4 text-emerald-600" />
                   </Button>
                 </div>
@@ -147,7 +171,9 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
                 <Label>Cover Image</Label>
                 <div className="border-2 border-dashed rounded-lg p-8 text-center space-y-2 hover:bg-slate-50 transition-colors cursor-pointer">
                   <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground opacity-50" />
-                  <p className="text-xs text-muted-foreground">Update lecture cover image</p>
+                  <p className="text-xs text-muted-foreground">
+                    Update lecture cover image
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -176,5 +202,5 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
         </div>
       </div>
     </form>
-  )
+  );
 }

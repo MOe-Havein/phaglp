@@ -1,34 +1,40 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { LectureCard } from "@/components/cards/lecture-card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search, Sparkles } from "lucide-react"
-import { format } from "date-fns"
+import { useState } from "react";
+import { LectureCard } from "@/components/cards/lecture-card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, Sparkles } from "lucide-react";
+import { format } from "date-fns";
 
 interface BlogListingProps {
-  lectures: any[]
+  lectures: any[];
 }
 
 export function BlogListing({ lectures }: BlogListingProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Dynamically extract unique categories present in the articles
-  const categories = ["All", ...Array.from(new Set(lectures.map((l) => l.category)))]
+  const categories = [
+    "All",
+    ...Array.from(new Set(lectures.map((l) => l.category))),
+  ];
 
   // Filter lectures based on search query and selected category
   const filteredLectures = lectures.filter((lecture) => {
     const matchesSearch =
       lecture.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (lecture.excerpt && lecture.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (lecture.body && lecture.body.toLowerCase().includes(searchQuery.toLowerCase()))
+      (lecture.excerpt &&
+        lecture.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (lecture.body &&
+        lecture.body.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesCategory = selectedCategory === "All" || lecture.category === selectedCategory
+    const matchesCategory =
+      selectedCategory === "All" || lecture.category === selectedCategory;
 
-    return matchesSearch && matchesCategory
-  })
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="space-y-10 relative">
@@ -53,7 +59,7 @@ export function BlogListing({ lectures }: BlogListingProps) {
         {/* Category Filter Buttons */}
         <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 w-full">
           {categories.map((cat) => {
-            const isActive = selectedCategory === cat
+            const isActive = selectedCategory === cat;
             return (
               <Button
                 key={cat}
@@ -68,7 +74,7 @@ export function BlogListing({ lectures }: BlogListingProps) {
               >
                 {cat}
               </Button>
-            )
+            );
           })}
         </div>
       </div>
@@ -79,7 +85,8 @@ export function BlogListing({ lectures }: BlogListingProps) {
           <div className="col-span-full text-center py-20 bg-slate-50/50 dark:bg-slate-900/10 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-8">
             <Sparkles className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
             <p className="text-muted-foreground font-semibold italic text-base">
-              No matching lectures found. Try revising your query or category filters.
+              No matching lectures found. Try revising your query or category
+              filters.
             </p>
           </div>
         ) : (
@@ -93,8 +100,13 @@ export function BlogListing({ lectures }: BlogListingProps) {
                 slug={lecture.slug}
                 author={lecture.author?.name || "Anonymous"}
                 category={lecture.category}
-                excerpt={lecture.excerpt || lecture.body.substring(0, 150) + "..."}
-                publishedAt={format(new Date(lecture.createdAt), "MMMM d, yyyy")}
+                excerpt={
+                  lecture.excerpt || lecture.body.substring(0, 150) + "..."
+                }
+                publishedAt={format(
+                  new Date(lecture.createdAt),
+                  "MMMM d, yyyy",
+                )}
                 tags={lecture.tags}
                 coverImage={lecture.coverImage || undefined}
                 isFeatured={lecture.isFeatured}
@@ -106,5 +118,5 @@ export function BlogListing({ lectures }: BlogListingProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

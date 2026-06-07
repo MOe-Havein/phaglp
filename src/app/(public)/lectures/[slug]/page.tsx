@@ -1,16 +1,20 @@
-import prisma from "@/lib/prisma"
-import { notFound } from "next/navigation"
+import prisma from "@/lib/prisma";
+import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, User } from "lucide-react"
-import Link from "next/link"
-import { format } from "date-fns"
-import { RichTextViewer } from "@/components/editor/rich-text-viewer"
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Calendar, User } from "lucide-react";
+import Link from "next/link";
+import { format } from "date-fns";
+import { RichTextViewer } from "@/components/editor/rich-text-viewer";
 
-export default async function LectureDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
+export default async function LectureDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const lecture = await prisma.lecture.findUnique({
     where: { slug },
     include: {
@@ -20,13 +24,13 @@ export default async function LectureDetailPage({ params }: { params: Promise<{ 
         },
       },
     },
-  })
+  });
 
   if (!lecture) {
-    notFound()
+    notFound();
   }
 
-  const tagsArray = (lecture.tags as string[]) || []
+  const tagsArray = (lecture.tags as string[]) || [];
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -43,7 +47,9 @@ export default async function LectureDetailPage({ params }: { params: Promise<{ 
           <Badge className="mb-4 bg-blue-100 text-blue-700 hover:bg-blue-100 border-none px-3">
             {lecture.category}
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">{lecture.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            {lecture.title}
+          </h1>
 
           <div className="flex items-center gap-6 text-muted-foreground border-y py-4">
             <div className="flex items-center gap-2">
@@ -77,5 +83,5 @@ export default async function LectureDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
     </div>
-  )
+  );
 }

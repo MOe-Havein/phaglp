@@ -1,41 +1,50 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import Link from "next/link"
-import { ChevronLeft, Save, Loader2, Sparkles } from "lucide-react"
-import { createBlogPost } from "@/lib/blog-actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { WysiwygMarkdownEditor } from "@/components/editor/wysiwyg-markdown-editor"
-import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
+import { ChevronLeft, Save, Loader2, Sparkles } from "lucide-react";
+import { createBlogPost } from "@/lib/blog-actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { WysiwygMarkdownEditor } from "@/components/editor/wysiwyg-markdown-editor";
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button";
 
 export function CreateBlogPostForm() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [content, setContent] = useState("")
-  const [published, setPublished] = useState(false)
-  const [coverImage, setCoverImage] = useState("")
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState("");
+  const [published, setPublished] = useState(false);
+  const [coverImage, setCoverImage] = useState("");
 
   async function handleCreate(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setLoading(true)
+    event.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData(event.currentTarget)
-    const title = formData.get("title") as string
-    const category = formData.get("category") as string
-    const excerpt = formData.get("excerpt") as string
-    const tagsInput = formData.get("tagsInput") as string
+    const formData = new FormData(event.currentTarget);
+    const title = formData.get("title") as string;
+    const category = formData.get("category") as string;
+    const excerpt = formData.get("excerpt") as string;
+    const tagsInput = formData.get("tagsInput") as string;
 
     // Parse comma-separated tags into array
     const tags = tagsInput
-      ? tagsInput.split(",").map((t) => t.trim()).filter((t) => t.length > 0)
-      : []
+      ? tagsInput
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t.length > 0)
+      : [];
 
     const data = {
       title,
@@ -45,22 +54,22 @@ export function CreateBlogPostForm() {
       coverImage: coverImage || undefined,
       tags,
       published,
-    }
+    };
 
     try {
-      const result = await createBlogPost(data)
+      const result = await createBlogPost(data);
       if (result.success) {
-        toast.success("Blog post created successfully!")
-        router.push("/control/blog")
-        router.refresh()
+        toast.success("Blog post created successfully!");
+        router.push("/control/blog");
+        router.refresh();
       } else {
-        toast.error(result.error || "Failed to create blog post")
+        toast.error(result.error || "Failed to create blog post");
       }
     } catch (error) {
-      console.error("Failed to create blog post:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Failed to create blog post:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -75,8 +84,12 @@ export function CreateBlogPostForm() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">New Blog Post</h1>
-            <p className="text-muted-foreground text-sm">Draft a new insight for the publication portal.</p>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+              New Blog Post
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              Draft a new insight for the publication portal.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -104,11 +117,18 @@ export function CreateBlogPostForm() {
           <Card className="border-slate-200/60 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Post Content</CardTitle>
-              <CardDescription>Compose the main title and text body of your blog post.</CardDescription>
+              <CardDescription>
+                Compose the main title and text body of your blog post.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="title" className="font-semibold text-slate-700 dark:text-slate-300">Title</Label>
+                <Label
+                  htmlFor="title"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Title
+                </Label>
                 <Input
                   id="title"
                   name="title"
@@ -119,12 +139,19 @@ export function CreateBlogPostForm() {
               </div>
 
               <div className="space-y-2">
-                <Label className="font-semibold text-slate-700 dark:text-slate-300">Body</Label>
+                <Label className="font-semibold text-slate-700 dark:text-slate-300">
+                  Body
+                </Label>
                 <WysiwygMarkdownEditor value={content} onChange={setContent} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="excerpt" className="font-semibold text-slate-700 dark:text-slate-300">Excerpt / Brief Summary</Label>
+                <Label
+                  htmlFor="excerpt"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Excerpt / Brief Summary
+                </Label>
                 <Textarea
                   id="excerpt"
                   name="excerpt"
@@ -145,7 +172,12 @@ export function CreateBlogPostForm() {
             <CardContent className="space-y-6">
               {/* Category */}
               <div className="space-y-2">
-                <Label htmlFor="category" className="font-semibold text-slate-700 dark:text-slate-300">Category</Label>
+                <Label
+                  htmlFor="category"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Category
+                </Label>
                 <Input
                   id="category"
                   name="category"
@@ -157,7 +189,12 @@ export function CreateBlogPostForm() {
 
               {/* Tags */}
               <div className="space-y-2">
-                <Label htmlFor="tagsInput" className="font-semibold text-slate-700 dark:text-slate-300">Tags (Comma-separated)</Label>
+                <Label
+                  htmlFor="tagsInput"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Tags (Comma-separated)
+                </Label>
                 <Input
                   id="tagsInput"
                   name="tagsInput"
@@ -168,7 +205,12 @@ export function CreateBlogPostForm() {
 
               {/* Cover Image URL */}
               <div className="space-y-2">
-                <Label htmlFor="coverImage" className="font-semibold text-slate-700 dark:text-slate-300">Cover Image URL</Label>
+                <Label
+                  htmlFor="coverImage"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Cover Image URL
+                </Label>
                 <div className="flex gap-2">
                   <Input
                     id="coverImage"
@@ -178,15 +220,25 @@ export function CreateBlogPostForm() {
                     placeholder="https://example.com/cover.jpg"
                     className="rounded-xl h-10 border-slate-200 dark:border-slate-800 flex-1"
                   />
-                  <CloudinaryUploadButton onUpload={setCoverImage} className="h-10 rounded-xl px-3" />
+                  <CloudinaryUploadButton
+                    onUpload={setCoverImage}
+                    className="h-10 rounded-xl px-3"
+                  />
                 </div>
               </div>
 
               {/* Publish Toggle */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-900">
                 <div className="space-y-0.5">
-                  <Label htmlFor="published" className="font-bold text-slate-900 dark:text-slate-50">Publish Directly</Label>
-                  <p className="text-xs text-muted-foreground">Make this post immediately public.</p>
+                  <Label
+                    htmlFor="published"
+                    className="font-bold text-slate-900 dark:text-slate-50"
+                  >
+                    Publish Directly
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Make this post immediately public.
+                  </p>
                 </div>
                 <Switch
                   id="published"
@@ -205,12 +257,14 @@ export function CreateBlogPostForm() {
             </CardHeader>
             <CardContent>
               <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                You can write complete tables, lists, and formatted HTML in the rich text area. Add links for in-article FoxyCart checkout directly from the link toolbar.
+                You can write complete tables, lists, and formatted HTML in the
+                rich text area. Add links for in-article FoxyCart checkout
+                directly from the link toolbar.
               </p>
             </CardContent>
           </Card>
         </div>
       </div>
     </form>
-  )
+  );
 }

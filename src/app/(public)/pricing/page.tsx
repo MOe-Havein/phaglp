@@ -1,5 +1,5 @@
-import { auth } from "@/auth"
-import { Button } from "@/components/ui/button"
+import { auth } from "@/auth";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,11 +7,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { SubscriptionTier } from "@prisma/client"
-import { CheckCircle2, Star, Sparkles, Building2 } from "lucide-react"
-import Link from "next/link"
-import { getFoxyCartUrl } from "@/lib/foxy"
+} from "@/components/ui/card";
+import { SubscriptionTier } from "@prisma/client";
+import { CheckCircle2, Star, Sparkles, Building2 } from "lucide-react";
+import Link from "next/link";
+import { getFoxyCartUrl } from "@/lib/foxy";
 
 const tiers = [
   {
@@ -35,7 +35,8 @@ const tiers = [
     id: SubscriptionTier.PRO,
     price: "$29",
     period: "/month",
-    description: "Advanced learning tools and deeper insights for serious students.",
+    description:
+      "Advanced learning tools and deeper insights for serious students.",
     icon: Sparkles,
     features: [
       "Everything in Basic",
@@ -53,7 +54,8 @@ const tiers = [
     name: "Enterprise",
     id: SubscriptionTier.ENTERPRISE,
     price: "Custom",
-    description: "Tailored solutions for institutions, research groups, and large teams.",
+    description:
+      "Tailored solutions for institutions, research groups, and large teams.",
     icon: Building2,
     features: [
       "Everything in Pro",
@@ -67,11 +69,11 @@ const tiers = [
     buttonText: "Contact Sales",
     buttonVariant: "outline" as const,
   },
-]
+];
 
 export default async function PricingPage() {
-  const session = await auth()
-  const userTier = session?.user?.tier || SubscriptionTier.BASIC
+  const session = await auth();
+  const userTier = session?.user?.tier || SubscriptionTier.BASIC;
 
   return (
     <div className="min-h-screen bg-secondary/30 py-20">
@@ -81,21 +83,23 @@ export default async function PricingPage() {
             Simple, transparent pricing
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Unlock ancient wisdom with modern tools. Choose the plan that best fits your pursuit of
-            knowledge.
+            Unlock ancient wisdom with modern tools. Choose the plan that best
+            fits your pursuit of knowledge.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 items-start">
           {tiers.map((tier) => {
-            const isCurrentPlan = userTier === tier.id
-            const Icon = tier.icon
+            const isCurrentPlan = userTier === tier.id;
+            const Icon = tier.icon;
 
             return (
               <Card
                 key={tier.id}
                 className={`relative flex flex-col h-full bg-background transition-all duration-300 hover:shadow-lg ${
-                  tier.popular ? "border-primary shadow-md scale-105 z-10" : "border-border"
+                  tier.popular
+                    ? "border-primary shadow-md scale-105 z-10"
+                    : "border-border"
                 }`}
               >
                 {tier.popular && (
@@ -110,12 +114,20 @@ export default async function PricingPage() {
                   <div className="mx-auto bg-secondary/50 p-3 rounded-full w-fit mb-4 text-primary dark:text-blue-400">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <CardTitle className="text-2xl font-bold">{tier.name}</CardTitle>
-                  <CardDescription className="h-10 mt-2">{tier.description}</CardDescription>
+                  <CardTitle className="text-2xl font-bold">
+                    {tier.name}
+                  </CardTitle>
+                  <CardDescription className="h-10 mt-2">
+                    {tier.description}
+                  </CardDescription>
                   <div className="my-6">
-                    <span className="text-5xl font-extrabold text-foreground">{tier.price}</span>
+                    <span className="text-5xl font-extrabold text-foreground">
+                      {tier.price}
+                    </span>
                     {tier.period && (
-                      <span className="text-muted-foreground font-medium">{tier.period}</span>
+                      <span className="text-muted-foreground font-medium">
+                        {tier.period}
+                      </span>
                     )}
                   </div>
                 </CardHeader>
@@ -125,7 +137,9 @@ export default async function PricingPage() {
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                        <span className="text-sm text-muted-foreground">{feature}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {feature}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -141,15 +155,30 @@ export default async function PricingPage() {
                       Current Plan
                     </Button>
                   ) : !session ? (
-                    <Button asChild className="w-full" variant={tier.buttonVariant} size="lg">
+                    <Button
+                      asChild
+                      className="w-full"
+                      variant={tier.buttonVariant}
+                      size="lg"
+                    >
                       <Link href="/login">Sign in to Upgrade</Link>
                     </Button>
                   ) : tier.id === SubscriptionTier.ENTERPRISE ? (
-                    <Button asChild className="w-full" variant={tier.buttonVariant} size="lg">
+                    <Button
+                      asChild
+                      className="w-full"
+                      variant={tier.buttonVariant}
+                      size="lg"
+                    >
                       <Link href="/contact">Contact Sales</Link>
                     </Button>
                   ) : (
-                    <Button asChild className="w-full" variant={tier.buttonVariant} size="lg">
+                    <Button
+                      asChild
+                      className="w-full"
+                      variant={tier.buttonVariant}
+                      size="lg"
+                    >
                       <a
                         href={getFoxyCartUrl({
                           code: "PRO_TIER",
@@ -168,10 +197,10 @@ export default async function PricingPage() {
                   )}
                 </CardFooter>
               </Card>
-            )
+            );
           })}
         </div>
       </div>
     </div>
-  )
+  );
 }

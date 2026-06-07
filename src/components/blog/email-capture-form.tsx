@@ -5,7 +5,9 @@ import { subscribeToNewsletter } from "@/actions/convertkit";
 
 export function EmailCaptureForm() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,13 +33,16 @@ export function EmailCaptureForm() {
     <div className="bg-slate-900 text-white p-8 md:p-12 rounded-2xl shadow-2xl border border-slate-800 max-w-3xl mx-auto my-12 relative overflow-hidden">
       {/* Decorative element for the premium feel */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-      
+
       <div className="text-center mb-8">
         <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
           Stop Managing. Start Philosophizing.
         </h3>
         <p className="text-slate-400 text-lg max-w-xl mx-auto">
-          Join <strong className="text-white">The 5-Day Examined Life Course</strong>. A free, intensive email series for ambitious minds to organize their trajectory without losing their soul.
+          Join{" "}
+          <strong className="text-white">The 5-Day Examined Life Course</strong>
+          . A free, intensive email series for ambitious minds to organize their
+          trajectory without losing their soul.
         </p>
       </div>
 
@@ -60,13 +65,13 @@ export function EmailCaptureForm() {
             {status === "loading" ? "Joining..." : "Begin Day 1"}
           </button>
         </div>
-        
+
         {status === "success" && (
           <p className="mt-4 text-sm text-green-400 text-center font-medium animate-in fade-in slide-in-from-bottom-2">
             {message}
           </p>
         )}
-        
+
         {status === "error" && (
           <p className="mt-4 text-sm text-red-400 text-center animate-in fade-in slide-in-from-bottom-2">
             {message}

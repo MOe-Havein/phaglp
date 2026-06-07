@@ -4,23 +4,23 @@
  */
 
 interface RateLimitResult {
-  success: boolean
-  limit: number
-  remaining: number
-  reset: number
+  success: boolean;
+  limit: number;
+  remaining: number;
+  reset: number;
 }
 
 export const rateLimit = {
   limit: async (key: string): Promise<RateLimitResult> => {
-    void key // Suppress unused variable warning
+    void key; // Suppress unused variable warning
     // In dev or CI without Upstash, always allow
     return {
       success: true,
       limit: 10,
       remaining: 9,
       reset: Date.now() + 10000,
-    }
+    };
   },
-}
+};
 
-export default rateLimit
+export default rateLimit;

@@ -1,43 +1,49 @@
-"use client"
+"use client";
 
-import { createPage, updatePage } from "@/lib/page-actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { ChevronLeft, Save, Loader2, Search } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { slugify } from "@/lib/utils"
+import { createPage, updatePage } from "@/lib/page-actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { ChevronLeft, Save, Loader2, Search } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { slugify } from "@/lib/utils";
 
 interface PageFormProps {
-  initialData?: any
+  initialData?: any;
 }
 
 export function PageForm({ initialData }: PageFormProps) {
-  const [loading, setLoading] = useState(false)
-  const [title, setTitle] = useState(initialData?.title || "")
-  const [slug, setSlug] = useState(initialData?.slug || "")
-  const [autoSlug, setAutoSlug] = useState(!initialData)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [slug, setSlug] = useState(initialData?.slug || "");
+  const [autoSlug, setAutoSlug] = useState(!initialData);
+  const router = useRouter();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    setTitle(val)
+    const val = e.target.value;
+    setTitle(val);
     if (autoSlug) {
-      setSlug(slugify(val))
+      setSlug(slugify(val));
     }
-  }
+  };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setLoading(true)
+    event.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData(event.currentTarget);
     const data = {
       title: formData.get("title") as string,
       slug: formData.get("slug") as string,
@@ -45,33 +51,36 @@ export function PageForm({ initialData }: PageFormProps) {
       seoTitle: formData.get("seoTitle") as string,
       metaDescription: formData.get("metaDescription") as string,
       published: formData.get("published") === "on",
-    }
+    };
 
     try {
-      let result
+      let result;
       if (initialData) {
-        result = await updatePage(initialData.id, data)
+        result = await updatePage(initialData.id, data);
       } else {
-        result = await createPage(data)
+        result = await createPage(data);
       }
 
       if (result.success) {
-        toast.success(initialData ? "Page updated" : "Page created")
-        router.push("/control/pages")
-        router.refresh()
+        toast.success(initialData ? "Page updated" : "Page created");
+        router.push("/control/pages");
+        router.refresh();
       } else {
-        toast.error(result.error || "Something went wrong")
+        toast.error(result.error || "Something went wrong");
       }
     } catch (error) {
-      console.error("Save page error:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Save page error:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="container mx-auto py-10 space-y-8 max-w-5xl px-4">
+    <form
+      onSubmit={handleSubmit}
+      className="container mx-auto py-10 space-y-8 max-w-5xl px-4"
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
@@ -83,7 +92,9 @@ export function PageForm({ initialData }: PageFormProps) {
             <h1 className="text-3xl font-bold tracking-tight">
               {initialData ? "Edit Page" : "Create Page"}
             </h1>
-            <p className="text-muted-foreground text-sm">Design a custom page for your platform.</p>
+            <p className="text-muted-foreground text-sm">
+              Design a custom page for your platform.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -107,7 +118,9 @@ export function PageForm({ initialData }: PageFormProps) {
           <Card>
             <CardHeader>
               <CardTitle>Page Content</CardTitle>
-              <CardDescription>The main body of your page. Supports text and HTML.</CardDescription>
+              <CardDescription>
+                The main body of your page. Supports text and HTML.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -150,8 +163,8 @@ export function PageForm({ initialData }: PageFormProps) {
                     name="slug"
                     value={slug}
                     onChange={(e) => {
-                      setSlug(e.target.value)
-                      setAutoSlug(false)
+                      setSlug(e.target.value);
+                      setAutoSlug(false);
                     }}
                     placeholder="about-us"
                     required
@@ -165,9 +178,14 @@ export function PageForm({ initialData }: PageFormProps) {
               <div className="flex items-center justify-between rounded-lg border p-3 bg-slate-50/50">
                 <div className="space-y-0.5">
                   <Label>Visibility</Label>
-                  <p className="text-xs text-muted-foreground">Publicly accessible</p>
+                  <p className="text-xs text-muted-foreground">
+                    Publicly accessible
+                  </p>
                 </div>
-                <Switch name="published" defaultChecked={initialData?.published ?? false} />
+                <Switch
+                  name="published"
+                  defaultChecked={initialData?.published ?? false}
+                />
               </div>
             </CardContent>
           </Card>
@@ -203,5 +221,5 @@ export function PageForm({ initialData }: PageFormProps) {
         </div>
       </div>
     </form>
-  )
+  );
 }

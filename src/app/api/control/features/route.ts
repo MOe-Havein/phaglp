@@ -1,40 +1,46 @@
-import prisma from "@/lib/prisma"
-import { NextResponse } from "next/server"
-import { requireAdmin } from "@/lib/rbac"
+import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/rbac";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 // GET: Fetch all feature flags
 export async function GET() {
   try {
     const features = await prisma.featureFlag.findMany({
       orderBy: { key: "asc" },
-    })
-    return NextResponse.json(features)
+    });
+    return NextResponse.json(features);
   } catch {
-    return NextResponse.json({ error: "Failed to fetch feature flags" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to fetch feature flags" },
+      { status: 500 },
+    );
   }
 }
 
 // POST: Toggle or Update a feature flag
 export async function POST(req: Request) {
   try {
-    const isAdmin = await requireAdmin()
+    const isAdmin = await requireAdmin();
 
     if (!isAdmin) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const body = await req.json()
-    const { id, isEnabled } = body
+    const body = await req.json();
+    const { id, isEnabled } = body;
 
     const feature = await prisma.featureFlag.update({
       where: { id },
       data: { isEnabled },
-    })
+    });
 
-    return NextResponse.json(feature)
+    return NextResponse.json(feature);
   } catch {
-    return NextResponse.json({ error: "Failed to update feature flag" }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to update feature flag" },
+      { status: 500 },
+    );
   }
 }

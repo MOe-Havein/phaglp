@@ -1,4 +1,4 @@
-import { SiteSettings } from "@/lib/shared/types"
+import { SiteSettings } from "@/lib/shared/types";
 
 export const siteConfig: SiteSettings = {
   siteName: "Phaglp",
@@ -35,4 +35,4 @@ export const siteConfig: SiteSettings = {
       ],
     },
   ],
-}
+};

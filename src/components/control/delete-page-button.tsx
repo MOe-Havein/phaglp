@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { deletePage } from "@/lib/page-actions"
-import { Button } from "@/components/ui/button"
-import { Trash2, Loader2 } from "lucide-react"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { deletePage } from "@/lib/page-actions";
+import { Button } from "@/components/ui/button";
+import { Trash2, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function DeletePageButton({ id }: { id: string }) {
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this page?")) return
+    if (!confirm("Are you sure you want to delete this page?")) return;
 
-    setLoading(true)
+    setLoading(true);
     try {
-      const result = await deletePage(id)
+      const result = await deletePage(id);
       if (result.success) {
-        toast.success("Page deleted")
-        router.refresh()
+        toast.success("Page deleted");
+        router.refresh();
       } else {
-        toast.error("Failed to delete page")
+        toast.error("Failed to delete page");
       }
     } catch (error) {
-      toast.error("An error occurred")
+      toast.error("An error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Button
@@ -38,7 +38,11 @@ export function DeletePageButton({ id }: { id: string }) {
       disabled={loading}
       className="text-destructive hover:bg-destructive/5 border-destructive/20"
     >
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+      {loading ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <Trash2 className="h-4 w-4" />
+      )}
     </Button>
-  )
+  );
 }

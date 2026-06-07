@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,16 +6,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Check, Sparkles, Zap, ShieldCheck } from "lucide-react"
-import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/card";
+import { Check, Sparkles, Zap, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 const pricingPlans = [
   {
     name: "Basic",
     price: "0",
-    description: "Essential wisdom for those starting their philosophical journey.",
+    description:
+      "Essential wisdom for those starting their philosophical journey.",
     features: [
       "Access to all public lectures",
       "Community forum access",
@@ -31,7 +32,8 @@ const pricingPlans = [
   {
     name: "Pro",
     price: "29",
-    description: "Advanced learning tools and deeper insights for serious students.",
+    description:
+      "Advanced learning tools and deeper insights for serious students.",
     features: [
       "Everything in Basic",
       "Access to all Premium courses",
@@ -48,7 +50,8 @@ const pricingPlans = [
   {
     name: "Enterprise",
     price: "Custom",
-    description: "Tailored solutions for institutions, research groups, and large teams.",
+    description:
+      "Tailored solutions for institutions, research groups, and large teams.",
     features: [
       "Everything in Pro",
       "Unlimited students & researchers",
@@ -63,7 +66,7 @@ const pricingPlans = [
     popular: false,
     icon: ShieldCheck,
   },
-]
+];
 
 export function PricingSection() {
   return (
@@ -83,8 +86,8 @@ export function PricingSection() {
             Simple, Transparent Pricing Plans
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            Choose the path that best fits your goals for growth, learning, and philosophical
-            discovery.
+            Choose the path that best fits your goals for growth, learning, and
+            philosophical discovery.
           </p>
         </div>
 
@@ -110,7 +113,9 @@ export function PricingSection() {
                 <div className="flex items-center gap-3 mb-4">
                   <div
                     className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                      plan.popular ? "bg-[#2563EB] text-white" : "bg-muted text-muted-foreground"
+                      plan.popular
+                        ? "bg-[#2563EB] text-white"
+                        : "bg-muted text-muted-foreground"
                     }`}
                   >
                     <plan.icon className="w-5 h-5" />
@@ -123,7 +128,9 @@ export function PricingSection() {
                     {plan.price}
                   </span>
                   {plan.price !== "Custom" && (
-                    <span className="text-muted-foreground font-medium">/month</span>
+                    <span className="text-muted-foreground font-medium">
+                      /month
+                    </span>
                   )}
                 </div>
                 <CardDescription className="pt-4 text-base min-h-[60px]">
@@ -182,5 +189,5 @@ export function PricingSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

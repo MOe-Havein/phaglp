@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Populating complete SQLite workspace configuration...")
+  console.log("🌱 Populating complete SQLite workspace configuration...");
 
   // 1. Seed Global Site Settings
   await prisma.siteSettings.upsert({
@@ -19,7 +19,7 @@ async function main() {
       maintenanceMode: false,
       primaryColor: "#3b82f6", // 👈 Add this line to satisfy the schema validation!
     },
-  })
+  });
 
   // 2. Seed Default Navigation Menu entries
   await prisma.navigationMenu.upsert({
@@ -34,7 +34,7 @@ async function main() {
       showInHeader: true,
       showInFooter: true,
     },
-  })
+  });
 
   // 3. Seed Homepage Sections
   await prisma.homepageSection.upsert({
@@ -48,7 +48,7 @@ async function main() {
       visible: true,
       order: 1,
     },
-  })
+  });
 
   // 4. Seed Initial Admin Account
   // (Provides fallback logic if auth queries look for a basic platform administrator)
@@ -58,11 +58,12 @@ async function main() {
     create: {
       email: "admin@example.com",
       name: "Initial Admin",
-      passwordHash: "$2b$10$x2vDuhLWV1wgdm3okQOEr.2BWcDl1J9HiO9OzjlcW6CuVcHWYT5mC", // SuperSecret123!
+      passwordHash:
+        "$2b$10$x2vDuhLWV1wgdm3okQOEr.2BWcDl1J9HiO9OzjlcW6CuVcHWYT5mC", // SuperSecret123!
       role: "ADMIN",
       lecturePreferences: {},
     },
-  })
+  });
 
   // 5. Seed Lectures with precise field match
   await prisma.lecture.upsert({
@@ -83,15 +84,15 @@ async function main() {
         connect: { email: "admin@example.com" },
       },
     },
-  })
-  console.log("✅ Local database initialized and filled flawlessly!")
+  });
+  console.log("✅ Local database initialized and filled flawlessly!");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seeding broken:", e)
-    process.exit(1)
+    console.error("❌ Seeding broken:", e);
+    process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });

@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import React from "react"
-import { motion } from "framer-motion"
-import { Cpu, GraduationCap, ShieldAlert, Award } from "lucide-react"
+import React from "react";
+import { motion } from "framer-motion";
+import { Cpu, GraduationCap, ShieldAlert, Award } from "lucide-react";
 
 interface FeaturesProps {
-  title?: string | null
-  body?: string | null
-  mediaUrl?: string | null
-  mediaAlt?: string | null
+  title?: string | null;
+  body?: string | null;
+  mediaUrl?: string | null;
+  mediaAlt?: string | null;
 }
 
 const defaultFeatures = [
@@ -36,7 +36,7 @@ const defaultFeatures = [
     description:
       "A values-based, privacy-first ecosystem matching intellectual compatibility and scientific collaboration.",
   },
-]
+];
 
 export function Features({
   title = "Prepare for an Intellectual Revolution",
@@ -45,14 +45,18 @@ export function Features({
   mediaAlt = "Academy features preview",
 }: FeaturesProps) {
   return (
-    <section 
+    <section
       className="relative py-24 px-6 overflow-hidden text-slate-100"
       style={{
-        background: "radial-gradient(circle at 20% 20%, rgba(31, 123, 198, 0.18) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(230, 92, 35, 0.15) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.10) 0%, transparent 60%), #030712"
+        background:
+          "radial-gradient(circle at 20% 20%, rgba(31, 123, 198, 0.18) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(230, 92, 35, 0.15) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.10) 0%, transparent 60%), #030712",
       }}
     >
       {/* Background glow effects */}
-      <div className="absolute top-1/4 left-10 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(31,123,198,0.28),transparent_60%)] blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: "8s" }} />
+      <div
+        className="absolute top-1/4 left-10 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(31,123,198,0.28),transparent_60%)] blur-3xl pointer-events-none animate-pulse"
+        style={{ animationDuration: "8s" }}
+      />
       <div className="absolute bottom-1/4 right-10 w-[700px] h-[700px] bg-[radial-gradient(circle_at_center,rgba(230,92,35,0.18),transparent_60%)] blur-3xl pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
@@ -137,5 +141,5 @@ export function Features({
         </div>
       </div>
     </section>
-  )
+  );
 }

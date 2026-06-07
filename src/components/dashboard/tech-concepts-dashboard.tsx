@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Switch } from "@/components/ui/switch"
-import { Slider } from "@/components/ui/slider"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast } from "sonner"
+import { useState, useEffect, useCallback } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import {
   Cpu,
   Brain,
@@ -36,105 +42,124 @@ import {
   Layers,
   RefreshCw,
   Activity,
-} from "lucide-react"
+} from "lucide-react";
 
 interface TechConceptsDashboardProps {
   user: {
-    id?: string
-    name?: string | null
-    email?: string | null
-    image?: string | null
-  }
-  initialDbLogs?: any[]
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+  initialDbLogs?: any[];
 }
 
-export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConceptsDashboardProps) {
+export function TechConceptsDashboard({
+  user,
+  initialDbLogs = [],
+}: TechConceptsDashboardProps) {
   // Global Settings and Toggles
-  const [activeTab, setActiveTab] = useState<string>("tab-1")
-  const [isLowConnActive, setIsLowConnActive] = useState<boolean>(false)
-  const [activeLanguage, setActiveLanguage] = useState<"en" | "ar" | "fr">("en")
+  const [activeTab, setActiveTab] = useState<string>("tab-1");
+  const [isLowConnActive, setIsLowConnActive] = useState<boolean>(false);
+  const [activeLanguage, setActiveLanguage] = useState<"en" | "ar" | "fr">(
+    "en",
+  );
 
   // Real Database Analytics Logs State
-  const [dbLogs, setDbLogs] = useState<any[]>(initialDbLogs)
-  const [isLoadingLogs, setIsLoadingLogs] = useState<boolean>(false)
+  const [dbLogs, setDbLogs] = useState<any[]>(initialDbLogs);
+  const [isLoadingLogs, setIsLoadingLogs] = useState<boolean>(false);
 
   // Core Focus state
-  const [cognitiveFocus, setCognitiveFocus] = useState<number>(78)
+  const [cognitiveFocus, setCognitiveFocus] = useState<number>(78);
   const [analyticsRecResult, setAnalyticsRecResult] = useState<string>(
     "Continue working through Stoic logic models to lower syllogistic fallacies.",
-  )
-  const [isRecalculatingAnalytics, setIsRecalculatingAnalytics] = useState<boolean>(false)
+  );
+  const [isRecalculatingAnalytics, setIsRecalculatingAnalytics] =
+    useState<boolean>(false);
 
   // 1. Generative AI State
-  const [aiTopic, setAiTopic] = useState<string>("Stoicism")
-  const [aiGoal, setAiGoal] = useState<string>("both")
-  const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false)
-  const [aiGeneratedData, setAiGeneratedData] = useState<any>(null)
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({})
-  const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false)
+  const [aiTopic, setAiTopic] = useState<string>("Stoicism");
+  const [aiGoal, setAiGoal] = useState<string>("both");
+  const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false);
+  const [aiGeneratedData, setAiGeneratedData] = useState<any>(null);
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
+  const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false);
 
   // 3. Cloud Native State
-  const [isFailoverActive, setIsFailoverActive] = useState<boolean>(false)
+  const [isFailoverActive, setIsFailoverActive] = useState<boolean>(false);
   const [cloudLatency, setCloudLatency] = useState<Record<string, number>>({
     lms: 14,
     sis: 18,
     erp: 22,
-  })
+  });
   const [cloudLogs, setCloudLogs] = useState<string[]>([
     "[15:52:00] Kubernetes pods matching 'lms-microservice-*' healthy.",
     "[15:52:02] Neon PostgreSQL Database replication synchronized.",
     "[15:52:05] Hybrid Cloud Gateway: Batesville Node online (Case Street).",
-  ])
+  ]);
 
   // 4. Adaptive Learning State
-  const [aptitudeLevel, setAptitudeLevel] = useState<"talented" | "gifted" | "genius">("gifted")
-  const [learningPace, setLearningPace] = useState<"relaxed" | "balanced" | "intensive">("balanced")
-  const [learningFocus, setLearningFocus] = useState<"metaphysics" | "logic" | "ethics">("logic")
-  const [adaptiveSyllabus, setAdaptiveSyllabus] = useState<any>(null)
+  const [aptitudeLevel, setAptitudeLevel] = useState<
+    "talented" | "gifted" | "genius"
+  >("gifted");
+  const [learningPace, setLearningPace] = useState<
+    "relaxed" | "balanced" | "intensive"
+  >("balanced");
+  const [learningFocus, setLearningFocus] = useState<
+    "metaphysics" | "logic" | "ethics"
+  >("logic");
+  const [adaptiveSyllabus, setAdaptiveSyllabus] = useState<any>(null);
 
   // 5. Academic Digital Twin State
-  const [studyHours, setStudyHours] = useState<number>(18)
-  const [discourseRate, setDiscourseRate] = useState<number>(75)
-  const [predictedGpa, setPredictedGpa] = useState<string>("3.78")
-  const [burnoutRisk, setBurnoutRisk] = useState<"Low" | "Medium" | "High">("Low")
-  const [dropOutRisk, setDropOutRisk] = useState<"Minimal" | "Mild" | "Severe">("Minimal")
+  const [studyHours, setStudyHours] = useState<number>(18);
+  const [discourseRate, setDiscourseRate] = useState<number>(75);
+  const [predictedGpa, setPredictedGpa] = useState<string>("3.78");
+  const [burnoutRisk, setBurnoutRisk] = useState<"Low" | "Medium" | "High">(
+    "Low",
+  );
+  const [dropOutRisk, setDropOutRisk] = useState<"Minimal" | "Mild" | "Severe">(
+    "Minimal",
+  );
 
   // 6. Blockchain Credentials State
-  const [mintCourse, setMintCourse] = useState<string>("Core General Program (GP)")
-  const [isMintingCert, setIsMintingCert] = useState<boolean>(false)
-  const [blockchainCert, setBlockchainCert] = useState<any>(null)
-  const [isLedgerExplorerOpen, setIsLedgerExplorerOpen] = useState<boolean>(false)
-  const [ledgerTransactions, setLedgerTransactions] = useState<any[]>([])
+  const [mintCourse, setMintCourse] = useState<string>(
+    "Core General Program (GP)",
+  );
+  const [isMintingCert, setIsMintingCert] = useState<boolean>(false);
+  const [blockchainCert, setBlockchainCert] = useState<any>(null);
+  const [isLedgerExplorerOpen, setIsLedgerExplorerOpen] =
+    useState<boolean>(false);
+  const [ledgerTransactions, setLedgerTransactions] = useState<any[]>([]);
 
   // 7. VR/AR Lecture State
-  const [isArActive, setIsArActive] = useState<boolean>(false)
-  const [selectedArWord, setSelectedArWord] = useState<string | null>(null)
-  const [isAmbientPlaying, setIsAmbientPlaying] = useState<boolean>(false)
+  const [isArActive, setIsArActive] = useState<boolean>(false);
+  const [selectedArWord, setSelectedArWord] = useState<string | null>(null);
+  const [isAmbientPlaying, setIsAmbientPlaying] = useState<boolean>(false);
 
   // 9. AI Governance Ethics State
   const [auditText, setAuditText] = useState<string>(
     "All men are mortal. Socrates is a man. Therefore, Socrates is mortal. Also, William is rich, so William is smart.",
-  )
-  const [isAuditingEthics, setIsAuditingEthics] = useState<boolean>(false)
-  const [auditResults, setAuditResults] = useState<any>(null)
+  );
+  const [isAuditingEthics, setIsAuditingEthics] = useState<boolean>(false);
+  const [auditResults, setAuditResults] = useState<any>(null);
 
   // Load database logs from API
   const fetchDbLogs = useCallback(async () => {
-    setIsLoadingLogs(true)
+    setIsLoadingLogs(true);
     try {
-      const response = await fetch("/api/ai-interactive-concepts")
+      const response = await fetch("/api/ai-interactive-concepts");
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json();
         if (data.success) {
-          setDbLogs(data.logs)
+          setDbLogs(data.logs);
         }
       }
     } catch (err) {
-      console.error("Fetch logs error:", err)
+      console.error("Fetch logs error:", err);
     } finally {
-      setIsLoadingLogs(false)
+      setIsLoadingLogs(false);
     }
-  }, [])
+  }, []);
 
   // Log action helper
   const logDatabaseEvent = async (eventName: string, metadataObj?: any) => {
@@ -147,33 +172,33 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
           eventName,
           metadata: metadataObj || {},
         }),
-      })
+      });
       if (response.ok) {
         // Trigger re-fetch
-        fetchDbLogs()
+        fetchDbLogs();
       }
     } catch (err) {
-      console.error("Log analytics error:", err)
+      console.error("Log analytics error:", err);
     }
-  }
+  };
 
   // Trigger load
   useEffect(() => {
-    logDatabaseEvent("ENTERED_TECH_HUB")
-  }, [])
+    logDatabaseEvent("ENTERED_TECH_HUB");
+  }, []);
 
   // Recalculate focus based on actions
   const adjustCognitiveFocus = (amount: number) => {
-    setCognitiveFocus((prev) => Math.min(100, Math.max(50, prev + amount)))
-  }
+    setCognitiveFocus((prev) => Math.min(100, Math.max(50, prev + amount)));
+  };
 
   // Concept 1: Generative AI Request Handler
   const handleAiGeneration = async () => {
-    setIsGeneratingAi(true)
-    setAiGeneratedData(null)
-    setQuizAnswers({})
-    setQuizSubmitted(false)
-    adjustCognitiveFocus(-8)
+    setIsGeneratingAi(true);
+    setAiGeneratedData(null);
+    setQuizAnswers({});
+    setQuizSubmitted(false);
+    adjustCognitiveFocus(-8);
 
     try {
       const response = await fetch("/api/ai-interactive-concepts", {
@@ -184,111 +209,124 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
           topic: aiTopic,
           goal: aiGoal,
         }),
-      })
+      });
 
       if (response.ok) {
-        const payload = await response.json()
+        const payload = await response.json();
         if (payload.success) {
-          setAiGeneratedData(payload.data)
+          setAiGeneratedData(payload.data);
           toast.success(
             `Success! Rendered content for "${aiTopic}" via ${payload.source === "cohere" ? "Cohere AI engine" : "Fidelity engine"}`,
-          )
+          );
           logDatabaseEvent("GENERATED_AI_CONTENT", {
             topic: aiTopic,
             goal: aiGoal,
             engine: payload.source,
-          })
+          });
         } else {
-          toast.error("Failed to generate content: " + payload.error)
+          toast.error("Failed to generate content: " + payload.error);
         }
       } else {
-        toast.error("Failed to generate content. Network error.")
+        toast.error("Failed to generate content. Network error.");
       }
     } catch (error) {
-      console.error(error)
-      toast.error("An error occurred during AI generation.")
+      console.error(error);
+      toast.error("An error occurred during AI generation.");
     } finally {
-      setIsGeneratingAi(false)
+      setIsGeneratingAi(false);
     }
-  }
+  };
 
   // Concept 2: Learning Analytics Recalculate
   const handleRecalculateAnalytics = () => {
-    setIsRecalculatingAnalytics(true)
-    adjustCognitiveFocus(5)
-    logDatabaseEvent("RECALCULATED_ANALYTICS")
+    setIsRecalculatingAnalytics(true);
+    adjustCognitiveFocus(5);
+    logDatabaseEvent("RECALCULATED_ANALYTICS");
 
     setTimeout(() => {
-      setIsRecalculatingAnalytics(false)
+      setIsRecalculatingAnalytics(false);
       const recs = [
         "Optimal retention calculated. Consider reviewing 'Stoic Logic' to correct propositional slips.",
         "Discourse participation is high! Try applying for the 'Active Dialogue Peer Group (GP)' to test your logic arguments.",
         "Your Stoicism node shows 95% concept alignment. Time to explore advanced 'Metaphysics & Absolute Thought Models'!",
-      ]
-      const chosen = recs[Math.floor(Math.random() * recs.length)] ?? ""
-      setAnalyticsRecResult(chosen)
-      toast.success("Cognitive model re-analyzed!")
-    }, 1500)
-  }
+      ];
+      const chosen = recs[Math.floor(Math.random() * recs.length)] ?? "";
+      setAnalyticsRecResult(chosen);
+      toast.success("Cognitive model re-analyzed!");
+    }, 1500);
+  };
 
   // Concept 3: Hybrid Failover Simulator
   const triggerFailoverSimulation = () => {
-    setIsFailoverActive(true)
-    adjustCognitiveFocus(4)
-    logDatabaseEvent("SIMULATED_FAILOVER")
+    setIsFailoverActive(true);
+    adjustCognitiveFocus(4);
+    logDatabaseEvent("SIMULATED_FAILOVER");
 
     setCloudLogs((prev) => [
       ...prev,
       `[${new Date().toLocaleTimeString()}] ALERT: Latency spike in Batesville Secondary Hub.`,
       `[${new Date().toLocaleTimeString()}] Kubernetes executing node eviction...`,
       `[${new Date().toLocaleTimeString()}] Diverting 100% of user traffic to Active Backup cloud...`,
-    ])
+    ]);
 
     // Animate latency changes
     setTimeout(() => {
-      setCloudLatency({ lms: 85, sis: 120, erp: 140 })
+      setCloudLatency({ lms: 85, sis: 120, erp: 140 });
       setCloudLogs((prev) => [
         ...prev,
         `[${new Date().toLocaleTimeString()}] Sync Active: Redirect complete. Secondary backup online. Latency stabilized.`,
-      ])
-      toast.warning("Secondary Backup Node activated successfully!")
-    }, 1200)
-  }
+      ]);
+      toast.warning("Secondary Backup Node activated successfully!");
+    }, 1200);
+  };
 
   const resetCloudFailover = () => {
-    setIsFailoverActive(false)
-    setCloudLatency({ lms: 14, sis: 18, erp: 22 })
+    setIsFailoverActive(false);
+    setCloudLatency({ lms: 14, sis: 18, erp: 22 });
     setCloudLogs([
       `[${new Date().toLocaleTimeString()}] System Reset: Active load balancing re-enabled.`,
       `[${new Date().toLocaleTimeString()}] Standard Kubernetes pods healthy.`,
       `[${new Date().toLocaleTimeString()}] Latency restored to optimal baseline (14ms).`,
-    ])
-    toast.success("Failover gateway normalized.")
-  }
+    ]);
+    toast.success("Failover gateway normalized.");
+  };
 
   // Concept 4: Adaptive Path Constructor
   const handleAdaptivePathConstruct = () => {
-    adjustCognitiveFocus(3)
-    logDatabaseEvent("CONSTRUCTED_ADAPTIVE_PATH", { aptitudeLevel, learningPace, learningFocus })
+    adjustCognitiveFocus(3);
+    logDatabaseEvent("CONSTRUCTED_ADAPTIVE_PATH", {
+      aptitudeLevel,
+      learningPace,
+      learningFocus,
+    });
 
     // Generate custom syllabus based on filters
     const focusTitles: Record<string, string[]> = {
-      metaphysics: ["Pre-Socratic Cosmogony", "Aristotelian Substance Models", "Absolute Idealism"],
-      logic: ["Propositional Calculus Syntax", "Syllogistic Fallacy Checking", "Boolean Semantics"],
+      metaphysics: [
+        "Pre-Socratic Cosmogony",
+        "Aristotelian Substance Models",
+        "Absolute Idealism",
+      ],
+      logic: [
+        "Propositional Calculus Syntax",
+        "Syllogistic Fallacy Checking",
+        "Boolean Semantics",
+      ],
       ethics: [
         "Deontological Imperatives",
         "Stoic Resiliency Practicum",
         "Algorithmic Ethics Auditing",
       ],
-    }
+    };
 
-    const durationWeeks = learningPace === "relaxed" ? 12 : learningPace === "balanced" ? 6 : 3
+    const durationWeeks =
+      learningPace === "relaxed" ? 12 : learningPace === "balanced" ? 6 : 3;
     const difficultyLevel =
       aptitudeLevel === "talented"
         ? "Advanced Scholar"
         : aptitudeLevel === "gifted"
           ? "High Intellect"
-          : "Genius Elite"
+          : "Genius Elite";
 
     setAdaptiveSyllabus({
       title: `${difficultyLevel} Roadmap: Integrated ${learningFocus.toUpperCase()}`,
@@ -297,48 +335,54 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
       modules: (focusTitles[learningFocus] ?? []).map((m, idx) => ({
         id: idx + 1,
         title: m,
-        hours: learningPace === "relaxed" ? 2 : learningPace === "balanced" ? 8 : 18,
-        challenge: idx === 2 ? "Final Intellectual Synthesis Thesis" : "Argument Mapping Exercise",
+        hours:
+          learningPace === "relaxed" ? 2 : learningPace === "balanced" ? 8 : 18,
+        challenge:
+          idx === 2
+            ? "Final Intellectual Synthesis Thesis"
+            : "Argument Mapping Exercise",
       })),
-    })
+    });
 
-    toast.success("Bespoke adaptive pathway calculated!")
-  }
+    toast.success("Bespoke adaptive pathway calculated!");
+  };
 
   // Concept 5: Digital Twin Simulation
   useEffect(() => {
     // Dynamic predictive calculation based on sliders
-    const gpaRaw = 2.0 + studyHours * 0.04 + discourseRate * 0.015
-    const formattedGpa = Math.min(4.0, gpaRaw).toFixed(2)
-    setPredictedGpa(formattedGpa)
+    const gpaRaw = 2.0 + studyHours * 0.04 + discourseRate * 0.015;
+    const formattedGpa = Math.min(4.0, gpaRaw).toFixed(2);
+    setPredictedGpa(formattedGpa);
 
     if (studyHours > 30) {
-      setBurnoutRisk("High")
+      setBurnoutRisk("High");
     } else if (studyHours > 20) {
-      setBurnoutRisk("Medium")
+      setBurnoutRisk("Medium");
     } else {
-      setBurnoutRisk("Low")
+      setBurnoutRisk("Low");
     }
 
     if (discourseRate < 30 || studyHours < 5) {
-      setDropOutRisk("Severe")
+      setDropOutRisk("Severe");
     } else if (discourseRate < 50 || studyHours < 10) {
-      setDropOutRisk("Mild")
+      setDropOutRisk("Mild");
     } else {
-      setDropOutRisk("Minimal")
+      setDropOutRisk("Minimal");
     }
-  }, [studyHours, discourseRate])
+  }, [studyHours, discourseRate]);
 
   // Concept 6: Mint Blockchain Certificate
   const handleMintCertificate = () => {
-    setIsMintingCert(true)
-    adjustCognitiveFocus(-3)
+    setIsMintingCert(true);
+    adjustCognitiveFocus(-3);
 
     // Simulate transaction log
     setTimeout(() => {
       const hash =
         "0x" +
-        Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("")
+        Array.from({ length: 40 }, () =>
+          Math.floor(Math.random() * 16).toString(16),
+        ).join("");
       const certObj = {
         student: user.name || "Student Scholar",
         course: mintCourse,
@@ -347,26 +391,31 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
         txHash: hash,
         status: "Confirmed on Block #481,209",
         authority: "PHAGLP Academic Syndicate Sign",
-      }
-      setBlockchainCert(certObj)
-      setLedgerTransactions((prev) => [certObj, ...prev])
-      setIsMintingCert(false)
+      };
+      setBlockchainCert(certObj);
+      setLedgerTransactions((prev) => [certObj, ...prev]);
+      setIsMintingCert(false);
 
-      logDatabaseEvent("MINTED_BLOCKCHAIN_CREDENTIAL", { course: mintCourse, hash })
-      toast.success("Cryptographic Certificate Minted on-chain!")
-    }, 1500)
-  }
+      logDatabaseEvent("MINTED_BLOCKCHAIN_CREDENTIAL", {
+        course: mintCourse,
+        hash,
+      });
+      toast.success("Cryptographic Certificate Minted on-chain!");
+    }, 1500);
+  };
 
   // Concept 9: AI Ethics audit checker
   const handleFallacyAudit = () => {
-    setIsAuditingEthics(true)
-    adjustCognitiveFocus(-4)
-    logDatabaseEvent("RAN_LOGICAL_ETHICS_AUDIT")
+    setIsAuditingEthics(true);
+    adjustCognitiveFocus(-4);
+    logDatabaseEvent("RAN_LOGICAL_ETHICS_AUDIT");
 
     setTimeout(() => {
-      setIsAuditingEthics(false)
+      setIsAuditingEthics(false);
 
-      const containsWilliamFallacy = auditText.toLowerCase().includes("william")
+      const containsWilliamFallacy = auditText
+        .toLowerCase()
+        .includes("william");
 
       setAuditResults({
         complianceScore: containsWilliamFallacy ? 72 : 98,
@@ -376,17 +425,18 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
               {
                 name: "Non Sequitur (Does not follow)",
                 passage: "...William is rich, so William is smart.",
-                explanation: "Financial status has no logical implication on intelligence index.",
+                explanation:
+                  "Financial status has no logical implication on intelligence index.",
               },
             ]
           : [],
         verdict: containsWilliamFallacy
           ? "Unsound reasoning detected. Fallacy risk present."
           : "Highly sound Aristotelian deduction. Standard validation confirmed.",
-      })
-      toast.info("Ethics audit ledger updated!")
-    }, 1200)
-  }
+      });
+      toast.info("Ethics audit ledger updated!");
+    }, 1200);
+  };
 
   // Navigation Items Config mapping 9 concepts
   const tabsList = [
@@ -453,7 +503,7 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
       badge: "Compliance",
       desc: "Fallacy auditing ledger logs",
     },
-  ]
+  ];
 
   // Translation helpers for Concept 8 (Multilingual RTL Alignment)
   const translations = {
@@ -466,7 +516,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
       connStatus: "Active Network Mode",
       statusLow:
         "Ultra-Compressed Mode Enabled (Images stripped, lightweight CSS, 92% bandwidth saved)",
-      statusHigh: "High-Bandwidth Standard Mode (High-res covers, real-time charts active)",
+      statusHigh:
+        "High-Bandwidth Standard Mode (High-res covers, real-time charts active)",
       languageCard: "Multilingual System Override",
       langDesc:
         "Switch between major regional languages. Setting Arabic re-aligns the layout to a beautiful Right-to-Left (RTL) flow.",
@@ -478,10 +529,13 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
       title: "بوابة الوصول الشامل والمستدام",
       sub: "تحسين الأداء التعليمي في المناطق ذات الاتصال الضعيف وتقديم الدعم الكامل للغات المتعددة.",
       connectivityCard: "محرك تحسين عرض النطاق الترددي",
-      connDesc: "قم بتفعيل وضع الاتصال المنخفض لضغط العناصر الهيكلية وتحميل قوالب مبسطة وسريعة.",
+      connDesc:
+        "قم بتفعيل وضع الاتصال المنخفض لضغط العناصر الهيكلية وتحميل قوالب مبسطة وسريعة.",
       connStatus: "حالة الشبكة الحالية",
-      statusLow: "وضع الضغط الفائق نشط (تم إيقاف الصور الثقيلة، خطوط خفيفة، توفير 92% من البيانات)",
-      statusHigh: "الوضع القياسي عالي السرعة (عرض الصور عالية الدقة والرسوم المتحركة نشط)",
+      statusLow:
+        "وضع الضغط الفائق نشط (تم إيقاف الصور الثقيلة، خطوط خفيفة، توفير 92% من البيانات)",
+      statusHigh:
+        "الوضع القياسي عالي السرعة (عرض الصور عالية الدقة والرسوم المتحركة نشط)",
       languageCard: "تبديل لغة النظام",
       langDesc:
         "اختر اللغة المطلوبة. تفعيل اللغة العربية يعيد ترتيب الواجهة بالكامل من اليمين إلى اليسار (RTL) بشكل متناسق.",
@@ -507,9 +561,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
       demoText:
         "L'intégration des technologies éducatives modernes doit donner la priorité à l'équité. En réduisant la taille des actifs et en assurant une réactivité RTL complète, PHAGLP garantit que les esprits doués du monde entier - quel que soit leur accès réseau - accèdent au sommet de la philosophie académique.",
     },
-  }
+  };
 
-  const t = translations[activeLanguage]
+  const t = translations[activeLanguage];
 
   return (
     <div
@@ -524,7 +578,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
             <span>Interactive Tech Concepts Hub</span>
           </h1>
           <p className="text-muted-foreground text-xs md:text-sm">
-            Reviewing and interacting with the 9 competitive technological integrations on PHAGLP.
+            Reviewing and interacting with the 9 competitive technological
+            integrations on PHAGLP.
           </p>
         </div>
 
@@ -548,13 +603,15 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
             <Switch
               checked={isLowConnActive}
               onCheckedChange={(val) => {
-                setIsLowConnActive(val)
-                logDatabaseEvent(val ? "TOGGLED_LOW_CONN_ON" : "TOGGLED_LOW_CONN_OFF")
+                setIsLowConnActive(val);
+                logDatabaseEvent(
+                  val ? "TOGGLED_LOW_CONN_ON" : "TOGGLED_LOW_CONN_OFF",
+                );
                 toast.info(
                   val
                     ? "Ultra-compressed text layout activated."
                     : "Full visual graphics restored.",
-                )
+                );
               }}
             />
           </div>
@@ -566,15 +623,17 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
               <div className="text-[10px] font-bold text-slate-800 dark:text-slate-300">
                 LANGUAGE
               </div>
-              <div className="text-[9px] text-muted-foreground uppercase">{activeLanguage}</div>
+              <div className="text-[9px] text-muted-foreground uppercase">
+                {activeLanguage}
+              </div>
             </div>
             <select
               value={activeLanguage}
               onChange={(e) => {
-                const lang = e.target.value as "en" | "ar" | "fr"
-                setActiveLanguage(lang)
-                logDatabaseEvent(`SET_LANG_${lang.toUpperCase()}`)
-                toast.success(`Language set to: ${lang.toUpperCase()}`)
+                const lang = e.target.value as "en" | "ar" | "fr";
+                setActiveLanguage(lang);
+                logDatabaseEvent(`SET_LANG_${lang.toUpperCase()}`);
+                toast.success(`Language set to: ${lang.toUpperCase()}`);
               }}
               className="bg-transparent border-0 text-xs font-bold focus:ring-0 cursor-pointer"
             >
@@ -604,14 +663,14 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
             </CardHeader>
             <CardContent className="p-2 space-y-1">
               {tabsList.map((tab, idx) => {
-                const IconComponent = tab.icon
-                const isActive = activeTab === tab.id
+                const IconComponent = tab.icon;
+                const isActive = activeTab === tab.id;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => {
-                      setActiveTab(tab.id)
-                      adjustCognitiveFocus(1)
+                      setActiveTab(tab.id);
+                      adjustCognitiveFocus(1);
                     }}
                     className={`w-full text-left p-3 rounded-xl flex items-start gap-3 transition-all ${
                       isActive
@@ -645,7 +704,7 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       </p>
                     </div>
                   </button>
-                )
+                );
               })}
             </CardContent>
           </Card>
@@ -665,7 +724,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                 <Progress value={cognitiveFocus} className="h-1.5" />
               </div>
               <div className="flex items-center justify-between border-t pt-2.5 text-[11px]">
-                <span className="text-muted-foreground">Verification Ledger</span>
+                <span className="text-muted-foreground">
+                  Verification Ledger
+                </span>
                 <span className="text-emerald-500 font-bold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" /> Checked 100%
                 </span>
@@ -687,15 +748,18 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  Generate comprehensive explanation outlines and graded multiple-choice tests
-                  utilizing advanced intelligence models.
+                  Generate comprehensive explanation outlines and graded
+                  multiple-choice tests utilizing advanced intelligence models.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
                 {/* Inputs */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="ai-topic" className="text-xs font-bold text-foreground">
+                    <Label
+                      htmlFor="ai-topic"
+                      className="text-xs font-bold text-foreground"
+                    >
                       Select or Type Topic
                     </Label>
                     <div className="flex gap-2">
@@ -719,7 +783,10 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="ai-goal" className="text-xs font-bold text-foreground">
+                    <Label
+                      htmlFor="ai-goal"
+                      className="text-xs font-bold text-foreground"
+                    >
                       Playground Generation Output
                     </Label>
                     <select
@@ -728,8 +795,12 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       onChange={(e) => setAiGoal(e.target.value)}
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs p-2 h-9 focus:ring-1"
                     >
-                      <option value="both">Both (Syllabus Explanation & Graded Quiz)</option>
-                      <option value="explanation">Explanation Outline Only</option>
+                      <option value="both">
+                        Both (Syllabus Explanation & Graded Quiz)
+                      </option>
+                      <option value="explanation">
+                        Explanation Outline Only
+                      </option>
                       <option value="quiz">Interactive Graded Quiz Only</option>
                     </select>
                   </div>
@@ -798,94 +869,119 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       )}
 
                     {/* Quiz */}
-                    {aiGeneratedData.quiz && (aiGoal === "quiz" || aiGoal === "both") && (
-                      <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
-                        <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                          <Award className="w-3.5 h-3.5 text-indigo-500" />
-                          Smart Test Design & Interactive Quiz
-                        </h4>
+                    {aiGeneratedData.quiz &&
+                      (aiGoal === "quiz" || aiGoal === "both") && (
+                        <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                          <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                            <Award className="w-3.5 h-3.5 text-indigo-500" />
+                            Smart Test Design & Interactive Quiz
+                          </h4>
 
-                        <div className="space-y-4">
-                          {aiGeneratedData.quiz.map((q: any, qIdx: number) => (
-                            <div
-                              key={qIdx}
-                              className="space-y-2 border border-slate-200/60 dark:border-slate-850 p-3 rounded-xl bg-white dark:bg-slate-900"
+                          <div className="space-y-4">
+                            {aiGeneratedData.quiz.map(
+                              (q: any, qIdx: number) => (
+                                <div
+                                  key={qIdx}
+                                  className="space-y-2 border border-slate-200/60 dark:border-slate-850 p-3 rounded-xl bg-white dark:bg-slate-900"
+                                >
+                                  <span className="text-[10px] font-bold text-indigo-500">
+                                    QUESTION {qIdx + 1}
+                                  </span>
+                                  <p className="text-xs font-semibold text-foreground">
+                                    {q.question}
+                                  </p>
+
+                                  <div className="grid sm:grid-cols-2 gap-2 pt-1">
+                                    {q.options.map(
+                                      (opt: string, optIdx: number) => {
+                                        const isSelected =
+                                          quizAnswers[qIdx] === optIdx;
+                                        const showCorrect =
+                                          quizSubmitted &&
+                                          optIdx === q.answerIndex;
+                                        const showIncorrect =
+                                          quizSubmitted &&
+                                          isSelected &&
+                                          optIdx !== q.answerIndex;
+
+                                        return (
+                                          <button
+                                            key={optIdx}
+                                            onClick={() => {
+                                              if (quizSubmitted) return;
+                                              setQuizAnswers((prev) => ({
+                                                ...prev,
+                                                [qIdx]: optIdx,
+                                              }));
+                                              adjustCognitiveFocus(1);
+                                            }}
+                                            className={`text-left p-2 rounded-lg text-xs transition-all border ${
+                                              showCorrect
+                                                ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-medium"
+                                                : showIncorrect
+                                                  ? "bg-red-50 dark:bg-red-950/20 border-red-500 text-red-700 dark:text-red-300"
+                                                  : isSelected
+                                                    ? "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-500 text-indigo-700 dark:text-indigo-300"
+                                                    : "hover:bg-slate-50 dark:hover:bg-slate-850/60 border-slate-200 dark:border-slate-800"
+                                            }`}
+                                          >
+                                            {opt}
+                                          </button>
+                                        );
+                                      },
+                                    )}
+                                  </div>
+
+                                  {quizSubmitted && q.explanation && (
+                                    <p className="text-[10px] text-muted-foreground leading-relaxed pt-1.5 border-t border-slate-100 dark:border-slate-800">
+                                      <strong>Explanatory Notes:</strong>{" "}
+                                      {q.explanation}
+                                    </p>
+                                  )}
+                                </div>
+                              ),
+                            )}
+                          </div>
+
+                          {!quizSubmitted ? (
+                            <Button
+                              onClick={() => {
+                                if (
+                                  Object.keys(quizAnswers).length <
+                                  aiGeneratedData.quiz.length
+                                ) {
+                                  toast.warning(
+                                    "Please answer all questions before submitting!",
+                                  );
+                                  return;
+                                }
+                                setQuizSubmitted(true);
+                                adjustCognitiveFocus(10);
+                                logDatabaseEvent("COMPLETED_AI_QUIZ", {
+                                  score: "100%",
+                                });
+                                toast.success(
+                                  "Quiz graded! Read through explanatory notes below.",
+                                );
+                              }}
+                              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs"
                             >
-                              <span className="text-[10px] font-bold text-indigo-500">
-                                QUESTION {qIdx + 1}
-                              </span>
-                              <p className="text-xs font-semibold text-foreground">{q.question}</p>
-
-                              <div className="grid sm:grid-cols-2 gap-2 pt-1">
-                                {q.options.map((opt: string, optIdx: number) => {
-                                  const isSelected = quizAnswers[qIdx] === optIdx
-                                  const showCorrect = quizSubmitted && optIdx === q.answerIndex
-                                  const showIncorrect =
-                                    quizSubmitted && isSelected && optIdx !== q.answerIndex
-
-                                  return (
-                                    <button
-                                      key={optIdx}
-                                      onClick={() => {
-                                        if (quizSubmitted) return
-                                        setQuizAnswers((prev) => ({ ...prev, [qIdx]: optIdx }))
-                                        adjustCognitiveFocus(1)
-                                      }}
-                                      className={`text-left p-2 rounded-lg text-xs transition-all border ${
-                                        showCorrect
-                                          ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-medium"
-                                          : showIncorrect
-                                            ? "bg-red-50 dark:bg-red-950/20 border-red-500 text-red-700 dark:text-red-300"
-                                            : isSelected
-                                              ? "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-500 text-indigo-700 dark:text-indigo-300"
-                                              : "hover:bg-slate-50 dark:hover:bg-slate-850/60 border-slate-200 dark:border-slate-800"
-                                      }`}
-                                    >
-                                      {opt}
-                                    </button>
-                                  )
-                                })}
-                              </div>
-
-                              {quizSubmitted && q.explanation && (
-                                <p className="text-[10px] text-muted-foreground leading-relaxed pt-1.5 border-t border-slate-100 dark:border-slate-800">
-                                  <strong>Explanatory Notes:</strong> {q.explanation}
-                                </p>
-                              )}
-                            </div>
-                          ))}
+                              Grade Test & Submit
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setQuizAnswers({});
+                                setQuizSubmitted(false);
+                              }}
+                              className="w-full rounded-xl text-xs"
+                            >
+                              Retake Quiz
+                            </Button>
+                          )}
                         </div>
-
-                        {!quizSubmitted ? (
-                          <Button
-                            onClick={() => {
-                              if (Object.keys(quizAnswers).length < aiGeneratedData.quiz.length) {
-                                toast.warning("Please answer all questions before submitting!")
-                                return
-                              }
-                              setQuizSubmitted(true)
-                              adjustCognitiveFocus(10)
-                              logDatabaseEvent("COMPLETED_AI_QUIZ", { score: "100%" })
-                              toast.success("Quiz graded! Read through explanatory notes below.")
-                            }}
-                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs"
-                          >
-                            Grade Test & Submit
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              setQuizAnswers({})
-                              setQuizSubmitted(false)
-                            }}
-                            className="w-full rounded-xl text-xs"
-                          >
-                            Retake Quiz
-                          </Button>
-                        )}
-                      </div>
-                    )}
+                      )}
                   </div>
                 )}
               </CardContent>
@@ -903,8 +999,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  Tracking active learner parameters on the platform in real time, connecting
-                  database changes to immediate recommendations.
+                  Tracking active learner parameters on the platform in real
+                  time, connecting database changes to immediate
+                  recommendations.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
@@ -922,13 +1019,17 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                     <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
                       Fallacy Detection Rate
                     </span>
-                    <div className="text-2xl font-black text-rose-500 mt-1">1.2%</div>
+                    <div className="text-2xl font-black text-rose-500 mt-1">
+                      1.2%
+                    </div>
                   </div>
                   <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-950/20 text-center">
                     <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
                       Ledger Synchronized
                     </span>
-                    <div className="text-2xl font-black text-emerald-500 mt-1">100%</div>
+                    <div className="text-2xl font-black text-emerald-500 mt-1">
+                      100%
+                    </div>
                   </div>
                 </div>
 
@@ -954,9 +1055,23 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       preserveAspectRatio="none"
                     >
                       <defs>
-                        <linearGradient id="gradient-chart" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#6366f1" stopOpacity="0.3"></stop>
-                          <stop offset="100%" stopColor="#6366f1" stopOpacity="0.05"></stop>
+                        <linearGradient
+                          id="gradient-chart"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#6366f1"
+                            stopOpacity="0.3"
+                          ></stop>
+                          <stop
+                            offset="100%"
+                            stopColor="#6366f1"
+                            stopOpacity="0.05"
+                          ></stop>
                         </linearGradient>
                       </defs>
                       {/* Grid Lines */}
@@ -1104,8 +1219,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  Connecting educational content, management systems, and finance ledgers in a
-                  single high-availability environment.
+                  Connecting educational content, management systems, and
+                  finance ledgers in a single high-availability environment.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
@@ -1119,7 +1234,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       variant="outline"
                       className={`text-[9px] font-bold ${isFailoverActive ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"}`}
                     >
-                      {isFailoverActive ? "Backup active / Spiked" : "All nodes optimal"}
+                      {isFailoverActive
+                        ? "Backup active / Spiked"
+                        : "All nodes optimal"}
                     </Badge>
                   </div>
 
@@ -1193,8 +1310,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       Kubernetes Cluster Diagnostics
                     </h4>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Simulate network failover bottlenecks. Trigger backup microservice paths to
-                      stabilize user sessions.
+                      Simulate network failover bottlenecks. Trigger backup
+                      microservice paths to stabilize user sessions.
                     </p>
                     <div className="flex gap-2 pt-2">
                       {!isFailoverActive ? (
@@ -1238,15 +1355,17 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  Tailor curricula in real-time according to the student&apos;s level, cognitive
-                  capacity, and study interests.
+                  Tailor curricula in real-time according to the student&apos;s
+                  level, cognitive capacity, and study interests.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
                 {/* Options Grid */}
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-bold">Cognitive Aptitude Tier</Label>
+                    <Label className="text-xs font-bold">
+                      Cognitive Aptitude Tier
+                    </Label>
                     <select
                       value={aptitudeLevel}
                       onChange={(e: any) => setAptitudeLevel(e.target.value)}
@@ -1259,7 +1378,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-bold">Study Pace Intensity</Label>
+                    <Label className="text-xs font-bold">
+                      Study Pace Intensity
+                    </Label>
                     <select
                       value={learningPace}
                       onChange={(e: any) => setLearningPace(e.target.value)}
@@ -1267,12 +1388,16 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                     >
                       <option value="relaxed">Relaxed Study (1h/wk)</option>
                       <option value="balanced">Balanced Hybrid (5h/wk)</option>
-                      <option value="intensive">Intensive Extreme (20h/wk)</option>
+                      <option value="intensive">
+                        Intensive Extreme (20h/wk)
+                      </option>
                     </select>
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-bold">Philosophical Focus</Label>
+                    <Label className="text-xs font-bold">
+                      Philosophical Focus
+                    </Label>
                     <select
                       value={learningFocus}
                       onChange={(e: any) => setLearningFocus(e.target.value)}
@@ -1326,7 +1451,10 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                               Challenge Task: {mod.challenge}
                             </p>
                           </div>
-                          <Badge variant="outline" className="text-[9px] font-bold shrink-0">
+                          <Badge
+                            variant="outline"
+                            className="text-[9px] font-bold shrink-0"
+                          >
                             {mod.hours} Hrs/wk
                           </Badge>
                         </div>
@@ -1349,8 +1477,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  A digital simulation dashboard modeling study trajectories to predict academic
-                  bottlenecks and cognitive burnout.
+                  A digital simulation dashboard modeling study trajectories to
+                  predict academic bottlenecks and cognitive burnout.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
@@ -1358,7 +1486,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between items-center text-xs font-bold">
-                      <Label htmlFor="study-hours-slider">Weekly Research & Study Hours</Label>
+                      <Label htmlFor="study-hours-slider">
+                        Weekly Research & Study Hours
+                      </Label>
                       <Badge className="bg-indigo-500 text-white font-bold">
                         {studyHours} Hours
                       </Badge>
@@ -1370,13 +1500,14 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       step={1}
                       value={[studyHours]}
                       onValueChange={(val) => {
-                        const v = val[0]
-                        if (v !== undefined) setStudyHours(v)
-                        adjustCognitiveFocus(1)
+                        const v = val[0];
+                        if (v !== undefined) setStudyHours(v);
+                        adjustCognitiveFocus(1);
                       }}
                     />
                     <p className="text-[10px] text-muted-foreground">
-                      Adjust study parameters to predict grade gains vs burnout risk thresholds.
+                      Adjust study parameters to predict grade gains vs burnout
+                      risk thresholds.
                     </p>
                   </div>
 
@@ -1396,13 +1527,14 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       step={5}
                       value={[discourseRate]}
                       onValueChange={(val) => {
-                        const v = val[0]
-                        if (v !== undefined) setDiscourseRate(v)
-                        adjustCognitiveFocus(1)
+                        const v = val[0];
+                        if (v !== undefined) setDiscourseRate(v);
+                        adjustCognitiveFocus(1);
                       }}
                     />
                     <p className="text-[10px] text-muted-foreground">
-                      Adjust peer argument mapping to lower potential academic failure risks.
+                      Adjust peer argument mapping to lower potential academic
+                      failure risks.
                     </p>
                   </div>
                 </div>
@@ -1472,24 +1604,30 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  Generate cryptographic digital certificates of completion which are globally
-                  verifiable on decentralised ledgers.
+                  Generate cryptographic digital certificates of completion
+                  which are globally verifiable on decentralised ledgers.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
                 <div className="flex flex-col md:flex-row gap-4 items-end">
                   <div className="flex-1 space-y-1.5">
-                    <Label className="text-xs font-bold">Select Completed Course to Mint</Label>
+                    <Label className="text-xs font-bold">
+                      Select Completed Course to Mint
+                    </Label>
                     <select
                       value={mintCourse}
                       onChange={(e) => setMintCourse(e.target.value)}
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs p-2 h-9"
                     >
-                      <option value="Core General Program (GP)">Core General Program (GP)</option>
+                      <option value="Core General Program (GP)">
+                        Core General Program (GP)
+                      </option>
                       <option value="Active Dialogue Groups (GP)">
                         Active Dialogue Groups (GP)
                       </option>
-                      <option value="Logic Core Subjects (GP)">Logic Core Subjects (GP)</option>
+                      <option value="Logic Core Subjects (GP)">
+                        Logic Core Subjects (GP)
+                      </option>
                     </select>
                   </div>
                   <Button
@@ -1537,7 +1675,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                           {blockchainCert.student}
                         </h5>
                         <span className="text-[10px] text-muted-foreground">
-                          HAS INTELLECTUALLY MASTERED ALL REQUISITE FRAMEWORKS IN
+                          HAS INTELLECTUALLY MASTERED ALL REQUISITE FRAMEWORKS
+                          IN
                         </span>
                         <p className="text-sm font-bold text-indigo-500 dark:text-indigo-400">
                           {blockchainCert.course}
@@ -1564,19 +1703,22 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                           Decentralised Ledger Verification Explorer
                         </span>
                         <p className="text-[10px] text-muted-foreground">
-                          Inspect global signatures and blockchain transaction hashes live.
+                          Inspect global signatures and blockchain transaction
+                          hashes live.
                         </p>
                       </div>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => {
-                          setIsLedgerExplorerOpen(!isLedgerExplorerOpen)
-                          adjustCognitiveFocus(1)
+                          setIsLedgerExplorerOpen(!isLedgerExplorerOpen);
+                          adjustCognitiveFocus(1);
                         }}
                         className="rounded-xl text-xs font-bold"
                       >
-                        {isLedgerExplorerOpen ? "Hide Ledger Explorer" : "Verify on Ledger"}
+                        {isLedgerExplorerOpen
+                          ? "Hide Ledger Explorer"
+                          : "Verify on Ledger"}
                       </Button>
                     </div>
 
@@ -1590,12 +1732,17 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
 
                         <div className="space-y-2 max-h-[140px] overflow-y-auto">
                           {ledgerTransactions.map((tx, idx) => (
-                            <div key={idx} className="border-b border-slate-900 pb-2 space-y-1">
+                            <div
+                              key={idx}
+                              className="border-b border-slate-900 pb-2 space-y-1"
+                            >
                               <div className="flex justify-between text-[9px]">
                                 <span className="text-indigo-400">
                                   TX: {tx.txHash.substring(0, 16)}...
                                 </span>
-                                <span className="text-emerald-500">{tx.status}</span>
+                                <span className="text-emerald-500">
+                                  {tx.status}
+                                </span>
                               </div>
                               <div>
                                 <strong>STUDENT:</strong> {tx.student}
@@ -1628,8 +1775,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  Display classical manuscript text overlaid with dynamic neon glowing annotations,
-                  inline summaries, and parallax view grids.
+                  Display classical manuscript text overlaid with dynamic neon
+                  glowing annotations, inline summaries, and parallax view
+                  grids.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
@@ -1640,7 +1788,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       Augmented Reality overlay lens
                     </span>
                     <p className="text-[10px] text-muted-foreground">
-                      Toggle to illuminate classical terms with glowing annotations.
+                      Toggle to illuminate classical terms with glowing
+                      annotations.
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -1648,25 +1797,29 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       size="sm"
                       variant={isAmbientPlaying ? "secondary" : "outline"}
                       onClick={() => {
-                        setIsAmbientPlaying(!isAmbientPlaying)
-                        adjustCognitiveFocus(2)
+                        setIsAmbientPlaying(!isAmbientPlaying);
+                        adjustCognitiveFocus(2);
                         toast.info(
                           isAmbientPlaying
                             ? "VR classroom ambience muted."
                             : "VR classroom background binaural frequencies active.",
-                        )
+                        );
                       }}
                       className="rounded-xl text-xs"
                     >
-                      {isAmbientPlaying ? "Mute VR Frequencies" : "VR Binaural Ambiance"}
+                      {isAmbientPlaying
+                        ? "Mute VR Frequencies"
+                        : "VR Binaural Ambiance"}
                     </Button>
                     <Button
                       size="sm"
                       onClick={() => {
-                        setIsArActive(!isArActive)
-                        setSelectedArWord(null)
-                        adjustCognitiveFocus(4)
-                        logDatabaseEvent(isArActive ? "DISABLED_AR_VIEW" : "ENABLED_AR_VIEW")
+                        setIsArActive(!isArActive);
+                        setSelectedArWord(null);
+                        adjustCognitiveFocus(4);
+                        logDatabaseEvent(
+                          isArActive ? "DISABLED_AR_VIEW" : "ENABLED_AR_VIEW",
+                        );
                       }}
                       className={`${isArActive ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"} text-white rounded-xl font-bold text-xs`}
                     >
@@ -1704,9 +1857,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       Let us consider the{" "}
                       <button
                         onClick={() => {
-                          if (!isArActive) return
-                          setSelectedArWord("forms")
-                          adjustCognitiveFocus(2)
+                          if (!isArActive) return;
+                          setSelectedArWord("forms");
+                          adjustCognitiveFocus(2);
                         }}
                         className={`font-bold transition-all ${
                           isArActive
@@ -1716,13 +1869,14 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       >
                         Theory of Forms
                       </button>{" "}
-                      as standard cognitive structures. The intellectual mind is compared to the
-                      eyes, which perceive absolute truths only when illuminated by the light of{" "}
+                      as standard cognitive structures. The intellectual mind is
+                      compared to the eyes, which perceive absolute truths only
+                      when illuminated by the light of{" "}
                       <button
                         onClick={() => {
-                          if (!isArActive) return
-                          setSelectedArWord("sun")
-                          adjustCognitiveFocus(2)
+                          if (!isArActive) return;
+                          setSelectedArWord("sun");
+                          adjustCognitiveFocus(2);
                         }}
                         className={`font-bold transition-all ${
                           isArActive
@@ -1732,8 +1886,8 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       >
                         The Idea of the Good
                       </button>
-                      . Without this intellectual light, the mind can only grasp opinion and simple
-                      projections in the shadows of the cave.
+                      . Without this intellectual light, the mind can only grasp
+                      opinion and simple projections in the shadows of the cave.
                     </p>
                   </div>
                 </div>
@@ -1754,9 +1908,10 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                           Theory of Forms (eidos)
                         </strong>
                         <p className="text-[11px] text-muted-foreground leading-relaxed">
-                          Plato&apos;s assertion that non-physical, perfect, timeless ideas are the
-                          most real form of existence. Physical entities are merely imperfect
-                          shadows of these absolute, transcendent concepts.
+                          Plato&apos;s assertion that non-physical, perfect,
+                          timeless ideas are the most real form of existence.
+                          Physical entities are merely imperfect shadows of
+                          these absolute, transcendent concepts.
                         </p>
                       </div>
                     ) : (
@@ -1765,9 +1920,10 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                           The Idea of the Good (Idea tou agathou)
                         </strong>
                         <p className="text-[11px] text-muted-foreground leading-relaxed">
-                          The highest form of truth in Plato&apos;s metaphysics, described as the
-                          sun that illuminates the intellectual world, making knowledge, moral
-                          virtue, and absolute thought possible.
+                          The highest form of truth in Plato&apos;s metaphysics,
+                          described as the sun that illuminates the intellectual
+                          world, making knowledge, moral virtue, and absolute
+                          thought possible.
                         </p>
                       </div>
                     )}
@@ -1799,7 +1955,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       )}
                       {t.connectivityCard}
                     </h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{t.connDesc}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t.connDesc}
+                    </p>
 
                     <div className="border-t pt-3 space-y-1">
                       <span className="text-[10px] font-bold text-muted-foreground uppercase">
@@ -1826,14 +1984,16 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       <Languages className="text-indigo-500 w-4 h-4" />
                       {t.languageCard}
                     </h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{t.langDesc}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t.langDesc}
+                    </p>
 
                     <div className="grid grid-cols-3 gap-2 pt-2">
                       <button
                         onClick={() => {
-                          setActiveLanguage("en")
-                          logDatabaseEvent("SET_LANG_EN")
-                          toast.success("English interface active")
+                          setActiveLanguage("en");
+                          logDatabaseEvent("SET_LANG_EN");
+                          toast.success("English interface active");
                         }}
                         className={`p-2 rounded-lg text-xs font-bold border transition-colors ${
                           activeLanguage === "en"
@@ -1845,9 +2005,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       </button>
                       <button
                         onClick={() => {
-                          setActiveLanguage("ar")
-                          logDatabaseEvent("SET_LANG_AR")
-                          toast.success("Arabic RTL realigned layout active")
+                          setActiveLanguage("ar");
+                          logDatabaseEvent("SET_LANG_AR");
+                          toast.success("Arabic RTL realigned layout active");
                         }}
                         className={`p-2 rounded-lg text-xs font-bold border transition-colors ${
                           activeLanguage === "ar"
@@ -1859,9 +2019,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                       </button>
                       <button
                         onClick={() => {
-                          setActiveLanguage("fr")
-                          logDatabaseEvent("SET_LANG_FR")
-                          toast.success("French LTR active")
+                          setActiveLanguage("fr");
+                          logDatabaseEvent("SET_LANG_FR");
+                          toast.success("French LTR active");
                         }}
                         className={`p-2 rounded-lg text-xs font-bold border transition-colors ${
                           activeLanguage === "fr"
@@ -1877,7 +2037,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
 
                 {/* Multilingual Alignment Statement */}
                 <div className="border border-slate-250 dark:border-slate-800/80 rounded-xl p-4 bg-white dark:bg-slate-950 space-y-2">
-                  <h4 className="text-xs font-bold text-foreground">{t.demoHeading}</h4>
+                  <h4 className="text-xs font-bold text-foreground">
+                    {t.demoHeading}
+                  </h4>
                   <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-350">
                     {t.demoText}
                   </p>
@@ -1897,8 +2059,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                   </CardTitle>
                 </div>
                 <CardDescription className="text-xs">
-                  Maintain absolute accountability and transparency in artificial intelligence
-                  implementations through auditing and policies.
+                  Maintain absolute accountability and transparency in
+                  artificial intelligence implementations through auditing and
+                  policies.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
@@ -1924,7 +2087,9 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                     <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
                       Privacy Compliance
                     </span>
-                    <div className="text-2xl font-black text-emerald-500 mt-1">Verified</div>
+                    <div className="text-2xl font-black text-emerald-500 mt-1">
+                      Verified
+                    </div>
                   </div>
                 </div>
 
@@ -1995,10 +2160,12 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
 
                     <div className="space-y-2 text-xs">
                       <div>
-                        <strong>Logical Soundness Verdict:</strong> {auditResults.verdict}
+                        <strong>Logical Soundness Verdict:</strong>{" "}
+                        {auditResults.verdict}
                       </div>
                       <div>
-                        <strong>Data Privacy Verification:</strong> {auditResults.dataPrivacyStatus}
+                        <strong>Data Privacy Verification:</strong>{" "}
+                        {auditResults.dataPrivacyStatus}
                       </div>
 
                       {auditResults.fallaciesDetected.length > 0 ? (
@@ -2006,27 +2173,29 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
                           <span className="text-[10px] font-bold text-rose-500 uppercase tracking-wider block">
                             Logical Fallacies Identified:
                           </span>
-                          {auditResults.fallaciesDetected.map((fal: any, idx: number) => (
-                            <div
-                              key={idx}
-                              className="border border-rose-200 dark:border-rose-950/20 p-2.5 rounded-lg bg-rose-500/[0.02]"
-                            >
-                              <div className="text-[11px] font-bold text-rose-600 dark:text-rose-450">
-                                {fal.name}
+                          {auditResults.fallaciesDetected.map(
+                            (fal: any, idx: number) => (
+                              <div
+                                key={idx}
+                                className="border border-rose-200 dark:border-rose-950/20 p-2.5 rounded-lg bg-rose-500/[0.02]"
+                              >
+                                <div className="text-[11px] font-bold text-rose-600 dark:text-rose-450">
+                                  {fal.name}
+                                </div>
+                                <div className="italic text-[10px] text-muted-foreground my-1">
+                                  &quot;{fal.passage}&quot;
+                                </div>
+                                <p className="text-[10px] text-slate-600 dark:text-slate-350">
+                                  {fal.explanation}
+                                </p>
                               </div>
-                              <div className="italic text-[10px] text-muted-foreground my-1">
-                                &quot;{fal.passage}&quot;
-                              </div>
-                              <p className="text-[10px] text-slate-600 dark:text-slate-350">
-                                {fal.explanation}
-                              </p>
-                            </div>
-                          ))}
+                            ),
+                          )}
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold pt-2">
-                          <CheckCircle2 className="w-4 h-4" /> No cognitive logical fallacies
-                          detected.
+                          <CheckCircle2 className="w-4 h-4" /> No cognitive
+                          logical fallacies detected.
                         </div>
                       )}
                     </div>
@@ -2035,19 +2204,21 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
 
                 {/* Accountability Statement */}
                 <div className="border border-slate-250 dark:border-slate-800/80 rounded-xl p-4 bg-slate-50 dark:bg-slate-950/20 space-y-2 text-xs text-muted-foreground">
-                  <div className="font-bold text-foreground">Governance and Privacy Policies:</div>
+                  <div className="font-bold text-foreground">
+                    Governance and Privacy Policies:
+                  </div>
                   <ul className="list-disc list-inside space-y-1">
                     <li>
-                      Transparency: AI algorithms do not replace academic human assessment
-                      (Human-in-the-loop verified).
+                      Transparency: AI algorithms do not replace academic human
+                      assessment (Human-in-the-loop verified).
                     </li>
                     <li>
-                      Accountability: Full audit ledgers kept for automated model revisions under
-                      GDPR.
+                      Accountability: Full audit ledgers kept for automated
+                      model revisions under GDPR.
                     </li>
                     <li>
-                      Ethics: Model training restricted from utilizing user private details,
-                      verified under encryption.
+                      Ethics: Model training restricted from utilizing user
+                      private details, verified under encryption.
                     </li>
                   </ul>
                 </div>
@@ -2057,5 +2228,5 @@ export function TechConceptsDashboard({ user, initialDbLogs = [] }: TechConcepts
         </div>
       </div>
     </div>
-  )
+  );
 }

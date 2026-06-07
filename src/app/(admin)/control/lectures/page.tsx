@@ -1,26 +1,26 @@
-import { Suspense } from "react"
-import { FileText, Plus } from "lucide-react"
-import Link from "next/link"
-import { prisma, serializePrisma } from "@/lib/prisma"
+import { Suspense } from "react";
+import { FileText, Plus } from "lucide-react";
+import Link from "next/link";
+import { prisma, serializePrisma } from "@/lib/prisma";
 
 export const metadata = {
   title: "Lectures — PHAGLP Control",
-}
+};
 
 async function getLectures() {
   try {
     const lectures = await prisma.lecture.findMany({
       orderBy: { createdAt: "desc" },
       include: { author: { select: { id: true, name: true, email: true } } },
-    })
-    return serializePrisma(lectures)
+    });
+    return serializePrisma(lectures);
   } catch {
-    return []
+    return [];
   }
 }
 
 async function LecturesTable() {
-  const lectures = await getLectures()
+  const lectures = await getLectures();
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
       <div className="overflow-x-auto">
@@ -64,7 +64,9 @@ async function LecturesTable() {
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-white max-w-[240px] truncate">
                     {lecture.title}
                   </td>
-                  <td className="px-4 py-3 text-xs text-gray-500">{lecture.category}</td>
+                  <td className="px-4 py-3 text-xs text-gray-500">
+                    {lecture.category}
+                  </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                     {lecture.author?.name ?? lecture.author?.email ?? "—"}
                   </td>
@@ -104,7 +106,7 @@ async function LecturesTable() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export default async function LecturesPage() {
@@ -136,7 +138,10 @@ export default async function LecturesPage() {
         fallback={
           <div className="space-y-2">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div
+                key={i}
+                className="h-12 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse"
+              />
             ))}
           </div>
         }
@@ -144,5 +149,5 @@ export default async function LecturesPage() {
         <LecturesTable />
       </Suspense>
     </div>
-  )
+  );
 }

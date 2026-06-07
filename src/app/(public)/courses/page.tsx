@@ -1,26 +1,39 @@
-import prisma, { safeDbQuery } from "@/lib/prisma"
-import { CourseCard } from "@/components/cards/course-card"
-import { unstable_cache } from "next/cache"
-import { auth } from "@/auth"
-import { redis } from "@/lib/redis"
-import { computeDiscount } from "@/lib/discount"
-import { CourseType } from "@prisma/client"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Clock, BookOpen, GraduationCap, Award, Sparkles, Percent } from "lucide-react"
-import Link from "next/link"
+import prisma, { safeDbQuery } from "@/lib/prisma";
+import { CourseCard } from "@/components/cards/course-card";
+import { unstable_cache } from "next/cache";
+import { auth } from "@/auth";
+import { redis } from "@/lib/redis";
+import { computeDiscount } from "@/lib/discount";
+import { CourseType } from "@prisma/client";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Clock,
+  BookOpen,
+  GraduationCap,
+  Award,
+  Sparkles,
+  Percent,
+} from "lucide-react";
+import Link from "next/link";
 
 // Handle database states safely at runtime
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 const getCachedCourses = unstable_cache(
   async () => {
     // 1. Try Redis first
-    const cacheKey = "public-courses"
-    const cached = await redis.get<any[]>(cacheKey)
+    const cacheKey = "public-courses";
+    const cached = await redis.get<any[]>(cacheKey);
     if (cached) {
-      return cached
+      return cached;
     }
 
     // 2. Fallback to DB
@@ -39,44 +52,44 @@ const getCachedCourses = unstable_cache(
         orderBy: {
           createdAt: "desc",
         },
-      })
-    }, [])
+      });
+    }, []);
 
-    const data = result.data || []
+    const data = result.data || [];
 
     // 3. Store in Redis for 5 minutes (300s)
-    await redis.set(cacheKey, data, { ex: 300 })
+    await redis.set(cacheKey, data, { ex: 300 });
 
-    return data
+    return data;
   },
   ["public-courses"],
   { tags: ["courses"], revalidate: 300 },
-)
+);
 
 export default async function CoursesPage() {
-  let courses: any[] = []
+  let courses: any[] = [];
   try {
-    courses = await getCachedCourses()
+    courses = await getCachedCourses();
   } catch (error) {
-    console.error("Failed to fetch cached courses:", error)
+    console.error("Failed to fetch cached courses:", error);
   }
 
   // Calculate discount for logged-in user
-  const session = await auth()
-  let discountPct = 0
-  let userName = ""
+  const session = await auth();
+  let discountPct = 0;
+  let userName = "";
 
   if (session?.user?.id) {
-    userName = session.user.name || "Scholar"
+    userName = session.user.name || "Scholar";
     const result = await safeDbQuery(async () => {
       return prisma.user.findUnique({
         where: { id: session.user.id },
         select: { incomeLevel: true, worldTier: true },
-      })
-    })
-    const dbUser = result.data
+      });
+    });
+    const dbUser = result.data;
     if (dbUser) {
-      discountPct = computeDiscount(dbUser.incomeLevel, dbUser.worldTier)
+      discountPct = computeDiscount(dbUser.incomeLevel, dbUser.worldTier);
     }
   }
 
@@ -91,7 +104,11 @@ export default async function CoursesPage() {
       type: CourseType.GP_GENERAL,
       gradient: "from-blue-600 to-indigo-600",
       icon: GraduationCap,
-      features: ["Full Core Integration", "Personal Mentoring", "Official Certificate"],
+      features: [
+        "Full Core Integration",
+        "Personal Mentoring",
+        "Official Certificate",
+      ],
     },
     {
       title: "GP GROUPS COURSES",
@@ -102,7 +119,11 @@ export default async function CoursesPage() {
       type: CourseType.GP_GROUPS,
       gradient: "from-purple-600 to-pink-600",
       icon: BookOpen,
-      features: ["Peer Discussion Cohorts", "Guided Workshops", "Specialist Reviews"],
+      features: [
+        "Peer Discussion Cohorts",
+        "Guided Workshops",
+        "Specialist Reviews",
+      ],
     },
     {
       title: "GP SUBJECTS COURSES",
@@ -113,9 +134,13 @@ export default async function CoursesPage() {
       type: CourseType.GP_SUBJECTS,
       gradient: "from-emerald-600 to-teal-600",
       icon: Award,
-      features: ["Syllabus-focused study", "Quizzes & Feedback", "Expert Lectures"],
+      features: [
+        "Syllabus-focused study",
+        "Quizzes & Feedback",
+        "Expert Lectures",
+      ],
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/20 py-16">
@@ -130,9 +155,10 @@ export default async function CoursesPage() {
             ELITE COURSES?!
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed font-medium">
-            Elite Courses, these are the scientific modules of The General Program of Life Planning
-            for geniuses, gifted, and talented, young and adult. They are presented here as
-            advanced, specialized academic courses, characterized by their luxury, uniqueness, and
+            Elite Courses, these are the scientific modules of The General
+            Program of Life Planning for geniuses, gifted, and talented, young
+            and adult. They are presented here as advanced, specialized academic
+            courses, characterized by their luxury, uniqueness, and
             exclusivity—unavailable anywhere else.
           </p>
 
@@ -142,7 +168,9 @@ export default async function CoursesPage() {
               <Percent className="w-5 h-5 shrink-0" />
               <span>
                 Welcome, {userName}! You qualify for a{" "}
-                <strong className="text-red-600 dark:text-red-400">{discountPct}% discount</strong>{" "}
+                <strong className="text-red-600 dark:text-red-400">
+                  {discountPct}% discount
+                </strong>{" "}
                 based on your profile status.
               </span>
             </div>
@@ -158,15 +186,18 @@ export default async function CoursesPage() {
                 Core GP Programs
               </h2>
               <p className="text-muted-foreground text-sm mt-1">
-                Predefined high-level certification pathways optimized for comprehensive excellence.
+                Predefined high-level certification pathways optimized for
+                comprehensive excellence.
               </p>
             </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {predefinedPrograms.map((prog) => {
-              const IconComponent = prog.icon
-              const finalPrice = Math.round(prog.originalPrice * (1 - discountPct / 100))
+              const IconComponent = prog.icon;
+              const finalPrice = Math.round(
+                prog.originalPrice * (1 - discountPct / 100),
+              );
               return (
                 <Card
                   key={prog.type}
@@ -240,11 +271,13 @@ export default async function CoursesPage() {
                       asChild
                       className={`bg-gradient-to-r ${prog.gradient} hover:opacity-90 text-white font-semibold rounded-xl shadow-md border-0 transition-opacity`}
                     >
-                      <Link href={`/courses?type=${prog.type}`}>Enroll Now</Link>
+                      <Link href={`/courses?type=${prog.type}`}>
+                        Enroll Now
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>
-              )
+              );
             })}
           </div>
         </div>
@@ -258,7 +291,8 @@ export default async function CoursesPage() {
                 Others / Custom Modules
               </h2>
               <p className="text-muted-foreground text-sm mt-1">
-                Browse student-instructor driven philosophical focus modules and elective courses.
+                Browse student-instructor driven philosophical focus modules and
+                elective courses.
               </p>
             </div>
           </div>
@@ -295,5 +329,5 @@ export default async function CoursesPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

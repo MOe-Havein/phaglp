@@ -1,76 +1,83 @@
-"use client"
+"use client";
 
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState } from "react";
 
-export type Theme = "light" | "dark" | "system"
+export type Theme = "light" | "dark" | "system";
 
 interface ThemeContextType {
-  theme: Theme
-  setTheme: (theme: Theme) => void
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
 }
 
-export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined,
+);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system")
-  const [mounted, setMounted] = useState(false)
+  const [theme, setThemeState] = useState<Theme>("system");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-    const savedTheme = localStorage.getItem("theme") as Theme
+    setMounted(true);
+    const savedTheme = localStorage.getItem("theme") as Theme;
     if (savedTheme) {
-      setThemeState(savedTheme)
+      setThemeState(savedTheme);
     }
-  }, [])
+  }, []);
 
   const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme)
-    localStorage.setItem("theme", newTheme)
-  }
+    setThemeState(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
 
   useEffect(() => {
-    if (!mounted) return
+    if (!mounted) return;
 
-    const root = window.document.documentElement
+    const root = window.document.documentElement;
 
     const applyTheme = (currentTheme: Theme) => {
-      root.classList.remove("light", "dark")
+      root.classList.remove("light", "dark");
 
       if (currentTheme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
           ? "dark"
-          : "light"
-        root.classList.add(systemTheme)
+          : "light";
+        root.classList.add(systemTheme);
       } else {
-        root.classList.add(currentTheme)
+        root.classList.add(currentTheme);
       }
-    }
+    };
 
-    applyTheme(theme)
+    applyTheme(theme);
 
     if (theme === "system") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const handleChange = () => {
-        applyTheme("system")
-      }
+        applyTheme("system");
+      };
 
       if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener("change", handleChange)
+        mediaQuery.addEventListener("change", handleChange);
       } else {
-        mediaQuery.addListener(handleChange)
+        mediaQuery.addListener(handleChange);
       }
 
       return () => {
         if (mediaQuery.removeEventListener) {
-          mediaQuery.removeEventListener("change", handleChange)
+          mediaQuery.removeEventListener("change", handleChange);
         } else {
-          mediaQuery.removeListener(handleChange)
+          mediaQuery.removeListener(handleChange);
         }
-      }
+      };
     }
 
-    return () => {}
-  }, [theme, mounted])
+    return () => {};
+  }, [theme, mounted]);
 
-  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }

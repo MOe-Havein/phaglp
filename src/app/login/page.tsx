@@ -1,34 +1,34 @@
 // @ts-nocheck
-"use client"
+"use client";
 
-import { useState } from "react"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
     const result = await signIn("credentials", {
       redirect: false,
       email,
       password,
-    })
-    setLoading(false)
+    });
+    setLoading(false);
     if (result?.error) {
-      setError(result.error)
+      setError(result.error);
     } else {
       // Successful login – redirect to admin control panel
-      router.push("/control")
+      router.push("/control");
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -86,5 +86,5 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }

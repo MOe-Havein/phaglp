@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import Link from "next/link"
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   CheckCircle2,
   Clock,
@@ -12,7 +12,7 @@ import {
   AlertTriangle,
   RefreshCw,
   ArrowRight,
-} from "lucide-react"
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -20,21 +20,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface Course {
-  id: string
-  slug: string
-  title: string
-  description: string
-  price: number
-  duration: string | null
-  courseType: "GP_GENERAL" | "GP_GROUPS" | "GP_SUBJECTS" | "OTHER"
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  price: number;
+  duration: string | null;
+  courseType: "GP_GENERAL" | "GP_GROUPS" | "GP_SUBJECTS" | "OTHER";
   instructor?: {
-    name: string | null
-  }
+    name: string | null;
+  };
 }
 
 // Preset features based on courseType to represent highly professional packages
@@ -47,7 +47,7 @@ const getTypeFeatures = (type: string) => {
         "Official Elite GP Certificate",
         "Priority 24/7 Platform Support",
         "Lifetime access to cohort forums",
-      ]
+      ];
     case "GP_GROUPS":
       return [
         "Interactive Peer Discussion Cohorts",
@@ -55,7 +55,7 @@ const getTypeFeatures = (type: string) => {
         "Detailed Specialist Reviews",
         "Flexible study schedule",
         "Full access to group libraries",
-      ]
+      ];
     case "GP_SUBJECTS":
       return [
         "Syllabus-focused intensive study",
@@ -63,16 +63,16 @@ const getTypeFeatures = (type: string) => {
         "Curated Expert Lectures series",
         "Self-paced learning structure",
         "Downloadable course summaries",
-      ]
+      ];
     default:
       return [
         "Comprehensive philosophical lectures",
         "Direct Instructor Q&A forum",
         "Responsive learning environment",
         "Mobile & offline compatibility",
-      ]
+      ];
   }
-}
+};
 
 const getTypeMetadata = (type: string) => {
   switch (type) {
@@ -80,70 +80,79 @@ const getTypeMetadata = (type: string) => {
       return {
         label: "General Program",
         badge: "Most Premium",
-        gradient: "from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500",
+        gradient:
+          "from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500",
         icon: GraduationCap,
         popular: true,
-      }
+      };
     case "GP_GROUPS":
       return {
         label: "Groups Course",
         badge: "Cohort-Based",
-        gradient: "from-purple-600 to-pink-600 dark:from-purple-500 dark:to-pink-500",
+        gradient:
+          "from-purple-600 to-pink-600 dark:from-purple-500 dark:to-pink-500",
         icon: BookOpen,
         popular: false,
-      }
+      };
     case "GP_SUBJECTS":
       return {
         label: "Subjects Course",
         badge: "Focused Mastery",
-        gradient: "from-emerald-600 to-teal-600 dark:from-emerald-500 dark:to-teal-500",
+        gradient:
+          "from-emerald-600 to-teal-600 dark:from-emerald-500 dark:to-teal-500",
         icon: Award,
         popular: false,
-      }
+      };
     default:
       return {
         label: "Custom Module",
         badge: "Elective Studies",
-        gradient: "from-slate-600 to-slate-700 dark:from-slate-500 dark:to-slate-600",
+        gradient:
+          "from-slate-600 to-slate-700 dark:from-slate-500 dark:to-slate-600",
         icon: Sparkles,
         popular: false,
-      }
+      };
   }
-}
+};
 
 export function CoursesPricing() {
-  const [courses, setCourses] = useState<Course[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCourses = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch("/api/courses/pricing")
+      const response = await fetch("/api/courses/pricing");
       if (!response.ok) {
-        throw new Error(`Failed to load plans: ${response.status} ${response.statusText}`)
+        throw new Error(
+          `Failed to load plans: ${response.status} ${response.statusText}`,
+        );
       }
-      const payload = await response.json()
+      const payload = await response.json();
       if (payload.success) {
-        setCourses(payload.data || [])
+        setCourses(payload.data || []);
       } else {
-        throw new Error(payload.error || "Could not retrieve pricing plans.")
+        throw new Error(payload.error || "Could not retrieve pricing plans.");
       }
     } catch (err: any) {
-      console.error("Error fetching courses pricing:", err)
-      setError(err?.message || "An unexpected error occurred while loading our academy plans.")
+      console.error("Error fetching courses pricing:", err);
+      setError(
+        err?.message ||
+          "An unexpected error occurred while loading our academy plans.",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchCourses()
-  }, [])
+    fetchCourses();
+  }, []);
 
   if (loading) {
-    return <CoursesPricingSkeleton />
+    return <CoursesPricingSkeleton />;
   }
 
   if (error) {
@@ -154,10 +163,12 @@ export function CoursesPricing() {
             <div className="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-950 flex items-center justify-center mb-4 text-rose-600 dark:text-rose-400 shadow-sm">
               <AlertTriangle className="w-6 h-6 animate-pulse" />
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">Failed to Load Pricing Plans</h3>
+            <h3 className="text-xl font-bold text-foreground mb-2">
+              Failed to Load Pricing Plans
+            </h3>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-              Our academic platform is temporarily unable to retrieve course offerings. Please try
-              reloading the catalog.
+              Our academic platform is temporarily unable to retrieve course
+              offerings. Please try reloading the catalog.
             </p>
             <Button
               onClick={fetchCourses}
@@ -169,14 +180,17 @@ export function CoursesPricing() {
           </div>
         </div>
       </section>
-    )
+    );
   }
 
   return (
     <section className="py-24 px-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/25 via-background to-emerald-100/20 dark:from-indigo-900/15 dark:via-background dark:to-emerald-900/10 relative overflow-hidden border-t border-border/40">
       {/* Dynamic Background Decorations */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-12 w-[700px] h-[700px] bg-indigo-500/15 dark:bg-indigo-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDuration: "12s" }} />
+        <div
+          className="absolute top-0 right-12 w-[700px] h-[700px] bg-indigo-500/15 dark:bg-indigo-500/8 rounded-full blur-3xl animate-pulse"
+          style={{ animationDuration: "12s" }}
+        />
         <div className="absolute bottom-0 left-12 w-[700px] h-[700px] bg-emerald-500/12 dark:bg-emerald-500/6 rounded-full blur-3xl" />
       </div>
 
@@ -190,8 +204,8 @@ export function CoursesPricing() {
             Elite Academic Pricing Plans
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            Select an exclusive, high-performance course pathway designed for geniuses, scholars,
-            and professionals alike.
+            Select an exclusive, high-performance course pathway designed for
+            geniuses, scholars, and professionals alike.
           </p>
         </div>
 
@@ -199,9 +213,12 @@ export function CoursesPricing() {
         {courses.length === 0 ? (
           <div className="text-center py-20 bg-card border border-dashed border-border rounded-3xl max-w-xl mx-auto shadow-sm">
             <GraduationCap className="w-16 h-16 text-muted-foreground/40 mx-auto mb-4" />
-            <p className="text-foreground text-lg font-semibold">No Dynamic Plans Available Yet</p>
+            <p className="text-foreground text-lg font-semibold">
+              No Dynamic Plans Available Yet
+            </p>
             <p className="text-xs text-muted-foreground mt-1 mb-6">
-              Our academic catalog is being prepared. Check back shortly for custom certifications.
+              Our academic catalog is being prepared. Check back shortly for
+              custom certifications.
             </p>
             <Button asChild variant="outline">
               <Link href="/contact">Enquire About Schedules</Link>
@@ -211,9 +228,9 @@ export function CoursesPricing() {
           /* Cards Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
             {courses.map((course) => {
-              const meta = getTypeMetadata(course.courseType)
-              const features = getTypeFeatures(course.courseType)
-              const IconComponent = meta.icon
+              const meta = getTypeMetadata(course.courseType);
+              const features = getTypeFeatures(course.courseType);
+              const IconComponent = meta.icon;
 
               return (
                 <Card
@@ -268,7 +285,9 @@ export function CoursesPricing() {
                       <span className="text-4xl font-extrabold tracking-tight text-foreground">
                         ${course.price}
                       </span>
-                      <span className="text-muted-foreground text-sm font-semibold">/ program</span>
+                      <span className="text-muted-foreground text-sm font-semibold">
+                        / program
+                      </span>
                     </div>
 
                     <CardDescription className="pt-4 text-sm leading-relaxed line-clamp-3 min-h-[72px] italic">
@@ -317,13 +336,13 @@ export function CoursesPricing() {
                     </Button>
                   </CardFooter>
                 </Card>
-              )
+              );
             })}
           </div>
         )}
       </div>
     </section>
-  )
+  );
 }
 
 function CoursesPricingSkeleton() {
@@ -370,5 +389,5 @@ function CoursesPricingSkeleton() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,83 +1,101 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { verifyFoxySignature } from "@/lib/foxy"
-import { revalidatePath } from "next/cache"
-import { SubscriptionTier } from "@prisma/client"
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { verifyFoxySignature } from "@/lib/foxy";
+import { revalidatePath } from "next/cache";
+import { SubscriptionTier } from "@prisma/client";
 
 export async function POST(request: Request) {
   try {
-    const rawBody = await request.text()
+    const rawBody = await request.text();
     const signature =
       request.headers.get("foxy-signature-v2") ||
-      request.headers.get("x-foxy-signature")
+      request.headers.get("x-foxy-signature");
 
-    const secret = process.env.FOXY_API_SECRET
+    const secret = process.env.FOXY_API_SECRET;
 
     // 1. Signature Verification (if FOXY_API_SECRET is set)
     if (secret) {
-      const isValid = verifyFoxySignature(rawBody, signature, secret)
+      const isValid = verifyFoxySignature(rawBody, signature, secret);
       if (!isValid) {
-        console.error("[Foxy Webhook] Signature verification failed")
-        return NextResponse.json({ error: "Invalid signature" }, { status: 401 })
+        console.error("[Foxy Webhook] Signature verification failed");
+        return NextResponse.json(
+          { error: "Invalid signature" },
+          { status: 401 },
+        );
       }
     } else {
       console.warn(
-        "[Foxy Webhook] FOXY_API_SECRET is not configured. Signature verification bypassed."
-      )
+        "[Foxy Webhook] FOXY_API_SECRET is not configured. Signature verification bypassed.",
+      );
     }
 
     // 2. Parse the Webhook Payload
-    const payload = JSON.parse(rawBody)
-    console.log("[Foxy Webhook] Payload received successfully:", JSON.stringify(payload, null, 2))
+    const payload = JSON.parse(rawBody);
+    console.log(
+      "[Foxy Webhook] Payload received successfully:",
+      JSON.stringify(payload, null, 2),
+    );
 
     // 3. Extract Customer and Custom Fields
-    const customerEmail = payload.customer_email || payload.email
+    const customerEmail = payload.customer_email || payload.email;
     if (!customerEmail) {
-      console.error("[Foxy Webhook] No customer email found in payload")
-      return NextResponse.json({ error: "No customer email found" }, { status: 400 })
+      console.error("[Foxy Webhook] No customer email found in payload");
+      return NextResponse.json(
+        { error: "No customer email found" },
+        { status: 400 },
+      );
     }
 
     // Attempt to extract user_id from transaction-level custom fields
-    let userId: string | null = null
-    const customFields = payload.custom_fields || payload._embedded?.["fx:custom_fields"] || []
+    let userId: string | null = null;
+    const customFields =
+      payload.custom_fields || payload._embedded?.["fx:custom_fields"] || [];
     if (Array.isArray(customFields)) {
       const userIdField = customFields.find(
-        (f: any) => f.name === "user_id" || f.name === "custom_user_id"
-      )
+        (f: any) => f.name === "user_id" || f.name === "custom_user_id",
+      );
       if (userIdField) {
-        userId = userIdField.value
+        userId = userIdField.value;
       }
     }
 
     // 4. Resolve the User
-    let user = null
+    let user = null;
     if (userId) {
       user = await prisma.user.findUnique({
         where: { id: userId },
-      })
+      });
     }
 
     // Fallback to looking up the user by email if we couldn't find them by ID
     if (!user) {
       user = await prisma.user.findUnique({
         where: { email: customerEmail },
-      })
+      });
     }
 
     if (!user) {
-      console.error(`[Foxy Webhook] User not found for email: ${customerEmail} (ID: ${userId})`)
-      return NextResponse.json({ error: "User not found in system" }, { status: 404 })
+      console.error(
+        `[Foxy Webhook] User not found for email: ${customerEmail} (ID: ${userId})`,
+      );
+      return NextResponse.json(
+        { error: "User not found in system" },
+        { status: 404 },
+      );
     }
 
     // 5. Extract purchased items
-    const items = payload._embedded?.["fx:items"] || payload.items || []
+    const items = payload._embedded?.["fx:items"] || payload.items || [];
 
     // 4.5 Store FoxyTransaction audit log
-    const foxyTransactionId = payload.id?.toString() || payload.transaction_id?.toString()
+    const foxyTransactionId =
+      payload.id?.toString() || payload.transaction_id?.toString();
     if (foxyTransactionId) {
       try {
-        const orderTotal = parseFloat(payload.total_order || payload.order_total || "0")
-        const currency = payload.currency || "USD"
+        const orderTotal = parseFloat(
+          payload.total_order || payload.order_total || "0",
+        );
+        const currency = payload.currency || "USD";
 
         await prisma.foxyTransaction.upsert({
           where: { foxyId: foxyTransactionId },
@@ -93,45 +111,58 @@ export async function POST(request: Request) {
           update: {
             status: payload.status || "approved",
           },
-        })
-        console.log(`[Foxy Webhook] Successfully logged transaction ${foxyTransactionId} in database`)
+        });
+        console.log(
+          `[Foxy Webhook] Successfully logged transaction ${foxyTransactionId} in database`,
+        );
       } catch (dbTxError) {
-        console.error("[Foxy Webhook] Failed to write FoxyTransaction to database:", dbTxError)
+        console.error(
+          "[Foxy Webhook] Failed to write FoxyTransaction to database:",
+          dbTxError,
+        );
       }
     }
 
     if (!Array.isArray(items) || items.length === 0) {
-      console.warn("[Foxy Webhook] No items found in transaction")
-      return NextResponse.json({ success: true, message: "No items to process" })
+      console.warn("[Foxy Webhook] No items found in transaction");
+      return NextResponse.json({
+        success: true,
+        message: "No items to process",
+      });
     }
 
-    const processedEnrollments: string[] = []
-    let updatedTier: SubscriptionTier | null = null
+    const processedEnrollments: string[] = [];
+    let updatedTier: SubscriptionTier | null = null;
 
     for (const item of items) {
-      const itemCode = item.code // Typically contains Course ID, Slug, or Subscription Tier Code
-      const itemName = item.name
+      const itemCode = item.code; // Typically contains Course ID, Slug, or Subscription Tier Code
+      const itemName = item.name;
 
-      console.log(`[Foxy Webhook] Processing item: ${itemName} (Code: ${itemCode})`)
+      console.log(
+        `[Foxy Webhook] Processing item: ${itemName} (Code: ${itemCode})`,
+      );
 
       // Check if it's a subscription/tier upgrade
       if (itemCode === "PRO_TIER" || itemCode?.toUpperCase() === "PRO") {
-        updatedTier = SubscriptionTier.PRO
-        continue
-      } else if (itemCode === "ENTERPRISE_TIER" || itemCode?.toUpperCase() === "ENTERPRISE") {
-        updatedTier = SubscriptionTier.ENTERPRISE
-        continue
+        updatedTier = SubscriptionTier.PRO;
+        continue;
+      } else if (
+        itemCode === "ENTERPRISE_TIER" ||
+        itemCode?.toUpperCase() === "ENTERPRISE"
+      ) {
+        updatedTier = SubscriptionTier.ENTERPRISE;
+        continue;
       }
 
       // Otherwise, assume it is a course enrollment. Try finding the course by ID first, then by slug.
       let course = await prisma.course.findUnique({
         where: { id: itemCode },
-      })
+      });
 
       if (!course) {
         course = await prisma.course.findUnique({
           where: { slug: itemCode },
-        })
+        });
       }
 
       if (course) {
@@ -143,7 +174,7 @@ export async function POST(request: Request) {
               courseId: course.id,
             },
           },
-        })
+        });
 
         if (!existingEnrollment) {
           await prisma.enrollment.create({
@@ -151,15 +182,21 @@ export async function POST(request: Request) {
               userId: user.id,
               courseId: course.id,
             },
-          })
-          console.log(`[Foxy Webhook] Enrolled User ${user.email} in Course ${course.title}`)
-          processedEnrollments.push(course.title)
-          revalidatePath(`/courses/${course.slug}`)
+          });
+          console.log(
+            `[Foxy Webhook] Enrolled User ${user.email} in Course ${course.title}`,
+          );
+          processedEnrollments.push(course.title);
+          revalidatePath(`/courses/${course.slug}`);
         } else {
-          console.log(`[Foxy Webhook] User ${user.email} is already enrolled in ${course.title}`)
+          console.log(
+            `[Foxy Webhook] User ${user.email} is already enrolled in ${course.title}`,
+          );
         }
       } else {
-        console.warn(`[Foxy Webhook] Item code ${itemCode} did not match any course or subscription tier`)
+        console.warn(
+          `[Foxy Webhook] Item code ${itemCode} did not match any course or subscription tier`,
+        );
       }
     }
 
@@ -168,12 +205,14 @@ export async function POST(request: Request) {
       await prisma.user.update({
         where: { id: user.id },
         data: { tier: updatedTier },
-      })
-      console.log(`[Foxy Webhook] Upgraded User ${user.email} subscription tier to ${updatedTier}`)
+      });
+      console.log(
+        `[Foxy Webhook] Upgraded User ${user.email} subscription tier to ${updatedTier}`,
+      );
     }
 
     // Revalidate dashboard to show new content
-    revalidatePath("/dashboard")
+    revalidatePath("/dashboard");
 
     return NextResponse.json({
       success: true,
@@ -184,12 +223,12 @@ export async function POST(request: Request) {
         enrolledIn: processedEnrollments,
         tierUpgradedTo: updatedTier,
       },
-    })
+    });
   } catch (error: any) {
-    console.error("[Foxy Webhook Exception]:", error)
+    console.error("[Foxy Webhook Exception]:", error);
     return NextResponse.json(
       { error: "Internal Server Error", message: error.message },
-      { status: 500 }
-    )
+      { status: 500 },
+    );
   }
 }

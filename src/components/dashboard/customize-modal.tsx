@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,42 +9,47 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { SlidersHorizontal, Loader2, Sparkles } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { SlidersHorizontal, Loader2, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface CustomizeModalProps {
-  initialPreferences: string[]
-  availableCategories: string[]
+  initialPreferences: string[];
+  availableCategories: string[];
 }
 
-export function CustomizeModal({ initialPreferences, availableCategories }: CustomizeModalProps) {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+export function CustomizeModal({
+  initialPreferences,
+  availableCategories,
+}: CustomizeModalProps) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<string[]>(() =>
-    Array.isArray(initialPreferences) ? initialPreferences : []
-  )
-  const router = useRouter()
+    Array.isArray(initialPreferences) ? initialPreferences : [],
+  );
+  const router = useRouter();
 
   const handleToggle = (category: string) => {
     setSelected((prev) =>
-      prev.includes(category) ? prev.filter((item) => item !== category) : [...prev, category],
-    )
-  }
+      prev.includes(category)
+        ? prev.filter((item) => item !== category)
+        : [...prev, category],
+    );
+  };
 
   const handleSelectAll = () => {
-    setSelected(availableCategories)
-  }
+    setSelected(availableCategories);
+  };
 
   const handleClearAll = () => {
-    setSelected([])
-  }
+    setSelected([]);
+  };
 
   const handleSave = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch("/api/user/preferences", {
         method: "POST",
@@ -52,21 +57,21 @@ export function CustomizeModal({ initialPreferences, availableCategories }: Cust
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ preferences: selected }),
-      })
+      });
 
       if (!res.ok) {
-        throw new Error("Failed to save preferences")
+        throw new Error("Failed to save preferences");
       }
 
-      toast.success("Dashboard preferences updated!")
-      setOpen(false)
-      router.refresh()
+      toast.success("Dashboard preferences updated!");
+      setOpen(false);
+      router.refresh();
     } catch (error: any) {
-      toast.error(error.message || "Something went wrong")
+      toast.error(error.message || "Something went wrong");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -87,8 +92,8 @@ export function CustomizeModal({ initialPreferences, availableCategories }: Cust
             Personalize Lectures
           </DialogTitle>
           <DialogDescription className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-            Customize which philosophical focus areas and lecture categories appear on your active
-            learning dashboard.
+            Customize which philosophical focus areas and lecture categories
+            appear on your active learning dashboard.
           </DialogDescription>
         </DialogHeader>
 
@@ -116,7 +121,7 @@ export function CustomizeModal({ initialPreferences, availableCategories }: Cust
 
           <div className="grid grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-1">
             {availableCategories.map((category) => {
-              const isChecked = selected.includes(category)
+              const isChecked = selected.includes(category);
               return (
                 <div
                   key={category}
@@ -140,7 +145,7 @@ export function CustomizeModal({ initialPreferences, availableCategories }: Cust
                     {category}
                   </label>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -172,5 +177,5 @@ export function CustomizeModal({ initialPreferences, availableCategories }: Cust
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

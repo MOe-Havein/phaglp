@@ -1,18 +1,18 @@
-import prisma, { safeDbQuery } from "@/lib/prisma"
-import { LectureCard } from "@/components/cards/lecture-card"
-import { format } from "date-fns"
-import { unstable_cache } from "next/cache"
-import { redis } from "@/lib/redis"
+import prisma, { safeDbQuery } from "@/lib/prisma";
+import { LectureCard } from "@/components/cards/lecture-card";
+import { format } from "date-fns";
+import { unstable_cache } from "next/cache";
+import { redis } from "@/lib/redis";
 
 // Handle database states safely at runtime
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 const getCachedLectures = unstable_cache(
   async () => {
-    const cacheKey = "public-lectures"
-    const cached = await redis.get<any[]>(cacheKey)
+    const cacheKey = "public-lectures";
+    const cached = await redis.get<any[]>(cacheKey);
     if (cached) {
-      return cached
+      return cached;
     }
 
     const result = await safeDbQuery(async () => {
@@ -30,24 +30,24 @@ const getCachedLectures = unstable_cache(
         orderBy: {
           createdAt: "desc",
         },
-      })
-    }, [])
+      });
+    }, []);
 
-    const data = result.data || []
+    const data = result.data || [];
 
-    await redis.set(cacheKey, data, { ex: 300 })
-    return data
+    await redis.set(cacheKey, data, { ex: 300 });
+    return data;
   },
   ["public-lectures"],
   { tags: ["lectures"], revalidate: 300 },
-)
+);
 
 export default async function LecturesPage() {
-  let lectures: any[] = []
+  let lectures: any[] = [];
   try {
-    lectures = await getCachedLectures()
+    lectures = await getCachedLectures();
   } catch (error) {
-    console.error("Failed to fetch cached lectures:", error)
+    console.error("Failed to fetch cached lectures:", error);
   }
 
   return (
@@ -55,15 +55,17 @@ export default async function LecturesPage() {
       <div className="max-w-3xl mb-12">
         <h1 className="text-4xl font-bold mb-4">Lectures & Research</h1>
         <p className="text-lg text-muted-foreground">
-          Explore deep philosophical insights, scientific research, and educational updates from the
-          PHAGLP community.
+          Explore deep philosophical insights, scientific research, and
+          educational updates from the PHAGLP community.
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {lectures.length === 0 ? (
           <div className="col-span-full text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed">
-            <p className="text-muted-foreground">No lectures have been published yet.</p>
+            <p className="text-muted-foreground">
+              No lectures have been published yet.
+            </p>
           </div>
         ) : (
           lectures.map((lecture: any) => (
@@ -73,7 +75,9 @@ export default async function LecturesPage() {
               slug={lecture.slug}
               author={lecture.author?.name || "Anonymous"}
               category={lecture.category}
-              excerpt={lecture.excerpt || lecture.body.substring(0, 150) + "..."}
+              excerpt={
+                lecture.excerpt || lecture.body.substring(0, 150) + "..."
+              }
               publishedAt={format(new Date(lecture.createdAt), "MMMM d, yyyy")}
               tags={lecture.tags}
               coverImage={lecture.coverImage || undefined}
@@ -84,5 +88,5 @@ export default async function LecturesPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

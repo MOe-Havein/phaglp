@@ -1,18 +1,19 @@
-import Image from "next/image"
-import Link from "next/link"
-import { siteConfig } from "@/config/site"
-import { DynamicMenu } from "@/lib/server/menus"
-import { ExternalLink } from "lucide-react"
+import Image from "next/image";
+import Link from "next/link";
+import { siteConfig } from "@/config/site";
+import { DynamicMenu } from "@/lib/server/menus";
+import { ExternalLink } from "lucide-react";
 
 interface FooterProps {
-  initialMenus?: DynamicMenu[]
+  initialMenus?: DynamicMenu[];
 }
 
 export function Footer({ initialMenus = [] }: FooterProps) {
   // Select active menus that actually contain sub-menu items and are configured to show in footer
   const activeFooterMenus = initialMenus.filter(
-    (menu) => menu.isActive && menu.showInFooter && menu.items && menu.items.length > 0,
-  )
+    (menu) =>
+      menu.isActive && menu.showInFooter && menu.items && menu.items.length > 0,
+  );
 
   return (
     <footer className="bg-[#0F1D45] text-white dark:text-white  dark:bg-[#0F1D45] border-t border-perfectsky-200/50 dark:border-perfectsky-800/40 py-16 px-4">
@@ -55,7 +56,11 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                         <Link
                           href={subItem.href}
                           target={subItem.isOpenNewTab ? "_blank" : undefined}
-                          rel={subItem.isOpenNewTab ? "noopener noreferrer" : undefined}
+                          rel={
+                            subItem.isOpenNewTab
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
                           className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 w-fit"
                         >
                           {subItem.name}
@@ -96,5 +101,5 @@ export function Footer({ initialMenus = [] }: FooterProps) {
         </div>
       </div>
     </footer>
-  )
+  );
 }

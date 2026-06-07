@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import Link from "next/link"
-import { ChevronLeft, Save, Trash2, Loader2, Sparkles } from "lucide-react"
-import { updateBlogPost, deleteBlogPost } from "@/lib/blog-actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { WysiwygMarkdownEditor } from "@/components/editor/wysiwyg-markdown-editor"
-import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
+import { ChevronLeft, Save, Trash2, Loader2, Sparkles } from "lucide-react";
+import { updateBlogPost, deleteBlogPost } from "@/lib/blog-actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { WysiwygMarkdownEditor } from "@/components/editor/wysiwyg-markdown-editor";
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,36 +30,39 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 interface EditBlogPostFormProps {
-  post: any
+  post: any;
 }
 
 export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const [content, setContent] = useState(post.body || "")
-  const [published, setPublished] = useState(post.published || false)
-  const [coverImage, setCoverImage] = useState(post.coverImage || "")
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [content, setContent] = useState(post.body || "");
+  const [published, setPublished] = useState(post.published || false);
+  const [coverImage, setCoverImage] = useState(post.coverImage || "");
 
   // Format existing tags for display
-  const initialTags = Array.isArray(post.tags) ? post.tags.join(", ") : ""
+  const initialTags = Array.isArray(post.tags) ? post.tags.join(", ") : "";
 
   async function handleUpdate(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setLoading(true)
+    event.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData(event.currentTarget)
-    const title = formData.get("title") as string
-    const category = formData.get("category") as string
-    const excerpt = formData.get("excerpt") as string
-    const tagsInput = formData.get("tagsInput") as string
+    const formData = new FormData(event.currentTarget);
+    const title = formData.get("title") as string;
+    const category = formData.get("category") as string;
+    const excerpt = formData.get("excerpt") as string;
+    const tagsInput = formData.get("tagsInput") as string;
 
     const tags = tagsInput
-      ? tagsInput.split(",").map((t) => t.trim()).filter((t) => t.length > 0)
-      : []
+      ? tagsInput
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t.length > 0)
+      : [];
 
     const data = {
       title,
@@ -63,41 +72,41 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
       coverImage: coverImage || null,
       tags,
       published,
-    }
+    };
 
     try {
-      const result = await updateBlogPost(post.id, data)
+      const result = await updateBlogPost(post.id, data);
       if (result.success) {
-        toast.success("Blog post updated successfully!")
-        router.push("/control/blog")
-        router.refresh()
+        toast.success("Blog post updated successfully!");
+        router.push("/control/blog");
+        router.refresh();
       } else {
-        toast.error(result.error || "Failed to update blog post")
+        toast.error(result.error || "Failed to update blog post");
       }
     } catch (error) {
-      console.error("Failed to update blog post:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Failed to update blog post:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function handleDelete() {
-    setDeleting(true)
+    setDeleting(true);
     try {
-      const result = await deleteBlogPost(post.id)
+      const result = await deleteBlogPost(post.id);
       if (result.success) {
-        toast.success("Blog post deleted successfully!")
-        router.push("/control/blog")
-        router.refresh()
+        toast.success("Blog post deleted successfully!");
+        router.push("/control/blog");
+        router.refresh();
       } else {
-        toast.error(result.error || "Failed to delete blog post")
+        toast.error(result.error || "Failed to delete blog post");
       }
     } catch (error) {
-      console.error("Failed to delete blog post:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Failed to delete blog post:", error);
+      toast.error("An unexpected error occurred");
     } finally {
-      setDeleting(false)
+      setDeleting(false);
     }
   }
 
@@ -112,15 +121,23 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Edit Blog Post</h1>
-            <p className="text-muted-foreground text-sm">Refine your insights and publish changes.</p>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+              Edit Blog Post
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              Refine your insights and publish changes.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {/* Destructive Delete Alert Dialog */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button type="button" variant="destructive" disabled={loading || deleting}>
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={loading || deleting}
+              >
                 {deleting ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
@@ -131,9 +148,12 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
             </AlertDialogTrigger>
             <AlertDialogContent className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
               <AlertDialogHeader>
-                <AlertDialogTitle className="text-lg font-bold">Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle className="text-lg font-bold">
+                  Are you absolutely sure?
+                </AlertDialogTitle>
                 <AlertDialogDescription className="text-sm text-slate-500 dark:text-slate-400">
-                  This action cannot be undone. This will permanently delete the blog post and evict all caches globally.
+                  This action cannot be undone. This will permanently delete the
+                  blog post and evict all caches globally.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -148,7 +168,12 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
             </AlertDialogContent>
           </AlertDialog>
 
-          <Button type="button" variant="outline" disabled={loading || deleting} asChild>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={loading || deleting}
+            asChild
+          >
             <Link href="/control/blog">Cancel</Link>
           </Button>
           <Button
@@ -172,11 +197,18 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
           <Card className="border-slate-200/60 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Post Content</CardTitle>
-              <CardDescription>Refine the main title and body of your blog post.</CardDescription>
+              <CardDescription>
+                Refine the main title and body of your blog post.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="title" className="font-semibold text-slate-700 dark:text-slate-300">Title</Label>
+                <Label
+                  htmlFor="title"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Title
+                </Label>
                 <Input
                   id="title"
                   name="title"
@@ -188,12 +220,19 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label className="font-semibold text-slate-700 dark:text-slate-300">Body</Label>
+                <Label className="font-semibold text-slate-700 dark:text-slate-300">
+                  Body
+                </Label>
                 <WysiwygMarkdownEditor value={content} onChange={setContent} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="excerpt" className="font-semibold text-slate-700 dark:text-slate-300">Excerpt / Brief Summary</Label>
+                <Label
+                  htmlFor="excerpt"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Excerpt / Brief Summary
+                </Label>
                 <Textarea
                   id="excerpt"
                   name="excerpt"
@@ -215,7 +254,12 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
             <CardContent className="space-y-6">
               {/* Category */}
               <div className="space-y-2">
-                <Label htmlFor="category" className="font-semibold text-slate-700 dark:text-slate-300">Category</Label>
+                <Label
+                  htmlFor="category"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Category
+                </Label>
                 <Input
                   id="category"
                   name="category"
@@ -228,7 +272,12 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
 
               {/* Tags */}
               <div className="space-y-2">
-                <Label htmlFor="tagsInput" className="font-semibold text-slate-700 dark:text-slate-300">Tags (Comma-separated)</Label>
+                <Label
+                  htmlFor="tagsInput"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Tags (Comma-separated)
+                </Label>
                 <Input
                   id="tagsInput"
                   name="tagsInput"
@@ -240,7 +289,12 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
 
               {/* Cover Image URL */}
               <div className="space-y-2">
-                <Label htmlFor="coverImage" className="font-semibold text-slate-700 dark:text-slate-300">Cover Image URL</Label>
+                <Label
+                  htmlFor="coverImage"
+                  className="font-semibold text-slate-700 dark:text-slate-300"
+                >
+                  Cover Image URL
+                </Label>
                 <div className="flex gap-2">
                   <Input
                     id="coverImage"
@@ -250,15 +304,25 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
                     placeholder="https://example.com/cover.jpg"
                     className="rounded-xl h-10 border-slate-200 dark:border-slate-800 flex-1"
                   />
-                  <CloudinaryUploadButton onUpload={setCoverImage} className="h-10 rounded-xl px-3" />
+                  <CloudinaryUploadButton
+                    onUpload={setCoverImage}
+                    className="h-10 rounded-xl px-3"
+                  />
                 </div>
               </div>
 
               {/* Publish Toggle */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-900">
                 <div className="space-y-0.5">
-                  <Label htmlFor="published" className="font-bold text-slate-900 dark:text-slate-50">Published Status</Label>
-                  <p className="text-xs text-muted-foreground">Make this post visible publicly.</p>
+                  <Label
+                    htmlFor="published"
+                    className="font-bold text-slate-900 dark:text-slate-50"
+                  >
+                    Published Status
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Make this post visible publicly.
+                  </p>
                 </div>
                 <Switch
                   id="published"
@@ -277,12 +341,13 @@ export function EditBlogPostForm({ post }: EditBlogPostFormProps) {
             </CardHeader>
             <CardContent>
               <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                Changes saved are instantly visible in the public blog listing and reader pages due to dynamic Redis cache eviction.
+                Changes saved are instantly visible in the public blog listing
+                and reader pages due to dynamic Redis cache eviction.
               </p>
             </CardContent>
           </Card>
         </div>
       </div>
     </form>
-  )
+  );
 }

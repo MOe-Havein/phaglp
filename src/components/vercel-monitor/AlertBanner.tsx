@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import type { MonitorData } from "@/app/api/vercel-monitor/route"
+import type { MonitorData } from "@/app/api/vercel-monitor/route";
 
 interface AlertBannerProps {
-  alert: MonitorData["alerts"][number]
-  expanded?: boolean
+  alert: MonitorData["alerts"][number];
+  expanded?: boolean;
 }
 
 export function AlertBanner({ alert, expanded = false }: AlertBannerProps) {
-  const isCritical = alert.severity === "critical"
+  const isCritical = alert.severity === "critical";
 
   return (
     <div
@@ -95,5 +95,5 @@ export function AlertBanner({ alert, expanded = false }: AlertBannerProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

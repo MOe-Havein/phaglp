@@ -1,26 +1,20 @@
-"use client"
+"use client";
 
-import type { VercelProject } from "@/app/api/vercel-monitor/route"
-import { StatusBadge } from "./StatusBadge"
+import type { VercelProject } from "@/app/api/vercel-monitor/route";
+import { StatusBadge } from "./StatusBadge";
 
 interface ProjectCardProps {
-  project: VercelProject
+  project: VercelProject;
 }
 
 function HealthRing({ score }: { score: number }) {
-  const circumference = 2 * Math.PI * 20
-  const offset = circumference - (score / 100) * circumference
-  const color =
-    score >= 80 ? "#34d399" : score >= 50 ? "#f59e0b" : "#ef4444"
+  const circumference = 2 * Math.PI * 20;
+  const offset = circumference - (score / 100) * circumference;
+  const color = score >= 80 ? "#34d399" : score >= 50 ? "#f59e0b" : "#ef4444";
 
   return (
     <div className="relative w-14 h-14 flex-shrink-0">
-      <svg
-        className="-rotate-90"
-        width="56"
-        height="56"
-        viewBox="0 0 56 56"
-      >
+      <svg className="-rotate-90" width="56" height="56" viewBox="0 0 56 56">
         <circle
           cx="28"
           cy="28"
@@ -43,23 +37,21 @@ function HealthRing({ score }: { score: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span
-          className="text-xs font-bold"
-          style={{ color }}
-        >
+        <span className="text-xs font-bold" style={{ color }}>
           {score}
         </span>
       </div>
     </div>
-  )
+  );
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const dep = project.latestDeployment
-  const commitMsg = dep?.meta?.githubCommitMessage?.split("\n")[0] ?? null
-  const commitRef = dep?.meta?.githubCommitRef ?? null
-  const commitSha = dep?.meta?.githubCommitSha?.slice(0, 7) ?? null
-  const author = dep?.meta?.githubCommitAuthorLogin ?? dep?.creator?.username ?? null
+  const dep = project.latestDeployment;
+  const commitMsg = dep?.meta?.githubCommitMessage?.split("\n")[0] ?? null;
+  const commitRef = dep?.meta?.githubCommitRef ?? null;
+  const commitSha = dep?.meta?.githubCommitSha?.slice(0, 7) ?? null;
+  const author =
+    dep?.meta?.githubCommitAuthorLogin ?? dep?.creator?.username ?? null;
 
   const frameworkIcons: Record<string, string> = {
     nextjs: "▲",
@@ -69,10 +61,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
     svelte: "◉",
     gatsby: "◈",
     astro: "✦",
-  }
+  };
 
-  const frameworkIcon =
-    project.framework ? frameworkIcons[project.framework] ?? "⬡" : "⬡"
+  const frameworkIcon = project.framework
+    ? (frameworkIcons[project.framework] ?? "⬡")
+    : "⬡";
 
   return (
     <div
@@ -133,15 +126,23 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <div className="flex items-center gap-3 text-[10px] text-white/30">
             {commitRef && (
               <span className="flex items-center gap-1">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                <svg
+                  className="w-3 h-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                  />
                 </svg>
                 {commitRef}
               </span>
             )}
-            {commitSha && (
-              <span className="font-mono">{commitSha}</span>
-            )}
+            {commitSha && <span className="font-mono">{commitSha}</span>}
             {author && <span>@{author}</span>}
           </div>
         </div>
@@ -155,12 +156,22 @@ export function ProjectCard({ project }: ProjectCardProps) {
           rel="noopener noreferrer"
           className="mt-3 flex items-center gap-1.5 text-[11px] text-violet-400/70 hover:text-violet-300 transition-colors truncate"
         >
-          <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          <svg
+            className="w-3 h-3 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
           </svg>
           <span className="truncate">{dep.url}</span>
         </a>
       )}
     </div>
-  )
+  );
 }
