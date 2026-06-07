@@ -5,10 +5,9 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
-import { FoxyLoader } from "@/components/foxy/foxy-loader";
+
 import { unstable_cache } from "next/cache";
-import nextDynamic from "next/dynamic";
-const WysiwygEditor = nextDynamic(() => import("@/components/editor/wysiwyg-markdown-editor").then(mod => mod.WysiwygMarkdownEditor), { ssr: false });
+import WysiwygEditorWrapper from "@/components/editor/WysiwygEditorWrapper";
 
 // Ensure dynamic rendering to handle database state safely at runtime
 export const dynamic = "force-dynamic";
@@ -159,12 +158,12 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
 
           {/* Body Content */}
           <div className="prose prose-blue dark:prose-invert max-w-none">
-            <WysiwygEditor value={typeof post.body === 'string' ? post.body : ''} onChange={() => {}} height={500} />
+            <WysiwygEditorWrapper value={typeof post.body === 'string' ? post.body : ''} onChange={() => {}} height={500} />
           </div>
         </article>
 
         {/* Global FoxyLoader ensures FoxyCart intercept is fully active */}
-        <FoxyLoader />
+
 
         <script
           type="application/ld+json"
