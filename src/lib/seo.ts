@@ -11,7 +11,7 @@ export async function getSiteSettings() {
       where: { id: "global" },
     });
     return settings;
-  } catch (error) {
+  } catch (_error) {
     console.warn(
       "Failed to fetch site settings from DB, using fallback defaults.",
     );
@@ -36,7 +36,7 @@ export async function generateGlobalMetadata(): Promise<Metadata> {
   let metadataBase: URL;
   try {
     metadataBase = new URL(safeSiteUrl);
-  } catch (error) {
+  } catch (_error) {
     console.error(
       "Invalid siteUrl for metadataBase, falling back to default:",
       siteUrl,

@@ -185,7 +185,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
                 "@type": "Person",
                 name: post.author?.name || "Anonymous",
               },
-            }),
+            }).replace(/</g, '\\u003c'),
           }}
         />
       </div>

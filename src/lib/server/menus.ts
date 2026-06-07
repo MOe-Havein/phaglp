@@ -59,7 +59,7 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
         }
 
         return dbMenus as any[] as DynamicMenu[];
-      } catch (error) {
+      } catch (_error) {
         console.warn(
           "Failed to fetch navigation menus from database, falling back to config.",
         );

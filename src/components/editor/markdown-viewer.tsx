@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import "@uiw/react-markdown-preview/markdown.css";
 
+import rehypeSanitize from "rehype-sanitize";
+
 const MarkdownPreview = dynamic(
   () => import("@uiw/react-markdown-preview").then((mod) => mod.default),
   { ssr: false },
@@ -25,7 +27,7 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
       <MarkdownPreview
         source={value}
         style={{ backgroundColor: "transparent" }}
-        rehypePlugins={[[require("rehype-raw")]]}
+        rehypePlugins={[[require("rehype-raw")], rehypeSanitize]}
       />
     </div>
   );
