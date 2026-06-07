@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+export default auth((_req) => {
   const response = NextResponse.next();
 
   // Build CSP
