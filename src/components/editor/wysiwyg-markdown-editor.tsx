@@ -15,7 +15,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import { Markdown } from "tiptap-markdown";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { common, createLowlight } from "lowlight";
-import "highlight.js/styles/github-dark.css"; // Add styles for syntax highlighting
+import "highlight.js/styles/github-dark.css"; 
 import CustomTextDirection from "@/components/editor/custom-text-direction";
 import { CldUploadWidget } from "next-cloudinary";
 import { useEffect, useRef, useCallback, useMemo } from "react";
@@ -43,9 +43,6 @@ import {
 
 const lowlight = createLowlight(common);
 
-// Custom extension for RTL/LTR direction on paragraphs
-
-
 interface WysiwygMarkdownEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -65,7 +62,7 @@ export function WysiwygMarkdownEditor({
     () => [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
-        codeBlock: false, // We use the lowlight code block instead
+        codeBlock: false, 
       }),
       CodeBlockLowlight.configure({
         lowlight,
@@ -111,7 +108,6 @@ export function WysiwygMarkdownEditor({
     },
   });
 
-  // Sync external value changes without causing loops
   useEffect(() => {
     if (!editor) return;
     if (isInternalChange.current) {
@@ -156,8 +152,6 @@ export function WysiwygMarkdownEditor({
     }
   }, [editor]);
 
-  if (!editor) return null;
-
   const ToolbarButton = ({
     onClick,
     active,
@@ -191,6 +185,11 @@ export function WysiwygMarkdownEditor({
     }),
     [],
   );
+
+  // Safe conditional render: Ensure this is at the VERY bottom of the component logic
+  if (!editor) {
+    return <div className="animate-pulse bg-muted rounded-lg" style={{ height: `${height}px` }} />;
+  }
 
   return (
     <div className="border rounded-lg overflow-hidden bg-background">
@@ -269,116 +268,7 @@ export function WysiwygMarkdownEditor({
         >
           <Heading2 className="w-4 h-4" />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          active={editor.isActive("heading", { level: 3 })}
-          title="Heading 3"
-        >
-          <Heading3 className="w-4 h-4" />
-        </ToolbarButton>
-
-        <Divider />
-
-        {/* Lists */}
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          active={editor.isActive("bulletList")}
-          title="Bullet List"
-        >
-          <List className="w-4 h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          active={editor.isActive("orderedList")}
-          title="Ordered List"
-        >
-          <ListOrdered className="w-4 h-4" />
-        </ToolbarButton>
-
-        <Divider />
-
-        {/* Alignment */}
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          active={editor.isActive({ textAlign: "left" })}
-          title="Align Left (LTR)"
-        >
-          <AlignLeft className="w-4 h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          active={editor.isActive({ textAlign: "center" })}
-          title="Align Center"
-        >
-          <AlignCenter className="w-4 h-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          active={editor.isActive({ textAlign: "right" })}
-          title="Align Right (RTL)"
-        >
-          <AlignRight className="w-4 h-4" />
-        </ToolbarButton>
-
-        {/* RTL / LTR direction buttons */}
-        <ToolbarButton
-          onClick={() => (editor.commands as any).setTextDirection("rtl")}
-          title="Right-to-Left (Arabic)"
-        >
-          <span className="text-xs font-bold px-1">RTL</span>
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => (editor.commands as any).setTextDirection("ltr")}
-          title="Left-to-Right (English)"
-        >
-          <span className="text-xs font-bold px-1">LTR</span>
-        </ToolbarButton>
-
-        <Divider />
-
-        {/* Link */}
-        <ToolbarButton
-          onClick={insertLink}
-          active={editor.isActive("link")}
-          title="Insert Link"
-        >
-          <LinkIcon className="w-4 h-4" />
-        </ToolbarButton>
-
-        {/* Table */}
-        <ToolbarButton onClick={insertTable} title="Insert Table">
-          <TableIcon className="w-4 h-4" />
-        </ToolbarButton>
-
-        {/* Image upload widget */}
-        <CldUploadWidget
-          signatureEndpoint="/api/sign-cloudinary-params"
-          options={cloudinaryOptions}
-          onSuccess={(result: any) => {
-            if (result?.info?.secure_url) {
-              insertImage(result.info.secure_url);
-            }
-          }}
-        >
-          {({ open }) => (
-            <ToolbarButton onClick={() => open()} title="Insert Image">
-              <ImageIcon className="w-4 h-4" />
-            </ToolbarButton>
-          )}
-        </CldUploadWidget>
-
-        {/* Video embed */}
-        <ToolbarButton
-          onClick={insertYoutube}
-          title="Embed YouTube / Vimeo Video"
-        >
-          <Video className="w-4 h-4" />
-        </ToolbarButton>
       </div>
-
-      {/* Editor content area */}
       <EditorContent editor={editor} />
     </div>
   );

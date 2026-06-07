@@ -4,7 +4,26 @@ import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((_req) => {
+export default auth((req: { auth: any; nextUrl: { pathname: string; origin: string | URL | undefined; }; }) => {
+   const isLoggedIn = !!req.auth; // converts session object to boolean
+  const inAdminRoute = req.nextUrl.pathname.startsWith("/control");
+
+  // Only run this on admin pages, not every single page load
+  if (inAdminRoute) {
+    // If admin but not logged in → redirect to login
+    if (!isLoggedIn) {
+      const loginUrl = new URL("/login", req.nextUrl.origin);
+      loginUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Optional: if you want to block non-admins from /control
+    // const user = req.auth?.user as any;
+    // if (user?.role !== "ADMIN") {
+    //   return NextResponse.redirect(new URL("/", req.nextUrl.origin));
+    // }
+  }
+  
   const response = NextResponse.next();
 
   // Build CSP
@@ -30,6 +49,7 @@ export default auth((_req) => {
     "img-src 'self' data: blob: " +
       "https://res.cloudinary.com " +
       "https://*.cloudinary.com " +
+      "https://*.unsplash.com " +
       "https://cdn.foxycart.com",
 
     // Fonts
