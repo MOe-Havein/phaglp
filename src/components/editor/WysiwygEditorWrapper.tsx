@@ -4,11 +4,11 @@ import { WysiwygMarkdownEditor } from "@/components/editor/wysiwyg-markdown-edit
 
 interface WrapperProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   height: number; // required height for editor
 }
 
-export default function WysiwygEditorWrapper({ value, onChange, height }: WrapperProps) {
+export default function WysiwygEditorWrapper({ value, onChange = () => {}, height }: WrapperProps) {
   return (
     <WysiwygMarkdownEditor value={value} onChange={onChange} height={height} />
   );
