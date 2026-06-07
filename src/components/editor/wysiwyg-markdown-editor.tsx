@@ -16,7 +16,7 @@ import { Markdown } from "tiptap-markdown";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { common, createLowlight } from "lowlight";
 import "highlight.js/styles/github-dark.css"; // Add styles for syntax highlighting
-import { Extension } from "@tiptap/core";
+import CustomTextDirection from "@/components/editor/custom-text-direction";
 import { CldUploadWidget } from "next-cloudinary";
 import { useEffect, useRef, useCallback, useMemo } from "react";
 import {
@@ -44,37 +44,7 @@ import {
 const lowlight = createLowlight(common);
 
 // Custom extension for RTL/LTR direction on paragraphs
-const TextDirection = Extension.create({
-  name: "textDirection",
-  addOptions() {
-    return { types: ["paragraph", "heading", "blockquote"] };
-  },
-  addGlobalAttributes() {
-    return [
-      {
-        types: this.options.types,
-        attributes: {
-          dir: {
-            default: null,
-            parseHTML: (el) => el.getAttribute("dir"),
-            renderHTML: (attrs) => (attrs.dir ? { dir: attrs.dir } : {}),
-          },
-        },
-      },
-    ];
-  },
-  addCommands() {
-    return {
-      setTextDirection:
-        (direction: "ltr" | "rtl") =>
-        ({ commands }: any) => {
-          return this.options.types.every((type: string) =>
-            commands.updateAttributes(type, { dir: direction }),
-          );
-        },
-    } as any;
-  },
-});
+
 
 interface WysiwygMarkdownEditorProps {
   value: string;
@@ -102,7 +72,7 @@ export function WysiwygMarkdownEditor({
       }),
       TextStyle,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      TextDirection.configure({
+      CustomTextDirection.configure({
         types: ["paragraph", "heading", "blockquote"],
       }),
       Table.configure({ resizable: true }),

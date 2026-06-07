@@ -12,7 +12,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
-import { Extension } from "@tiptap/core";
+import CustomTextDirection from "@/components/editor/custom-text-direction";
 import { useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Bold,
@@ -36,37 +36,7 @@ import {
 } from "lucide-react";
 
 // Custom extension for RTL/LTR direction on paragraphs
-const TextDirection = Extension.create({
-  name: "textDirection",
-  addOptions() {
-    return { types: ["paragraph", "heading", "blockquote"] };
-  },
-  addGlobalAttributes() {
-    return [
-      {
-        types: this.options.types,
-        attributes: {
-          dir: {
-            default: null,
-            parseHTML: (el) => el.getAttribute("dir"),
-            renderHTML: (attrs) => (attrs.dir ? { dir: attrs.dir } : {}),
-          },
-        },
-      },
-    ];
-  },
-  addCommands() {
-    return {
-      setTextDirection:
-        (direction: "ltr" | "rtl") =>
-        ({ commands }: any) => {
-          return this.options.types.every((type: string) =>
-            commands.updateAttributes(type, { dir: direction }),
-          );
-        },
-    } as any;
-  },
-});
+
 
 interface RichTextEditorProps {
   value: string;
@@ -91,7 +61,7 @@ export function RichTextEditor({
       }),
       TextStyle,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      TextDirection.configure({
+      CustomTextDirection.configure({
         types: ["paragraph", "heading", "blockquote"],
       }),
       Table.configure({ resizable: true }),

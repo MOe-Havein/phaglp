@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { getSiteSettings } from "@/lib/server/site-settings";
-import { ThemeProvider } from "@/components/ui/ThemeProvider";
-import { Toaster } from "@/components/ui/sonner";
-import { ChatbotWidget } from "@/components/chatbot/chatbot-widget";
-import { SessionProvider } from "@/components/providers/session-provider";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { FoxyLoader } from "@/components/foxy/foxy-loader";
+import LayoutClient from "./layout-client";
 import Script from "next/script";
 import "./globals.css";
 
@@ -79,50 +73,39 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <ThemeProvider>
-          <SessionProvider>{children}</SessionProvider>
-          <Toaster position="top-center" richColors />
-          <FoxyLoader />
+    <LayoutClient>{children}</LayoutClient>
+    {/* Google Analytics Injection */}
+    {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
+      <>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${siteConfig.googleAnalyticsId}');
+          `}
+        </Script>
+      </>
+    )}
 
-          <Analytics />
-          <SpeedInsights />
-
-          {/* Google Analytics Injection */}
-          {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
-            <>
-              <Script
-                src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
-                strategy="afterInteractive"
-              />
-              <Script id="google-analytics" strategy="afterInteractive">
-                {`
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${siteConfig.googleAnalyticsId}');
-                `}
-              </Script>
-            </>
-          )}
-
-          {/* JSON-LD Structured Data */}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                name: siteConfig.siteName,
-                url: siteConfig.siteUrl,
-                logo: `${siteConfig.siteUrl}/logo.png`,
-              }),
-            }}
-          />
-
-          {/* AI Chatbot Widget */}
-          <ChatbotWidget />
-        </ThemeProvider>
-      </body>
+    {/* JSON-LD Structured Data */}
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: siteConfig.siteName,
+          url: siteConfig.siteUrl,
+          logo: `${siteConfig.siteUrl}/logo.png`,
+        }),
+      }}
+    />
+  </body>
     </html>
   );
 }

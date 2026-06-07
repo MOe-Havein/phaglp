@@ -18,10 +18,13 @@ export default auth((_req) => {
       "https://cdn.foxycart.com " +
       "https://phaglp.foxycart.com " +
       "https://va.vercel-scripts.com " +
-      "https://vercel.live",
+      "https://vercel.live " +
+      "https://upload-widget.cloudinary.com " +
+      "https://res.cloudinary.com " +
+      "https://*.cloudinary.com",
 
     // CSS
-    "style-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline' https://cdn.foxycart.com",
 
     // Images
     "img-src 'self' data: blob: " +
