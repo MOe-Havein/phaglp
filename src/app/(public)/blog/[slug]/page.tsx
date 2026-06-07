@@ -110,15 +110,18 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
               <Badge className="bg-primary/10 hover:bg-primary/20 text-primary border-none px-3 font-semibold">
                 {post.category}
               </Badge>
-              {tags.map((tag: string) => (
-                <Badge
-                  key={tag}
-                  variant="outline"
-                  className="text-slate-500 border-slate-200 dark:border-slate-800"
-                >
-                  #{tag}
-                </Badge>
-              ))}
+              {tags.map((tag: string) => {
+                console.log('Tag:', tag);
+                return (
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="text-slate-500 border-slate-200 dark:border-slate-800"
+                  >
+                    #{tag}
+                  </Badge>
+                );
+              })}
             </div>
 
             <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-slate-900 dark:text-slate-50">
