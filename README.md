@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # PHAGLP (Philosophical Academy for Geniuses Life Planning)
 
 PHAGLP is a modern full-stack application designed for philosophical education, scientific research, and intentional marriage matching. Built with an elite, cutting-edge aesthetic and strict architectural standards, it serves as a robust platform for high-level intellectual pursuit.
@@ -86,23 +84,20 @@ pnpm exec playwright test
 - **No Legacy Auth:** All outdated JWT manual systems have been purged in favor of official NextAuth.js.
 - **Route Protection:** Both middleware-level and handler-level RBAC authorization are strictly enforced.
 - **Atomic Transactions:** Multi-step database mutations are wrapped in `prisma.$transaction`.
-- # **N+1 Prevention:** Prisma relational data is prefetched using `include` blocks.
+- **N+1 Prevention:** Prisma relational data is prefetched using `include` blocks.
 
+## 🌐 Environments
 
-## vercel app
-https://phaglp.com
+- **Production / Vercel App**: https://phaglp.com
+- **Local App**: http://localhost:3000
 
-## local app
-http://localhost:3000
+---
 
+## 📅 Recent Updates (June 2026)
 
-## test vercel app
+- **CI/CD Pipeline Fixes**: Resolved GitHub Actions YAML compilation issues (`secrets` context evaluation fixes, multiline syntax corrections).
+- **Vercel MCP Tool Submodule Issue Resolved**: Reintegrated `mcp-vercel` as a standard local directory rather than a missing git submodule, ensuring the GitHub Actions runner completes build and deploy processes without `npm ci` failures.
+- **Responsive Admin Dashboard Redesign**: Restructured the control sidebar (`ControlSidebar.tsx`) and admin layouts to use a sleek mobile-friendly bottom/top sticky design alongside a fixed desktop navigation.
+- **Accessibility & Type Safety**: Replaced missing dialog descriptions for Radix UI, added `VisuallyHidden` fallbacks for screen-reader alerts, and fixed strict React type violations in drag-and-drop components.
+- **Content Security Policy (CSP)**: Integrated FoxyCart and Vercel domains securely in Next.js security headers.
 
-
-
-
-# testa-phaglp2
-
-the latest one 6 June 2026
-
-> > > > > > > cde93fa32f3d902a6594179455d5cb7399acfe8a

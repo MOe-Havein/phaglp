@@ -62,3 +62,13 @@ Ensure the following are set in your `.env` file:
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
 - `CLOUDINARY_URL`
+
+---
+
+## 📅 Recent Updates (June 2026)
+
+- **CI/CD Pipeline Fixes**: Resolved GitHub Actions YAML compilation issues (`secrets` context evaluation fixes, multiline syntax corrections).
+- **Vercel MCP Tool Submodule Issue Resolved**: Reintegrated `mcp-vercel` as a standard local directory rather than a missing git submodule, ensuring the GitHub Actions runner completes build and deploy processes without `npm ci` failures.
+- **Responsive Admin Dashboard Redesign**: Restructured the control sidebar (`ControlSidebar.tsx`) and admin layouts to use a sleek mobile-friendly bottom/top sticky design alongside a fixed desktop navigation.
+- **Accessibility & Type Safety**: Replaced missing dialog descriptions for Radix UI, added `VisuallyHidden` fallbacks for screen-reader alerts, and fixed strict React type violations in drag-and-drop components.
+- **Content Security Policy (CSP)**: Integrated FoxyCart and Vercel domains securely in Next.js security headers.
