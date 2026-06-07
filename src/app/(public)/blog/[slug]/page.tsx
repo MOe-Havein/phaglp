@@ -87,7 +87,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const tags = (post.tags as string[]) || [];
+  const tags = Array.isArray(post.tags) ? (post.tags as string[]) : [];
 
   return (
     <div className="container mx-auto px-4 py-12 relative min-h-screen">
@@ -158,7 +158,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
 
           {/* Body Content */}
           <div className="prose prose-blue dark:prose-invert max-w-none">
-            <MarkdownViewer value={post.body} />
+            <MarkdownViewer value={typeof post.body === 'string' ? post.body : ''} />
           </div>
         </article>
 
