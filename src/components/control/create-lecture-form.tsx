@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronLeft, Save, Loader2, BookOpen, Image as ImageIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  Save,
+  Loader2,
+  BookOpen,
+  Image as ImageIcon,
+} from "lucide-react";
 import { createLectureAction } from "@/lib/server/actions/admin/lectures";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

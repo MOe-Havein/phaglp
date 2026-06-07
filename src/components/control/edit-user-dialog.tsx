@@ -496,7 +496,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
                         )}
                       />
                     </div>
-                    
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <FormField
                         control={form.control}
