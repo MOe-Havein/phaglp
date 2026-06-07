@@ -20,6 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import { updateSiteSettings } from "@/lib/control-actions";
 import { toast } from "sonner";
 import { Loader2, Save } from "lucide-react";
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button";
 
 const formSchema = z.object({
   siteName: z.string().min(2).max(50),
@@ -31,6 +32,9 @@ const formSchema = z.object({
   metaDescription: z.string().optional(),
   primaryColor: z.string().optional(),
   fullAddress: z.string().optional(),
+  logoUrl: z.string().optional().nullable(),
+  ogImage: z.string().optional().nullable(),
+  faviconUrl: z.string().optional().nullable(),
 });
 
 interface SiteSettingsData {
@@ -43,6 +47,9 @@ interface SiteSettingsData {
   metaDescription?: string | null;
   primaryColor?: string | null;
   fullAddress?: string | null;
+  logoUrl?: string | null;
+  ogImage?: string | null;
+  faviconUrl?: string | null;
 }
 
 export function SettingsForm({
@@ -66,6 +73,9 @@ export function SettingsForm({
       metaDescription: initialData?.metaDescription || "",
       primaryColor: initialData?.primaryColor || "#1E3A8A",
       fullAddress: initialData?.fullAddress || "",
+      logoUrl: initialData?.logoUrl || "",
+      ogImage: initialData?.ogImage || "",
+      faviconUrl: initialData?.faviconUrl || "",
     },
   });
 
@@ -231,6 +241,86 @@ export function SettingsForm({
               </FormItem>
             )}
           />
+        </div>
+
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Site Images & Branding
+          </h3>
+          <div className="grid md:grid-cols-3 gap-6">
+            <FormField
+              control={form.control}
+              name="logoUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Site Logo</FormLabel>
+                  <div className="flex flex-col gap-3">
+                    {field.value && (
+                      <img
+                        src={field.value}
+                        alt="Logo Preview"
+                        className="h-16 w-auto object-contain border rounded-md"
+                      />
+                    )}
+                    <CloudinaryUploadButton
+                      onUpload={(url) => field.onChange(url)}
+                    >
+                      Upload Logo
+                    </CloudinaryUploadButton>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="faviconUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Favicon</FormLabel>
+                  <div className="flex flex-col gap-3">
+                    {field.value && (
+                      <img
+                        src={field.value}
+                        alt="Favicon Preview"
+                        className="h-8 w-8 object-contain border rounded-md"
+                      />
+                    )}
+                    <CloudinaryUploadButton
+                      onUpload={(url) => field.onChange(url)}
+                    >
+                      Upload Favicon
+                    </CloudinaryUploadButton>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ogImage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>OG Cover Image</FormLabel>
+                  <div className="flex flex-col gap-3">
+                    {field.value && (
+                      <img
+                        src={field.value}
+                        alt="OG Preview"
+                        className="h-24 w-auto object-cover border rounded-md"
+                      />
+                    )}
+                    <CloudinaryUploadButton
+                      onUpload={(url) => field.onChange(url)}
+                    >
+                      Upload Cover
+                    </CloudinaryUploadButton>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <Button type="submit" disabled={loading} className="w-full sm:w-auto">

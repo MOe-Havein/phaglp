@@ -43,6 +43,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2, User } from "lucide-react";
 import { toast } from "sonner";
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button";
 
 const userSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -465,6 +466,37 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
 
                   {/* Personal & Demographic */}
                   <TabsContent value="personal" className="space-y-4 mt-0">
+                    <div className="flex flex-col gap-4">
+                      <FormField
+                        control={form.control}
+                        name="photoUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Profile Photo</FormLabel>
+                            <div className="flex items-center gap-4">
+                              {field.value ? (
+                                <img
+                                  src={field.value}
+                                  alt="Profile"
+                                  className="w-16 h-16 rounded-full object-cover border"
+                                />
+                              ) : (
+                                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border">
+                                  <User className="w-8 h-8 text-slate-400" />
+                                </div>
+                              )}
+                              <CloudinaryUploadButton
+                                onUpload={(url) => field.onChange(url)}
+                              >
+                                Upload Photo
+                              </CloudinaryUploadButton>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <FormField
                         control={form.control}

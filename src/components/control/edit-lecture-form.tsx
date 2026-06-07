@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Lecture } from "@prisma/client";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button";
 
 interface EditLectureFormProps {
   lecture: Lecture;
@@ -32,6 +33,7 @@ interface EditLectureFormProps {
 export function EditLectureForm({ lecture }: EditLectureFormProps) {
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState(lecture.body);
+  const [coverImage, setCoverImage] = useState(lecture.coverImage || "");
   const router = useRouter();
 
   async function handleUpdate(event: React.FormEvent<HTMLFormElement>) {
@@ -44,6 +46,7 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
       slug: formData.get("slug") as string,
       body: content,
       category: formData.get("category") as string,
+      coverImage: coverImage,
       published: lecture.published, // Preserve existing publish state
     };
 
@@ -169,11 +172,24 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
               </div>
               <div className="space-y-2 pt-2 border-t">
                 <Label>Cover Image</Label>
-                <div className="border-2 border-dashed rounded-lg p-8 text-center space-y-2 hover:bg-slate-50 transition-colors cursor-pointer">
-                  <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground opacity-50" />
-                  <p className="text-xs text-muted-foreground">
-                    Update lecture cover image
-                  </p>
+                <div className="flex flex-col gap-3">
+                  {coverImage ? (
+                    <img
+                      src={coverImage}
+                      alt="Cover Preview"
+                      className="w-full h-auto object-cover rounded-md border"
+                    />
+                  ) : (
+                    <div className="border-2 border-dashed rounded-lg p-8 text-center space-y-2 hover:bg-slate-50 transition-colors">
+                      <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground opacity-50" />
+                      <p className="text-xs text-muted-foreground">
+                        No cover image
+                      </p>
+                    </div>
+                  )}
+                  <CloudinaryUploadButton onUpload={setCoverImage}>
+                    Upload Cover Image
+                  </CloudinaryUploadButton>
                 </div>
               </div>
             </CardContent>

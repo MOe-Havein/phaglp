@@ -4,7 +4,8 @@ import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { ChevronLeft, Save, Loader2, BookOpen } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, Save, Loader2, BookOpen, Image as ImageIcon } from "lucide-react";
 import { createLectureAction } from "@/lib/server/actions/admin/lectures";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button";
 import type { ActionResponseState } from "@/types";
 
 const initialState: ActionResponseState = { success: false };
@@ -27,6 +29,7 @@ export function CreateLectureForm() {
     createLectureAction,
     initialState,
   );
+  const [coverImage, setCoverImage] = useState("");
 
   useEffect(() => {
     if (state.success) {
@@ -166,6 +169,30 @@ export function CreateLectureForm() {
                     {state.fieldErrors.tagsInput[0]}
                   </p>
                 )}
+              </div>
+
+              <div className="space-y-2 pt-2 border-t">
+                <Label>Cover Image</Label>
+                <div className="flex flex-col gap-3">
+                  {coverImage ? (
+                    <img
+                      src={coverImage}
+                      alt="Cover Preview"
+                      className="w-full h-auto object-cover rounded-md border"
+                    />
+                  ) : (
+                    <div className="border-2 border-dashed rounded-lg p-8 text-center space-y-2 hover:bg-slate-50 transition-colors">
+                      <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground opacity-50" />
+                      <p className="text-xs text-muted-foreground">
+                        No cover image
+                      </p>
+                    </div>
+                  )}
+                  <CloudinaryUploadButton onUpload={setCoverImage}>
+                    Upload Cover Image
+                  </CloudinaryUploadButton>
+                  <input type="hidden" name="coverImage" value={coverImage} />
+                </div>
               </div>
             </CardContent>
           </Card>
