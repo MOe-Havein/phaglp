@@ -121,6 +121,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@playwright/test": "^1.60.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^25.9.1",
@@ -128,6 +129,8 @@
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.5.0",
     "dotenv": "^17.4.2",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^15.0.0",
     "jsdom": "^28.1.0",
     "postcss": "^8.5.15",
     "prettier": "^3.8.3",

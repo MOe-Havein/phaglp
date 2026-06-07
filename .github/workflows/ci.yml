@@ -38,7 +38,7 @@ jobs:
 
       - name: Auto Fix Errors (Lint & Format)
         run: |
-          pnpm exec next lint --fix || true
+          pnpm exec eslint --fix . || true
           pnpm exec prettier --write . || true
           if [[ -n $(git status --porcelain) ]]; then
             git config --global user.name "github-actions[bot]"
@@ -54,7 +54,7 @@ jobs:
         run: pnpm run typecheck
 
       - name: Lint
-        run: pnpm exec next lint || pnpm run lint || echo "Linting bypassed or not configured"
+        run: pnpm exec eslint . || pnpm run lint || echo "Linting bypassed or not configured"
 
       - name: Test
         run: pnpm test || echo "Tests passed or bypassed"
