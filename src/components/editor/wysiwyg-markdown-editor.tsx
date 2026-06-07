@@ -191,8 +191,8 @@ export function WysiwygMarkdownEditor({
     }),
     [],
   );
-if (!editor) return null;
-  return (
+// Conditional render moved to JSX
+  return editor ? (
     <div className="border rounded-lg overflow-hidden bg-background">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-0.5 p-2 border-b bg-muted/30">
@@ -381,5 +381,5 @@ if (!editor) return null;
       {/* Editor content area */}
       <EditorContent editor={editor} />
     </div>
-  );
+  ) : null;
 }
