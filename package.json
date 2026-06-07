@@ -4,9 +4,9 @@
   "private": true,
   "engines": {
     "node": "^22.0.0",
-    "pnpm": ">=9.0.0"
+    "pnpm": ">=9.15.0"
   },
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@11.5.2",
   "scripts": {
     "dev": "next dev",
     "dev:clean": "cmd /c \"if exist .next rmdir /s /q .next\" && pnpm dev",
