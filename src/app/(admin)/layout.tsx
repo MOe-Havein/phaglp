@@ -15,7 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
       <ControlSidebar userName={session.user.name ?? null} />
       <main className="flex-1 overflow-y-auto">
         <div className="p-6 md:p-8 max-w-screen-2xl mx-auto">{children}</div>

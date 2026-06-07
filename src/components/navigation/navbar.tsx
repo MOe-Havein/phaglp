@@ -6,7 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { siteConfig } from "@/config/site"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet"
 import { useState, useEffect } from "react"
 import { useSession, signOut } from "next-auth/react"
 import {
@@ -249,6 +249,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                   />
                   <span>Navigation Menu</span>
                 </SheetTitle>
+                <SheetDescription className="sr-only">
+                  Navigation menu items
+                </SheetDescription>
               </SheetHeader>
 
               <div className="flex-grow overflow-y-auto px-6 py-4 space-y-4">

@@ -51,6 +51,7 @@ export function SectionCard({ section, index, onEdit, onDelete }: SectionCardPro
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
+          style={provided.draggableProps.style as React.CSSProperties}
           className={`flex items-center justify-between p-4 mb-2 border rounded-md surface ${
             snapshot.isDragging ? "shadow-lg border-primary opacity-90" : "border-border shadow-sm"
           } bg-surface`}

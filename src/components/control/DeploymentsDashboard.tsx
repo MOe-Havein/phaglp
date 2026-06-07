@@ -501,15 +501,17 @@ export function DeploymentsDashboard() {
       {/* Details dialog modal */}
       <Dialog open={selectedDeployment !== null} onOpenChange={(open) => !open && setSelectedDeployment(null)}>
         <DialogContent className="max-w-2xl bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 max-h-[85vh] overflow-y-auto shadow-2xl rounded-2xl">
+          <DialogTitle className="sr-only">Deployment Details</DialogTitle>
+          <DialogDescription className="sr-only">Detailed view of the selected deployment.</DialogDescription>
           {selectedDeployment && (
             <>
               <DialogHeader className="border-b border-gray-100 dark:border-gray-800 pb-4">
                 <div className="flex items-center justify-between pr-6">
                   <div>
                     <div className="flex items-center gap-2">
-                      <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                      <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                         Deployment Details
-                      </DialogTitle>
+                      </h2>
                       {getStatusBadge(selectedDeployment.state)}
                     </div>
                     <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1">
