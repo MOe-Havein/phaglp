@@ -51,7 +51,10 @@ export default auth((_req) => {
       "https://cdn.foxycart.com " +
       "https://vercel.live " +
       "https://www.youtube.com " +
-      "https://www.youtube-nocookie.com",
+      "https://www.youtube-nocookie.com " +
+      "https://upload-widget.cloudinary.com " +
+      "https://res.cloudinary.com " +
+      "https://*.cloudinary.com",
 
     // Form submissions
     "form-action 'self' https://phaglp.foxycart.com",
@@ -76,7 +79,7 @@ export default auth((_req) => {
   // Additional security headers
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("Permissions-Policy", [
     "camera=()",
     "microphone=()",
