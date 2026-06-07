@@ -72,10 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run deploy if Code Quality Checks pass
     # Avoid auto-deploying pull requests from forks (security best practice)
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
 
     steps:
       - name: Checkout code
@@ -135,13 +132,17 @@ jobs:
           VERCEL_API_TOKEN: ${{ secrets.VERCEL_API_TOKEN }}
 
       - name: Trigger Webhook Failure Alerts
-        if: failure() && secrets.ALERT_WEBHOOK_URL != ''
+        if: failure()
         run: |
-          PROJECT_NAME="testa-phaglp2"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            PROJECT_NAME="${{ github.event.inputs.project }}"
+          if [ -n "$ALERT_WEBHOOK_URL" ]; then
+            PROJECT_NAME="testa-phaglp2"
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              PROJECT_NAME="${{ github.event.inputs.project }}"
+            fi
+            node .antigravitycli/deploy-monitor.mjs "$PROJECT_NAME"
+          else
+            echo "ALERT_WEBHOOK_URL is not set, skipping failure webhook."
           fi
-          node .antigravitycli/deploy-monitor.mjs "$PROJECT_NAME"
         env:
           VERCEL_API_TOKEN: ${{ secrets.VERCEL_API_TOKEN }}
           ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
