@@ -9,5 +9,11 @@
     "src/app/api/**/*": {
       "maxDuration": 60
     }
+  },
+ "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "preview": true
+    }
   }
 }
