@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
+import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 
@@ -21,7 +22,7 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
     <div className={baseClass} data-color-mode={theme === "dark" ? "dark" : "light"}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[[require("rehype-raw")], rehypeSanitize]}
+        rehypePlugins={[rehypeRaw, rehypeSanitize]}
       >
         {value}
       </ReactMarkdown>
