@@ -2,14 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
-import "@uiw/react-markdown-preview/markdown.css";
-
 import rehypeSanitize from "rehype-sanitize";
+import remarkGfm from "remark-gfm";
 
-const MarkdownPreview = dynamic(
-  () => import("@uiw/react-markdown-preview").then((mod) => mod.default),
-  { ssr: false },
-);
+const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false });
 
 interface MarkdownViewerProps {
   value: string;
@@ -19,16 +15,16 @@ interface MarkdownViewerProps {
 export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
   const { theme } = useTheme();
 
+  const baseClass = `prose prose-slate dark:prose-invert max-w-none ${className ?? ""}`;
+
   return (
-    <div
-      className={className}
-      data-color-mode={theme === "dark" ? "dark" : "light"}
-    >
-      <MarkdownPreview
-        source={value}
-        style={{ backgroundColor: "transparent" }}
+    <div className={baseClass} data-color-mode={theme === "dark" ? "dark" : "light"}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
         rehypePlugins={[[require("rehype-raw")], rehypeSanitize]}
-      />
+      >
+        {value}
+      </ReactMarkdown>
     </div>
   );
 }
