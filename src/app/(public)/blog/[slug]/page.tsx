@@ -7,7 +7,7 @@ import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
 
 import { unstable_cache } from "next/cache";
-import { RichTextViewer } from "@/components/editor/rich-text-viewer";
+import WysiwygEditorWrapper from "@/components/editor/WysiwygEditorWrapper";
 
 // Ensure dynamic rendering to handle database state safely at runtime
 export const dynamic = "force-dynamic";
@@ -160,7 +160,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
           )}
 
           {/* Body Content */}
-            <RichTextViewer html={typeof post.body === 'string' ? post.body : ''} />
+            <WysiwygEditorWrapper value={typeof post.body === 'string' ? post.body : ''} height={500} />
         </article>
 
         {/* Global FoxyLoader ensures FoxyCart intercept is fully active */}
