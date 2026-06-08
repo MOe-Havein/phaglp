@@ -18,7 +18,7 @@ interface MarkdownViewerProps {
 
 export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
   const { theme } = useTheme();
-  console.log('MarkdownViewer value:', value);
+
   return (
     <div
       className={className}

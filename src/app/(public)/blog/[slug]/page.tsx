@@ -7,7 +7,7 @@ import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
 
 import { unstable_cache } from "next/cache";
-import { MarkdownViewer } from "@/components/editor/markdown-viewer";
+import { RichTextViewer } from "@/components/editor/rich-text-viewer";
 
 // Ensure dynamic rendering to handle database state safely at runtime
 export const dynamic = "force-dynamic";
@@ -160,9 +160,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
           )}
 
           {/* Body Content */}
-          <div className="prose prose-blue dark:prose-invert max-w-none">
-            <MarkdownViewer value={typeof post.body === 'string' ? post.body : ''} />
-          </div>
+            <RichTextViewer html={typeof post.body === 'string' ? post.body : ''} />
         </article>
 
         {/* Global FoxyLoader ensures FoxyCart intercept is fully active */}
