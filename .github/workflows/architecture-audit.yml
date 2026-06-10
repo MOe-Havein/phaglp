@@ -21,10 +21,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Generate Directory Tree
         run: |
@@ -44,7 +49,7 @@ jobs:
 
       - name: Analyze App Router Structure
         run: |
-          find app -maxdepth 4 -type f \
+          find src/app -maxdepth 4 -type f \
             > app-router-map.txt || true
 
       - name: Analyze Feature Modules
@@ -63,14 +68,17 @@ jobs:
             > large-files-report.txt
 
       - name: Run Type Check
-        run: npm run type-check || npm run typecheck || true
+        run: |
+          pnpm run type-check || \
+          pnpm run typecheck || true
 
       - name: Run Lint
-        run: npm run lint || true
+        run: pnpm run lint || true
 
       - name: Generate Dependency Graph
         run: |
-          npm ls --all > dependency-graph.txt || true
+          pnpm ls --depth Infinity \
+            > dependency-graph.txt || true
 
       - name: Upload Architecture Reports
         uses: actions/upload-artifact@v4
