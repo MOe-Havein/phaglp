@@ -1,18 +1,18 @@
 name: Architecture Audit
 
-on:
-workflow_dispatch:
-push:
-branches:
-- main
-- dev
-- staging
+ on:
+  workflow_dispatch:
+  push:
+  branches:
+  - main
+  - dev
+  - staging
 
 jobs:
 architecture-audit:
 runs-on: ubuntu-latest
 
-```
+
 steps:
   - name: Checkout Repository
     uses: actions/checkout@v4
@@ -83,4 +83,3 @@ steps:
         feature-modules.txt
         large-files-report.txt
         dependency-graph.txt
-```
