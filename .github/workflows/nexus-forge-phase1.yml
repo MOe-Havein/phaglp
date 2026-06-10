@@ -84,8 +84,7 @@ jobs:
       - name: Detect Route Groups
         run: |
           if [ -d "src/app" ]; then
-            find src/app \
-              -type d \
+            find src/app -type d \
               | grep '/([^/]*' \
               > route-groups.txt || true
           else
