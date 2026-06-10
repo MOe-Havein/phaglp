@@ -1,0 +1,12 @@
+{
+  "allowed_write_paths": [
+    "src/features/**",
+    "src/components/ui/**",
+    "docs/**",
+    ".ai/**"
+  ],
+  "protected_paths": [
+    "middleware.ts",
+    "prisma/schema.prisma"
+  ]
+}
