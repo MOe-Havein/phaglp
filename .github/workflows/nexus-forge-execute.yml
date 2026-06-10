@@ -133,97 +133,32 @@ jobs:
           cat changed-files.txt
 
       ########################################################
-      # BLOCK DANGEROUS FILE MODIFICATIONS
+      # SECURITY CHECK
       ########################################################
 
-      - name: Validate Allowed Paths
+      - name: Check Forbidden Paths
         shell: bash
         run: |
           FORBIDDEN_PATHS=(
             ".github/workflows/deploy"
             ".github/workflows/production"
             ".github/workflows/release"
-
             "pnpm-lock.yaml"
             ".env"
             ".env.local"
-            "next.config"
+            "next.config.js"
+            "next.config.mjs"
             "middleware.ts"
             "prisma/schema.prisma"
           )
 
-          while read -r FILE; do
-            [ -z "$FILE" ] && continue
-
-            for FORBIDDEN in "${FORBIDDEN_PATHS[@]}"; do
-              if [[ "$FILE" == *"$FORBIDDEN"* ]]; then
-                echo "❌ Forbidden file modification detected:"
-                echo "$FILE"
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            for forbidden in "${FORBIDDEN_PATHS[@]}"; do
+              # Exact match check handles paths safely without substring mistakes
+              if [[ "$file" == "$forbidden" ]]; then
+                echo "❌ Forbidden file modification detected: $file"
                 exit 1
               fi
             done
           done < changed-files.txt
-
-      ########################################################
-      # ENSURE CHANGES EXIST
-      ########################################################
-
-      - name: Check For Changes
-        id: verify-changes
-        shell: bash
-        run: |
-          if git diff --quiet; then
-            echo "No changes detected."
-            echo "has_changes=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "Changes detected."
-            echo "has_changes=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      ########################################################
-      # COMMIT CHANGES
-      ########################################################
-
-      - name: Commit Changes
-        if: steps.verify-changes.outputs.has_changes == 'true'
-        shell: bash
-        run: |
-          git config user.name "nexus-forge-bot"
-          git config user.email "nexus-forge@users.noreply.github.com"
-
-          git add .
-
-          git commit -m "feat(ai): ${{ github.event.inputs.task_name }}"
-
-      ########################################################
-      # PUSH BRANCH
-      ########################################################
-
-      - name: Push Branch
-        if: steps.verify-changes.outputs.has_changes == 'true'
-        run: |
-          git push origin "${{ steps.branch.outputs.branch_name }}"
-
-      ########################################################
-      # CREATE PULL REQUEST
-      ########################################################
-
-      - name: Create Pull Request
-        if: steps.verify-changes.outputs.has_changes == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          branch: ${{ steps.branch.outputs.branch_name }}
-          title: "AI: ${{ github.event.inputs.task_name }}"
-          body: |
-            ## NEXUS-FORGE Automated PR
-
-            This PR was generated automatically by NEXUS-FORGE.
-
-            ### Validation Completed
-            - pnpm install
-            - prettier formatting
-            - typecheck
-            - production build
-
-            ### Review Required
-            Human review is mandatory before merge.
