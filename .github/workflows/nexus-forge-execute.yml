@@ -1,3 +1,4 @@
+
 name: NEXUS-FORGE Execute
 
 on:
@@ -8,12 +9,11 @@ on:
         required: true
         default: 'dev'
         type: string
-
+                                       
 permissions:
-  workflows: write 
   contents: write
+  workflows: write 
   pull-requests: write
-
 
 jobs:
   nexus-forge:
@@ -26,9 +26,7 @@ jobs:
       CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
       UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
       UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
-      GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
-
-    steps:
+      GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVsteps:
       ########################################################
       # CHECKOUT
       ########################################################
