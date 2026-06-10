@@ -1,28 +1,48 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextPlugin from "@next/eslint-plugin-next";
+import importPlugin from "eslint-plugin-import";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default [
   {
+    plugins: {
+      "@next/next": nextPlugin,
+      "import": importPlugin,
+    },
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/ban-ts-comment": "warn",
-      "react/no-unescaped-entities": "warn",
-      "prefer-const": "warn",
-      "@typescript-eslint/no-require-imports": "warn",
-      "react-hooks/rules-of-hooks": "warn",
-      "@next/next/no-html-link-for-pages": "warn"
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+      
+      // Enforce the same guardrails locally as defined in FORBIDDEN_PATHS
+      "import/no-restricted-paths": [
+        "error",
+        {
+          zones: [
+            {
+              target: "./src/**/*",
+              from: "./prisma/schema.prisma",
+              message: "Modifying or directly binding dependencies on protected schema configurations via app code is prohibited.",
+            },
+            {
+              target: "./src/**/*",
+              from: "./middleware.ts",
+              message: "The application middleware is managed exclusively by core architecture permissions.",
+            },
+            {
+              target: "./src/**/*",
+              from: "./.github/workflows/**/*",
+              message: "CI/CD execution paths cannot be linked or evaluated by frontend source layers.",
+            }
+          ],
+        },
+      ],
     },
   },
+  {
+    // Ignore environment variables and critical files completely from standard lint generation
+    ignores: [
+      ".env", 
+      ".env.local", 
+      "pnpm-lock.yaml",
+      "coverage/**/*"
+    ],
+  },
 ];
-
-export default eslintConfig;
