@@ -39,20 +39,27 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      ########################################################
+       ########################################################
       # PNPM + NODE
       ########################################################
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 11
+          version: 11.5.2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
+
+      ########################################################
+      # INSTALL
+      ########################################################
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       ########################################################
       # INSTALL
