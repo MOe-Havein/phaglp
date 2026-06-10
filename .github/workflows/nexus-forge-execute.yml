@@ -16,7 +16,7 @@ jobs:
 nexus-forge:
 runs-on: ubuntu-latest
 
-```
+
 env:
   NODE_ENV: production
 
