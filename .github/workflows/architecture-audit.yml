@@ -22,7 +22,6 @@ jobs:
         with:
           node-version: 22
           
-
       - name: Enable Corepack
         run: corepack enable
 
@@ -71,7 +70,7 @@ jobs:
           pnpm run typecheck || true
 
       - name: Run Lint
-        run: pnpm run lint || true
+        run: pnpm run linter || pnpm run lint || true
 
       - name: Generate Dependency Graph
         run: |
