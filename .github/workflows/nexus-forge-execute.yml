@@ -146,8 +146,7 @@ jobs:
             "pnpm-lock.yaml"
             ".env"
             ".env.local"
-            "next.config.js"
-            "next.config.mjs"
+      
             "middleware.ts"
             "prisma/schema.prisma"
           )
