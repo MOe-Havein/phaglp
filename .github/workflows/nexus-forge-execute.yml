@@ -137,7 +137,7 @@ jobs:
       ########################################################
       # ENSURE CHANGES EXIST
       ########################################################
-            - name: Check For Changes
+      - name: Check For Changes
         id: verify-changes
         run: |
           if git diff --quiet; then
