@@ -1,0 +1,14 @@
+name: Generate NextAuth Secret
+
+on:
+  workflow_dispatch: # Allows you to run this manually from the GitHub UI
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate and display secret
+        run: |
+          SECRET=$(openssl rand -base64 32)
+          echo "Your NEXTAUTH_SECRET is:"
+          echo "$SECRET"
