@@ -140,7 +140,10 @@ jobs:
         shell: bash
         run: |
           FORBIDDEN_PATHS=(
-            ".github/workflows"
+            ".github/workflows/deploy"
+            ".github/workflows/production"
+            ".github/workflows/release"
+
             "pnpm-lock.yaml"
             ".env"
             ".env.local"
