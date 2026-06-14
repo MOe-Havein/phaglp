@@ -1,7 +1,8 @@
 "use client";
+// Change this import location to point to your server actions file instead:
+import { updateLecture, deleteLecture } from "@/lib/cms-actions"; 
 
-import { updateLecture } from "@/lib/cms-actions";
-import { deleteLecture } from "@/lib/lecture-queries"; // Import your new delete action here
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
