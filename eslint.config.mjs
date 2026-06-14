@@ -1,4 +1,6 @@
-import nextPlugin from "@next/eslint-plugin-next";
+
+import nextPlugin from '@next/eslint-plugin-next/dist/index.js';
+
 import importPlugin from "eslint-plugin-import";
 
 export default [
