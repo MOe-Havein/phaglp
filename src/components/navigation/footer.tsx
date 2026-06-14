@@ -32,17 +32,17 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                     key={menu.id}
                     title={menu.name}
                     iconName={menu.icon ?? "Menu"} // 🆕 Pass the icon string from database model (e.g. "BookOpen")
+                   
                     links={menu.items.map((item) => ({
   id: item.id,
   label: item.name,
   href: item.href,
   external: item.external,
-  iconName: item.iconName ?? "", // FIX: Fallback to an empty string to clear the null type
-}))}
+  iconName: item.iconName ?? "", 
+}))} 
+/>
 
-                    }))}
-                  />
-                ))}
+              
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
