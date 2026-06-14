@@ -2,146 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  /* text-balance is already native to Tailwind, removed redundancy */
-  
-  .carbon-fibre {
-    background:
-      linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
-      linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
-      linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
-      linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
-      linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
-      linear-gradient(
-        #1d1d1d 25%,
-        #1a1a1a 25%,
-        #1a1a1a 50%,
-        transparent 50%,
-        transparent 75%,
-        #242424 75%,
-        #242424
-      );
-    background-color: #131313;
-    background-size: 20px 20px;
+@layer base {
+  :root {
+    /* Enforce the base border radius token used across your configs */
+    --radius: 0.75rem;
   }
 }
 
 @layer base {
-  /* Headings moved outside of :root to apply everywhere */
-  h1 {
-    @apply text-4xl font-extrabold mb-6;
-  }
-  h2 {
-    @apply text-2xl font-semibold mb-2;
-  }
-  h3 {
-    @apply text-xl font-semibold mb-2;
-  }
-  h4 {
-    @apply text-lg font-semibold mb-2;
-  }
-
-  :root {
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
-
-    /* 1. Primary Color: perfectsky #1f7bc6 (HSL 207 73% 45%) */
-    --primary: 207 73% 45%;
-    --primary-foreground: 0 0% 100%;
-
-    /* 2. Main Background: #FFFFFF */
-    --background: 0 0% 100%;
-
-    /* 7. Text Color: #374151 */
-    --foreground: 217 19% 27%;
-
-    /* 3. Secondary Color: frost #edf2f4 (HSL 200 27% 94%) */
-    --secondary: 200 27% 94%;
-    --secondary-foreground: 217 19% 27%;
-
-    /* Muted colors using platinum (HSL 214 15% 80%) & tinfoil (HSL 214 8% 67%) */
-    --muted: 214 15% 80%;
-    --muted-foreground: 214 8% 67%;
-    --surface: 0 0% 100%;
-    --text-muted: 214 8% 67%;
-
-    /* 4. Motivational Accent (Green): laser #7cb625 (HSL 84 66% 43%) */
-    --success: 84 66% 43%;
-    --success-foreground: 0 0% 100%;
-
-    /* 5. Interactive Accent (Orange): tartorange #e65c23 (HSL 18 79% 52%) */
-    --accent: 18 79% 52%;
-    --accent-foreground: 0 0% 100%;
-
-    /* 6. Alert & Highlight (Yellow/Gold): celebration #f1d48c (HSL 43 78% 75%) */
-    --warning: 43 78% 75%;
-    --warning-foreground: 217 19% 27%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 217 19% 27%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 217 19% 27%;
-
-    /* Inferno #c83313 (HSL 11 83% 43%) */
-    --destructive: 11 83% 43%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 200 27% 90%;
-    --input: 200 27% 90%;
-    --ring: 207 73% 45%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 200 27% 98%;
-    --sidebar-foreground: 217 19% 27%;
-    --sidebar-primary: 207 73% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 27% 94%;
-    --sidebar-accent-foreground: 217 19% 27%;
-    --sidebar-border: 200 27% 90%;
-    --sidebar-ring: 207 73% 45%;
-  }
-
-  .dark {
-    --background: 222 47% 4%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 7%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 5%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 207 85% 60%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 222 47% 12%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 222 47% 12%;
-    --muted-foreground: 215 20% 65%;
-    --surface: 222 47% 7%;
-    --text-muted: 215 20% 65%;
-    --accent: 18 85% 55%;
-    --accent-foreground: 210 40% 98%;
-    --success: 84 75% 50%;
-    --success-foreground: 210 40% 98%;
-    --warning: 43 85% 65%;
-    --warning-foreground: 210 40% 98%;
-    --destructive: 11 80% 50%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 222 47% 15%;
-    --input: 222 47% 15%;
-    --ring: 207 85% 60%;
-    --sidebar-background: 222 47% 4%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 207 85% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 12%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 15%;
-    --sidebar-ring: 207 85% 60%;
-  }
-
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
