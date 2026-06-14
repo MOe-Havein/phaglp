@@ -13,7 +13,7 @@ import { MarkdownViewer } from "@/components/editor/markdown-viewer";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 const getBlogPostBySlug = async (slug: string) => {
@@ -39,11 +39,9 @@ const getBlogPostBySlug = async (slug: string) => {
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  // Always return a valid Metadata object – fallback values are used when the post is missing.
   const { slug } = await params;
   const post = await getBlogPostBySlug(slug);
 
-  // Guard: if the post cannot be found, return minimal metadata to avoid a blank page.
   if (!post) {
     return {
       title: "Blog post not found",
@@ -51,7 +49,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  // Build full metadata from the retrieved post.
   return {
     title: post.title,
     description: post.excerpt ?? post.title,
@@ -90,15 +87,15 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
   const tags = Array.isArray(post.tags) ? (post.tags as string[]) : [];
 
   return (
-    <div className="container mx-auto px-4 py-12 relative min-h-screen">
-      {/* Background Radial Light Effect */}
+    <div className="container mx-auto px-4 py-12 relative min-h-screen bg-background text-foreground transition-colors duration-300">
+      {/* Subtle Ambient Background Light Radial Blurs */}
       <div className="absolute top-10 left-1/4 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl opacity-40 dark:opacity-20 pointer-events-none" />
       <div className="absolute bottom-10 right-1/4 w-72 h-72 bg-purple-500/5 rounded-full blur-3xl opacity-40 dark:opacity-20 pointer-events-none" />
 
       <div className="max-w-3xl mx-auto relative">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary mb-8 transition-colors group"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-blue-400 mb-8 transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           Back to Blog Listing
@@ -107,50 +104,49 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
         <article>
           <header className="mb-10">
             <div className="flex flex-wrap gap-2 mb-4">
-              <Badge className="bg-primary/10 hover:bg-primary/20 text-primary border-none px-3 font-semibold">
+              {/* Premium High Contrast Primary Accent Badges */}
+              <Badge className="bg-blue-50 border border-blue-200 text-blue-800 dark:bg-blue-950/40 dark:border-blue-900/50 dark:text-blue-400 px-3 py-0.5 rounded-md text-xs font-bold">
                 {post.category}
               </Badge>
-              {tags.map((tag: string) => {
-                console.log('Tag:', tag);
-                return (
-                  <Badge
-                    key={tag}
-                    variant="outline"
-                    className="text-slate-500 border-slate-200 dark:border-slate-800"
-                  >
-                    #{tag}
-                  </Badge>
-                );
-              })}
+              {tags.map((tag: string) => (
+                <Badge
+                  key={tag}
+                  variant="outline"
+                  className="text-slate-600 border-slate-300 bg-slate-50 dark:text-slate-400 dark:border-slate-800 dark:bg-slate-900/50 font-medium px-2.5 py-0.5 rounded-md"
+                >
+                  #{tag}
+                </Badge>
+              ))}
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-slate-900 dark:text-slate-50">
+            <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight tracking-tight text-slate-900 dark:text-slate-50">
               {post.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y border-slate-100 dark:border-slate-900 py-4">
+            {/* Meta Data Row: Tuned explicitly to pass 4.5:1 text requirements */}
+            <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-400 border-y border-slate-200 dark:border-slate-800 py-4">
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                <span className="font-semibold text-slate-800 dark:text-slate-200">
+                <User className="w-4 h-4 text-slate-400" />
+                <span className="font-bold text-slate-900 dark:text-slate-200">
                   {post.author?.name || "Anonymous"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
+                <Calendar className="w-4 h-4 text-slate-400" />
                 <span>{format(new Date(post.createdAt), "MMMM d, yyyy")}</span>
               </div>
               {post.readingTime && (
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
+                  <Clock className="w-4 h-4 text-slate-400" />
                   <span>{post.readingTime} min read</span>
                 </div>
               )}
             </div>
           </header>
 
-          {/* Cover Image */}
+          {/* Curved Premium Frame Cover Image */}
           {post.coverImage && (
-            <div className="mb-10 rounded-2xl overflow-hidden shadow-md max-h-96 w-full">
+            <div className="mb-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm max-h-96 w-full">
               <img
                 src={post.coverImage}
                 alt={post.title}
@@ -159,12 +155,11 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* Body Content */}
+          {/* Body content slot */}
+          <div className="prose prose-slate max-w-none dark:prose-invert">
             <MarkdownViewer value={typeof post.body === 'string' ? post.body : ''} />
+          </div>
         </article>
-
-        {/* Global FoxyLoader ensures FoxyCart intercept is fully active */}
-
 
         <script
           type="application/ld+json"
