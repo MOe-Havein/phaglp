@@ -46,7 +46,9 @@ function DynamicNavIcon({
 }) {
   if (!name || name.trim() === "") return null;
   
-  const IconComponent = (LucideIcons as Record<string, React.ComponentType<any>>)[name];
+// FIX: Cast through 'unknown' first to resolve module signature conflicts cleanly
+const IconComponent = (LucideIcons as unknown as Record<string, React.ComponentType<any>>)[name];
+
   
   if (!IconComponent) {
     return <ChevronRight className={className} />;
