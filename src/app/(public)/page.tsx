@@ -171,6 +171,8 @@ export default async function PublicHomepage() {
       })}
 
       <CoursesPricing />
+
+      <LatestBlogPosts />
     </main>
   );
 }
