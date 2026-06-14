@@ -368,6 +368,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       target={menu.isOpenNewTab ? "_blank" : undefined}
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
+                          <NavIcon
+                                  name={subItem.icon}
+                                  className="w-3.5 h-3.5 text-primary"
+                                />
                       <span>{menu.name}</span>
                       {menu.isOpenNewTab && (
                         <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
@@ -384,6 +388,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       onClick={() => setIsOpen(false)}
                       className="block py-3 border-b text-base font-semibold text-foreground hover:text-primary"
                     >
+                          <NavIcon
+                                  name={subItem.icon}
+                                  className="w-3.5 h-3.5 text-primary"
+                                />
                       {item.title}
                     </Link>
                   ))}
