@@ -1,5 +1,4 @@
 import { Navbar } from "@/components/navigation/navbar";
-// 🔄 Updated import path to target your refactored, lucide-supported Footer component
 import { Footer } from "@/components/navigation/footer"; 
 import { getNavigationMenus } from "@/lib/server/menus";
 
@@ -12,14 +11,14 @@ export default async function PublicLayout({
   const menus = await getNavigationMenus();
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0F1D45]">
+    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Dynamic Navbar Layer */}
       <Navbar initialMenus={menus} />
       
       {/* Core Main Viewport Children */}
       <main className="flex-grow">{children}</main>
       
-      {/* 🆕 Refactored Dynamic Footer: Maps Lucide icon strings from database automatically */}
+      {/* Refactored Dynamic Footer: Maps Lucide icon strings from database automatically */}
       <Footer initialMenus={menus} />
     </div>
   );
