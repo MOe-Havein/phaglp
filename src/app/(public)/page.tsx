@@ -11,7 +11,6 @@ import { Testimonials } from "@/components/home/testimonials";
 import { LatestBlogPosts } from "@/components/home/LatestBlogPosts";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
 import { CoursesPricing } from "@/components/home/CoursesPricing";
-import { Footer } from "@/components/navigation/Footer"; // 🆕 Import your newly refactored Lucide-enabled footer
 
 // Component implementations
 function HeroSection({ data }: { data: HomepageSection }) {
@@ -27,12 +26,12 @@ function HeroSection({ data }: { data: HomepageSection }) {
       headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(" ");
       headlinePost = words.slice(segmentSize * 2).join(" ");
     } else if (words.length === 2) {
-      headlinePre = words[0] ?? "";
-      headlineHighlight = words[1] ?? "";
+      headlinePre = words ?? "";
+      headlineHighlight = words ?? "";
       headlinePost = "";
     } else {
       headlinePre = "";
-      headlineHighlight = words[0] ?? "";
+      headlineHighlight = words ?? "";
       headlinePost = "";
     }
   }
@@ -90,8 +89,8 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
   lectures: ({ data }) => <LatestLETURES title={data.title || undefined} />,
   blogs: ({ data }) => <LatestBlogPosts title={data.title || undefined} />,
   
-  // 🆕 Hide footer from standard main flow mapping inside mid-page loop
-  // This prevents the footer from rendering out of place if ordered incorrectly
+  // 💡 Safe fallback placeholder: ignore 'footer' database rows here
+  // because layout.tsx renders the structural footer natively.
   footer: () => null, 
 };
 
@@ -153,35 +152,23 @@ export default async function PublicHomepage() {
     );
   }
 
-  // 🆕 Separate out the footer section configuration from your layout array
-  const footerSectionData = sections.find((section) => section.type === "footer");
-  
-  // Extract your nested relational dynamic menu lists if present inside your extraConfig column fields
-  const dynamicMenus = footerSectionData?.extraConfig?.linkGroups || undefined;
-
   return (
-    <main className="min-h-screen w-full flex flex-col justify-between">
-      {/* Scrollable Content Body Area */}
-      <div className="flex-grow flex flex-col">
-        {sections.map((section) => {
-          const Component = ComponentMap[section.type];
-          if (!Component) return null;
-          return (
-            <React.Fragment key={section.id}>
-              <Component data={section} />
-              {section.type === "hero" && (
-                <div className="h-1 w-full bg-tinfoil" />
-              )}
-            </React.Fragment>
-          );
-        })}
+    <main className="w-full flex flex-col">
+      {sections.map((section) => {
+        const Component = ComponentMap[section.type];
+        if (!Component) return null;
+        return (
+          <React.Fragment key={section.id}>
+            <Component data={section} />
+            {section.type === "hero" && (
+              <div className="h-1 w-full bg-tinfoil" />
+            )}
+          </React.Fragment>
+        );
+      })}
 
-        {/* Render Courses Pricing Plans layout anchor block */}
-        <CoursesPricing />
-      </div>
-
-      {/* 🆕 Refactored Footer Mounted Permanently at Base Level Layout Grid */}
-      <Footer initialMenus={dynamicMenus} />
+      {/* Render the Courses Pricing Plans layout anchor block */}
+      <CoursesPricing />
     </main>
   );
 }
