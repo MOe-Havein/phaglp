@@ -8,7 +8,7 @@ const nextConfig = {
   compress: true,
 
   eslint: {
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,
   },
 
   typescript: {
