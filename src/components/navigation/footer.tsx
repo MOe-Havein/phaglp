@@ -79,7 +79,7 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                       label: link.title,
                       href: link.href,
                       external: isExternalUrl(link.href),
-                      iconName: link.icon || undefined,
+                      iconName: "",
                     }))}
                   />
                 ))}
