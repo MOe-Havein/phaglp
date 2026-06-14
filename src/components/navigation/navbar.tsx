@@ -323,7 +323,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       onClick={() => setIsOpen(false)}
                       className="block py-3 border-b text-base font-semibold text-foreground hover:text-primary"
                     >
-                      <NavIcon name={item.icon} className="w-3.5 h-3.5 text-primary" />
+                   // FIX: Safe string indexing to read optional static icons dynamically
+<DynamicNavIcon name={(item as Record<string, any>)["icon"]} className="w-3.5 h-3.5 text-primary" />
+
                       {item.title}
                     </Link>
                   ))}
