@@ -11,125 +11,58 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // Replace the colors block in your tailwind.config.ts with this fully reactive version
-colors: {
-  // Reactive Core Layout Fundamentals
-  background: {
-    DEFAULT: "#f8fafc", // slate-50 (Crisp Light canvas)
-    dark: "#0f172a",    // slate-900 (Deep Slate for Dark canvas)
-  },
-  foreground: {
-    DEFAULT: "#0f172a", // slate-900 (Light mode typography)
-    dark: "#f8fafc",    // slate-50 (Ultra-clean Dark mode typography)
-  },
-  card: {
-    DEFAULT: "#ffffff", // Pure white for Light mode card surfaces
-    dark: "#1e293b",    // slate-800 (Rich dark gray background for Dark mode cards)
-    foreground: {
-      DEFAULT: "#0f172a",
-      dark: "#f8fafc",
-    }
-  },
-  popover: {
-    DEFAULT: "#ffffff",
-    dark: "#1e293b",
-    foreground: {
-      DEFAULT: "#0f172a",
-      dark: "#f8fafc",
-    }
-  },
+      colors: {
+        // High-Contrast Base Semantic Color Layout Rules
+        background: "#f8fafc",      // slate-50 (Premium clean light canvas)
+        foreground: "#0f172a",      // slate-900 (Crisp dark text)
+        card: "#ffffff",            // Pure white light sheets
+        popover: "#ffffff",
+        
+        // Brand & Theme Core Token Mapping (Stable Flat Strings)
+        primary: "#145387",         // Deep premium brand blue (Passes 4.5:1 against white text)
+        secondary: "#edf2f4",       // Your 'frost' color for light mode structural backgrounds
+        muted: "#f1f5f9",           // slate-100
+        "text-muted": "#475569",    // slate-600 (Accessible secondary text over white/frost)
+        accent: "#1f7bc6",          // Your 'perfectsky' blue highlight token
+        
+        // System Feedback Status Tokens
+        success: "#2d6a13",
+        warning: "#b54111",
+        destructive: "#c83313",     // Inferno red
+        
+        // High-Contrast Borders & Inputs
+        border: "#cbd5e1",          // slate-300 for visible item boundaries
+        input: "#cbd5e1",
+        ring: "#1f7bc6",
 
-  // Brand-Specific Theme Mapping (WCAG 4.5:1 Compliant)
-  primary: {
-    DEFAULT: "#145387", // Premium dark blue for Light mode buttons
-    dark: "#38bdf8",    // sky-400 (Vibrant, accessible sky accent for Dark mode elements)
-    foreground: {
-      DEFAULT: "#ffffff",
-      dark: "#0f172a",  // Inverts text to dark over bright sky elements for maximum legibility
-    }
-  },
-  secondary: {
-    DEFAULT: "#edf2f4", // frost
-    dark: "#334155",    // slate-700
-    foreground: {
-      DEFAULT: "#0f172a",
-      dark: "#f8fafc",
-    }
-  },
-  muted: {
-    DEFAULT: "#edf2f4", // frost
-    dark: "#334155",    // slate-700
-    foreground: {
-      DEFAULT: "#475569", // slate-600
-      dark: "#94a3b8",    // slate-400 (Passes contrast rules perfectly against dark cards)
-    }
-  },
-  "text-muted": {
-    DEFAULT: "#475569",
-    dark: "#94a3b8",
-  },
-  accent: {
-    DEFAULT: "#1f7bc6", // perfectsky
-    dark: "#38bdf8",    // sky-400
-    foreground: {
-      DEFAULT: "#ffffff",
-      dark: "#0f172a",
-    }
-  },
+        // Your Custom Brand Palette Extensions
+        frost: "#edf2f4",
+        platinum: "#c5cbd3",
+        tinfoil: "#a3a9b1",
+        perfectsky: "#1f7bc6",
+        tartorange: "#e65c23",
+        laser: "#7cb625",
+        inferno: "#c83313",
+        celebration: "#f1d48c",
 
-  // Functional Status Validation Tokens
-  success: {
-    DEFAULT: "#2d6a13",
-    dark: "#4ade80", // green-400
-    foreground: "#ffffff",
-  },
-  warning: {
-    DEFAULT: "#b54111",
-    dark: "#fb923c", // orange-400
-    foreground: "#ffffff",
-  },
-  destructive: {
-    DEFAULT: "#c83313", // inferno
-    dark: "#ef4444",    // red-500
-    foreground: "#ffffff",
-  },
-  
-  border: {
-    DEFAULT: "#cbd5e1", // slate-300
-    dark: "#334155",    // slate-700 (Clear divider borders for dark backgrounds)
-  },
-  input: {
-    DEFAULT: "#cbd5e1",
-    dark: "#334155",
-  },
-  ring: {
-    DEFAULT: "#1f7bc6",
-    dark: "#38bdf8",
-  },
-
-  // Static Brand Palette Core Extensions
-  frost: "#edf2f4",
-  platinum: "#c5cbd3",
-  tinfoil: "#a3a9b1",
-  perfectsky: "#1f7bc6",
-  tartorange: "#e65c23",
-  laser: "#7cb625",
-  inferno: "#c83313",
-  celebration: "#f1d48c",
-
-  sidebar: {
-    DEFAULT: "#ffffff",
-    dark: "#0f172a",
-    foreground: { DEFAULT: "#334155", dark: "#94a3b8" },
-    primary: { DEFAULT: "#145387", dark: "#38bdf8" },
-    "primary-foreground": { DEFAULT: "#ffffff", dark: "#0f172a" },
-    accent: { DEFAULT: "#edf2f4", dark: "#1e293b" },
-    "accent-foreground": { DEFAULT: "#0f172a", dark: "#f8fafc" },
-    border: { DEFAULT: "#edf2f4", dark: "#334155" },
-    ring: { DEFAULT: "#1f7bc6", dark: "#38bdf8" },
-  },
-}
-
+        chart: {
+          "1": "#1d4ed8",
+          "2": "#10b981",
+          "3": "#f59e0b",
+          "4": "#6366f1",
+          "5": "#ec4899",
+        },
+        sidebar: {
+          DEFAULT: "#ffffff",
+          foreground: "#334155",
+          primary: "#145387",
+          "primary-foreground": "#ffffff",
+          accent: "#edf2f4",
+          "accent-foreground": "#0f172a",
+          border: "#edf2f4",
+          ring: "#1f7bc6",
+        },
+      },
       borderRadius: {
         xl: "0.75rem",
         lg: "0.75rem",
