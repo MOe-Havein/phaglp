@@ -33,11 +33,13 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                     title={menu.name}
                     iconName={menu.icon ?? "Menu"} // 🆕 Pass the icon string from database model (e.g. "BookOpen")
                     links={menu.items.map((item) => ({
-                      id: item.id,
-                      label: item.name,
-                      href: item.href,
-                      external: item.isOpenNewTab,
-                      iconName: item.icon, // 🆕 Links can also have individual icons
+  id: item.id,
+  label: item.name,
+  href: item.href,
+  external: item.external,
+  iconName: item.iconName ?? "", // FIX: Fallback to an empty string to clear the null type
+}))}
+
                     }))}
                   />
                 ))}
