@@ -50,10 +50,12 @@ export default async function BlogPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 bg-background text-foreground transition-colors duration-300">
       <div className="max-w-3xl mb-12">
-        <h1 className="text-4xl font-bold mb-4">Latest Insights & Blog</h1>
-        <p className="text-lg text-muted-foreground">
+        <h1 className="text-4xl font-black mb-4 tracking-tight text-slate-900 dark:text-slate-50">
+          Latest Insights & Blog
+        </h1>
+        <p className="text-lg font-medium text-slate-600 dark:text-slate-400 leading-relaxed">
           Explore articles, news, and community insights from the PHAGLP
           ecosystem.
         </p>
