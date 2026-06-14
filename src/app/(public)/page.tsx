@@ -25,11 +25,13 @@ function HeroSection({ data }: { data: HomepageSection }) {
       headlinePre = words.slice(0, segmentSize).join(" ");
       headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(" ");
       headlinePost = words.slice(segmentSize * 2).join(" ");
-    } else if (words.length === 2) {
-      headlinePre = words ?? "";
-      headlineHighlight = words ?? "";
-      headlinePost = "";
-    } else {
+// Replace lines 28-31 with this:
+} else if (words.length === 2) {
+  headlinePre = words[0];          // First word (string)
+  headlineHighlight = words[1];    // Second word (string)
+  headlinePost = "";
+} else {
+ 
       headlinePre = "";
       headlineHighlight = words ?? "";
       headlinePost = "";
