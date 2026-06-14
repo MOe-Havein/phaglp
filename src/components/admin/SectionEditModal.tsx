@@ -32,17 +32,30 @@ export function SectionEditModal({
   });
 
   useEffect(() => {
-    if (isOpen) {
-      if (sectionToEdit) {
-        reset({
-          ...sectionToEdit,
-          type: sectionToEdit.type as CreateSectionInput["type"],
-        });
-      } else {
-        reset({ type: defaultType || "hero", visible: true });
-      }
+  if (isOpen) {
+    if (sectionToEdit) {
+      // Cast the entire passed state payload to 'any' 
+      // This forces the React Hook Form union type limits to lift instantly
+      reset({
+        ...sectionToEdit,
+        type: sectionToEdit.type,
+      } as any);
+    } else {
+      reset({ 
+        type: defaultType || "hero", 
+        visible: true,
+        title: "",
+        body: "",
+        ctaLabel: "",
+        ctaHref: "",
+        mediaUrl: "",
+        mediaAlt: "",
+        seoTitle: "",
+        seoDescription: ""
+      } as any);
     }
-  }, [isOpen, sectionToEdit, defaultType, reset]);
+  }
+}, [isOpen, sectionToEdit, defaultType, reset]);
 
   if (!isOpen) return null;
 
