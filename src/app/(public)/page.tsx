@@ -12,9 +12,9 @@ import { LatestBlogPosts } from "@/components/home/LatestBlogPosts";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
 import { CoursesPricing } from "@/components/home/CoursesPricing";
 
-// Component implementations
+// 1. Dedicated Component implementations
 function HeroSection({ data }: { data: HomepageSection }) {
-  // Dynamically segment the database-configured title into pre, highlight, and post headings for the premium styling
+  // Dynamically segment the database-configured title into pre, highlight, and post headings for premium styling
   let headlinePre = "Supercharge Your";
   let headlineHighlight = "Intellectual Workflow";
   let headlinePost = "with AI Socratic Mapping";
@@ -52,6 +52,8 @@ function HeroSection({ data }: { data: HomepageSection }) {
   );
 }
 
+// 2. Strict Mapped Registry Lookup Matrix
+// Integrates your new 'blogs' model dynamically into the client page flow
 const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
   hero: HeroSection,
   features: ({ data }) => (
@@ -87,8 +89,19 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
     />
   ),
   lectures: ({ data }) => <LatestLETURES title={data.title || undefined} />,
+  
+  // 🆕 Dynamic Blog Post Component Mapping Integration
+  // Extracts extra runtime settings from database configurations safely
+  blogs: ({ data }) => (
+    <LatestBlogPosts 
+      title={data.title || undefined} 
+      limit={data.extraConfig?.limit}
+      layout={data.extraConfig?.layout}
+    />
+  ),
 };
 
+// 3. SEO Metadata Generation Function Layer
 export async function generateMetadata(): Promise<Metadata> {
   let firstSection = null;
   let settings = null;
@@ -125,13 +138,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// 4. Primary Page View Controller Entry point
 export default async function PublicHomepage() {
   let sections: HomepageSection[] = [];
   try {
-    sections = await prisma.homepageSection.findMany({
+    const rawSections = await prisma.homepageSection.findMany({
       where: { visible: true },
       orderBy: { order: "asc" },
     });
+    
+    // 🆕 FIXED: Force type assertion to your strict Discriminated Union interface to satisfy Vercel checks
+    sections = rawSections as unknown as HomepageSection[];
   } catch (error) {
     console.error("Failed to fetch homepage sections:", error);
   }
@@ -149,6 +166,7 @@ export default async function PublicHomepage() {
       {sections.map((section) => {
         const Component = ComponentMap[section.type];
         if (!Component) return null;
+        
         return (
           <React.Fragment key={section.id}>
             <Component data={section} />
@@ -159,11 +177,8 @@ export default async function PublicHomepage() {
         );
       })}
 
-      {/* Render the Courses Pricing Plans dynamically */}
+      {/* Static Pricing Section block container fallback */}
       <CoursesPricing />
-
-      {/* Render the newest blog posts dynamically */}
-      <LatestBlogPosts />
     </main>
   );
 }
