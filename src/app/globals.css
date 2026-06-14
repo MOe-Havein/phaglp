@@ -4,16 +4,16 @@
 
 @layer base {
   :root {
-    /* Enforce the base border radius token used across your configs */
     --radius: 0.75rem;
   }
 }
 
 @layer base {
+  /* Automatically assigns base variables to components during theme shifts */
   * {
-    @apply border-border;
+    @apply border-border dark:border-border-dark;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground dark:bg-background-dark dark:text-foreground-dark antialiased;
   }
 }
