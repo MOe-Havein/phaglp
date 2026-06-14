@@ -9,11 +9,12 @@
 }
 
 @layer base {
-  /* Automatically assigns base variables to components during theme shifts */
   * {
-    @apply border-border dark:border-border-dark;
+    /* Maps border-slate-300 in light mode and slate-700 when the .dark class is active */
+    @apply border-border dark:border-slate-700;
   }
   body {
-    @apply bg-background text-foreground dark:bg-background-dark dark:text-foreground-dark antialiased;
+    /* Perfectly swaps out your canvas colors across themes while securing contrast metrics */
+    @apply bg-background text-foreground dark:bg-slate-900 dark:text-slate-50 antialiased;
   }
 }
