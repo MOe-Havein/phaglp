@@ -31,7 +31,7 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                   <MenuColumn
                     key={menu.id}
                     title={menu.name}
-                    iconName={menu.icon} // 🆕 Pass the icon string from database model (e.g. "BookOpen")
+                    iconName={menu.icon ?? "Menu"} // 🆕 Pass the icon string from database model (e.g. "BookOpen")
                     links={menu.items.map((item) => ({
                       id: item.id,
                       label: item.name,
@@ -48,7 +48,7 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                   <MenuColumn
                     key={section.title}
                     title={section.title}
-                    iconName={section.icon} // 🆕 Supports static siteConfig icons
+                    iconName={section.icon ?? "Menu"} // 🆕 Supports static siteConfig icons
                     links={section.links.map((link) => ({
                       id: link.href,
                       label: link.title,
