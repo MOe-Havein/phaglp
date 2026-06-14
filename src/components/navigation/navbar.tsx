@@ -8,6 +8,10 @@ import {
   Shield,
   LogOut,
   ExternalLink,
+  BookOpen,
+  GraduationCap,
+  Users,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -33,7 +37,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DynamicMenu } from "@/lib/server/menus";
-import * as Icons from "lucide-react";
+
 
 // Clean dynamic icon loader
 function NavIcon({
