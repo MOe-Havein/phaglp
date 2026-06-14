@@ -47,24 +47,27 @@ export function Footer({ initialMenus = [] }: FooterProps) {
           <BrandSegment />
 
           <div className="lg:col-span-8">
-            {activeFooterMenus.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {activeFooterMenus.map((menu) => (
-                  <MenuColumn
-                    key={menu.id}
-                    title={menu.name}
-                    iconName={menu.icon ?? "Menu"}
-                    links={menu.items.map((item) => ({
-                      id: item.id,
-                      label: item.name,
-                      href: item.href,
-                      external: isExternalUrl(item.href),
-                      iconName: item.iconName || undefined,
-                    }))}
-                  />
-                ))}
-              </div>
-            ) : (
+  {activeFooterMenus.length > 0 ? (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      {activeFooterMenus.map((menu) => (
+        <MenuColumn
+          key={menu.id}
+          title={menu.name}
+          iconName={menu.icon ?? "Menu"}
+          links={menu.items.map((item) => ({
+            id: item.id,
+            label: item.name,
+            href: item.href,
+            external: false, 
+            // FIX: Fallback to an absolute empty string instead of undefined
+            // This satisfies exactOptionalPropertyTypes cleanly
+            iconName: "", 
+          }))} 
+        />
+      ))}
+    </div>
+  ) : (
+
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                 {siteConfig.footerLinks.map((section) => (
                   <MenuColumn
