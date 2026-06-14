@@ -11,6 +11,7 @@ export interface DynamicSubItem {
   isOpenNewTab: boolean;
   isActive: boolean;
   icon: string | null;
+  iconName?: string | null; 
 }
 
 export interface DynamicMenu {
