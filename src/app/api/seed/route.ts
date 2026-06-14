@@ -3,11 +3,66 @@ import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
-
-
 export const dynamic = "force-dynamic";
 
-// Custom descriptions and types for static courses to make them fit the premium design system
+// Consolidated data schema to remove dependencies on external static files
+const staticCourses = [
+  {
+    title: "Foundations of Stoic Wisdom",
+    slug: "foundations-of-stoic-wisdom",
+    price: 199,
+    instructor: "Initial Admin",
+  },
+  {
+    title: "Applied Ethics in the Modern Age",
+    slug: "applied-ethics-modern-age",
+    price: 249,
+    instructor: "Initial Admin",
+  },
+  {
+    title: "Cognitive Science & Philosophy",
+    slug: "cognitive-science-philosophy",
+    price: 299,
+    instructor: "Initial Admin",
+  },
+  {
+    title: "Logic & Critical Thinking Paradigms",
+    slug: "logic-critical-thinking",
+    price: 149,
+    instructor: "Initial Admin",
+  },
+];
+
+const staticLectures = [
+  {
+    title: "The Intersection of Formal Logic and Human Experience",
+    slug: "intersection-logic-experience",
+    content: "## The Architecture of Logic\n\nFormal systems construct boundaries within which deductive truth thrives. This lecture analyzes how computational architectures map directly to symbolic logic traditions.",
+    excerpt: "An exploration of how symbolic deduction guides human experiential systems.",
+    category: "Logic",
+    author: "Initial Admin",
+    tags: ["logic", "epistemology"],
+  },
+  {
+    title: "Stoicism in the Digital Age",
+    slug: "stoicism-digital-age",
+    content: "## Digital Stoicism\n\nMaintaining intentional focus amidst attention economies is a modern battlefield. Here, we repurpose cognitive exercises from Marcus Aurelius for digital information spaces.",
+    excerpt: "Applying traditional cognitive control strategies to distributed application environments.",
+    category: "Ethics",
+    author: "Initial Admin",
+    tags: ["stoicism", "mindset"],
+  },
+  {
+    title: "The Future of Philosophical Education",
+    slug: "future-philosophical-education",
+    content: "## Evolutionary Classrooms\n\nTraditional educational frameworks are scaling dynamically. We look into cross-functional development patterns bridging classical values with deep technological shifts.",
+    excerpt: "Analyzing the trajectory of pedagogy across distributed machine environments.",
+    category: "General",
+    author: "Initial Admin",
+    tags: ["education", "pedagogy"],
+  },
+];
+
 const coursePresets: Record<
   string,
   {
@@ -82,8 +137,8 @@ export async function GET() {
     };
 
     const allInstructorNames = new Set<string>();
-    staticCourses.forEach((c) => allInstructorNames.add(c.instructor));
-    staticLectures.forEach((l) => allInstructorNames.add(l.author));
+    staticCourses.forEach(c => allInstructorNames.add(c.instructor));
+    staticLectures.forEach(l => allInstructorNames.add(l.author));
 
     for (const name of allInstructorNames) {
       if (name === "Initial Admin") continue;
@@ -105,7 +160,7 @@ export async function GET() {
       instructorsMap[name] = user.id;
     }
 
-    // 3. Seed Courses from staticCourses
+    // 3. Seed Courses
     let coursesSeeded = 0;
     for (const c of staticCourses) {
       const existing = await prisma.course.findUnique({
@@ -129,7 +184,7 @@ export async function GET() {
             price: c.price,
             duration: preset.duration,
             courseType: preset.type,
-            published: true, // Make visible in catalog
+            published: true, 
             instructorId,
           },
         });
@@ -138,7 +193,7 @@ export async function GET() {
       }
     }
 
-    // 4. Seed Lectures from staticLectures
+    // 4. Seed Lectures
     let lecturesSeeded = 0;
     const lectureCoverImages: Record<string, string> = {
       "intersection-logic-experience":
@@ -166,14 +221,14 @@ export async function GET() {
             body: l.content,
             excerpt: l.excerpt,
             category: l.category,
-            published: true, // Make visible on public pages
+            published: true, 
             isFeatured: true,
             authorId,
             tags: l.tags,
             coverImage,
             readingTime: Math.max(
               5,
-              Math.ceil(l.content.split(/\s+/).length / 200),
+              Math.ceil(l.content.split(/\s+/).length / 200)
             ),
           },
         });
@@ -182,7 +237,6 @@ export async function GET() {
       }
     }
 
-    // Also seed the standard initial custom lectures if they are completely missing
     const totalLectures = await prisma.lecture.count();
     if (totalLectures === 0) {
       await prisma.lecture.create({
@@ -223,7 +277,7 @@ export async function GET() {
         error: "Failed to seed database",
         details: String(error),
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
