@@ -36,6 +36,7 @@ export interface FooterSocials {
 
 export interface FooterSectionConfig {
   layout: "simple" | "multi-column" | "minimal";
+  decriptionText?: string;
   copyrightText?: string;
   showNewsletterInput?: boolean;
   socials?: FooterSocials;
