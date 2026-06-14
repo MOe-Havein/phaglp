@@ -3,15 +3,18 @@ const nextConfig = {
   output: "standalone",
 
   reactStrictMode: true,
-
   poweredByHeader: false,
-   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+
+  compress: true,
+
+  eslint: {
+    ignoreDuringBuilds: false,
   },
 
-  // Prevent native/server-only packages from leaking into client bundles
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
   serverExternalPackages: [
     "@prisma/client",
     "prisma",
@@ -19,11 +22,18 @@ const nextConfig = {
     "jsdom",
   ],
 
-  typescript: {
-    ignoreBuildErrors: false,
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-icons",
+      "date-fns",
+      "@tanstack/react-query",
+    ],
   },
 
   images: {
+    formats: ["image/avif", "image/webp"],
+
     remotePatterns: [
       {
         protocol: "https",
@@ -34,11 +44,9 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-    formats: ["image/avif", "image/webp"],
   },
 
-  webpack: (config, { isServer }) => {
-    // Suppress jose/browser compression warnings
+  webpack(config, { isServer }) {
     config.ignoreWarnings = [
       ...(config.ignoreWarnings || []),
       { module: /node_modules\/jose/ },
@@ -46,13 +54,15 @@ const nextConfig = {
       { message: /DecompressionStream/ },
     ];
 
-    // Reduce Prisma bundle size on client
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
         path: false,
         os: false,
+        net: false,
+        tls: false,
+        child_process: false,
       };
     }
 
