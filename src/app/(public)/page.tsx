@@ -91,9 +91,11 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
       ctaHref={data.ctaHref}
     />
   ),
-  lectures: ({ data }) => <LatestLETURES title={data.title || undefined} />,
-  blogs: ({ data }) => <LatestBlogPosts title={data.title || undefined} />,
-  footer: () => null, 
+  // Replace lines 94-95 in your file with this:
+  lectures: () => <LatestLETURES />,
+  blogs: () => <LatestBlogPosts />,
+
+  
 };
 
 export async function generateMetadata(): Promise<Metadata> {
