@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import { Home, AlertTriangle } from "lucide-react";
 import { prisma, serializePrisma } from "@/lib/prisma";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
-import type { HomepageSection } from "@prisma/client";
+// 🔄 REMOVED: import type { HomepageSection } from "@prisma/client";
+import type { HomepageSection } from "@/types/homepage"; // 🆕 FIXED: Import your strict discriminated union type instead
 
 export const metadata = {
   title: "Homepage CMS — PHAGLP Control",
@@ -14,8 +15,10 @@ async function getSections(): Promise<HomepageSection[]> {
     const sections = await prisma.homepageSection.findMany({
       orderBy: { order: "asc" },
     });
-    // Ensure serializePrisma properly outputs types matching HomepageSection[]
-    return serializePrisma(sections) as HomepageSection[];
+    
+    // 🆕 FIXED: Force-cast serialized data to your strict custom configuration union type
+    const serialized = serializePrisma(sections);
+    return serialized as unknown as HomepageSection[];
   } catch (error) {
     console.error("Database connection failure in Homepage CMS:", error);
     throw new Error("Failed to load sections.");
