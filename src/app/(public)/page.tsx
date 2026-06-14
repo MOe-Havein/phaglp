@@ -11,7 +11,7 @@ import { Testimonials } from "@/components/home/testimonials";
 import { LatestBlogPosts } from "@/components/home/LatestBlogPosts";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
 import { CoursesPricing } from "@/components/home/CoursesPricing";
-import { Footer } from "@/components/home/Footer"; // 🆕 Import your newly refactored Lucide-enabled footer
+import { Footer } from "@/components/navigation/Footer"; // 🆕 Import your newly refactored Lucide-enabled footer
 
 // Component implementations
 function HeroSection({ data }: { data: HomepageSection }) {
