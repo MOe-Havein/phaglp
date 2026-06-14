@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { courses as staticCourses } from "@/data/courses";
-import { lectures as staticLectures } from "@/data/lectures";
+
+
 
 export const dynamic = "force-dynamic";
 
