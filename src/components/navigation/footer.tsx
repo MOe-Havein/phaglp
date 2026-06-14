@@ -1,5 +1,3 @@
-
-
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
@@ -14,13 +12,19 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+const LucideIconMap: Record<string, React.ComponentType<any>> = {
+  BookOpen,
+  GraduationCap,
+  Users,
+  Mail,
+  Menu,
+};
 
 interface FooterProps {
   initialMenus?: DynamicMenu[];
 }
 
 export function Footer({ initialMenus = [] }: FooterProps) {
-  // Filter active database menus that have valid child link arrays
   const activeFooterMenus = initialMenus.filter(
     (menu) => menu.isActive && menu.showInFooter && menu.items && menu.items.length > 0
   );
@@ -58,15 +62,14 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                   <MenuColumn
                     key={section.title}
                     title={section.title}
-                    // FIX: Safe string dictionary indexing to completely bypass type restrictions
                     iconName={(section as Record<string, any>)["icon"] ?? "Menu"} 
                     links={section.links.map((link) => ({
                       id: `${section.title}-${link.href}`,
                       label: link.title,
                       href: link.href,
                       external: false,
-                      // FIX: Safe dynamic property tracking for nested items
-                      iconName={(link as Record<string, any>)["icon"] ?? "", 
+                      // FIX: Restored closing parenthesis safely to prevent syntax tracking breaks
+                      iconName: (link as Record<string, any>)["icon"] ?? "", 
                     }))}
                   />
                 ))}
@@ -82,15 +85,14 @@ export function Footer({ initialMenus = [] }: FooterProps) {
 
 /**
  * Dynamic Icon Renderer Component
- * Looks up string names inside Lucide inventory safely with a fallback state
  */
 function DynamicLucideIcon({ name, className = "w-4 h-4" }: { name?: string; className?: string }) {
   if (!name) return null;
   
-  const IconComponent = (LucideIcons as Record<string, React.ComponentType<any>>)[name];
+  const IconComponent = LucideIconMap[name];
   
   if (!IconComponent) {
-    console.warn(`Lucide icon "${name}" does not exist.`);
+    console.warn(`Lucide icon "${name}" does not exist in our matching map layout.`);
     return null;
   }
 
