@@ -12,29 +12,31 @@ import { LatestBlogPosts } from "@/components/home/LatestBlogPosts";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
 import { CoursesPricing } from "@/components/home/CoursesPricing";
 
-// Component implementations
+// Corrected Word Splitting Implementation for dynamic text layout rendering
 function HeroSection({ data }: { data: HomepageSection }) {
   let headlinePre = "Supercharge Your";
   let headlineHighlight = "Intellectual Workflow";
   let headlinePost = "with AI Socratic Mapping";
 
   if (data.title) {
-    const words = data.title.split(" ");
+    const words = data.title.split(" ").filter((w) => w.trim() !== "");
+    
     if (words.length >= 3) {
       const segmentSize = Math.ceil(words.length / 3);
       headlinePre = words.slice(0, segmentSize).join(" ");
       headlineHighlight = words.slice(segmentSize, segmentSize * 2).join(" ");
       headlinePost = words.slice(segmentSize * 2).join(" ");
-// Replace lines 28-31 with this:
-} else if (words.length === 2) {
-  headlinePre = words[0] ?? "";          // Guarantees string fallback
-  headlineHighlight = words[1] ?? "";    // Guarantees string fallback
-  headlinePost = "";
-} else {
-
- 
+    } else if (words.length === 2) {
+      headlinePre = words[0] ?? "";
+      headlineHighlight = words[1] ?? "";
+      headlinePost = "";
+    } else if (words.length === 1) {
       headlinePre = "";
-      headlineHighlight = words ?? "";
+      headlineHighlight = words[0] ?? "";
+      headlinePost = "";
+    } else {
+      headlinePre = "";
+      headlineHighlight = "";
       headlinePost = "";
     }
   }
@@ -54,7 +56,7 @@ function HeroSection({ data }: { data: HomepageSection }) {
   );
 }
 
-// Map database section types directly to visual React layout components
+// Explicit lookup map targeting individual module block render interfaces
 const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
   hero: HeroSection,
   features: ({ data }) => (
@@ -91,9 +93,6 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
   ),
   lectures: ({ data }) => <LatestLETURES title={data.title || undefined} />,
   blogs: ({ data }) => <LatestBlogPosts title={data.title || undefined} />,
-  
-  // 💡 Safe fallback placeholder: ignore 'footer' database rows here
-  // because layout.tsx renders the structural footer natively.
   footer: () => null, 
 };
 
@@ -141,7 +140,6 @@ export default async function PublicHomepage() {
       orderBy: { order: "asc" },
     });
     
-    // Explicitly cast database rows to your custom HomepageSection union type
     sections = rawSections as unknown as HomepageSection[];
   } catch (error) {
     console.error("Failed to fetch homepage sections:", error);
@@ -170,7 +168,6 @@ export default async function PublicHomepage() {
         );
       })}
 
-      {/* Render the Courses Pricing Plans layout anchor block */}
       <CoursesPricing />
     </main>
   );
