@@ -21,6 +21,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DynamicMenu } from "@/lib/server/menus"
 import * as Icons from "lucide-react"
 
+function MenuIcon({
+  name,
+  className,
+}: {
+  name: string | null;
+  className?: string;
+}) {
+  if (!name) return <Icons.Menu className={className} />;
+  const IconComponent = (Icons as any)[name];
+  if (!IconComponent) return <Icons.Globe className={className} />;
+  return <IconComponent className={className} />;
+}
+
 // Clean dynamic icon loader
 function NavIcon({ name, className }: { name: string | null; className?: string }) {
   if (!name) return null
@@ -306,7 +319,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       target={menu.isOpenNewTab ? "_blank" : undefined}
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
-<NavIcon name={(menu as Record<string, any>)["icon"]} className="w-3.5 h-3.5 text-primary" />
+<MenuIcon name={(menu as Record<string, any>)["icon"]} className="w-3.5 h-3.5 text-primary" />
 
                       <span>{menu.name}</span>
                       {menu.isOpenNewTab && (
@@ -325,7 +338,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       className="block py-3 border-b text-base font-semibold text-foreground hover:text-primary"
                     >
                    // FIX: Safe string indexing to read optional static icons dynamically
-<NavIcon name={(item as Record<string, any>)["icon"]} className="w-3.5 h-3.5 text-primary" />
+<MenuIcon name={(item as Record<string, any>)["icon"]} className="w-3.5 h-3.5 text-primary" />
 
                       {item.title}
                     </Link>
