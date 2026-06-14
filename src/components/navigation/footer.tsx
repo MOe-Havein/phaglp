@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { DynamicMenu } from "@/lib/server/menus";
 import { ExternalLink } from "lucide-react";
-import * as LucideIcons from "lucide-react"; // 🆕 Import all icons to resolve them dynamically
+import * as LucideIcons from "lucide-react"; 
 
 interface FooterProps {
   initialMenus?: DynamicMenu[];
@@ -31,18 +31,16 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                   <MenuColumn
                     key={menu.id}
                     title={menu.name}
-                    iconName={menu.icon ?? "Menu"} // 🆕 Pass the icon string from database model (e.g. "BookOpen")
-                   
+                    iconName={menu.icon ?? "Menu"}
                     links={menu.items.map((item) => ({
-  id: item.id,
-  label: item.name,
-  href: item.href,
-  external: item.external,
-  iconName: item.iconName ?? "", 
-}))} 
-/>
-
-              
+                      id: item.id,
+                      label: item.name,
+                      href: item.href,
+                      external: item.external,
+                      iconName: item.iconName ?? "", 
+                    }))} 
+                  />
+                ))}
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
@@ -50,12 +48,12 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                   <MenuColumn
                     key={section.title}
                     title={section.title}
-                    iconName={section.icon ?? "Menu"} // 🆕 Supports static siteConfig icons
+                    iconName={section.icon ?? "Menu"}
                     links={section.links.map((link) => ({
                       id: link.href,
                       label: link.title,
                       href: link.href,
-                      iconName: link.icon, // 🆕 Supports static siteConfig link icons
+                      iconName: link.icon,
                     }))}
                   />
                 ))}
@@ -70,13 +68,12 @@ export function Footer({ initialMenus = [] }: FooterProps) {
 }
 
 /**
- * 🆕 Dynamic Icon Renderer Component
+ * Dynamic Icon Renderer Component
  * Looks up string names inside Lucide inventory safely with a fallback state
  */
 function DynamicLucideIcon({ name, className = "w-4 h-4" }: { name?: string; className?: string }) {
   if (!name) return null;
   
-  // Resolve string to component reference safely
   const IconComponent = (LucideIcons as Record<string, React.ComponentType<any>>)[name];
   
   if (!IconComponent) {
@@ -127,13 +124,12 @@ interface LinkItem {
   label: string;
   href: string;
   external?: boolean;
-  iconName?: string; // 🆕 Added optional icon identifier per link
+  iconName?: string;
 }
 
 function MenuColumn({ title, iconName, links }: { title: string; iconName?: string; links: LinkItem[] }) {
   return (
     <div className="space-y-4">
-      {/* 🆕 Menu Headers can now feature responsive icons beside titles */}
       <h3 className="text-sm font-bold tracking-wider uppercase text-gray-200 flex items-center gap-2">
         <DynamicLucideIcon name={iconName} className="w-4 h-4 text-blue-400" />
         {title}
@@ -147,11 +143,8 @@ function MenuColumn({ title, iconName, links }: { title: string; iconName?: stri
               rel={link.external ? "noopener noreferrer" : undefined}
               className="text-sm text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5 group w-fit"
             >
-              {/* 🆕 In-line link icons */}
               <DynamicLucideIcon name={link.iconName} className="w-3.5 h-3.5 text-gray-500 group-hover:text-blue-400 transition-colors" />
-              
               <span className="group-hover:underline underline-offset-4">{link.label}</span>
-              
               {link.external && (
                 <ExternalLink className="w-3 h-3 text-gray-500 group-hover:text-blue-400 transition-colors" />
               )}
