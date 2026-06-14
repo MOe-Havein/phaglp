@@ -33,13 +33,6 @@ interface NavbarProps {
   initialMenus?: DynamicMenu[]
 }
 
-interface LucideProps {
-  size?: number | string;
-  color?: string;
-  strokeWidth?: number;
-  absoluteStrokeWidth?: boolean;
-  [key: string]: any; // Any other SVG attributes
-}
 export function Navbar({ initialMenus = [] }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { data: session } = useSession()
@@ -277,7 +270,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                           className="flex items-center justify-between w-full py-2.5 text-base font-semibold text-foreground"
                         >
                           <div className="flex items-center gap-2.5">
-                            <NavIcon name={menu.icon} size={18} className="w-4 h-4 text-primary" />
+                            <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
                             <span>{menu.name}</span>
                           </div>
                           <ChevronDown
@@ -320,7 +313,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
                       <div className="flex items-center gap-2.5">
-                        <NavIcon name={menu.icon} size={18} className="w-4 h-4 text-primary" />
+                        <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
                         <span>{menu.name}</span>
                       </div>
                       {menu.isOpenNewTab && (
@@ -339,7 +332,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
                       <div className="flex items-center gap-2.5">
-                        <NavIcon name={(item as Record<string, any>)["icon"]} size={18} className="w-4 h-4 text-primary" />
+                        <NavIcon name={(item as Record<string, any>)["icon"]} className="w-4 h-4 text-primary" />
                         <span>{item.title}</span>
                       </div>
                     </Link>
