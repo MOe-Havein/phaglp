@@ -223,9 +223,7 @@ export function SectionEditModal({
                   {...register("visible")}
                   className="w-4 h-4 rounded text-primary focus:ring-primary bg-background border-border"
                 />
-                <span className="text-sm font-medium text-foreground">
-                  Visible publicly
-                </span>
+                <span className="text-sm font-medium text-text-primary">Visible publicly</span>
               </label>
             </div>
           </form>
@@ -235,7 +233,7 @@ export function SectionEditModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-foreground hover:bg-background rounded-md border border-transparent transition-colors"
+            className="px-4 py-2 text-sm font-medium text-text-primary hover:bg-background rounded-md border border-transparent transition-colors"
           >
             Cancel
           </button>
@@ -250,5 +248,5 @@ export function SectionEditModal({
         </div>
       </div>
     </div>
-  );
+  )
 }
