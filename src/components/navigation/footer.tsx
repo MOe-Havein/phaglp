@@ -12,6 +12,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 
+// Native dictionary matching string names to explicit imports safely
 const LucideIconMap: Record<string, React.ComponentType<any>> = {
   BookOpen,
   GraduationCap,
@@ -25,6 +26,7 @@ interface FooterProps {
 }
 
 export function Footer({ initialMenus = [] }: FooterProps) {
+  // Filter active database menus that have valid child link arrays and are marked for footer visibility
   const activeFooterMenus = initialMenus.filter(
     (menu) => menu.isActive && menu.showInFooter && menu.items && menu.items.length > 0
   );
@@ -50,8 +52,8 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                       id: item.id,
                       label: item.name,
                       href: item.href,
-                      external: false, 
-                      iconName: "", 
+                      external: item.isOpenNewTab, 
+                      iconName: item.icon ?? "", 
                     }))} 
                   />
                 ))}
@@ -68,7 +70,6 @@ export function Footer({ initialMenus = [] }: FooterProps) {
                       label: link.title,
                       href: link.href,
                       external: false,
-                      // FIX: Restored closing parenthesis safely to prevent syntax tracking breaks
                       iconName: (link as Record<string, any>)["icon"] ?? "", 
                     }))}
                   />
@@ -85,14 +86,14 @@ export function Footer({ initialMenus = [] }: FooterProps) {
 
 /**
  * Dynamic Icon Renderer Component
+ * Looks up string names inside our explicit mapped list safely with a fallback state
  */
 function DynamicLucideIcon({ name, className = "w-4 h-4" }: { name?: string; className?: string }) {
-  if (!name) return null;
+  if (!name || name.trim() === "") return null;
   
   const IconComponent = LucideIconMap[name];
   
   if (!IconComponent) {
-    console.warn(`Lucide icon "${name}" does not exist in our matching map layout.`);
     return null;
   }
 
@@ -146,7 +147,8 @@ function MenuColumn({ title, iconName, links }: { title: string; iconName?: stri
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-bold tracking-wider uppercase text-gray-200 flex items-center gap-2">
-        <DynamicLucideIcon name={iconName} className="w-4 h-4 text-blue-400" />
+        {/* FIX: Force exact optional parameter compliance via strict string fallback value */}
+        <DynamicLucideIcon name={iconName ?? ""} className="w-4 h-4 text-blue-400" />
         {title}
       </h3>
       <ul className="flex flex-col gap-2.5">
@@ -158,7 +160,8 @@ function MenuColumn({ title, iconName, links }: { title: string; iconName?: stri
               rel={link.external ? "noopener noreferrer" : undefined}
               className="text-sm text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5 group w-fit"
             >
-              <DynamicLucideIcon name={link.iconName} className="w-3.5 h-3.5 text-gray-500 group-hover:text-blue-400 transition-colors" />
+              {/* FIX: Cleaned up link icon name resolution values */}
+              <DynamicLucideIcon name={link.iconName ?? ""} className="w-3.5 h-3.5 text-gray-500 group-hover:text-blue-400 transition-colors" />
               <span className="group-hover:underline underline-offset-4">{link.label}</span>
               {link.external && (
                 <ExternalLink className="w-3 h-3 text-gray-500 group-hover:text-blue-400 transition-colors" />
