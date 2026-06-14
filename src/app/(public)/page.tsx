@@ -11,10 +11,10 @@ import { Testimonials } from "@/components/home/testimonials";
 import { LatestBlogPosts } from "@/components/home/LatestBlogPosts";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
 import { CoursesPricing } from "@/components/home/CoursesPricing";
+import { Footer } from "@/components/home/Footer"; // 🆕 Import your newly refactored Lucide-enabled footer
 
-// 1. Dedicated Component implementations
+// Component implementations
 function HeroSection({ data }: { data: HomepageSection }) {
-  // Dynamically segment the database-configured title into pre, highlight, and post headings for premium styling
   let headlinePre = "Supercharge Your";
   let headlineHighlight = "Intellectual Workflow";
   let headlinePost = "with AI Socratic Mapping";
@@ -52,8 +52,7 @@ function HeroSection({ data }: { data: HomepageSection }) {
   );
 }
 
-// 2. Strict Mapped Registry Lookup Matrix
-// Integrates your new 'blogs' model dynamically into the client page flow
+// Map database section types directly to visual React layout components
 const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
   hero: HeroSection,
   features: ({ data }) => (
@@ -89,19 +88,13 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
     />
   ),
   lectures: ({ data }) => <LatestLETURES title={data.title || undefined} />,
+  blogs: ({ data }) => <LatestBlogPosts title={data.title || undefined} />,
   
-  // 🆕 Dynamic Blog Post Component Mapping Integration
-  // Extracts extra runtime settings from database configurations safely
-  blogs: ({ data }) => (
-    <LatestBlogPosts 
-      title={data.title || undefined} 
-      limit={data.extraConfig?.limit}
-      layout={data.extraConfig?.layout}
-    />
-  ),
+  // 🆕 Hide footer from standard main flow mapping inside mid-page loop
+  // This prevents the footer from rendering out of place if ordered incorrectly
+  footer: () => null, 
 };
 
-// 3. SEO Metadata Generation Function Layer
 export async function generateMetadata(): Promise<Metadata> {
   let firstSection = null;
   let settings = null;
@@ -138,7 +131,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// 4. Primary Page View Controller Entry point
 export default async function PublicHomepage() {
   let sections: HomepageSection[] = [];
   try {
@@ -147,7 +139,7 @@ export default async function PublicHomepage() {
       orderBy: { order: "asc" },
     });
     
-    // 🆕 FIXED: Force type assertion to your strict Discriminated Union interface to satisfy Vercel checks
+    // Explicitly cast database rows to your custom HomepageSection union type
     sections = rawSections as unknown as HomepageSection[];
   } catch (error) {
     console.error("Failed to fetch homepage sections:", error);
@@ -161,24 +153,35 @@ export default async function PublicHomepage() {
     );
   }
 
-  return (
-    <main className="min-h-screen w-full flex flex-col">
-      {sections.map((section) => {
-        const Component = ComponentMap[section.type];
-        if (!Component) return null;
-        
-        return (
-          <React.Fragment key={section.id}>
-            <Component data={section} />
-            {section.type === "hero" && (
-              <div className="h-1 w-full bg-tinfoil" />
-            )}
-          </React.Fragment>
-        );
-      })}
+  // 🆕 Separate out the footer section configuration from your layout array
+  const footerSectionData = sections.find((section) => section.type === "footer");
+  
+  // Extract your nested relational dynamic menu lists if present inside your extraConfig column fields
+  const dynamicMenus = footerSectionData?.extraConfig?.linkGroups || undefined;
 
-      {/* Static Pricing Section block container fallback */}
-      <CoursesPricing />
+  return (
+    <main className="min-h-screen w-full flex flex-col justify-between">
+      {/* Scrollable Content Body Area */}
+      <div className="flex-grow flex flex-col">
+        {sections.map((section) => {
+          const Component = ComponentMap[section.type];
+          if (!Component) return null;
+          return (
+            <React.Fragment key={section.id}>
+              <Component data={section} />
+              {section.type === "hero" && (
+                <div className="h-1 w-full bg-tinfoil" />
+              )}
+            </React.Fragment>
+          );
+        })}
+
+        {/* Render Courses Pricing Plans layout anchor block */}
+        <CoursesPricing />
+      </div>
+
+      {/* 🆕 Refactored Footer Mounted Permanently at Base Level Layout Grid */}
+      <Footer initialMenus={dynamicMenus} />
     </main>
   );
 }
