@@ -8,8 +8,7 @@ import {
   Shield,
   LogOut,
   ExternalLink,
-  BookOpen,
-  GraduationCap,
+  ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -35,19 +34,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DynamicMenu } from "@/lib/server/menus";
+import * as LucideIcons from "lucide-react";
 
-
-// Clean dynamic icon loader
-function NavIcon({
+// Production-Grade Dynamic Icon Loader inside the navbar component
+function DynamicNavIcon({
   name,
-  className,
+  className = "w-4 h-4",
 }: {
-  name: string | null;
+  name: string | null | undefined;
   className?: string;
 }) {
-  if (!name) return null;
-  const IconComponent = (Icons as any)[name];
-  if (!IconComponent) return <Icons.ChevronRight className={className} />;
+  if (!name || name.trim() === "") return null;
+  
+  const IconComponent = (LucideIcons as Record<string, React.ComponentType<any>>)[name];
+  
+  if (!IconComponent) {
+    return <ChevronRight className={className} />;
+  }
+  
   return <IconComponent className={className} />;
 }
 
@@ -95,7 +99,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation Layout Viewports */}
         <nav className="hidden xl:flex items-center gap-4">
           {menusToRender.map((menu) => {
             // Case 1: Dropdown Menu (has sub-items and no direct link)
@@ -104,10 +108,12 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 <DropdownMenu key={menu.id}>
                   <DropdownMenuTrigger asChild={false}>
                     <button
-                      className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground focus:outline-none transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60"
+                      className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground focus:outline-none transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60"
                       aria-controls={`dropdown-${menu.id}`}
                     >
-                      {menu.name}
+                      {/* 🆕 Core dynamic component handling header top category rows */}
+                      <DynamicNavIcon name={menu.icon} className="w-4 h-4 text-muted-foreground" />
+                      <span>{menu.name}</span>
                       <ChevronDown className="w-3.5 h-3.5 opacity-60" />
                     </button>
                   </DropdownMenuTrigger>
@@ -132,7 +138,8 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                           }
                           className="flex items-center gap-2.5 w-full py-2 px-3 text-sm"
                         >
-                          <NavIcon
+                          {/* 🆕 Core dynamic item rendering database-driven link row icons */}
+                          <DynamicNavIcon
                             name={subItem.icon}
                             className="w-4 h-4 text-primary"
                           />
@@ -150,7 +157,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
               );
             }
 
-            // Case 2: Direct Link
+            // Case 2: Direct Single Link
             const linkHref = menu.href || "#";
             return (
               <Link
@@ -158,23 +165,25 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 href={linkHref}
                 target={menu.isOpenNewTab ? "_blank" : undefined}
                 rel={menu.isOpenNewTab ? "noopener noreferrer" : undefined}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60 flex items-center gap-1"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60 flex items-center gap-1.5"
               >
-                {menu.name}
+                <DynamicNavIcon name={menu.icon} className="w-4 h-4 text-muted-foreground" />
+                <span>{menu.name}</span>
                 {menu.isOpenNewTab && <ExternalLink className="w-3 h-3" />}
               </Link>
             );
           })}
 
-          {/* If no menus seeded yet, show default fallback items */}
+          {/* Fallback Section: Shows static backup arrays if database has not seeded yet */}
           {menusToRender.length === 0 &&
             siteConfig.navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 flex items-center gap-1.5"
               >
-                {item.title}
+                <DynamicNavIcon name={(item as any).icon ?? ""} className="w-4 h-4 text-muted-foreground" />
+                <span>{item.title}</span>
               </Link>
             ))}
 
@@ -211,21 +220,26 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                         {session.user.name || "User"}
                       </div>
                       <div className="text-xs text-muted-foreground truncate">
-                        {session.user.email}
+                        {session.user.email || ""}
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      asChild
-                      className="rounded-xl cursor-pointer"
-                    >
-                      <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2 w-full"
-                      >
+                    
+                    {session.user.role === "ADMIN" && (
+                      <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
+                        <Link href="/admin" className="flex items-center gap-2 py-2">
+                          <Shield className="w-4 h-4 text-primary" />
+                          <span>Admin Control</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+
+                    <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
+                      <Link href="/dashboard" className="flex items-center gap-2 py-2">
                         <LayoutDashboard className="w-4 h-4 text-primary" />
-                        My Dashboard
+                        <span>Student Dashboard</span>
                       </Link>
+
                     </DropdownMenuItem>
                     {session.user.role === "ADMIN" && (
                       <DropdownMenuItem
@@ -368,8 +382,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       target={menu.isOpenNewTab ? "_blank" : undefined}
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
+                                <DynamicNavIcon name={menu.icon} className="w-4 h-4 text-muted-foreground" />
                           <NavIcon
-                                  name={subItem.icon}
+                                  name={Item.icon}
                                   className="w-3.5 h-3.5 text-primary"
                                 />
                       <span>{menu.name}</span>
