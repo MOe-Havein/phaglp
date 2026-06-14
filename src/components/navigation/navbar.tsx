@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Menu, ChevronDown, LayoutDashboard, Shield, LogOut, ExternalLink } from "lucide-react"
+import { ChevronDown, LayoutDashboard, Shield, LogOut, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { siteConfig } from "@/config/site"
@@ -21,24 +21,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DynamicMenu } from "@/lib/server/menus"
 import * as Icons from "lucide-react"
 
-function MenuIcon({
-  name,
-  className,
-}: {
-  name: string | null;
-  className?: string;
-}) {
-  if (!name) return <Icons.Menu className={className} />;
-  const IconComponent = (Icons as any)[name];
-  if (!IconComponent) return <Icons.Globe className={className} />;
-  return <IconComponent className={className} />;
-}
-
-// Clean dynamic icon loader
+// Unified NavIcon component shared across all layouts
 function NavIcon({ name, className }: { name: string | null; className?: string }) {
-  if (!name) return null
+  if (!name) return <Icons.Menu className={className} />
   const IconComponent = (Icons as any)[name]
-  if (!IconComponent) return <Icons.ChevronRight className={className} />
+  if (!IconComponent) return <Icons.Globe className={className} />
   return <IconComponent className={className} />
 }
 
@@ -51,11 +38,11 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
   const { data: session } = useSession()
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Use initialMenus if present; filter to only show in header
   const menusToRender = initialMenus.length > 0 ? initialMenus.filter((m) => m.showInHeader) : []
 
   const toggleMobileCategory = (id: string) => {
@@ -89,10 +76,11 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 <DropdownMenu key={menu.id}>
                   <DropdownMenuTrigger asChild={false}>
                     <button
-                      className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground focus:outline-none transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60"
+                      className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground focus:outline-none transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60"
                       aria-controls={`dropdown-${menu.id}`}
                     >
-                      {menu.name}
+                      <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
+                      <span>{menu.name}</span>
                       <ChevronDown className="w-3.5 h-3.5 opacity-60" />
                     </button>
                   </DropdownMenuTrigger>
@@ -134,23 +122,25 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 href={linkHref}
                 target={menu.isOpenNewTab ? "_blank" : undefined}
                 rel={menu.isOpenNewTab ? "noopener noreferrer" : undefined}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60 flex items-center gap-1"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60 flex items-center gap-1.5"
               >
-                {menu.name}
+                <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
+                <span>{menu.name}</span>
                 {menu.isOpenNewTab && <ExternalLink className="w-3 h-3" />}
               </Link>
             )
           })}
 
-          {/* If no menus seeded yet, show default fallback items */}
+          {/* Fallback Static configuration elements */}
           {menusToRender.length === 0 &&
             siteConfig.navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 flex items-center gap-1.5"
               >
-                {item.title}
+                <NavIcon name={(item as Record<string, any>)["icon"]} className="w-4 h-4 text-primary" />
+                <span>{item.title}</span>
               </Link>
             ))}
 
@@ -243,7 +233,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
             {mounted && (
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <Menu className="w-6 h-6" />
+                  <Icons.Menu className="w-6 h-6" />
                 </Button>
               </SheetTrigger>
             )}
@@ -279,7 +269,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                           onClick={() => toggleMobileCategory(menu.id)}
                           className="flex items-center justify-between w-full py-2.5 text-base font-semibold text-foreground"
                         >
-                          <span>{menu.name}</span>
+                          <div className="flex items-center gap-2.5">
+                            <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
+                            <span>{menu.name}</span>
+                          </div>
                           <ChevronDown
                             className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
                               isExpanded ? "rotate-180 text-primary" : ""
@@ -295,9 +288,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                                 onClick={() => setIsOpen(false)}
                                 target={subItem.isOpenNewTab ? "_blank" : undefined}
                                 rel={subItem.isOpenNewTab ? "noopener noreferrer" : undefined}
-                                className="flex items-center gap-2 py-2 text-sm text-muted-foreground hover:text-foreground"
+                                className="flex items-center gap-2.5 py-2 text-sm text-muted-foreground hover:text-foreground"
                               >
-                                <NavIcon name={subItem.icon} className="w-3.5 h-3.5 text-primary" />
+                                <NavIcon name={subItem.icon} className="w-4 h-4 text-primary" />
                                 <span className="flex-1 truncate">{subItem.name}</span>
                                 {subItem.isOpenNewTab && (
                                   <ExternalLink className="w-3 h-3 scale-75" />
@@ -319,9 +312,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       target={menu.isOpenNewTab ? "_blank" : undefined}
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
-<MenuIcon name={(menu as Record<string, any>)["icon"]} className="w-3.5 h-3.5 text-primary" />
-
-                      <span>{menu.name}</span>
+                      <div className="flex items-center gap-2.5">
+                        <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
+                        <span>{menu.name}</span>
+                      </div>
                       {menu.isOpenNewTab && (
                         <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                       )}
@@ -335,17 +329,17 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       key={item.href}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="block py-3 border-b text-base font-semibold text-foreground hover:text-primary"
+                      className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
-                   // FIX: Safe string indexing to read optional static icons dynamically
-<MenuIcon name={(item as Record<string, any>)["icon"]} className="w-3.5 h-3.5 text-primary" />
-
-                      {item.title}
+                      <div className="flex items-center gap-2.5">
+                        <NavIcon name={(item as Record<string, any>)["icon"]} className="w-4 h-4 text-primary" />
+                        <span>{item.title}</span>
+                      </div>
                     </Link>
                   ))}
               </div>
 
-              {/* Mobile Auth Actions at the bottom */}
+              {/* Mobile Auth Actions */}
               <div className="p-6 border-t mt-auto space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
                 {session ? (
                   <div className="flex flex-col gap-3">
