@@ -15,7 +15,7 @@ This project is a Next.js 15 application using TypeScript, Prisma, and TailwindC
 
 The `docs/` directory contains several context files and predefined prompts to guide the generation of specific features:
 
-- `GeminiPrompts.md`: A collection of high-level prompts for core systems.
+- `AGENT_RULES.md`: agent rules
 - `AdminContext.md`: Context for the admin dashboard and user management.
 - `AuthContext.md`: Context for the authentication system.
 - `DatabaseContext.md`: (Placeholder) Context for database schema and relations.
