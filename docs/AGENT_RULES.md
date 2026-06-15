@@ -1,5 +1,4 @@
-
-     # PHAGLP AI Engineering Rules
+      # PHAGLP AI Engineering Rules
 
       ## Core Principle
 
