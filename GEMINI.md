@@ -16,8 +16,8 @@ This project is a Next.js 15 application using TypeScript, Prisma, and TailwindC
 The `docs/` directory contains several context files and predefined prompts to guide the generation of specific features:
 
 - `AGENT_RULES.md`: agent rules
-- `ARCHITECTURE_CONTRACT.md`: Context for the admin dashboard and user management.
-- `AuthContext.md`: Context for the authentication system.
+- `ARCHITECTURE_CONTRACT.md`: Context for the ARCHITECTUR .
+- `agent-boundaries.json`: Agent Context for the boundaries.
 - `DatabaseContext.md`: (Placeholder) Context for database schema and relations.
 - `ThemeContext.md`: (Placeholder) Context for the UI theme system.
 
