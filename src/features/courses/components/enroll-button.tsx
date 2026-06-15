@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { enrollInCourse } from "@/lib/course-actions";
+import { enrollInCourse } from "@/features/courses/actions/course-actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";

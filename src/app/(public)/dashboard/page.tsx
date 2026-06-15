@@ -24,9 +24,9 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { SubscriptionTier } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { CustomizeModal } from "@/components/dashboard/customize-modal";
+import { CustomizeModal } from "@/features/dashboard/components/customize-modal";
 import { format } from "date-fns";
-import { getUserCertificates } from "@/lib/certificate-actions";
+import { getUserCertificates } from "@/features/certificates/actions/certificate-actions";
 
 export const dynamic = "force-dynamic";
 

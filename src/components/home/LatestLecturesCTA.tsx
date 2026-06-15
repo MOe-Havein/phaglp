@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getLatestLectures } from "@/lib/lecture-queries";
+import { getLatestLectures } from "@/features/courses/queries/lecture-queries";
 import {
   Card,
   CardContent,

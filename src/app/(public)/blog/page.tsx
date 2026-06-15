@@ -1,5 +1,5 @@
 import prisma, { safeDbQuery } from "@/lib/prisma";
-import { BlogListing } from "@/components/blog/blog-listing";
+import { BlogListing } from "@/features/blog/components/blog-listing";
 import { unstable_cache } from "next/cache";
 import { redis } from "@/lib/redis";
 

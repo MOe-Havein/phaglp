@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import { ChevronLeft, Save, Loader2, Sparkles } from "lucide-react";
-import { createBlogPost } from "@/lib/blog-actions";
+import { createBlogPost } from "@/features/blog/actions/blog-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

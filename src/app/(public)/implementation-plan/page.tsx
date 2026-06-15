@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { ImplementationPlanClient } from "@/components/dashboard/implementation-plan-client";
+import { ImplementationPlanClient } from "@/features/dashboard/components/implementation-plan-client";
 
 export const metadata = {
   title: "PHAGLP — Interactive Implementation Plan",

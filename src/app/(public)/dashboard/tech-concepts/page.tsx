@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { TechConceptsDashboard } from "@/components/dashboard/tech-concepts-dashboard";
+import { TechConceptsDashboard } from "@/features/dashboard/components/tech-concepts-dashboard";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Package, Plus } from "lucide-react";
 import Link from "next/link";
 import { getAssetsForAdmin } from "@/lib/server/assets";
-import { AssetTable } from "@/components/admin/AssetTable";
+import { AssetTable } from "@/features/admin/components/AssetTable";
 
 export const metadata = {
   title: "Asset Inventory — PHAGLP Control",

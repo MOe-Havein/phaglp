@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock, GraduationCap, BookOpen } from "lucide-react";
 import { MarkdownViewer } from "@/components/editor/markdown-viewer";
 import { auth } from "@/auth";
-import { EnrollButton } from "@/components/courses/enroll-button";
+import { EnrollButton } from "@/features/courses/components/enroll-button";
 import { getFoxyCartUrl } from "@/lib/foxy";
 
 export default async function CourseDetailPage({

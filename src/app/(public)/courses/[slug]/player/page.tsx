@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
-import { getCourseProgress } from "@/lib/certificate-actions";
-import { CoursePlayer } from "@/components/courses/course-player";
+import { getCourseProgress } from "@/features/certificates/actions/certificate-actions";
+import { CoursePlayer } from "@/features/courses/components/course-player";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { GraduationCap } from "lucide-react";

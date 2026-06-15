@@ -6,45 +6,47 @@ const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Source Sans 3", "sans-serif"],
+      },
       colors: {
-        // High-Contrast Base Semantic Color Layout Rules
-        background: "#f8fafc",      // slate-50 (Premium clean light canvas)
-        foreground: "#0f172a",      // slate-900 (Crisp dark text)
-        card: "#ffffff",            // Pure white light sheets
+        background: "#f8f9ff",
+        foreground: "#181c22",
+        card: "#ffffff",
         popover: "#ffffff",
-        
-        // Brand & Theme Core Token Mapping (Stable Flat Strings)
-        primary: "#145387",         // Deep premium brand blue (Passes 4.5:1 against white text)
-        secondary: "#edf2f4",       // Your 'frost' color for light mode structural backgrounds
-        muted: "#f1f5f9",           // slate-100
-        "text-muted": "#475569",    // slate-600 (Accessible secondary text over white/frost)
-        accent: "#1f7bc6",          // Your 'perfectsky' blue highlight token
-        
-        // System Feedback Status Tokens
+        primary: {
+          DEFAULT: "#0040a1",
+          foreground: "#ffffff",
+        },
+        secondary: {
+          DEFAULT: "#565e71",
+          foreground: "#ffffff",
+        },
+        muted: "#ebeef6",
+        "text-muted": "#424654",
+        accent: "#0056d2",
         success: "#2d6a13",
         warning: "#b54111",
-        destructive: "#c83313",     // Inferno red
-        
-        // High-Contrast Borders & Inputs
-        border: "#cbd5e1",          // slate-300 for visible item boundaries
-        input: "#cbd5e1",
-        ring: "#1f7bc6",
-
-        // Your Custom Brand Palette Extensions
-        frost: "#edf2f4",
-        platinum: "#c5cbd3",
-        tinfoil: "#a3a9b1",
-        perfectsky: "#1f7bc6",
-        tartorange: "#e65c23",
-        laser: "#7cb625",
-        inferno: "#c83313",
-        celebration: "#f1d48c",
-
+        destructive: "#ba1a1a",
+        border: "#c3c6d6",
+        input: "#31394a",
+        ring: "#0056d2",
+        surface: {
+          DEFAULT: "#f8f9ff",
+          dim: "#d7dae2",
+          bright: "#f8f9ff",
+          container: "#ebeef6",
+          "container-lowest": "#ffffff",
+          "container-low": "#f1f3fc",
+          "container-high": "#e5e8f0",
+          "container-highest": "#dfe2eb",
+        },
         chart: {
           "1": "#1d4ed8",
           "2": "#10b981",
@@ -54,20 +56,21 @@ const config: Config = {
         },
         sidebar: {
           DEFAULT: "#ffffff",
-          foreground: "#334155",
-          primary: "#145387",
+          foreground: "#181c22",
+          primary: "#0040a1",
           "primary-foreground": "#ffffff",
-          accent: "#edf2f4",
-          "accent-foreground": "#0f172a",
-          border: "#edf2f4",
-          ring: "#1f7bc6",
+          accent: "#ebeef6",
+          "accent-foreground": "#181c22",
+          border: "#c3c6d6",
+          ring: "#0056d2",
         },
       },
       borderRadius: {
-        xl: "0.75rem",
-        lg: "0.75rem",
-        md: "calc(0.75rem - 2px)",
-        sm: "calc(0.75rem - 4px)",
+        xl: "1.5rem",
+        lg: "1rem",
+        md: "0.75rem",
+        DEFAULT: "0.5rem",
+        sm: "0.25rem",
       },
       keyframes: {
         "accordion-down": {

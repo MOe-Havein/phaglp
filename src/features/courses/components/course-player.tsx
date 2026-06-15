@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { toggleLessonProgress } from "@/lib/certificate-actions";
+import { toggleLessonProgress } from "@/features/certificates/actions/certificate-actions";
 
 interface Lesson {
   id: string;

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Home, AlertTriangle } from "lucide-react";
 import { prisma, serializePrisma } from "@/lib/prisma";
-import { HomepageEditor } from "@/components/admin/HomepageEditor";
+import { HomepageEditor } from "@/features/admin/components/HomepageEditor";
 // 🔄 REMOVED: import type { HomepageSection } from "@prisma/client";
 import type { HomepageSection } from "@/types/homepage"; // 🆕 FIXED: Import your strict discriminated union type instead
 

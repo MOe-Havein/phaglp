@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
-import { getAllCertificates } from "@/lib/certificate-actions";
-import { CertificatesManager } from "@/components/admin/certificates-manager";
+import { getAllCertificates } from "@/features/certificates/actions/certificate-actions";
+import { CertificatesManager } from "@/features/certificates/components/certificates-manager";
 import { Card } from "@/components/ui/card";
 import { ShieldAlert } from "lucide-react";
 

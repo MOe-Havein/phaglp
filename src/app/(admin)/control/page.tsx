@@ -11,9 +11,9 @@ import {
   ArrowRight,
   DollarSign,
 } from "lucide-react";
-import { StatsGrid } from "@/components/admin/StatsGrid";
+import { StatsGrid } from "@/features/admin/components/StatsGrid";
 import { getAdminDashboardStats } from "@/lib/server/assets";
-import { StatsSkeleton } from "@/components/admin/StatsSkeleton";
+import { StatsSkeleton } from "@/features/admin/components/StatsSkeleton";
 
 export const metadata = {
   title: "Admin Dashboard — PHAGLP Control Hub",

@@ -1,7 +1,7 @@
-import { verifyCertificate } from "@/lib/certificate-actions";
+import { verifyCertificate } from "@/features/certificates/actions/certificate-actions";
 import { Sparkles, ShieldCheck, Globe, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PrintButton } from "@/components/certificates/print-button";
+import { PrintButton } from "@/features/certificates/components/print-button";
 import Link from "next/link";
 import { format } from "date-fns";
 
