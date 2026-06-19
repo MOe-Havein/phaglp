@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import prisma from "@/lib/db/prisma";
 
 import { SaaSHero } from "@/components/home/SaaSHero";
+import { LatestLETURES } from "@/components/home/LatestLETURES";
 import dynamic from "next/dynamic";
 
 const Features = dynamic(() =>
@@ -85,6 +86,7 @@ export default function PublicHomepage() {
       />
 
       <CoursesPricing />
+      <LatestLETURES />
 
       <LatestBlogPosts />
     </main>

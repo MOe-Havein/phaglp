@@ -40,6 +40,7 @@ const nextConfig = {
     minimumCacheTTL: 60,
     loader: 'custom',
     loaderFile: './src/utils/cloudinary-loader.ts', // Points to a file returning the Cloudinary fetch string
+    unoptimized: true,
     remotePatterns: [
  
       {
@@ -47,11 +48,7 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: 'images.unsplash.com',
-        pathname: "/**",
-      },
+   
     ],
   },
 

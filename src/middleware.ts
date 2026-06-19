@@ -53,7 +53,6 @@ export default auth(
       "img-src 'self' data: blob: " +
         "https://res.cloudinary.com " +
         "https://*.cloudinary.com " +
-        "https://*.unsplash.com " +
         "https://cdn.foxycart.com",
 
       // Fonts
