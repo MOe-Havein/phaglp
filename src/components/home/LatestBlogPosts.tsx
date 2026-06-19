@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { BlogSection } from "@/components/home/BlogSection";
 import type { Post } from "@/components/home/BlogCard";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
+import { getCloudinaryFetchUrl } from "@/utils/cloudinary-loader";
 import { Button } from "@/components/ui/button";
 import {
   Card,

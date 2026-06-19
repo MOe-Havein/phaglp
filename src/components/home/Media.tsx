@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
+import { getCloudinaryFetchUrl } from "@/utils/cloudinary-loader";
 
 interface MediaProps {
   title?: string | null;
