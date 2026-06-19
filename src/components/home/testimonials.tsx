@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Star, Quote, ArrowRight } from "lucide-react";
 import Image from "next/image";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-loader";
+import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
 
 const testimonials = [
   {

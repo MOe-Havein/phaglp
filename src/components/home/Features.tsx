@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Cpu, GraduationCap, ShieldAlert, Award } from "lucide-react";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-loader";
+import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
 
 interface FeaturesProps {
   title?: string | null;

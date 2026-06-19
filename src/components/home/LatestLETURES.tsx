@@ -1,7 +1,7 @@
 import React from "react";
 import { prisma, safeDbQuery } from "@/lib/prisma";
 import { LatestLecturesClient } from "./LatestLecturesClient";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-loader";
+import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
 
 // EXACT DATA SCHEMA REQUIRED BY THE SPECIFICATION
 export interface LETURES {
