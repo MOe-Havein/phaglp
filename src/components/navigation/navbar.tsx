@@ -80,10 +80,12 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
             className="flex items-center gap-1.5 hover:opacity-95 transition-opacity"
           >
             <Image
-              src="/phaglp-logo.png"
+              src="/phaglp-logo.svg"
               alt="PHAGLP Logo"
               width={64}
               height={64}
+              priority // Ensures the logo loads instantly as a critical asset
+              unoptimized // Bypasses unnecessary pixel conversion engines   
               className="h-9 w-auto object-contain"
             />
             <span className="text-xl font-bold tracking-tight text-primary dark:text-blue-400">

@@ -1,6 +1,10 @@
 "use client";
 
-import { CldUploadButton } from "next-cloudinary";
+import {
+  CldUploadButton,
+  CloudinaryUploadWidgetResults,
+  CloudinaryUploadWidgetError,
+} from "next-cloudinary";
 import { UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,13 +26,13 @@ export function CloudinaryUploadButton({
         multiple: false,
         folder: "phaglp/lectures",
       }}
-      onSuccess={(result: any) => {
-        if (result?.info?.secure_url) {
-          onUpload(result.info.secure_url);
+      onSuccess={(result: CloudinaryUploadWidgetResults) => {
+        if (typeof result.info === "object" && result.info !== null && "secure_url" in result.info) {
+          onUpload(result.info.secure_url as string);
           toast.success("Image uploaded successfully!");
         }
       }}
-      onError={(error: any) => {
+      onError={(error: CloudinaryUploadWidgetError) => {
         console.error("Upload failed", error);
         toast.error("Failed to upload image");
       }}

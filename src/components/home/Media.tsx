@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 
 interface MediaProps {
   title?: string | null;
@@ -67,10 +67,13 @@ export function Media({
 
             {/* Image Wrapper */}
             <div className="relative overflow-hidden rounded-b-xl aspect-video bg-slate-950">
-              <Image
+              <CldImage
                 src={mediaUrl}
                 alt={mediaAlt || "Interactive Media"}
                 fill
+                format="auto"
+                quality="auto"
+                sizes="(max-width: 1024px) 100vw, 1024px"
                 className="object-cover transition-transform duration-700 hover:scale-102"
               />
             </div>

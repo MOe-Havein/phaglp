@@ -60,7 +60,7 @@ const sidebarGroups: SidebarGroup[] = [
       { title: "Certificates", href: "/control/certificates", icon: Award },
       { title: "Blog Posts", href: "/control/blog", icon: FileText },
       { title: "Pages", href: "/control/pages", icon: FileCode },
-      { title: "Homepage CMS", href: "/control/homepage", icon: Home },
+
       { title: "Menus", href: "/control/menus", icon: Navigation },
       { title: "Assets", href: "/control/assets", icon: Package },
     ],

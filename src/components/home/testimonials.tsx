@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Star, Quote, ArrowRight } from "lucide-react";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 
 const testimonials = [
   {
@@ -120,10 +120,12 @@ export function Testimonials({
 
                 <div className="flex items-center gap-4 border-t pt-6 border-slate-100 dark:border-slate-800">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-slate-100 shrink-0">
-                    <Image
+                    <CldImage
                       src={t.avatar}
                       alt={t.name}
                       fill
+                      format="auto"
+                      quality="auto"
                       className="object-cover"
                     />
                   </div>

@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Cpu, GraduationCap, ShieldAlert, Award } from "lucide-react";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 
 
 interface FeaturesProps {
@@ -125,10 +125,13 @@ export function Features({
                   <div className="w-3 h-3 rounded-full bg-green-400" />
                 </div>
                 <div className="relative aspect-video rounded-b-xl overflow-hidden bg-slate-100">
-                  <Image
+                  <CldImage
                     src={mediaUrl as string}
                     alt={mediaAlt || "Feature preview"}
                     fill
+                    format="auto"
+                    quality="auto"
+                    sizes="(max-width: 1024px) 100vw, 1024px"
                     className="object-cover select-none pointer-events-none transition-transform duration-700 hover:scale-103"
                   />
                 </div>

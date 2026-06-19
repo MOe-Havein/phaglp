@@ -77,6 +77,7 @@ export async function POST(request: Request) {
         },
       );
 
+      nodeStream.on("error", (err) => reject(err));
       nodeStream.pipe(uploadStream);
     });
 

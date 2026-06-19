@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
+import { CldImage } from "next-cloudinary";
 
 interface LectureCardProps {
   title: string;
@@ -112,10 +113,14 @@ export function LectureCard({
         <div className="flex justify-center mb-6">
           {coverImage ? (
             <div className="relative w-32 h-32 rounded-full overflow-hidden">
-              <img
+              <CldImage
                 src={coverImage}
                 alt={title}
-                className="w-full h-full object-cover"
+                fill
+                format="auto"
+                quality="auto"
+                sizes="(max-width: 768px) 128px, 128px"
+                className="object-cover"
               />
             </div>
           ) : (

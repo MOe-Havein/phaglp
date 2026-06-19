@@ -12,5 +12,6 @@ export default function cloudinaryLoader({ src, width, quality }: NextImageLoade
   
   // Appends the Next.js target width dynamically to optimize payload bytes
   const q = quality || "auto";
-  return `https://res.cloudinary.com/demo/image/fetch/f_auto,q_${q},w_${width},c_limit/${src}`;
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "demo";
+  return `https://res.cloudinary.com/${cloudName}/image/fetch/f_auto,q_${q},w_${width},c_limit/${src}`;
 }
