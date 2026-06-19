@@ -31,7 +31,7 @@ const nextConfig = {
       "clsx",
       "tailwind-merge",
       "prisma",
-      "@prisma/client",
+     
       "@vercel/analytics/next",
       "@prisma/client/runtime",
       "@tanstack/react-query",
