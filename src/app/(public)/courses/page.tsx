@@ -1,42 +1,35 @@
 import prisma, { safeDbQuery } from "@/lib/prisma";
-import { CourseCard } from "@/components/cards/course-card";
 import { unstable_cache } from "next/cache";
 import { auth } from "@/auth";
-import { redis } from "@/lib/redis";
 import { computeDiscount } from "@/lib/discount";
 import { CourseType } from "@prisma/client";
+import { CourseCard } from "@/components/cards/course-card";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Clock,
   BookOpen,
   GraduationCap,
   Award,
   Sparkles,
   Percent,
+  Clock,
+  CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
 
 // Handle database states safely at runtime
 export const dynamic = "force-dynamic";
 
+// Next.js native engine automatically coordinates the 300s window memory layers
 const getCachedCourses = unstable_cache(
   async () => {
-    // 1. Try Redis first
-    const cacheKey = "public-courses";
-    const cached = await redis.get<any[]>(cacheKey);
-    if (cached) {
-      return cached;
-    }
-
-    // 2. Fallback to DB
     const result = await safeDbQuery(async () => {
       return prisma.course.findMany({
         where: {
@@ -55,15 +48,10 @@ const getCachedCourses = unstable_cache(
       });
     }, []);
 
-    const data = result.data || [];
-
-    // 3. Store in Redis for 5 minutes (300s)
-    await redis.set(cacheKey, data, { ex: 300 });
-
-    return data;
+    return result?.data || [];
   },
   ["public-courses"],
-  { tags: ["courses"], revalidate: 300 },
+  { tags: ["courses"], revalidate: 300 }
 );
 
 export default async function CoursesPage() {
@@ -87,7 +75,7 @@ export default async function CoursesPage() {
         select: { incomeLevel: true, worldTier: true },
       });
     });
-    const dbUser = result.data;
+    const dbUser = result?.data;
     if (dbUser) {
       discountPct = computeDiscount(dbUser.incomeLevel, dbUser.worldTier);
     }
@@ -148,11 +136,11 @@ export default async function CoursesPage() {
         {/* Stunning Premium Hero */}
         <div className="text-center max-w-3xl mx-auto mb-16 relative p-6 rounded-lg">
           <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-primary/10 rounded-full blur-3xl opacity-50 dark:opacity-30" />
-          <Badge className="bg-gradient-to-r from-inferno via-celebration to-laser text-white border-0 px-4 py-1.5 rounded-full mb-6 font-semibold tracking-wide uppercase">
-            OUR ELITE COURSES?!
+          <Badge className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white border-0 px-4 py-1.5 rounded-full mb-6 font-semibold tracking-wide uppercase">
+            OUR ELITE COURSES
           </Badge>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-none">
-            ELITE COURSES?!
+            ELITE COURSES
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed font-medium">
             Elite Courses, these are the scientific modules of The General
@@ -164,7 +152,7 @@ export default async function CoursesPage() {
 
           {/* Discount Promotion Banner */}
           {discountPct > 0 && (
-            <div className="mt-8 inline-flex items-center gap-3 bg-red-500/10 dark:bg-red-500/20 border border-red-500/30 rounded-2xl px-6 py-3 text-red-700 dark:text-red-300 font-semibold text-sm shadow-sm animate-pulse">
+            <div className="mt-8 inline-flex items-center gap-3 bg-red-500/10 dark:bg-red-500/20 border border-red-500/30 rounded-2xl px-6 py-3 text-red-700 dark:text-red-300 font-semibold text-sm shadow-sm">
               <Percent className="w-5 h-5 shrink-0" />
               <span>
                 Welcome, {userName}! You qualify for a{" "}
@@ -203,79 +191,67 @@ export default async function CoursesPage() {
                   key={prog.type}
                   className="group relative border border-slate-200/60 dark:border-slate-800/80 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden bg-white/70 dark:bg-slate-900/60 backdrop-blur-md flex flex-col justify-between"
                 >
-                  <div>
-                    {/* Program Header Gradient Banner */}
-                    <div className={`h-2 bg-gradient-to-r ${prog.gradient}`} />
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      {/* Program Header Gradient Banner */}
+                      <div className={`h-2 bg-gradient-to-r ${prog.gradient}`} />
 
-                    <CardHeader className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div
-                          className={`p-3 rounded-xl bg-gradient-to-br ${prog.gradient} text-white shadow-md`}
-                        >
-                          <IconComponent className="w-6 h-6" />
-                        </div>
-                        <Badge
-                          variant="outline"
-                          className="text-xs font-semibold px-3 py-1 bg-slate-50 dark:bg-slate-800 border-slate-200/80 dark:border-slate-700"
-                        >
-                          GP Certified
-                        </Badge>
-                      </div>
-                      <CardTitle className="text-2xl font-bold tracking-tight">
-                        {prog.title}
-                      </CardTitle>
-                    </CardHeader>
-
-                    <CardContent className="p-6 pt-0 space-y-4">
-                      <p className="text-sm text-muted-foreground leading-relaxed italic">
-                        {prog.description}
-                      </p>
-
-                      <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
-                        <Clock className="w-4 h-4 text-slate-400" />
-                        <span>Duration: {prog.duration}</span>
-                      </div>
-
-                      <div className="space-y-2.5 pt-2">
-                        {prog.features.map((feat) => (
-                          <div
-                            key={feat}
-                            className="flex items-center gap-2 text-xs text-muted-foreground"
-                          >
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                            <span>{feat}</span>
+                      <CardHeader className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`p-3 rounded-xl bg-gradient-to-br ${prog.gradient} text-white shadow-md`}>
+                            <IconComponent className="w-6 h-6" />
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </div>
+                          <Badge
+                            variant="outline"
+                            className="text-xs font-semibold px-3 py-1 bg-slate-50 dark:bg-slate-800 border-slate-200/80 dark:border-slate-700"
+                          >
+                            GP Certified
+                          </Badge>
+                        </div>
+                        <CardTitle className="text-2xl font-bold tracking-tight">
+                          {prog.title}
+                        </CardTitle>
+                      </CardHeader>
 
-                  <CardFooter className="p-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/20">
-                    <div className="flex flex-col">
-                      {discountPct > 0 ? (
-                        <>
+                      <CardContent className="p-6 pt-0 space-y-4">
+                        <p className="text-sm text-muted-foreground line-clamp-3">
+                          {prog.description}
+                        </p>
+                        
+                        <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
+                          <Clock className="w-4 h-4" />
+                          <span>{prog.duration}</span>
+                        </div>
+
+                        <ul className="space-y-2 pt-2">
+                          {prog.features.map((feature, i) => (
+                            <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </div>
+
+                    <CardFooter className="p-6 border-t bg-slate-50/50 dark:bg-slate-900/20 flex items-center justify-between">
+                      <div className="flex flex-col">
+                        {discountPct > 0 && (
                           <span className="text-xs text-muted-foreground line-through">
                             ${prog.originalPrice}
                           </span>
-                          <span className="text-2xl font-black text-red-600 dark:text-red-400">
-                            ${finalPrice}
-                          </span>
-                        </>
-                      ) : (
+                        )}
                         <span className="text-2xl font-black text-slate-900 dark:text-white">
-                          ${prog.originalPrice}
+                          ${finalPrice}
                         </span>
-                      )}
-                    </div>
-                    <Button
-                      asChild
-                      className={`bg-gradient-to-r ${prog.gradient} hover:opacity-90 text-white font-semibold rounded-xl shadow-md border-0 transition-opacity`}
-                    >
-                      <Link href={`/courses?type=${prog.type}`}>
-                        Enroll Now
-                      </Link>
-                    </Button>
-                  </CardFooter>
+                      </div>
+                      <Button asChild size="sm">
+                        <Link href={`/courses?type=${prog.type}`}>
+                          Explore Program
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </div>
                 </Card>
               );
             })}

@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-
   reactStrictMode: true,
   poweredByHeader: false,
-
   compress: true,
 
   eslint: {
@@ -15,6 +13,17 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
 
+  // ✅ Next.js 14+: Moved to the root configuration level
+  optimizePackageImports: [
+    "lucide-react",
+    "@radix-ui/react-icons",
+    "date-fns",
+    "lodash",
+    "clsx",
+    "tailwind-merge",
+    "@vercel/analytics/next",
+  ],
+
   serverExternalPackages: [
     "@prisma/client",
     "prisma",
@@ -22,33 +31,20 @@ const nextConfig = {
     "jsdom",
   ],
 
-  experimental: {
-    optimizePackageImports: [
-      "lucide-react",
-      "@radix-ui/react-icons",
-      "date-fns",
-      "lodash",
-      "clsx",
-      "tailwind-merge",
-
-      "@vercel/analytics/next",
-    ],
-  },
-
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60,
     loader: 'custom',
-    loaderFile: './src/utils/cloudinary-loader.ts', // Points to a file returning the Cloudinary fetch string
-    unoptimized: true,
+    loaderFile: './src/utils/cloudinary-loader.ts', // ✅ This will now run perfectly!
+    
+    // ❌ REMOVED: unoptimized: true (Removing this lets your loader actually optimize images)
+    
     remotePatterns: [
- 
       {
         protocol: "https",
         hostname: 'res.cloudinary.com',
         pathname: "/**",
       },
-   
     ],
   },
 

@@ -6,7 +6,6 @@ import { Role } from "@prisma/client";
 import { auth } from "@/auth";
 import { z } from "zod";
 import { slugify } from "@/lib/utils";
-import { redis } from "@/lib/redis";
 import readingTime from "reading-time";
 
 const blogPostSchema = z.object({
@@ -82,13 +81,11 @@ export async function createBlogPost(data: any) {
       },
     });
 
-    // Instant Redis Cache Eviction
-    await redis.del("blog-posts");
-
-    // Dynamic Router Eviction
+    // Dynamic Router & Tag Eviction (Natively cleans the unstable_cache pool)
     revalidatePath("/blog");
     revalidatePath("/");
     revalidateTag("blog-posts");
+    
     return { success: true, data: serializePrisma(post) };
   } catch (error: any) {
     console.error("Failed to create blog post:", error);
@@ -132,14 +129,12 @@ export async function updateBlogPost(id: string, data: any) {
       data: updateData,
     });
 
-    // Instant Redis Cache Eviction
-    await redis.del("blog-posts");
-
-    // Dynamic Router Eviction
+    // Dynamic Router & Tag Eviction (Natively cleans the unstable_cache pool)
     revalidatePath("/blog");
     revalidatePath(`/blog/${post.slug}`);
     revalidatePath("/");
     revalidateTag("blog-posts");
+    
     return { success: true, data: serializePrisma(post) };
   } catch (error: any) {
     console.error("Failed to update blog post:", error);
@@ -155,14 +150,12 @@ export async function deleteBlogPost(id: string) {
     await ensureAdminOrInstructor();
     const post = await prisma.post.delete({ where: { id } });
 
-    // Instant Redis Cache Eviction
-    await redis.del("blog-posts");
-
-    // Dynamic Router Eviction
+    // Dynamic Router & Tag Eviction (Natively cleans the unstable_cache pool)
     revalidatePath("/blog");
     revalidatePath(`/blog/${post.slug}`);
     revalidatePath("/");
     revalidateTag("blog-posts");
+    
     return { success: true };
   } catch (error: any) {
     console.error("Failed to delete blog post:", error);

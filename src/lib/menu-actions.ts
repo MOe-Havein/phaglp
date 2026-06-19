@@ -4,7 +4,6 @@ import { prisma, safeDbQuery } from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { Role } from "@prisma/client";
 import { auth } from "@/auth";
-import { redis } from "@/lib/redis";
 
 async function ensureAdminAccess() {
   const session = await auth();
@@ -15,11 +14,11 @@ async function ensureAdminAccess() {
 
 export async function clearNavigationCache() {
   try {
+    // Next.js native cache eviction wipes the cached menus instantly
     revalidateTag("site-menus");
     revalidatePath("/control/navigation");
     revalidatePath("/control/menus");
     revalidatePath("/");
-    await redis.del("global:navigation");
   } catch (error) {
     console.error("Failed to clear navigation cache:", error);
   }
