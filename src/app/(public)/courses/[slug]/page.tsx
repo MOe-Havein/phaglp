@@ -5,7 +5,13 @@ export const dynamic = "force-dynamic";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock, GraduationCap, BookOpen } from "lucide-react";
-import { MarkdownViewer } from "@/components/editor/markdown-viewer";
+import nextDynamic from "next/dynamic";
+
+const MarkdownViewer = nextDynamic(
+  () => import("@/components/editor/markdown-viewer").then((mod) => mod.MarkdownViewer),
+  { ssr: true }
+);
+
 import { auth } from "@/auth";
 import { EnrollButton } from "@/features/courses/components/enroll-button";
 import { getFoxyCartUrl } from "@/lib/foxy";

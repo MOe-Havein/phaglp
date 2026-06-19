@@ -7,7 +7,12 @@ import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
 
 import { unstable_cache } from "next/cache";
-import { MarkdownViewer } from "@/components/editor/markdown-viewer";
+import nextDynamic from "next/dynamic";
+
+const MarkdownViewer = nextDynamic(
+  () => import("@/components/editor/markdown-viewer").then((mod) => mod.MarkdownViewer),
+  { ssr: true }
+);
 
 // Ensure dynamic rendering to handle database state safely at runtime
 export const dynamic = "force-dynamic";
