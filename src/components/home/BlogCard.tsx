@@ -56,8 +56,9 @@ export function BlogCard({ post }: BlogCardProps) {
           <Image
             src={post.coverImage}
             alt={post.title}
+            fill
             className={[
-              "w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105",
+              "object-cover transition-transform duration-500 ease-out group-hover:scale-105",
               imageLoaded ? "opacity-100" : "opacity-0",
             ].join(" ")}
             onLoad={() => setImageLoaded(true)}

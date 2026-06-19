@@ -7,9 +7,10 @@ interface NextImageLoaderProps {
 }
 
 // Next.js requires the 'default' export keyword for image loaders
-export default function cloudinaryLoader({ src, width }: NextImageLoaderProps): string {
+export default function cloudinaryLoader({ src, width, quality }: NextImageLoaderProps): string {
   if (!src.startsWith("http")) return src;
   
   // Appends the Next.js target width dynamically to optimize payload bytes
-  return `https://cloudinary.com{width}/${src}`;
+  const q = quality || "auto";
+  return `https://res.cloudinary.com/demo/image/fetch/f_auto,q_${q},w_${width},c_limit/${src}`;
 }

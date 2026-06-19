@@ -126,11 +126,10 @@ export function Features({
                 </div>
                 <div className="relative aspect-video rounded-b-xl overflow-hidden bg-slate-100">
                   <Image
-                    src={mediaUrl ?? ""}
+                    src={mediaUrl as string}
                     alt={mediaAlt || "Feature preview"}
-                    className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 hover:scale-103"
-                    loading="lazy"
-                    decoding="async"
+                    fill
+                    className="object-cover select-none pointer-events-none transition-transform duration-700 hover:scale-103"
                   />
                 </div>
               </div>

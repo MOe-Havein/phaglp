@@ -66,13 +66,12 @@ export function Media({
             </div>
 
             {/* Image Wrapper */}
-            <div className="overflow-hidden rounded-b-xl aspect-video bg-slate-950">
-              <Image 
-                src={mediaUrl ?? ""}
+            <div className="relative overflow-hidden rounded-b-xl aspect-video bg-slate-950">
+              <Image
+                src={mediaUrl}
                 alt={mediaAlt || "Interactive Media"}
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-102"
-                loading="lazy"
-                decoding="async"
+                fill
+                className="object-cover transition-transform duration-700 hover:scale-102"
               />
             </div>
           </motion.div>

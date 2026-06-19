@@ -1,7 +1,6 @@
 import React from "react";
 import { prisma, safeDbQuery } from "@/lib/prisma";
 import { LatestLecturesClient } from "./LatestLecturesClient";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
 
 // EXACT DATA SCHEMA REQUIRED BY THE SPECIFICATION
 export interface LETURES {
@@ -46,10 +45,7 @@ export async function LatestLETURES({
           item.excerpt ||
           item.body.replace(/[#*`]/g, "").substring(0, 150) + "...",
         slug: item.slug,
-        coverImage: getCloudinaryFetchUrl(
-          item.coverImage ||
-            "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop",
-        ),
+        coverImage: item.coverImage || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop",
         category: item.category,
         readingTime: `${item.readingTime || 5} min read`,
         createdAt:

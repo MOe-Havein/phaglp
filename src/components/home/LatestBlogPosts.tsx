@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { BlogSection } from "@/components/home/BlogSection";
 import type { Post } from "@/components/home/BlogCard";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,7 +37,7 @@ export function LatestBlogPosts() {
             item.excerpt ||
             item.body.replace(/[#*`]/g, "").substring(0, 150) + "...",
           slug: item.slug,
-          coverImage: item.coverImage ? getCloudinaryFetchUrl(item.coverImage) : "",
+          coverImage: item.coverImage || "",
           category: item.category,
           readingTime: `${item.readingTime || 5} min read`,
           createdAt: item.createdAt,
