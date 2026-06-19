@@ -80,7 +80,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
             className="flex items-center gap-1.5 hover:opacity-95 transition-opacity"
           >
             <Image
-              src="/phaglp-logo.svg"
+              src="/phaglp-logo.webp"
               alt="PHAGLP Logo"
               width={64}
               height={64}

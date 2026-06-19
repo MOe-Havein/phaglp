@@ -38,4 +38,6 @@ Examples:
 - run_tests
 
 The runtime determines the actual command execution.
+ no `cat` for file creation, always `grep_search` when possible.
+avoiding `ls`, `cat`, `grep`, and `sed` for their general purposes.
 The model only requests tool invocations.

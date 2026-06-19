@@ -116,7 +116,12 @@ export function LectureCard({
           {coverImage ? (
             <div className="relative w-32 h-32 rounded-full overflow-hidden">
               <CldImage
-                src={coverImage}
+                src={(() => {
+                  const isExternal = coverImage?.includes('://');
+                  if (!isExternal) return coverImage as string;
+                  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
+                  return `https://res.cloudinary.com/${cloudName}/image/fetch/${encodeURIComponent(coverImage as string)}`;
+                })()}
                 alt={title}
                 fill
                 format="auto"
