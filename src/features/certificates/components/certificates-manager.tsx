@@ -21,7 +21,10 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { issueCertificate, revokeCertificate } from "@/features/certificates/actions/certificate-actions";
+import {
+  issueCertificate,
+  revokeCertificate,
+} from "@/features/certificates/actions/certificate-actions";
 
 interface User {
   id: string;

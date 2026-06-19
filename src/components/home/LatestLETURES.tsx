@@ -24,7 +24,7 @@ const FALLBACK_LECTURES: LETURES[] = [
       "Delve into the foundational mechanics of cognitive architectures, artificial general intelligence constraints, and alignment methodologies.",
     slug: "cognitive-architectures-and-ai-alignment",
     coverImage: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=200&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=200&auto=format&fit=crop&q=80",
     ),
     category: "Computer Science",
     readingTime: "12 min read",
@@ -37,7 +37,7 @@ const FALLBACK_LECTURES: LETURES[] = [
       "Analyze how traditional Socratic search for universal truth translates to statistical representations in high-dimensional vector spaces.",
     slug: "epistemology-in-the-digital-era",
     coverImage: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=200&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=200&auto=format&fit=crop&q=80",
     ),
     category: "Philosophy",
     readingTime: "15 min read",
@@ -50,7 +50,7 @@ const FALLBACK_LECTURES: LETURES[] = [
       "A comprehensive introduction to qubit mathematics, state transformations, Bell states, and experimental quantum computational frameworks.",
     slug: "quantum-information-theory-gates-states",
     coverImage: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200&auto=format&fit=crop&q=80"
+      "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200&auto=format&fit=crop&q=80",
     ),
     category: "Physics",
     readingTime: "18 min read",
@@ -90,7 +90,7 @@ export async function LatestLETURES({
         slug: item.slug,
         coverImage: getCloudinaryFetchUrl(
           item.coverImage ||
-            "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop"
+            "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop",
         ),
         category: item.category,
         readingTime: `${item.readingTime || 5} min read`,

@@ -20,14 +20,14 @@ Then paste the output.
 
 Also send these files:
 
-* `package.json`
-* `tsconfig.json`
-* `next.config.ts` or `.js`
-* `middleware.ts`
-* `components.json`
-* root `app/layout.tsx`
-* your Supabase setup files
-* one representative feature module
+- `package.json`
+- `tsconfig.json`
+- `next.config.ts` or `.js`
+- `middleware.ts`
+- `components.json`
+- root `app/layout.tsx`
+- your Supabase setup files
+- one representative feature module
 
 That is enough for a serious architecture review.
 
@@ -67,11 +67,11 @@ Then paste the result here.
 
 That is actually the ideal workflow because:
 
-* the agent has full repo visibility
-* it can inspect imports
-* analyze dependencies
-* detect duplication
-* understand boundaries
+- the agent has full repo visibility
+- it can inspect imports
+- analyze dependencies
+- detect duplication
+- understand boundaries
 
 much better than web scraping GitHub.
 
@@ -85,13 +85,13 @@ Not generic ones.
 
 Example:
 
-* naming conventions
-* data layer conventions
-* server action patterns
-* feature boundaries
-* provider hierarchy
-* Supabase access rules
-* component layering
+- naming conventions
+- data layer conventions
+- server action patterns
+- feature boundaries
+- provider hierarchy
+- Supabase access rules
+- component layering
 
 ---
 
@@ -99,9 +99,9 @@ Example:
 
 Which folders the AI agent may:
 
-* freely modify
-* cautiously modify
-* never touch
+- freely modify
+- cautiously modify
+- never touch
 
 Critical for preventing repo corruption.
 
@@ -111,14 +111,14 @@ Critical for preventing repo corruption.
 
 I’ll identify:
 
-* abstraction drift
-* monolithic components
-* hydration issues
-* App Router anti-patterns
-* server/client leaks
-* Supabase misuse
-* over-clientification
-* dependency bloat
+- abstraction drift
+- monolithic components
+- hydration issues
+- App Router anti-patterns
+- server/client leaks
+- Supabase misuse
+- over-clientification
+- dependency bloat
 
 ---
 
@@ -142,5 +142,5 @@ That is how teams successfully use AI agents on serious Next.js codebases.
 
 Right now your most important step is:
 
-* extracting the repo architecture cleanly
-* before letting autonomous implementation expand the codebase.
+- extracting the repo architecture cleanly
+- before letting autonomous implementation expand the codebase.

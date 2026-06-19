@@ -78,7 +78,12 @@ export function CreateBlogPostForm() {
       {/* Header Toolbar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" asChild aria-label="Back to Blog Posts">
+          <Button
+            variant="outline"
+            size="icon"
+            asChild
+            aria-label="Back to Blog Posts"
+          >
             <Link href="/control/blog">
               <ChevronLeft className="h-4 w-4" />
             </Link>

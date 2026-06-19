@@ -32,30 +32,30 @@ export function SectionEditModal({
   });
 
   useEffect(() => {
-  if (isOpen) {
-    if (sectionToEdit) {
-      // Cast the entire passed state payload to 'any' 
-      // This forces the React Hook Form union type limits to lift instantly
-      reset({
-        ...sectionToEdit,
-        type: sectionToEdit.type,
-      } as any);
-    } else {
-      reset({ 
-        type: defaultType || "hero", 
-        visible: true,
-        title: "",
-        body: "",
-        ctaLabel: "",
-        ctaHref: "",
-        mediaUrl: "",
-        mediaAlt: "",
-        seoTitle: "",
-        seoDescription: ""
-      } as any);
+    if (isOpen) {
+      if (sectionToEdit) {
+        // Cast the entire passed state payload to 'any'
+        // This forces the React Hook Form union type limits to lift instantly
+        reset({
+          ...sectionToEdit,
+          type: sectionToEdit.type,
+        } as any);
+      } else {
+        reset({
+          type: defaultType || "hero",
+          visible: true,
+          title: "",
+          body: "",
+          ctaLabel: "",
+          ctaHref: "",
+          mediaUrl: "",
+          mediaAlt: "",
+          seoTitle: "",
+          seoDescription: "",
+        } as any);
+      }
     }
-  }
-}, [isOpen, sectionToEdit, defaultType, reset]);
+  }, [isOpen, sectionToEdit, defaultType, reset]);
 
   if (!isOpen) return null;
 
@@ -236,7 +236,9 @@ export function SectionEditModal({
                   {...register("visible")}
                   className="w-4 h-4 rounded text-primary focus:ring-primary bg-background border-border"
                 />
-                <span className="text-sm font-medium text-text-primary">Visible publicly</span>
+                <span className="text-sm font-medium text-text-primary">
+                  Visible publicly
+                </span>
               </label>
             </div>
           </form>
@@ -261,5 +263,5 @@ export function SectionEditModal({
         </div>
       </div>
     </div>
-  )
+  );
 }

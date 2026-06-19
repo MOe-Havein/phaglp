@@ -26,7 +26,7 @@ const CustomTextDirection = Extension.create({
         (direction: "ltr" | "rtl") =>
         ({ commands }: any) => {
           return this.options.types.every((type: string) =>
-            commands.updateAttributes(type, { dir: direction })
+            commands.updateAttributes(type, { dir: direction }),
           );
         },
     } as any;

@@ -1,7 +1,6 @@
 "use client";
 // Change this import location to point to your server actions file instead:
-import { updateLecture, deleteLecture } from "@/lib/cms-actions"; 
-
+import { updateLecture, deleteLecture } from "@/lib/cms-actions";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,7 +73,7 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
 
   async function handleDelete() {
     const confirmDelete = window.confirm(
-      "Are you absolutely sure you want to permanently delete this lecture? This action cannot be undone."
+      "Are you absolutely sure you want to permanently delete this lecture? This action cannot be undone.",
     );
     if (!confirmDelete) return;
 
@@ -118,7 +117,12 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button type="button" variant="outline" disabled={loading || deleting} asChild>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={loading || deleting}
+            asChild
+          >
             <Link href="/control/lectures">Cancel</Link>
           </Button>
           <Button
@@ -176,7 +180,9 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
             </CardHeader>
             <CardContent className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md font-medium leading-relaxed">
-                Once deleted, this piece cannot be retrieved. All cached layout links, slugs, and relational database data will immediately be purged.
+                Once deleted, this piece cannot be retrieved. All cached layout
+                links, slugs, and relational database data will immediately be
+                purged.
               </p>
               <Button
                 type="button"
@@ -265,7 +271,8 @@ export function EditLectureForm({ lecture }: EditLectureFormProps) {
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-xs leading-relaxed text-blue-600 dark:text-blue-500 font-medium">
-                Use AI to refine your philosophical insight or generate new variations.
+                Use AI to refine your philosophical insight or generate new
+                variations.
               </p>
               <Button
                 type="button"

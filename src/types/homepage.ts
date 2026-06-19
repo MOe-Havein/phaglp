@@ -11,7 +11,7 @@ export const SECTION_TYPES = [
   "footer", // 🆕 Added footer section type
 ] as const;
 
-export type SectionType = typeof SECTION_TYPES[number];
+export type SectionType = (typeof SECTION_TYPES)[number];
 
 /**
  * 1. Specialized Footer Data Interfaces
@@ -88,15 +88,25 @@ export type CreateSectionInput =
   | (BaseSectionFields & { type: "cta" })
   | (BaseSectionFields & { type: "media" })
   | (BaseSectionFields & { type: "testimonials" })
-  | (BaseSectionFields & { type: "features"; extraConfig?: FeaturesSectionConfig })
-  | (BaseSectionFields & { type: "lectures"; extraConfig?: LecturesSectionConfig })
+  | (BaseSectionFields & {
+      type: "features";
+      extraConfig?: FeaturesSectionConfig;
+    })
+  | (BaseSectionFields & {
+      type: "lectures";
+      extraConfig?: LecturesSectionConfig;
+    })
   | (BaseSectionFields & { type: "blogs"; extraConfig?: BlogSectionConfig })
   | (BaseSectionFields & { type: "footer"; extraConfig?: FooterSectionConfig }); // 🆕 Type-safe structure for footers
 
 export type UpdateSectionInput = Partial<CreateSectionInput>;
 
-export type HomepageSection = Omit<PrismaHomepageSection, "type" | "extraConfig"> & CreateSectionInput & {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+export type HomepageSection = Omit<
+  PrismaHomepageSection,
+  "type" | "extraConfig"
+> &
+  CreateSectionInput & {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };

@@ -1,14 +1,27 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ChevronDown, LayoutDashboard, Shield, LogOut, ExternalLink } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { siteConfig } from "@/config/site"
-import { ThemeToggle } from "@/components/ui/ThemeToggle"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet"
-import { useState, useEffect } from "react"
-import { useSession, signOut } from "next-auth/react"
+import { Button } from "@/components/ui/button";
+import {
+  ChevronDown,
+  LayoutDashboard,
+  Shield,
+  LogOut,
+  ExternalLink,
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { siteConfig } from "@/config/site";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,44 +29,56 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DynamicMenu } from "@/lib/server/menus"
-import * as Icons from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DynamicMenu } from "@/lib/server/menus";
+import * as Icons from "lucide-react";
 
 // Unified NavIcon component shared across all layouts
-function NavIcon({ name, className }: { name: string | null; className?: string }) {
-  if (!name) return <Icons.Menu className={className} />
-  const IconComponent = (Icons as any)[name]
-  if (!IconComponent) return <Icons.Globe className={className} />
-  return <IconComponent className={className} />
+function NavIcon({
+  name,
+  className,
+}: {
+  name: string | null;
+  className?: string;
+}) {
+  if (!name) return <Icons.Menu className={className} />;
+  const IconComponent = (Icons as any)[name];
+  if (!IconComponent) return <Icons.Globe className={className} />;
+  return <IconComponent className={className} />;
 }
 
 interface NavbarProps {
-  initialMenus?: DynamicMenu[]
+  initialMenus?: DynamicMenu[];
 }
 
 export function Navbar({ initialMenus = [] }: NavbarProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const { data: session } = useSession()
-  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null)
-  const [mounted, setMounted] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
+    null,
+  );
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  const menusToRender = initialMenus.length > 0 ? initialMenus.filter((m) => m.showInHeader) : []
+  const menusToRender =
+    initialMenus.length > 0 ? initialMenus.filter((m) => m.showInHeader) : [];
 
   const toggleMobileCategory = (id: string) => {
-    setExpandedMobileMenu(expandedMobileMenu === id ? null : id)
-  }
+    setExpandedMobileMenu(expandedMobileMenu === id ? null : id);
+  };
 
   return (
     <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50 transition-all duration-300">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <Link href="/" className="flex items-center gap-1.5 hover:opacity-95 transition-opacity">
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 hover:opacity-95 transition-opacity"
+          >
             <Image
               src="/phaglp-logo.png"
               alt="PHAGLP Logo"
@@ -79,7 +104,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground focus:outline-none transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900/60"
                       aria-controls={`dropdown-${menu.id}`}
                     >
-                      <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
+                      <NavIcon
+                        name={menu.icon}
+                        className="w-4 h-4 text-primary"
+                      />
                       <span>{menu.name}</span>
                       <ChevronDown className="w-3.5 h-3.5 opacity-60" />
                     </button>
@@ -98,11 +126,20 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                         <Link
                           href={subItem.href}
                           target={subItem.isOpenNewTab ? "_blank" : undefined}
-                          rel={subItem.isOpenNewTab ? "noopener noreferrer" : undefined}
+                          rel={
+                            subItem.isOpenNewTab
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
                           className="flex items-center gap-2.5 w-full py-2 px-3 text-sm"
                         >
-                          <NavIcon name={subItem.icon} className="w-4 h-4 text-primary" />
-                          <span className="flex-1 truncate">{subItem.name}</span>
+                          <NavIcon
+                            name={subItem.icon}
+                            className="w-4 h-4 text-primary"
+                          />
+                          <span className="flex-1 truncate">
+                            {subItem.name}
+                          </span>
                           {subItem.isOpenNewTab && (
                             <ExternalLink className="w-3 h-3 text-muted-foreground" />
                           )}
@@ -111,11 +148,11 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-              )
+              );
             }
 
             // Case 2: Direct Link
-            const linkHref = menu.href || "#"
+            const linkHref = menu.href || "#";
             return (
               <Link
                 key={menu.id}
@@ -128,7 +165,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 <span>{menu.name}</span>
                 {menu.isOpenNewTab && <ExternalLink className="w-3 h-3" />}
               </Link>
-            )
+            );
           })}
 
           {/* Fallback Static configuration elements */}
@@ -139,7 +176,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 href={item.href}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 flex items-center gap-1.5"
               >
-                <NavIcon name={(item as Record<string, any>)["icon"]} className="w-4 h-4 text-primary" />
+                <NavIcon
+                  name={(item as Record<string, any>)["icon"]}
+                  className="w-4 h-4 text-primary"
+                />
                 <span>{item.title}</span>
               </Link>
             ))}
@@ -157,7 +197,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       <Avatar className="w-7 h-7 border border-primary/20">
                         <AvatarImage src={session.user.image || ""} />
                         <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold uppercase">
-                          {session.user.name ? session.user.name.substring(0, 2) : "US"}
+                          {session.user.name
+                            ? session.user.name.substring(0, 2)
+                            : "US"}
                         </AvatarFallback>
                       </Avatar>
                       <span className="text-xs font-semibold text-foreground max-w-[100px] truncate">
@@ -179,15 +221,27 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
-                      <Link href="/dashboard" className="flex items-center gap-2 w-full">
+                    <DropdownMenuItem
+                      asChild
+                      className="rounded-xl cursor-pointer"
+                    >
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 w-full"
+                      >
                         <LayoutDashboard className="w-4 h-4 text-primary" />
                         My Dashboard
                       </Link>
                     </DropdownMenuItem>
                     {session.user.role === "ADMIN" && (
-                      <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
-                        <Link href="/control" className="flex items-center gap-2 w-full">
+                      <DropdownMenuItem
+                        asChild
+                        className="rounded-xl cursor-pointer"
+                      >
+                        <Link
+                          href="/control"
+                          className="flex items-center gap-2 w-full"
+                        >
                           <Shield className="w-4 h-4 text-red-500" />
                           Control Panel
                         </Link>
@@ -232,12 +286,19 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             {mounted && (
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Open navigation menu">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Open navigation menu"
+                >
                   <Icons.Menu className="w-6 h-6" />
                 </Button>
               </SheetTrigger>
             )}
-            <SheetContent side="right" className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background">
+            <SheetContent
+              side="right"
+              className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background"
+            >
               <SheetHeader className="p-6 border-b">
                 <SheetTitle className="text-left text-primary dark:text-blue-400 flex items-center gap-2">
                   <Image
@@ -256,8 +317,8 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
 
               <div className="flex-grow overflow-y-auto px-6 py-4 space-y-4">
                 {menusToRender.map((menu) => {
-                  const hasSubItems = menu.items && menu.items.length > 0
-                  const isExpanded = expandedMobileMenu === menu.id
+                  const hasSubItems = menu.items && menu.items.length > 0;
+                  const isExpanded = expandedMobileMenu === menu.id;
 
                   if (hasSubItems && !menu.href) {
                     return (
@@ -267,7 +328,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                           className="flex items-center justify-between w-full py-2.5 text-base font-semibold text-foreground"
                         >
                           <div className="flex items-center gap-2.5">
-                            <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
+                            <NavIcon
+                              name={menu.icon}
+                              className="w-4 h-4 text-primary"
+                            />
                             <span>{menu.name}</span>
                           </div>
                           <ChevronDown
@@ -283,12 +347,23 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                                 key={subItem.id}
                                 href={subItem.href}
                                 onClick={() => setIsOpen(false)}
-                                target={subItem.isOpenNewTab ? "_blank" : undefined}
-                                rel={subItem.isOpenNewTab ? "noopener noreferrer" : undefined}
+                                target={
+                                  subItem.isOpenNewTab ? "_blank" : undefined
+                                }
+                                rel={
+                                  subItem.isOpenNewTab
+                                    ? "noopener noreferrer"
+                                    : undefined
+                                }
                                 className="flex items-center gap-2.5 py-2 text-sm text-muted-foreground hover:text-foreground"
                               >
-                                <NavIcon name={subItem.icon} className="w-4 h-4 text-primary" />
-                                <span className="flex-1 truncate">{subItem.name}</span>
+                                <NavIcon
+                                  name={subItem.icon}
+                                  className="w-4 h-4 text-primary"
+                                />
+                                <span className="flex-1 truncate">
+                                  {subItem.name}
+                                </span>
                                 {subItem.isOpenNewTab && (
                                   <ExternalLink className="w-3 h-3 scale-75" />
                                 )}
@@ -297,10 +372,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                           </div>
                         )}
                       </div>
-                    )
+                    );
                   }
 
-                  const linkHref = menu.href || "#"
+                  const linkHref = menu.href || "#";
                   return (
                     <Link
                       key={menu.id}
@@ -310,14 +385,17 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
                       <div className="flex items-center gap-2.5">
-                        <NavIcon name={menu.icon} className="w-4 h-4 text-primary" />
+                        <NavIcon
+                          name={menu.icon}
+                          className="w-4 h-4 text-primary"
+                        />
                         <span>{menu.name}</span>
                       </div>
                       {menu.isOpenNewTab && (
                         <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                       )}
                     </Link>
-                  )
+                  );
                 })}
 
                 {menusToRender.length === 0 &&
@@ -329,7 +407,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
                     >
                       <div className="flex items-center gap-2.5">
-                        <NavIcon name={(item as Record<string, any>)["icon"]} className="w-4 h-4 text-primary" />
+                        <NavIcon
+                          name={(item as Record<string, any>)["icon"]}
+                          className="w-4 h-4 text-primary"
+                        />
                         <span>{item.title}</span>
                       </div>
                     </Link>
@@ -344,7 +425,9 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       <Avatar className="w-10 h-10 border border-primary/20">
                         <AvatarImage src={session.user.image || ""} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
-                          {session.user.name ? session.user.name.substring(0, 2) : "US"}
+                          {session.user.name
+                            ? session.user.name.substring(0, 2)
+                            : "US"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col min-w-0">
@@ -385,8 +468,8 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
 
                     <Button
                       onClick={() => {
-                        signOut()
-                        setIsOpen(false)
+                        signOut();
+                        setIsOpen(false);
                       }}
                       className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
                     >
@@ -419,5 +502,5 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -216,23 +216,23 @@ export default async function CourseDetailPage({
             "@context": "https://schema.org",
             "@type": "Course",
             name: course.title,
-            description: course.shortDescription || course.title,
+            description: course.description || course.title,
             provider: {
               "@type": "Organization",
               name: "PHAGLP",
-              sameAs: "https://phaglp.com"
+              sameAs: "https://phaglp.com",
             },
             hasCourseInstance: {
               "@type": "CourseInstance",
               courseMode: "online",
-              courseWorkload: "PT10H"
+              courseWorkload: "PT10H",
             },
             offers: {
               "@type": "Offer",
               price: course.price,
               priceCurrency: "USD",
-              category: "Paid"
-            }
+              category: "Paid",
+            },
           }).replace(/</g, "\\u003c"),
         }}
       />

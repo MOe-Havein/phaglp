@@ -45,7 +45,6 @@ const lowlight = createLowlight(common);
 
 // Custom extension for RTL/LTR direction on paragraphs
 
-
 interface WysiwygMarkdownEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -156,8 +155,6 @@ export function WysiwygMarkdownEditor({
     }
   }, [editor]);
 
-  
-
   const ToolbarButton = ({
     onClick,
     active,
@@ -191,7 +188,7 @@ export function WysiwygMarkdownEditor({
     }),
     [],
   );
-// Conditional render moved to JSX
+  // Conditional render moved to JSX
   return editor ? (
     <div className="border rounded-lg overflow-hidden bg-background">
       {/* Toolbar */}

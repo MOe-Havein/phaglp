@@ -1,20 +1,16 @@
- {
-        "allowed_write_paths": [
-          "src/features/**",
-          "src/components/ui/**",
-          "src/hooks/**",
-          "src/types/**",
-          "docs/**"
-        ],
-        "protected_paths": [
-          "middleware.ts",
-          "next.config.ts",
-          "next.config.mjs",
-          "prisma/schema.prisma"
-        ],
-        "forbidden_paths": [
-          ".env",
-          ".env.local",
-          "pnpm-lock.yaml"
-        ]
-      }
+{
+  "allowed_write_paths": [
+    "src/features/**",
+    "src/components/ui/**",
+    "src/hooks/**",
+    "src/types/**",
+    "docs/**"
+  ],
+  "protected_paths": [
+    "middleware.ts",
+    "next.config.ts",
+    "next.config.mjs",
+    "prisma/schema.prisma"
+  ],
+  "forbidden_paths": [".env", ".env.local", "pnpm-lock.yaml"]
+}

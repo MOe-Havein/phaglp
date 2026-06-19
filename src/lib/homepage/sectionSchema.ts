@@ -12,7 +12,7 @@ export const sectionTypeSchema = z.enum([
   "media",
   "testimonials",
   "lectures",
-  "blogs",  // 🆕 Added validation for latest blogs section
+  "blogs", // 🆕 Added validation for latest blogs section
   "footer", // 🆕 Added validation for dynamic footer section
 ]);
 
@@ -59,24 +59,28 @@ const footerSectionConfigSchema = z.object({
   layout: z.enum(["simple", "multi-column", "minimal"]).default("multi-column"),
   copyrightText: z.string().optional(),
   showNewsletterInput: z.boolean().default(false),
-  socials: z.object({
-    twitter: z.string().url().optional().or(z.literal("")),
-    linkedin: z.string().url().optional().or(z.literal("")),
-    github: z.string().url().optional().or(z.literal("")),
-    youtube: z.string().url().optional().or(z.literal("")),
-  }).optional(),
-  linkGroups: z.array(
-    z.object({
-      headline: z.string(),
-      links: z.array(
-        z.object({
-          label: z.string(),
-          href: z.string(),
-          isExternal: z.boolean().optional(),
-        })
-      ),
+  socials: z
+    .object({
+      twitter: z.string().url().optional().or(z.literal("")),
+      linkedin: z.string().url().optional().or(z.literal("")),
+      github: z.string().url().optional().or(z.literal("")),
+      youtube: z.string().url().optional().or(z.literal("")),
     })
-  ).optional(),
+    .optional(),
+  linkGroups: z
+    .array(
+      z.object({
+        headline: z.string(),
+        links: z.array(
+          z.object({
+            label: z.string(),
+            href: z.string(),
+            isExternal: z.boolean().optional(),
+          }),
+        ),
+      }),
+    )
+    .optional(),
 });
 
 /**
@@ -94,14 +98,13 @@ export const sectionSchema = z.object({
   seoDescription: z.string().nullable().optional(),
   visible: z.boolean().default(true).optional(),
   order: z.number().int().default(0).optional(),
-  
+
   // 🆕 Extra Dynamic Data Column Configuration Interceptor
   // Use z.union or z.any depending on whether your Prisma model type is an JSON object field.
-  extraConfig: z.union([
-    blogSectionConfigSchema,
-    footerSectionConfigSchema,
-    z.any()
-  ]).nullable().optional(),
+  extraConfig: z
+    .union([blogSectionConfigSchema, footerSectionConfigSchema, z.any()])
+    .nullable()
+    .optional(),
 });
 
 export const updateSectionSchema = sectionSchema.partial();

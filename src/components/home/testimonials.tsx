@@ -11,7 +11,7 @@ const testimonials = [
       "The daily applied lectures challenged my mind in ways school never could. I've found my true intellectual peers here in the academy.",
     rating: 5,
     avatar: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop",
     ),
   },
   {
@@ -21,7 +21,7 @@ const testimonials = [
       "The philosophical dialogue in the GP Groups is incredibly rigorous. It has completely refined my research methodology and reasoning structures.",
     rating: 5,
     avatar: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop",
     ),
   },
   {
@@ -31,7 +31,7 @@ const testimonials = [
       "GP Subjects allowed me to dive deep into mathematical logic and epistemology. The modules are advanced, specialized, and completely exclusive!",
     rating: 5,
     avatar: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop",
     ),
   },
   {
@@ -41,7 +41,7 @@ const testimonials = [
       "The comprehensive care and support for my gifted son has been a blessing. The academy nurtures both his high intellect and noble character.",
     rating: 5,
     avatar: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=100&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=100&auto=format&fit=crop",
     ),
   },
   {
@@ -51,7 +51,7 @@ const testimonials = [
       "Being part of the annual scientific conference and research programs has opened new horizons for my work in cognitive science and logic.",
     rating: 5,
     avatar: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop",
     ),
   },
   {
@@ -61,7 +61,7 @@ const testimonials = [
       "The knowledge-based e-commerce platform provided me the perfect environment to apply my genius ideas into a successful digital business.",
     rating: 5,
     avatar: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=100&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=100&auto=format&fit=crop",
     ),
   },
   {
@@ -71,7 +71,7 @@ const testimonials = [
       "Alhamdulillah, the values-based matching process helped us find deep compatibility grounded in virtue. Truly a legendary project for families!",
     rating: 5,
     avatar: getCloudinaryFetchUrl(
-      "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=100&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=100&auto=format&fit=crop",
     ),
   },
 ];

@@ -15,7 +15,7 @@ async function getSections(): Promise<HomepageSection[]> {
     const sections = await prisma.homepageSection.findMany({
       orderBy: { order: "asc" },
     });
-    
+
     // 🆕 FIXED: Force-cast serialized data to your strict custom configuration union type
     const serialized = serializePrisma(sections);
     return serialized as unknown as HomepageSection[];

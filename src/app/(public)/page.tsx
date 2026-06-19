@@ -6,13 +6,29 @@ import { HomepageSection } from "@/types/homepage";
 import { SaaSHero } from "@/components/home/SaaSHero";
 import dynamic from "next/dynamic";
 
-const Features = dynamic(() => import("@/components/home/Features").then((mod) => mod.Features));
-const CTA = dynamic(() => import("@/components/home/CTA").then((mod) => mod.CTA));
-const Media = dynamic(() => import("@/components/home/Media").then((mod) => mod.Media));
-const Testimonials = dynamic(() => import("@/components/home/testimonials").then((mod) => mod.Testimonials));
-const LatestBlogPosts = dynamic(() => import("@/components/home/LatestBlogPosts").then((mod) => mod.LatestBlogPosts));
-const LatestLETURES = dynamic(() => import("@/components/home/LatestLETURES").then((mod) => mod.LatestLETURES));
-const CoursesPricing = dynamic(() => import("@/components/home/CoursesPricing").then((mod) => mod.CoursesPricing));
+const Features = dynamic(() =>
+  import("@/components/home/Features").then((mod) => mod.Features),
+);
+const CTA = dynamic(() =>
+  import("@/components/home/CTA").then((mod) => mod.CTA),
+);
+const Media = dynamic(() =>
+  import("@/components/home/Media").then((mod) => mod.Media),
+);
+const Testimonials = dynamic(() =>
+  import("@/components/home/testimonials").then((mod) => mod.Testimonials),
+);
+const LatestBlogPosts = dynamic(() =>
+  import("@/components/home/LatestBlogPosts").then(
+    (mod) => mod.LatestBlogPosts,
+  ),
+);
+const LatestLETURES = dynamic(() =>
+  import("@/components/home/LatestLETURES").then((mod) => mod.LatestLETURES),
+);
+const CoursesPricing = dynamic(() =>
+  import("@/components/home/CoursesPricing").then((mod) => mod.CoursesPricing),
+);
 
 // Corrected Word Splitting Implementation for dynamic text layout rendering
 function HeroSection({ data }: { data: HomepageSection }) {
@@ -22,7 +38,7 @@ function HeroSection({ data }: { data: HomepageSection }) {
 
   if (data.title) {
     const words = data.title.split(" ").filter((w) => w.trim() !== "");
-    
+
     if (words.length >= 3) {
       const segmentSize = Math.ceil(words.length / 3);
       headlinePre = words.slice(0, segmentSize).join(" ");
@@ -96,8 +112,6 @@ const ComponentMap: Record<string, React.FC<{ data: HomepageSection }>> = {
   // Replace lines 94-95 in your file with this:
   lectures: () => <LatestLETURES />,
   blogs: () => <LatestBlogPosts />,
-
-  
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -143,7 +157,7 @@ export default async function PublicHomepage() {
       where: { visible: true },
       orderBy: { order: "asc" },
     });
-    
+
     sections = rawSections as unknown as HomepageSection[];
   } catch (error) {
     console.error("Failed to fetch homepage sections:", error);

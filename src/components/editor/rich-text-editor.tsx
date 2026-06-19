@@ -37,7 +37,6 @@ import {
 
 // Custom extension for RTL/LTR direction on paragraphs
 
-
 interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;

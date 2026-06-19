@@ -1,18 +1,18 @@
-import * as React from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Clock, BookOpen, Star } from "lucide-react"
+import * as React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Clock, BookOpen, Star } from "lucide-react";
 
 export interface CourseCardProps {
-  title: string
-  description: string
-  imageUrl: string
-  level: "Beginner" | "Intermediate" | "Advanced"
-  duration: string
-  lessons: number
-  rating: number
-  price?: string
+  title: string;
+  description: string;
+  imageUrl: string;
+  level: "Beginner" | "Intermediate" | "Advanced";
+  duration: string;
+  lessons: number;
+  rating: number;
+  price?: string;
 }
 
 export function CourseCard({
@@ -47,7 +47,7 @@ export function CourseCard({
             {title}
           </h3>
         </div>
-        
+
         <p className="text-text-muted text-sm mb-6 line-clamp-3 flex-grow">
           {description}
         </p>
@@ -70,14 +70,12 @@ export function CourseCard({
 
         {/* Action Row */}
         <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
-          <span className="text-lg font-black text-primary">
-            {price}
-          </span>
+          <span className="text-lg font-black text-primary">{price}</span>
           <Button variant="default" size="sm" className="font-bold">
             Enroll Now
           </Button>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

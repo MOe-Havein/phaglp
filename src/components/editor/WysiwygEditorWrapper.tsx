@@ -8,7 +8,11 @@ interface WrapperProps {
   height: number; // required height for editor
 }
 
-export default function WysiwygEditorWrapper({ value, onChange = () => {}, height }: WrapperProps) {
+export default function WysiwygEditorWrapper({
+  value,
+  onChange = () => {},
+  height,
+}: WrapperProps) {
   return (
     <WysiwygMarkdownEditor value={value} onChange={onChange} height={height} />
   );

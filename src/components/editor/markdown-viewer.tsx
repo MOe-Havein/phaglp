@@ -19,7 +19,10 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
   const baseClass = `prose prose-slate dark:prose-invert max-w-none ${className ?? ""}`;
 
   return (
-    <div className={baseClass} data-color-mode={theme === "dark" ? "dark" : "light"}>
+    <div
+      className={baseClass}
+      data-color-mode={theme === "dark" ? "dark" : "light"}
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeSanitize]}

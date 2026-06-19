@@ -30,28 +30,24 @@ const nextConfig = {
       "lodash",
       "clsx",
       "tailwind-merge",
-    
-     
-      "@vercel/analytics/next",
-  
 
+      "@vercel/analytics/next",
     ],
   },
 
   images: {
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60, 
+    minimumCacheTTL: 60,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
         pathname: "/phaglp/**",
-
       },
       {
-       protocol: "https",
-       hostname: "://cloudinary.com",
-       pathname: "/phaglp/**",
+        protocol: "https",
+        hostname: "://cloudinary.com",
+        pathname: "/phaglp/**",
       },
       {
         protocol: "https",

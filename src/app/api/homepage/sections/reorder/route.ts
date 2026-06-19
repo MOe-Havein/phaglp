@@ -24,11 +24,11 @@ export async function PATCH(req: Request) {
 
     if (!parsedPayload.success) {
       return NextResponse.json(
-        { 
-          error: "Validation Error", 
-          details: parsedPayload.error.errors.map(err => err.message) 
+        {
+          error: "Validation Error",
+          details: parsedPayload.error.errors.map((err) => err.message),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -41,24 +41,23 @@ export async function PATCH(req: Request) {
         prisma.homepageSection.update({
           where: { id },
           data: { order: index },
-        })
-      )
+        }),
+      ),
     );
 
     // 4. Invalidation: Purge edge layouts dynamically
     revalidatePath("/", "layout"); // 🆕 Explicitly purges down nested tree structural elements
 
     // 5. Activity Telemetry Audit Log
-    logger.info("SECTION_REORDERED", { 
-      count: orderedIds.length, 
-      userId: session?.user?.id 
+    logger.info("SECTION_REORDERED", {
+      count: orderedIds.length,
+      userId: session?.user?.id,
     });
 
     return NextResponse.json({
       success: true,
       message: "Sections reordered successfully",
     });
-
   } catch (error: any) {
     if (error.message === "UNAUTHENTICATED") {
       return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
@@ -70,7 +69,7 @@ export async function PATCH(req: Request) {
     logger.error("Failed to reorder sections", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

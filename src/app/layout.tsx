@@ -73,39 +73,39 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="font-sans antialiased" suppressHydrationWarning>
-    <LayoutClient>{children}</LayoutClient>
-    {/* Google Analytics Injection */}
-    {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
-      <>
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
-          strategy="lazyOnload"
-        />
-        <Script id="google-analytics" strategy="lazyOnload">
-          {`
+        <LayoutClient>{children}</LayoutClient>
+        {/* Google Analytics Injection */}
+        {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
+              strategy="lazyOnload"
+            />
+            <Script id="google-analytics" strategy="lazyOnload">
+              {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${siteConfig.googleAnalyticsId}');
           `}
-        </Script>
-      </>
-    )}
+            </Script>
+          </>
+        )}
 
-    {/* JSON-LD Structured Data */}
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: siteConfig.siteName,
-          url: siteConfig.siteUrl,
-          logo: `${siteConfig.siteUrl}/logo.png`,
-        }),
-      }}
-    />
-  </body>
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: siteConfig.siteName,
+              url: siteConfig.siteUrl,
+              logo: `${siteConfig.siteUrl}/logo.png`,
+            }),
+          }}
+        />
+      </body>
     </html>
   );
 }

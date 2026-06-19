@@ -38,7 +38,9 @@ const getBlogPostBySlug = async (slug: string) => {
   )();
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getBlogPostBySlug(slug);
 
@@ -157,7 +159,9 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
 
           {/* Body content slot */}
           <div className="prose prose-slate max-w-none dark:prose-invert">
-            <MarkdownViewer value={typeof post.body === 'string' ? post.body : ''} />
+            <MarkdownViewer
+              value={typeof post.body === "string" ? post.body : ""}
+            />
           </div>
         </article>
 

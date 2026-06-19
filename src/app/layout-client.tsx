@@ -8,7 +8,13 @@ import { FoxyLoader } from "@/components/foxy/foxy-loader";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
-const ChatbotWidget = dynamic(() => import("@/components/chatbot/chatbot-widget").then(mod => mod.ChatbotWidget), { ssr: false });
+const ChatbotWidget = dynamic(
+  () =>
+    import("@/components/chatbot/chatbot-widget").then(
+      (mod) => mod.ChatbotWidget,
+    ),
+  { ssr: false },
+);
 import { ReactNode } from "react";
 
 export default function LayoutClient({ children }: { children: ReactNode }) {

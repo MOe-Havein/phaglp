@@ -21,9 +21,11 @@
 ### Installation & Setup
 
 1. **Install dependencies** (always required first):
+
    ```bash
    pnpm install
    ```
+
    This command processes the workspace and installs all packages including optional builds for Prisma, sharp, and esbuild.
 
 2. **Configure environment variables:**
@@ -44,27 +46,35 @@
 ### Development Workflow
 
 - **Start dev server:**
+
   ```bash
   pnpm dev
   ```
+
   Starts on `http://localhost:3000`. Server must be running for Playwright tests.
 
 - **Build for production:**
+
   ```bash
   pnpm build
   ```
+
   Outputs standalone bundle to `.next/standalone`. Performs full TypeScript, ESLint, and Prisma validation.
 
 - **Type check only:**
+
   ```bash
   pnpm type-check
   ```
+
   Verifies TypeScript strict mode without building.
 
 - **Lint code:**
+
   ```bash
   pnpm lint
   ```
+
   Runs ESLint on src directory (TypeScript strict mode enabled).
 
 - **Format code:**
@@ -177,13 +187,13 @@ src/
 
 ### Common Build Errors & Solutions
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Could not find a declaration file for module 'X'` | Missing @types | Add @types/X or ensure TS paths configured |
-| `Database error on build` | DATABASE_URL not set | Provide dummy PostgreSQL URL for build-time compilation |
-| `Prisma client not found` | Missing `pnpm prisma generate` | Run `pnpm install` again to regenerate client |
-| `ESLint errors ignored during build` | `ignoreDuringBuilds: true` | These won't fail CI (type-check runs first) |
-| `Port 3000 already in use` | Dev server running | Kill existing process or use `PORT=3001 pnpm dev` |
+| Error                                              | Cause                          | Solution                                                |
+| -------------------------------------------------- | ------------------------------ | ------------------------------------------------------- |
+| `Could not find a declaration file for module 'X'` | Missing @types                 | Add @types/X or ensure TS paths configured              |
+| `Database error on build`                          | DATABASE_URL not set           | Provide dummy PostgreSQL URL for build-time compilation |
+| `Prisma client not found`                          | Missing `pnpm prisma generate` | Run `pnpm install` again to regenerate client           |
+| `ESLint errors ignored during build`               | `ignoreDuringBuilds: true`     | These won't fail CI (type-check runs first)             |
+| `Port 3000 already in use`                         | Dev server running             | Kill existing process or use `PORT=3001 pnpm dev`       |
 
 ### Environment & Deployment
 
@@ -197,6 +207,7 @@ src/
 ### Forbidden & Protected Files
 
 Do **not** modify these files without explicit user request:
+
 - `middleware.ts`: Auth middleware and role guards
 - `next.config.mjs`: Build configuration
 - `prisma/schema.prisma`: Database schema (coordinate with migrations)

@@ -102,6 +102,7 @@ Use `apply_design_system` to apply a design system to existing screens.
 ```
 
 **How to get the required IDs:**
+
 1. Call `get_project` to retrieve `screenInstances` — each has an `id` and
    `sourceScreen`.
 2. Call `list_design_systems` to retrieve the design system `name` (format:

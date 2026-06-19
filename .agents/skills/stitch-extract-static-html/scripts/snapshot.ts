@@ -26,9 +26,9 @@
  *   --json          Output machine-readable JSON stats to stdout
  */
 
-import puppeteer, { type Browser } from 'puppeteer';
-import path from 'node:path';
-import fs from 'node:fs';
+import puppeteer, { type Browser } from "puppeteer";
+import path from "node:path";
+import fs from "node:fs";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -75,7 +75,7 @@ function parseArgs(): Opts {
     url: null,
     output: null,
     wait: 1000,
-    viewport: '1280x800',
+    viewport: "1280x800",
     htmlClass: null,
     removeFixed: false,
     fullHeight: false,
@@ -90,49 +90,49 @@ function parseArgs(): Opts {
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--url':
+      case "--url":
         opts.url = args[++i];
         break;
-      case '--output':
+      case "--output":
         opts.output = args[++i];
         break;
-      case '--wait':
+      case "--wait":
         opts.wait = parseInt(args[++i], 10);
         break;
-      case '--viewport':
+      case "--viewport":
         opts.viewport = args[++i];
         break;
-      case '--html-class':
+      case "--html-class":
         opts.htmlClass = args[++i];
         break;
-      case '--remove-fixed':
+      case "--remove-fixed":
         opts.removeFixed = true;
         break;
-      case '--full-height':
+      case "--full-height":
         opts.fullHeight = true;
         break;
-      case '--title':
+      case "--title":
         opts.title = args[++i];
         break;
-      case '--timeout':
+      case "--timeout":
         opts.timeout = parseInt(args[++i], 10);
         break;
-      case '--concurrency':
+      case "--concurrency":
         opts.concurrency = parseInt(args[++i], 10);
         break;
-      case '--json':
+      case "--json":
         opts.json = true;
         break;
-      case '--inline-fonts':
+      case "--inline-fonts":
         opts.inlineFonts = true;
         break;
-      case '--remove-selectors':
+      case "--remove-selectors":
         opts.removeSelectors = args[++i];
         break;
-      case '--click':
+      case "--click":
         opts.click = args[++i];
         break;
-      case '--help':
+      case "--help":
         console.log(`
 Usage: npx tsx snapshot.ts --url <URL> --output <FILE> [options]
 
@@ -165,8 +165,8 @@ Options:
 function validateOpts(opts: Opts): void {
   const errors: string[] = [];
 
-  if (!opts.url) errors.push('--url is required');
-  if (!opts.output) errors.push('--output is required');
+  if (!opts.url) errors.push("--url is required");
+  if (!opts.output) errors.push("--output is required");
 
   if (opts.url) {
     try {
@@ -188,24 +188,28 @@ function validateOpts(opts: Opts): void {
       const w = Number(vpMatch[1]);
       const h = Number(vpMatch[2]);
       if (w < 1 || h < 1) {
-        errors.push('Viewport dimensions must be positive integers');
+        errors.push("Viewport dimensions must be positive integers");
       }
       if (w > 7680 || h > 4320) {
-        errors.push('Viewport too large: max 7680x4320');
+        errors.push("Viewport too large: max 7680x4320");
       }
     }
   }
 
   if (isNaN(opts.wait) || opts.wait < 0) {
-    errors.push('--wait must be a non-negative integer');
+    errors.push("--wait must be a non-negative integer");
   }
 
   if (isNaN(opts.timeout) || opts.timeout < 1000) {
-    errors.push('--timeout must be at least 1000ms');
+    errors.push("--timeout must be at least 1000ms");
   }
 
-  if (isNaN(opts.concurrency) || opts.concurrency < 1 || opts.concurrency > 20) {
-    errors.push('--concurrency must be between 1 and 20');
+  if (
+    isNaN(opts.concurrency) ||
+    opts.concurrency < 1 ||
+    opts.concurrency > 20
+  ) {
+    errors.push("--concurrency must be between 1 and 20");
   }
 
   if (opts.output) {
@@ -219,7 +223,7 @@ function validateOpts(opts: Opts): void {
   }
 
   if (errors.length > 0) {
-    console.error('❌ Validation errors:');
+    console.error("❌ Validation errors:");
     errors.forEach((e) => console.error(`   • ${e}`));
     process.exit(1);
   }
@@ -269,13 +273,13 @@ async function snapshot(opts: Opts): Promise<void> {
     }, opts.timeout);
 
     // ----- Launch browser -----
-    console.log('🚀 Launching browser...');
+    console.log("🚀 Launching browser...");
     browser = await puppeteer.launch({
       headless: true,
       args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
         `--window-size=${width},${height}`,
       ],
     });
@@ -284,9 +288,9 @@ async function snapshot(opts: Opts): Promise<void> {
     await page.setViewport({ width, height });
 
     // Forward browser console logs to Node.js
-    page.on('console', (msg) => {
+    page.on("console", (msg) => {
       const type = msg.type().toString();
-      if (type === 'warning' || type === 'error') {
+      if (type === "warning" || type === "error") {
         console.log(`   [Browser ${type.toUpperCase()}] ${msg.text()}`);
       }
     });
@@ -295,15 +299,15 @@ async function snapshot(opts: Opts): Promise<void> {
     console.log(`📄 Navigating to ${opts.url}...`);
     try {
       await page.goto(opts.url!, {
-        waitUntil: 'networkidle0',
+        waitUntil: "networkidle0",
         timeout: Math.min(30000, opts.timeout - 5000),
       });
     } catch {
-      const msg = 'networkidle0 timed out, falling back to networkidle2';
+      const msg = "networkidle0 timed out, falling back to networkidle2";
       console.warn(`⚠️  ${msg}...`);
       stats.warnings.push(msg);
       await page.goto(opts.url!, {
-        waitUntil: 'networkidle2',
+        waitUntil: "networkidle2",
         timeout: Math.min(30000, opts.timeout - 5000),
       });
     }
@@ -325,7 +329,9 @@ async function snapshot(opts: Opts): Promise<void> {
             const childElement = await frame.$(opts.click);
             if (childElement) {
               element = childElement;
-              console.log(`   Found element inside child frame: ${frame.url()}`);
+              console.log(
+                `   Found element inside child frame: ${frame.url()}`,
+              );
               break;
             }
           }
@@ -334,14 +340,20 @@ async function snapshot(opts: Opts): Promise<void> {
         if (element) {
           await element.click();
           // wait an extra 2 seconds for animation or modal loading to settle
-          console.log(`   Click succeeded! Waiting 2000ms for click action to settle...`);
+          console.log(
+            `   Click succeeded! Waiting 2000ms for click action to settle...`,
+          );
           await new Promise((r) => setTimeout(r, 2000));
         } else {
-          throw new Error(`Selector "${opts.click}" not found in main document or child frames.`);
+          throw new Error(
+            `Selector "${opts.click}" not found in main document or child frames.`,
+          );
         }
       } catch (clickErr: any) {
         console.error(`⚠️ Click action failed:`, clickErr);
-        stats.warnings.push(`Click action failed: ${clickErr.message || clickErr}`);
+        stats.warnings.push(
+          `Click action failed: ${clickErr.message || clickErr}`,
+        );
       }
     }
 
@@ -352,10 +364,10 @@ async function snapshot(opts: Opts): Promise<void> {
       console.log(`🎨 Adding class "${opts.htmlClass}" to <html>...`);
       await page.evaluate((cls: string) => {
         document.documentElement.classList.add(...cls.split(/\s+/));
-        if (cls.includes('dark')) {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        } else if (cls.includes('light')) {
-          document.documentElement.setAttribute('data-theme', 'light');
+        if (cls.includes("dark")) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        } else if (cls.includes("light")) {
+          document.documentElement.setAttribute("data-theme", "light");
         }
       }, opts.htmlClass);
       await new Promise((r) => setTimeout(r, 500));
@@ -363,12 +375,12 @@ async function snapshot(opts: Opts): Promise<void> {
 
     // Remove fixed/sticky elements
     if (opts.removeFixed) {
-      console.log('🧹 Removing fixed/sticky positioned elements...');
+      console.log("🧹 Removing fixed/sticky positioned elements...");
       await page.evaluate(() => {
-        const all = document.querySelectorAll('*');
+        const all = document.querySelectorAll("*");
         for (const el of all) {
           const style = getComputedStyle(el);
-          if (style.position === 'fixed' || style.position === 'sticky') {
+          if (style.position === "fixed" || style.position === "sticky") {
             const rect = el.getBoundingClientRect();
             if (rect.top > 100 || rect.height < 50) {
               el.remove();
@@ -382,7 +394,10 @@ async function snapshot(opts: Opts): Promise<void> {
     if (opts.removeSelectors) {
       console.log(`🧹 Removing custom selectors: "${opts.removeSelectors}"...`);
       await page.evaluate((selectors: string) => {
-        const items = selectors.split(',').map((s) => s.trim()).filter(Boolean);
+        const items = selectors
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
         for (const selector of items) {
           try {
             document.querySelectorAll(selector).forEach((el) => el.remove());
@@ -392,8 +407,6 @@ async function snapshot(opts: Opts): Promise<void> {
         }
       }, opts.removeSelectors);
     }
-
-
 
     // Override title
     if (opts.title) {
@@ -415,8 +428,8 @@ async function snapshot(opts: Opts): Promise<void> {
         toDataUri: async (url: string): Promise<string | null> => {
           try {
             const resp = await fetch(url, {
-              mode: 'cors',
-              credentials: 'same-origin',
+              mode: "cors",
+              credentials: "same-origin",
             });
             if (!resp.ok) return null;
             const blob = await resp.blob();
@@ -442,7 +455,7 @@ async function snapshot(opts: Opts): Promise<void> {
             const batchResults = await Promise.allSettled(batch.map(fn));
             results.push(
               ...batchResults.map((r) =>
-                r.status === 'fulfilled' ? r.value : null,
+                r.status === "fulfilled" ? r.value : null,
               ),
             );
           }
@@ -457,7 +470,12 @@ async function snapshot(opts: Opts): Promise<void> {
          * Returns: Array of { url, fullMatch, start, end }
          */
         extractCssUrls: (cssText: string) => {
-          const results: Array<{ url: string; fullMatch: string; start: number; end: number }> = [];
+          const results: Array<{
+            url: string;
+            fullMatch: string;
+            start: number;
+            end: number;
+          }> = [];
           let i = 0;
           const len = cssText.length;
 
@@ -465,10 +483,10 @@ async function snapshot(opts: Opts): Promise<void> {
             // Look for 'url(' — case insensitive
             if (
               i + 3 < len &&
-              cssText[i].toLowerCase() === 'u' &&
-              cssText[i + 1].toLowerCase() === 'r' &&
-              cssText[i + 2].toLowerCase() === 'l' &&
-              cssText[i + 3] === '('
+              cssText[i].toLowerCase() === "u" &&
+              cssText[i + 1].toLowerCase() === "r" &&
+              cssText[i + 2].toLowerCase() === "l" &&
+              cssText[i + 3] === "("
             ) {
               const urlStart = i;
               i += 4; // skip 'url('
@@ -476,10 +494,10 @@ async function snapshot(opts: Opts): Promise<void> {
               // Skip whitespace
               while (
                 i < len &&
-                (cssText[i] === ' ' ||
-                  cssText[i] === '\t' ||
-                  cssText[i] === '\n' ||
-                  cssText[i] === '\r')
+                (cssText[i] === " " ||
+                  cssText[i] === "\t" ||
+                  cssText[i] === "\n" ||
+                  cssText[i] === "\r")
               ) {
                 i++;
               }
@@ -492,11 +510,11 @@ async function snapshot(opts: Opts): Promise<void> {
               }
 
               // Read the URL value
-              let url = '';
+              let url = "";
               if (quote) {
                 // Quoted: read until matching unescaped quote
                 while (i < len && cssText[i] !== quote) {
-                  if (cssText[i] === '\\' && i + 1 < len) {
+                  if (cssText[i] === "\\" && i + 1 < len) {
                     i++; // skip backslash
                     url += cssText[i]; // include next char literally
                   } else {
@@ -509,11 +527,11 @@ async function snapshot(opts: Opts): Promise<void> {
                 // Unquoted: stop at ) or whitespace (per CSS spec)
                 while (
                   i < len &&
-                  cssText[i] !== ')' &&
-                  cssText[i] !== ' ' &&
-                  cssText[i] !== '\t' &&
-                  cssText[i] !== '\n' &&
-                  cssText[i] !== '\r'
+                  cssText[i] !== ")" &&
+                  cssText[i] !== " " &&
+                  cssText[i] !== "\t" &&
+                  cssText[i] !== "\n" &&
+                  cssText[i] !== "\r"
                 ) {
                   url += cssText[i];
                   i++;
@@ -523,15 +541,15 @@ async function snapshot(opts: Opts): Promise<void> {
               // Skip trailing whitespace before ')'
               while (
                 i < len &&
-                (cssText[i] === ' ' ||
-                  cssText[i] === '\t' ||
-                  cssText[i] === '\n' ||
-                  cssText[i] === '\r')
+                (cssText[i] === " " ||
+                  cssText[i] === "\t" ||
+                  cssText[i] === "\n" ||
+                  cssText[i] === "\r")
               ) {
                 i++;
               }
 
-              if (i < len && cssText[i] === ')') {
+              if (i < len && cssText[i] === ")") {
                 const fullMatch = cssText.substring(urlStart, i + 1);
                 results.push({
                   url: url.trim(),
@@ -577,18 +595,23 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     // -1. Inline local iframes (e.g., companion-app test iframe)
     // -----------------------------------------------------------------------
-    const iframesCount = await page.evaluate(() => document.querySelectorAll('iframe').length);
+    const iframesCount = await page.evaluate(
+      () => document.querySelectorAll("iframe").length,
+    );
     if (iframesCount > 0) {
-      console.log(`🔍 Found ${iframesCount} iframe(s) in the main page. Extracting content natively...`);
+      console.log(
+        `🔍 Found ${iframesCount} iframe(s) in the main page. Extracting content natively...`,
+      );
 
       // First, recursively inline all same-origin and srcDoc iframes browser-side
-      console.log('🔍 Inlining same-origin and srcDoc iframes recursively...');
+      console.log("🔍 Inlining same-origin and srcDoc iframes recursively...");
       await page.evaluate(() => {
         const inlineSameOriginIframes = (root: Document | HTMLElement) => {
-          const iframes = Array.from(root.querySelectorAll('iframe'));
+          const iframes = Array.from(root.querySelectorAll("iframe"));
           for (const iframe of iframes) {
             try {
-              const doc = iframe.contentDocument || iframe.contentWindow?.document;
+              const doc =
+                iframe.contentDocument || iframe.contentWindow?.document;
               if (doc && doc.body) {
                 // Recursively inline same-origin iframes inside this child frame first
                 inlineSameOriginIframes(doc);
@@ -596,33 +619,41 @@ async function snapshot(opts: Opts): Promise<void> {
                 const bodyHtml = doc.body.innerHTML;
 
                 const styles: string[] = [];
-                doc.querySelectorAll('style').forEach(s => styles.push(s.outerHTML));
-                doc.querySelectorAll('link[rel="stylesheet"]').forEach(l => styles.push((l as HTMLLinkElement).outerHTML));
+                doc
+                  .querySelectorAll("style")
+                  .forEach((s) => styles.push(s.outerHTML));
+                doc
+                  .querySelectorAll('link[rel="stylesheet"]')
+                  .forEach((l) =>
+                    styles.push((l as HTMLLinkElement).outerHTML),
+                  );
 
-                styles.forEach(styleHtml => {
-                  const temp = document.createElement('div');
+                styles.forEach((styleHtml) => {
+                  const temp = document.createElement("div");
                   temp.innerHTML = styleHtml;
                   document.head.appendChild(temp.firstChild!);
                 });
 
-                const wrapper = document.createElement('div');
-                wrapper.className = 'ac-iframe-inlined-wrapper';
+                const wrapper = document.createElement("div");
+                wrapper.className = "ac-iframe-inlined-wrapper";
 
                 // Apply child body's classes and attributes to same-origin wrapper
                 for (const attr of Array.from(doc.body.attributes)) {
-                  if (attr.name === 'class') {
-                    wrapper.classList.add(...attr.value.split(/\s+/).filter(Boolean));
-                  } else if (attr.name !== 'style') {
+                  if (attr.name === "class") {
+                    wrapper.classList.add(
+                      ...attr.value.split(/\s+/).filter(Boolean),
+                    );
+                  } else if (attr.name !== "style") {
                     wrapper.setAttribute(attr.name, attr.value);
                   }
                 }
 
-                wrapper.style.position = 'absolute';
-                wrapper.style.top = '0';
-                wrapper.style.left = '0';
-                wrapper.style.width = '100%';
-                wrapper.style.height = '100%';
-                wrapper.style.overflow = 'hidden';
+                wrapper.style.position = "absolute";
+                wrapper.style.top = "0";
+                wrapper.style.left = "0";
+                wrapper.style.width = "100%";
+                wrapper.style.height = "100%";
+                wrapper.style.overflow = "hidden";
                 wrapper.innerHTML = bodyHtml;
 
                 iframe.parentNode!.replaceChild(wrapper, iframe);
@@ -635,9 +666,10 @@ async function snapshot(opts: Opts): Promise<void> {
         inlineSameOriginIframes(document);
       });
 
-      const childFrames = page.frames()
-        .filter(f => f !== page.mainFrame())
-        .map(f => {
+      const childFrames = page
+        .frames()
+        .filter((f) => f !== page.mainFrame())
+        .map((f) => {
           let depth = 0;
           let p = f.parentFrame();
           while (p) {
@@ -651,8 +683,10 @@ async function snapshot(opts: Opts): Promise<void> {
       for (const { frame } of childFrames) {
         try {
           const frameUrl = frame.url();
-          const cleanUrl = frameUrl.split('?')[0].split('#')[0];
-          console.log(`📦 Extracting frame content from: ${cleanUrl} (depth: ${frame.parentFrame() ? 'nested' : 'root'})`);
+          const cleanUrl = frameUrl.split("?")[0].split("#")[0];
+          console.log(
+            `📦 Extracting frame content from: ${cleanUrl} (depth: ${frame.parentFrame() ? "nested" : "root"})`,
+          );
 
           // Inject __name mock to prevent esbuild helper ReferenceError in child frame
           await frame.evaluate(() => {
@@ -663,48 +697,73 @@ async function snapshot(opts: Opts): Promise<void> {
           await frame.evaluate((base) => {
             const resolveAttr = (el: Element, attr: string) => {
               const val = el.getAttribute(attr);
-              if (val && !val.startsWith('data:') && !val.startsWith('http:') && !val.startsWith('https:') && !val.startsWith('//')) {
+              if (
+                val &&
+                !val.startsWith("data:") &&
+                !val.startsWith("http:") &&
+                !val.startsWith("https:") &&
+                !val.startsWith("//")
+              ) {
                 try {
                   const abs = new URL(val, base).href;
                   el.setAttribute(attr, abs);
-                } catch (e) { }
+                } catch (e) {}
               }
             };
-            document.querySelectorAll('img[src]').forEach(img => resolveAttr(img, 'src'));
-            document.querySelectorAll('img[srcset]').forEach(img => resolveAttr(img, 'srcset'));
-            document.querySelectorAll('source[srcset]').forEach(src => resolveAttr(src, 'srcset'));
-            document.querySelectorAll('link[rel="stylesheet"]').forEach(link => resolveAttr(link, 'href'));
+            document
+              .querySelectorAll("img[src]")
+              .forEach((img) => resolveAttr(img, "src"));
+            document
+              .querySelectorAll("img[srcset]")
+              .forEach((img) => resolveAttr(img, "srcset"));
+            document
+              .querySelectorAll("source[srcset]")
+              .forEach((src) => resolveAttr(src, "srcset"));
+            document
+              .querySelectorAll('link[rel="stylesheet"]')
+              .forEach((link) => resolveAttr(link, "href"));
 
             // Resolve relative url() references in inline <style> tags
-            document.querySelectorAll('style').forEach((styleEl) => {
+            document.querySelectorAll("style").forEach((styleEl) => {
               if (styleEl.textContent) {
-                styleEl.textContent = styleEl.textContent.replace(/url\(['"]?([^'")\s]+)['"]?\)/gi, (match, url) => {
-                  if (
-                    url.startsWith('data:') ||
-                    url.startsWith('http:') ||
-                    url.startsWith('https:') ||
-                    url.startsWith('//')
-                  ) {
-                    return match;
-                  }
-                  try {
-                    return `url('${new URL(url, base).href}')`;
-                  } catch {
-                    return match;
-                  }
-                });
+                styleEl.textContent = styleEl.textContent.replace(
+                  /url\(['"]?([^'")\s]+)['"]?\)/gi,
+                  (match, url) => {
+                    if (
+                      url.startsWith("data:") ||
+                      url.startsWith("http:") ||
+                      url.startsWith("https:") ||
+                      url.startsWith("//")
+                    ) {
+                      return match;
+                    }
+                    try {
+                      return `url('${new URL(url, base).href}')`;
+                    } catch {
+                      return match;
+                    }
+                  },
+                );
               }
             });
           }, frameUrl);
 
           const frameStyles = await frame.evaluate(() => {
             const stylesList: string[] = [];
-            document.querySelectorAll('style').forEach(s => stylesList.push(s.outerHTML));
-            document.querySelectorAll('link[rel="stylesheet"]').forEach(l => stylesList.push((l as HTMLLinkElement).outerHTML));
+            document
+              .querySelectorAll("style")
+              .forEach((s) => stylesList.push(s.outerHTML));
+            document
+              .querySelectorAll('link[rel="stylesheet"]')
+              .forEach((l) =>
+                stylesList.push((l as HTMLLinkElement).outerHTML),
+              );
             return stylesList;
           });
 
-          const frameBodyHtml = await frame.evaluate(() => document.body.innerHTML);
+          const frameBodyHtml = await frame.evaluate(
+            () => document.body.innerHTML,
+          );
           const frameBodyAttrs = await frame.evaluate(() => {
             const attrs: Record<string, string> = {};
             for (const attr of Array.from(document.body.attributes)) {
@@ -714,7 +773,9 @@ async function snapshot(opts: Opts): Promise<void> {
           });
           const frameHtmlAttrs = await frame.evaluate(() => {
             const attrs: Record<string, string> = {};
-            for (const attr of Array.from(document.documentElement.attributes)) {
+            for (const attr of Array.from(
+              document.documentElement.attributes,
+            )) {
               attrs[attr.name] = attr.value;
             }
             return attrs;
@@ -722,66 +783,83 @@ async function snapshot(opts: Opts): Promise<void> {
 
           const parent = frame.parentFrame();
           if (parent) {
-            await parent.evaluate((url, bodyHtml, styles, bodyAttrs, htmlAttrs) => {
-              styles.forEach(styleHtml => {
-                const temp = document.createElement('div');
-                temp.innerHTML = styleHtml;
-                document.head.appendChild(temp.firstChild!);
-              });
+            await parent.evaluate(
+              (url, bodyHtml, styles, bodyAttrs, htmlAttrs) => {
+                styles.forEach((styleHtml) => {
+                  const temp = document.createElement("div");
+                  temp.innerHTML = styleHtml;
+                  document.head.appendChild(temp.firstChild!);
+                });
 
-              // Apply child html attributes to parent documentElement (e.g., data-theme)
-              for (const [name, val] of Object.entries(htmlAttrs)) {
-                if (name !== 'style') {
-                  document.documentElement.setAttribute(name, val);
-                }
-              }
-
-              const iframes = Array.from(document.querySelectorAll('iframe'));
-              for (const iframe of iframes) {
-                const cleanIframeSrc = iframe.src.split('?')[0].split('#')[0];
-                if (cleanIframeSrc && (url.includes(cleanIframeSrc) || cleanIframeSrc.includes(url))) {
-                  const wrapper = document.createElement('div');
-                  wrapper.className = 'ac-iframe-inlined-wrapper';
-
-                  // Apply child body's classes and attributes to the wrapper
-                  for (const [name, val] of Object.entries(bodyAttrs)) {
-                    if (name === 'class') {
-                      wrapper.classList.add(...val.split(/\s+/).filter(Boolean));
-                    } else if (name !== 'style') {
-                      wrapper.setAttribute(name, val);
-                    }
+                // Apply child html attributes to parent documentElement (e.g., data-theme)
+                for (const [name, val] of Object.entries(htmlAttrs)) {
+                  if (name !== "style") {
+                    document.documentElement.setAttribute(name, val);
                   }
-
-                  wrapper.style.position = 'absolute';
-                  wrapper.style.top = '0';
-                  wrapper.style.left = '0';
-                  wrapper.style.width = '100%';
-                  wrapper.style.height = '100%';
-                  wrapper.style.overflow = 'hidden';
-                  wrapper.innerHTML = bodyHtml;
-                  iframe.parentNode!.replaceChild(wrapper, iframe);
-                  break;
                 }
-              }
-            }, cleanUrl, frameBodyHtml, frameStyles, frameBodyAttrs, frameHtmlAttrs);
-          }
 
+                const iframes = Array.from(document.querySelectorAll("iframe"));
+                for (const iframe of iframes) {
+                  const cleanIframeSrc = iframe.src.split("?")[0].split("#")[0];
+                  if (
+                    cleanIframeSrc &&
+                    (url.includes(cleanIframeSrc) ||
+                      cleanIframeSrc.includes(url))
+                  ) {
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "ac-iframe-inlined-wrapper";
+
+                    // Apply child body's classes and attributes to the wrapper
+                    for (const [name, val] of Object.entries(bodyAttrs)) {
+                      if (name === "class") {
+                        wrapper.classList.add(
+                          ...val.split(/\s+/).filter(Boolean),
+                        );
+                      } else if (name !== "style") {
+                        wrapper.setAttribute(name, val);
+                      }
+                    }
+
+                    wrapper.style.position = "absolute";
+                    wrapper.style.top = "0";
+                    wrapper.style.left = "0";
+                    wrapper.style.width = "100%";
+                    wrapper.style.height = "100%";
+                    wrapper.style.overflow = "hidden";
+                    wrapper.innerHTML = bodyHtml;
+                    iframe.parentNode!.replaceChild(wrapper, iframe);
+                    break;
+                  }
+                }
+              },
+              cleanUrl,
+              frameBodyHtml,
+              frameStyles,
+              frameBodyAttrs,
+              frameHtmlAttrs,
+            );
+          }
         } catch (frameErr) {
-          console.warn('Failed to extract child frame content:', frameErr);
+          console.warn("Failed to extract child frame content:", frameErr);
         }
       }
     }
 
     // Resize viewport to full scroll height (executed after iframe contents are natively merged)
     if (opts.fullHeight) {
-      console.log('📐 Scanning DOM for maximum scrollable container height...');
+      console.log("📐 Scanning DOM for maximum scrollable container height...");
 
       const maxScrollHeight = await page.evaluate(() => {
         let maxVal = document.documentElement.scrollHeight;
-        const all = document.querySelectorAll('*');
+        const all = document.querySelectorAll("*");
         for (const el of all) {
           const style = getComputedStyle(el);
-          if (style.overflow === 'auto' || style.overflowY === 'auto' || style.overflow === 'scroll' || style.overflowY === 'scroll') {
+          if (
+            style.overflow === "auto" ||
+            style.overflowY === "auto" ||
+            style.overflow === "scroll" ||
+            style.overflowY === "scroll"
+          ) {
             if (el.scrollHeight > maxVal) {
               maxVal = el.scrollHeight;
             }
@@ -792,51 +870,93 @@ async function snapshot(opts: Opts): Promise<void> {
 
       // Resize viewport to the true maximum scroll height (plus 120px buffer for safety)
       const finalViewportHeight = maxScrollHeight + 120;
-      console.log(`📐 Resizing viewport to maximum content height: ${finalViewportHeight}px`);
+      console.log(
+        `📐 Resizing viewport to maximum content height: ${finalViewportHeight}px`,
+      );
       await page.setViewport({ width, height: finalViewportHeight });
 
       // Force layout wrappers and scrollable containers to unlock their heights
       await page.evaluate(() => {
-        document.documentElement.style.setProperty('height', 'auto', 'important');
-        document.documentElement.style.setProperty('overflow', 'visible', 'important');
-        document.body.style.setProperty('height', 'auto', 'important');
-        document.body.style.setProperty('overflow', 'visible', 'important');
+        document.documentElement.style.setProperty(
+          "height",
+          "auto",
+          "important",
+        );
+        document.documentElement.style.setProperty(
+          "overflow",
+          "visible",
+          "important",
+        );
+        document.body.style.setProperty("height", "auto", "important");
+        document.body.style.setProperty("overflow", "visible", "important");
 
-        const elements = document.querySelectorAll('*');
+        const elements = document.querySelectorAll("*");
         for (const el of elements) {
           const style = getComputedStyle(el);
-          const hasViewportHeight = style.height.includes('vh') ||
-            style.height.includes('svh') ||
-            style.height === '100%' ||
-            style.height === '100vh' ||
-            style.height === '100svh' ||
-            style.maxHeight.includes('vh') ||
-            style.maxHeight.includes('svh') ||
-            style.maxHeight === '100%' ||
-            el.classList.contains('h-svh') ||
-            el.classList.contains('h-screen') ||
-            el.classList.contains('ac-iframe-inlined-wrapper') ||
-            el.classList.contains('ac-iframe');
+          const hasViewportHeight =
+            style.height.includes("vh") ||
+            style.height.includes("svh") ||
+            style.height === "100%" ||
+            style.height === "100vh" ||
+            style.height === "100svh" ||
+            style.maxHeight.includes("vh") ||
+            style.maxHeight.includes("svh") ||
+            style.maxHeight === "100%" ||
+            el.classList.contains("h-svh") ||
+            el.classList.contains("h-screen") ||
+            el.classList.contains("ac-iframe-inlined-wrapper") ||
+            el.classList.contains("ac-iframe");
 
           if (hasViewportHeight) {
-            (el as HTMLElement).style.setProperty('height', 'auto', 'important');
-            (el as HTMLElement).style.setProperty('min-height', '0', 'important');
-            (el as HTMLElement).style.setProperty('max-height', 'none', 'important');
+            (el as HTMLElement).style.setProperty(
+              "height",
+              "auto",
+              "important",
+            );
+            (el as HTMLElement).style.setProperty(
+              "min-height",
+              "0",
+              "important",
+            );
+            (el as HTMLElement).style.setProperty(
+              "max-height",
+              "none",
+              "important",
+            );
           }
 
-          if (style.overflow === 'auto' || style.overflowY === 'auto' || style.overflow === 'scroll' || style.overflowY === 'scroll') {
-            (el as HTMLElement).style.setProperty('height', 'auto', 'important');
-            (el as HTMLElement).style.setProperty('max-height', 'none', 'important');
-            (el as HTMLElement).style.setProperty('overflow', 'visible', 'important');
-            (el as HTMLElement).style.setProperty('position', 'relative', 'important');
+          if (
+            style.overflow === "auto" ||
+            style.overflowY === "auto" ||
+            style.overflow === "scroll" ||
+            style.overflowY === "scroll"
+          ) {
+            (el as HTMLElement).style.setProperty(
+              "height",
+              "auto",
+              "important",
+            );
+            (el as HTMLElement).style.setProperty(
+              "max-height",
+              "none",
+              "important",
+            );
+            (el as HTMLElement).style.setProperty(
+              "overflow",
+              "visible",
+              "important",
+            );
+            (el as HTMLElement).style.setProperty(
+              "position",
+              "relative",
+              "important",
+            );
           }
         }
       });
 
       await new Promise((r) => setTimeout(r, 1000));
     }
-
-
 
     // -----------------------------------------------------------------------
     // 0. Materialize CSS-in-JS styles into DOM
@@ -850,19 +970,20 @@ async function snapshot(opts: Opts): Promise<void> {
     // We only touch <style> tags whose textContent is empty — normal
     // stylesheets and text-based <style> blocks are left untouched to
     // avoid duplication and preserve cascade order.
-    console.log('🎨 Materializing CSS-in-JS styles into DOM...');
+    console.log("🎨 Materializing CSS-in-JS styles into DOM...");
     const cssInJsCount = await page.evaluate(() => {
       let count = 0;
-      const styleElements = document.querySelectorAll('style');
+      const styleElements = document.querySelectorAll("style");
       for (const styleEl of styleElements) {
         // Skip styles that already have text content (not CSS-in-JS)
-        if (styleEl.textContent && styleEl.textContent.trim().length > 0) continue;
+        if (styleEl.textContent && styleEl.textContent.trim().length > 0)
+          continue;
         try {
           const sheet = styleEl.sheet;
           if (!sheet?.cssRules) continue;
-          let cssText = '';
+          let cssText = "";
           for (let j = 0; j < sheet.cssRules.length; j++) {
-            cssText += sheet.cssRules[j].cssText + '\n';
+            cssText += sheet.cssRules[j].cssText + "\n";
           }
           if (cssText.length > 0) {
             // Write the rules as text content so they survive DOM serialization
@@ -880,9 +1001,10 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     // 1. Inline all external stylesheets as <style> blocks
     // -----------------------------------------------------------------------
-    console.log('🎨 Inlining external stylesheets...');
+    console.log("🎨 Inlining external stylesheets...");
     stats.stylesheets = await page.evaluate(async () => {
-      const { toDataUri, extractCssUrls, replaceCssUrls } = (window as any).__snapshot;
+      const { toDataUri, extractCssUrls, replaceCssUrls } = (window as any)
+        .__snapshot;
       let count = 0;
       const links = Array.from(
         document.querySelectorAll('link[rel="stylesheet"]'),
@@ -901,15 +1023,19 @@ async function snapshot(opts: Opts): Promise<void> {
           // Resolve relative url() references to absolute URLs using the parser
           const baseUrl = new URL(href);
           const urlRefs = extractCssUrls(cssText);
-          const replacements: Array<{ start: number; end: number; dataUri: string }> = [];
+          const replacements: Array<{
+            start: number;
+            end: number;
+            dataUri: string;
+          }> = [];
 
           for (const ref of urlRefs) {
             // Skip absolute URLs, data URIs, and protocol-relative URLs
             if (
-              ref.url.startsWith('data:') ||
-              ref.url.startsWith('http:') ||
-              ref.url.startsWith('https:') ||
-              ref.url.startsWith('//')
+              ref.url.startsWith("data:") ||
+              ref.url.startsWith("http:") ||
+              ref.url.startsWith("https:") ||
+              ref.url.startsWith("//")
             ) {
               continue;
             }
@@ -929,10 +1055,10 @@ async function snapshot(opts: Opts): Promise<void> {
             cssText = replaceCssUrls(cssText, replacements);
           }
 
-          const style = document.createElement('style');
+          const style = document.createElement("style");
           style.textContent = cssText;
-          if (link.media && link.media !== 'all') {
-            style.setAttribute('media', link.media);
+          if (link.media && link.media !== "all") {
+            style.setAttribute("media", link.media);
           }
           link.parentNode!.replaceChild(style, link);
           count++;
@@ -947,79 +1073,86 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     // 2. Inline images with concurrency (img, srcset, source, background-image)
     // -----------------------------------------------------------------------
-    console.log('🖼️  Inlining images as base64...');
+    console.log("🖼️  Inlining images as base64...");
     stats.images = await page.evaluate(async () => {
-      const { toDataUri, processInBatches, CONCURRENCY } = (window as any).__snapshot;
+      const { toDataUri, processInBatches, CONCURRENCY } = (window as any)
+        .__snapshot;
       let count = 0;
 
       // --- <img src="..."> ---
-      const images = Array.from(document.querySelectorAll('img[src]')) as HTMLImageElement[];
-      await processInBatches(images, CONCURRENCY, async (img: HTMLImageElement) => {
-        const src = img.src;
-        if (!src || src.startsWith('data:')) return;
-        const dataUri = await toDataUri(src);
-        if (dataUri) {
-          img.setAttribute('src', dataUri);
-          count++;
-        }
-      });
+      const images = Array.from(
+        document.querySelectorAll("img[src]"),
+      ) as HTMLImageElement[];
+      await processInBatches(
+        images,
+        CONCURRENCY,
+        async (img: HTMLImageElement) => {
+          const src = img.src;
+          if (!src || src.startsWith("data:")) return;
+          const dataUri = await toDataUri(src);
+          if (dataUri) {
+            img.setAttribute("src", dataUri);
+            count++;
+          }
+        },
+      );
 
       // --- <img srcset="..."> ---
       const imgsWithSrcset = Array.from(
-        document.querySelectorAll('img[srcset]'),
+        document.querySelectorAll("img[srcset]"),
       ) as HTMLImageElement[];
       for (const img of imgsWithSrcset) {
-        const srcset = img.getAttribute('srcset');
+        const srcset = img.getAttribute("srcset");
         if (!srcset) continue;
-        const parts = srcset.split(',').map((s: string) => s.trim());
+        const parts = srcset.split(",").map((s: string) => s.trim());
         const newParts: string[] = [];
 
         await processInBatches(parts, CONCURRENCY, async (part: string) => {
           const [url, ...descriptors] = part.split(/\s+/);
-          if (url.startsWith('data:')) {
+          if (url.startsWith("data:")) {
             newParts.push(part);
             return;
           }
           const dataUri = await toDataUri(url);
           if (dataUri) {
-            newParts.push([dataUri, ...descriptors].join(' '));
+            newParts.push([dataUri, ...descriptors].join(" "));
             count++;
           }
           // If fetch fails, drop — inlined src is the fallback
         });
 
         if (newParts.length > 0) {
-          img.setAttribute('srcset', newParts.join(', '));
+          img.setAttribute("srcset", newParts.join(", "));
         } else {
-          img.removeAttribute('srcset');
+          img.removeAttribute("srcset");
         }
       }
 
       // --- <source srcset="..."> ---
       const sources = Array.from(
-        document.querySelectorAll('source[srcset]'),
+        document.querySelectorAll("source[srcset]"),
       ) as HTMLSourceElement[];
       for (const source of sources) {
-        const srcset = source.getAttribute('srcset');
-        if (!srcset || srcset.startsWith('data:')) continue;
-        const parts = srcset.split(',').map((s: string) => s.trim());
+        const srcset = source.getAttribute("srcset");
+        if (!srcset || srcset.startsWith("data:")) continue;
+        const parts = srcset.split(",").map((s: string) => s.trim());
         const newParts: string[] = [];
 
         await processInBatches(parts, CONCURRENCY, async (part: string) => {
           const [url, ...descriptors] = part.split(/\s+/);
-          if (url.startsWith('data:')) {
+          if (url.startsWith("data:")) {
             newParts.push(part);
             return;
           }
           const dataUri = await toDataUri(url);
           if (dataUri) {
-            newParts.push([dataUri, ...descriptors].join(' '));
+            newParts.push([dataUri, ...descriptors].join(" "));
             count++;
           }
         });
 
         if (newParts.length > 0) {
-          source.setAttribute('srcset', newParts.join(', '));
+          source.setAttribute("srcset", newParts.join(", "));
         } else {
           source.remove();
         }
@@ -1027,15 +1160,14 @@ async function snapshot(opts: Opts): Promise<void> {
 
       // --- Inline ALL background-image url() in inline styles (handles multiple) ---
       const styledElements = Array.from(
-        document.querySelectorAll('[style]'),
+        document.querySelectorAll("[style]"),
       ) as HTMLElement[];
       for (const el of styledElements) {
-        const style = el.getAttribute('style');
-        if (!style || !style.includes('url(')) continue;
+        const style = el.getAttribute("style");
+        if (!style || !style.includes("url(")) continue;
 
         // Use matchAll to handle multiple url() references
-        const urlPattern =
-          /url\(['"]?(https?:\/\/[^'"\)\s]+)['"]?\)/g;
+        const urlPattern = /url\(['"]?(https?:\/\/[^'"\)\s]+)['"]?\)/g;
         const matches = [...style.matchAll(urlPattern)];
         if (matches.length === 0) continue;
 
@@ -1054,7 +1186,7 @@ async function snapshot(opts: Opts): Promise<void> {
             count++;
           }
         }
-        el.setAttribute('style', newStyle);
+        el.setAttribute("style", newStyle);
       }
 
       return count;
@@ -1064,7 +1196,7 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     // 3. Inline CSS url() references in <style> blocks (using parser)
     // -----------------------------------------------------------------------
-    console.log('🔗 Inlining CSS url() references in <style> blocks...');
+    console.log("🔗 Inlining CSS url() references in <style> blocks...");
     stats.cssUrls = await page.evaluate(async (inlineFonts) => {
       const {
         toDataUri,
@@ -1078,9 +1210,11 @@ async function snapshot(opts: Opts): Promise<void> {
       /** Check if a URL points to a font file (skip — too large, not visual) */
       const isFontFile = (url: string): boolean => {
         return /\.(woff2?|ttf|eot|otf)(\?|$)/i.test(url);
-      }
+      };
 
-      const styles = Array.from(document.querySelectorAll('style')) as HTMLStyleElement[];
+      const styles = Array.from(
+        document.querySelectorAll("style"),
+      ) as HTMLStyleElement[];
       for (const styleEl of styles) {
         let css = styleEl.textContent!;
         const urlRefs = extractCssUrls(css);
@@ -1088,15 +1222,15 @@ async function snapshot(opts: Opts): Promise<void> {
         // Filter to only http(s) URLs that aren't fonts
         const toInline = urlRefs.filter(
           (ref: any) =>
-            (ref.url.startsWith('http://') ||
-              ref.url.startsWith('https://')) &&
+            (ref.url.startsWith("http://") || ref.url.startsWith("https://")) &&
             (!isFontFile(ref.url) || inlineFonts),
         );
 
         if (toInline.length === 0) continue;
 
         // Fetch all URLs concurrently
-        const fetched: Array<{ start: number; end: number; dataUri: string }> = [];
+        const fetched: Array<{ start: number; end: number; dataUri: string }> =
+          [];
         await processInBatches(toInline, CONCURRENCY, async (ref: any) => {
           const dataUri = await toDataUri(ref.url);
           if (dataUri) {
@@ -1117,49 +1251,58 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     // 4. Inline additional resource types (SVG, video, favicons)
     // -----------------------------------------------------------------------
-    console.log('🔗 Inlining additional resources (SVG, video, favicons)...');
+    console.log("🔗 Inlining additional resources (SVG, video, favicons)...");
     const additionalStats = await page.evaluate(async () => {
-      const { toDataUri, processInBatches, CONCURRENCY } = (window as any).__snapshot;
+      const { toDataUri, processInBatches, CONCURRENCY } = (window as any)
+        .__snapshot;
       const stats = { svgImages: 0, videoPoster: 0, favicons: 0 };
 
       // --- SVG <image href="..."> and <image xlink:href="..."> ---
-      const svgImages = Array.from(document.querySelectorAll('image')) as SVGImageElement[];
-      await processInBatches(svgImages, CONCURRENCY, async (img: SVGImageElement) => {
-        // Check both href and xlink:href
-        const href =
-          img.getAttribute('href') ||
-          img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-        if (!href || href.startsWith('data:')) return;
-        const dataUri = await toDataUri(href);
-        if (dataUri) {
-          // Set both for compatibility
-          if (img.hasAttribute('href')) img.setAttribute('href', dataUri);
-          if (
-            img.hasAttributeNS('http://www.w3.org/1999/xlink', 'href')
-          ) {
-            img.setAttributeNS(
-              'http://www.w3.org/1999/xlink',
-              'href',
-              dataUri,
-            );
+      const svgImages = Array.from(
+        document.querySelectorAll("image"),
+      ) as SVGImageElement[];
+      await processInBatches(
+        svgImages,
+        CONCURRENCY,
+        async (img: SVGImageElement) => {
+          // Check both href and xlink:href
+          const href =
+            img.getAttribute("href") ||
+            img.getAttributeNS("http://www.w3.org/1999/xlink", "href");
+          if (!href || href.startsWith("data:")) return;
+          const dataUri = await toDataUri(href);
+          if (dataUri) {
+            // Set both for compatibility
+            if (img.hasAttribute("href")) img.setAttribute("href", dataUri);
+            if (img.hasAttributeNS("http://www.w3.org/1999/xlink", "href")) {
+              img.setAttributeNS(
+                "http://www.w3.org/1999/xlink",
+                "href",
+                dataUri,
+              );
+            }
+            stats.svgImages++;
           }
-          stats.svgImages++;
-        }
-      });
+        },
+      );
 
       // --- <video poster="..."> ---
       const videos = Array.from(
-        document.querySelectorAll('video[poster]'),
+        document.querySelectorAll("video[poster]"),
       ) as HTMLVideoElement[];
-      await processInBatches(videos, CONCURRENCY, async (video: HTMLVideoElement) => {
-        const poster = video.getAttribute('poster');
-        if (!poster || poster.startsWith('data:')) return;
-        const dataUri = await toDataUri(poster);
-        if (dataUri) {
-          video.setAttribute('poster', dataUri);
-          stats.videoPoster++;
-        }
-      });
+      await processInBatches(
+        videos,
+        CONCURRENCY,
+        async (video: HTMLVideoElement) => {
+          const poster = video.getAttribute("poster");
+          if (!poster || poster.startsWith("data:")) return;
+          const dataUri = await toDataUri(poster);
+          if (dataUri) {
+            video.setAttribute("poster", dataUri);
+            stats.videoPoster++;
+          }
+        },
+      );
 
       // --- <link rel="icon"> and <link rel="apple-touch-icon"> favicons ---
       const favicons = Array.from(
@@ -1167,43 +1310,51 @@ async function snapshot(opts: Opts): Promise<void> {
           'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]',
         ),
       ) as HTMLLinkElement[];
-      await processInBatches(favicons, CONCURRENCY, async (link: HTMLLinkElement) => {
-        const href = link.href;
-        if (!href || href.startsWith('data:')) return;
-        const dataUri = await toDataUri(href);
-        if (dataUri) {
-          link.setAttribute('href', dataUri);
-          stats.favicons++;
-        }
-      });
+      await processInBatches(
+        favicons,
+        CONCURRENCY,
+        async (link: HTMLLinkElement) => {
+          const href = link.href;
+          if (!href || href.startsWith("data:")) return;
+          const dataUri = await toDataUri(href);
+          if (dataUri) {
+            link.setAttribute("href", dataUri);
+            stats.favicons++;
+          }
+        },
+      );
 
       // --- <object data="..."> ---
       const objects = Array.from(
-        document.querySelectorAll('object[data]'),
+        document.querySelectorAll("object[data]"),
       ) as HTMLObjectElement[];
-      await processInBatches(objects, CONCURRENCY, async (obj: HTMLObjectElement) => {
-        const data = obj.getAttribute('data');
-        if (!data || data.startsWith('data:')) return;
-        // Only inline small objects (SVGs, etc.) — skip large ones
-        try {
-          const resp = await fetch(data);
-          if (!resp.ok) return;
-          const contentLength = resp.headers.get('content-length');
-          if (contentLength && Number(contentLength) > 500000) return; // Skip >500KB
-          const blob = await resp.blob();
-          const dataUri: string | null = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.onerror = () => resolve(null);
-            reader.readAsDataURL(blob);
-          });
-          if (dataUri) {
-            obj.setAttribute('data', dataUri);
+      await processInBatches(
+        objects,
+        CONCURRENCY,
+        async (obj: HTMLObjectElement) => {
+          const data = obj.getAttribute("data");
+          if (!data || data.startsWith("data:")) return;
+          // Only inline small objects (SVGs, etc.) — skip large ones
+          try {
+            const resp = await fetch(data);
+            if (!resp.ok) return;
+            const contentLength = resp.headers.get("content-length");
+            if (contentLength && Number(contentLength) > 500000) return; // Skip >500KB
+            const blob = await resp.blob();
+            const dataUri: string | null = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.onerror = () => resolve(null);
+              reader.readAsDataURL(blob);
+            });
+            if (dataUri) {
+              obj.setAttribute("data", dataUri);
+            }
+          } catch {
+            // Skip failed objects
           }
-        } catch {
-          // Skip failed objects
-        }
-      });
+        },
+      );
 
       return stats;
     });
@@ -1222,36 +1373,34 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     // 5. Remove all <script> tags and dev-tool overlays
     // -----------------------------------------------------------------------
-    console.log('🗑️  Removing <script> tags and dev overlays...');
+    console.log("🗑️  Removing <script> tags and dev overlays...");
     stats.scriptsRemoved = await page.evaluate(() => {
       // Remove all scripts
-      const scripts = Array.from(document.querySelectorAll('script'));
+      const scripts = Array.from(document.querySelectorAll("script"));
       scripts.forEach((s) => s.remove());
 
       // Remove framework-specific dev overlays
       const devSelectors = [
         // Vite
-        'vite-error-overlay',
+        "vite-error-overlay",
         // Next.js
-        '[data-nextjs-dialog-overlay]',
-        'nextjs-portal',
+        "[data-nextjs-dialog-overlay]",
+        "nextjs-portal",
         // Webpack/CRA
-        '#webpack-dev-server-client-overlay',
-        '#webpack-dev-server-client-overlay-div',
+        "#webpack-dev-server-client-overlay",
+        "#webpack-dev-server-client-overlay-div",
         // Parcel
-        '[data-parcel-error-overlay]',
+        "[data-parcel-error-overlay]",
         // Nuxt
-        '[data-v-inspector]',
+        "[data-v-inspector]",
       ];
 
       for (const selector of devSelectors) {
-        document
-          .querySelectorAll(selector)
-          .forEach((el) => el.remove());
+        document.querySelectorAll(selector).forEach((el) => el.remove());
       }
 
       // Remove noscript tags
-      document.querySelectorAll('noscript').forEach((el) => el.remove());
+      document.querySelectorAll("noscript").forEach((el) => el.remove());
 
       return scripts.length;
     });
@@ -1267,16 +1416,16 @@ async function snapshot(opts: Opts): Promise<void> {
     // -----------------------------------------------------------------------
     // 7. Extract the final HTML and write output
     // -----------------------------------------------------------------------
-    console.log('📦 Extracting final HTML...');
+    console.log("📦 Extracting final HTML...");
     const html = await page.evaluate(
-      () => '<!DOCTYPE html>\n' + document.documentElement.outerHTML,
+      () => "<!DOCTYPE html>\n" + document.documentElement.outerHTML,
     );
 
     // Write output
     const outputPath = path.resolve(opts.output!);
     const outputDir = path.dirname(outputPath);
     fs.mkdirSync(outputDir, { recursive: true });
-    fs.writeFileSync(outputPath, html, 'utf-8');
+    fs.writeFileSync(outputPath, html, "utf-8");
 
     stats.output = outputPath;
     stats.sizeBytes = Buffer.byteLength(html);
@@ -1300,7 +1449,7 @@ async function snapshot(opts: Opts): Promise<void> {
 
     // JSON output for CI/CD integration
     if (opts.json) {
-      console.log('\n--- JSON Stats ---');
+      console.log("\n--- JSON Stats ---");
       console.log(JSON.stringify(stats, null, 2));
     }
   } finally {
@@ -1323,7 +1472,7 @@ const opts = parseArgs();
 validateOpts(opts);
 
 snapshot(opts).catch((err: Error) => {
-  console.error('❌ Snapshot failed:', err.message);
+  console.error("❌ Snapshot failed:", err.message);
   if (err.stack) console.error(err.stack);
   process.exit(1);
 });

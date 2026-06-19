@@ -9,7 +9,13 @@ import { siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Loader2, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
@@ -23,14 +29,14 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
-      
+
       if (result?.error) {
         setError(result.error);
       } else {
@@ -47,10 +53,12 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-900 transition-colors duration-300">
       <div className="w-full max-w-md space-y-6">
-        
         {/* Application Branding Header Layer */}
         <div className="flex flex-col items-center space-y-2 text-center">
-          <Link href="/" className="flex flex-col items-center gap-2 hover:opacity-95 transition-opacity group">
+          <Link
+            href="/"
+            className="flex flex-col items-center gap-2 hover:opacity-95 transition-opacity group"
+          >
             <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-white p-2 shadow-sm border border-slate-100 dark:border-slate-800 dark:bg-slate-950">
               <Image
                 src="/phaglp-logo.png"
@@ -83,10 +91,13 @@ export default function LoginPage() {
                 <span>{error}</span>
               </div>
             )}
-            
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <Label
+                  htmlFor="email"
+                  className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                >
                   Email Address
                 </Label>
                 <Input
@@ -100,9 +111,12 @@ export default function LoginPage() {
                   className="rounded-xl border-slate-300 bg-slate-50/50 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100"
                 />
               </div>
-              
+
               <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <Label
+                  htmlFor="password"
+                  className="text-sm font-semibold text-slate-700 dark:text-slate-300"
+                >
                   Password
                 </Label>
                 <Input
@@ -137,7 +151,6 @@ export default function LoginPage() {
             </form>
           </CardContent>
         </Card>
-
       </div>
     </div>
   );

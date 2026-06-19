@@ -1,8 +1,7 @@
 import { Navbar } from "@/components/navigation/navbar";
-import { Footer } from "@/components/navigation/footer"; 
+import { Footer } from "@/components/navigation/footer";
 import { getNavigationMenus } from "@/lib/server/menus";
 import { Analytics } from "@vercel/analytics/next";
-
 
 export default async function PublicLayout({
   children,
@@ -16,14 +15,13 @@ export default async function PublicLayout({
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Dynamic Navbar Layer */}
       <Navbar initialMenus={menus} />
-      
+
       {/* Core Main Viewport Children */}
       <main className="flex-grow">{children}</main>
-      
+
       {/* Refactored Dynamic Footer: Maps Lucide icon strings from database automatically */}
       <Footer initialMenus={menus} />
-      <Analytics mode="production"/>
-
-      </div>
+      <Analytics mode="production" />
+    </div>
   );
 }

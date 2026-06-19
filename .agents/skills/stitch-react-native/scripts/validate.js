@@ -14,16 +14,38 @@
  * limitations under the License.
  */
 
-import swc from '@swc/core';
-import fs from 'node:fs';
-import path from 'node:path';
+import swc from "@swc/core";
+import fs from "node:fs";
+import path from "node:path";
 
 const HEX_COLOR_REGEX = /#[0-9A-Fa-f]{3,8}\b/;
 const RGBA_COLOR_REGEX = /^rgba?\(\s*\d/;
-const HTML_ELEMENTS = ['div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'button', 'a', 'input', 'ul', 'ol', 'li', 'section', 'header', 'footer', 'nav', 'main'];
+const HTML_ELEMENTS = [
+  "div",
+  "span",
+  "p",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "img",
+  "button",
+  "a",
+  "input",
+  "ul",
+  "ol",
+  "li",
+  "section",
+  "header",
+  "footer",
+  "nav",
+  "main",
+];
 
 async function validateComponent(filePath) {
-  const code = fs.readFileSync(filePath, 'utf-8');
+  const code = fs.readFileSync(filePath, "utf-8");
   const filename = path.basename(filePath);
   try {
     const ast = await swc.parse(code, { syntax: "typescript", tsx: true });
@@ -37,25 +59,31 @@ async function validateComponent(filePath) {
     const walk = (node, parent) => {
       if (!node) return;
 
-      if (node.type === 'TsInterfaceDeclaration' && node.id.value.endsWith('Props')) {
+      if (
+        node.type === "TsInterfaceDeclaration" &&
+        node.id.value.endsWith("Props")
+      ) {
         hasInterface = true;
-        if (parent?.type === 'ExportDeclaration') {
+        if (parent?.type === "ExportDeclaration") {
           hasExportedInterface = true;
         }
       }
 
       // Check for hardcoded hex values in strings
-      if (node.type === 'StringLiteral' && HEX_COLOR_REGEX.test(node.value)) {
+      if (node.type === "StringLiteral" && HEX_COLOR_REGEX.test(node.value)) {
         colorIssues.push(node.value);
       }
 
       // Check for rgba() color strings
-      if (node.type === 'StringLiteral' && RGBA_COLOR_REGEX.test(node.value)) {
+      if (node.type === "StringLiteral" && RGBA_COLOR_REGEX.test(node.value)) {
         colorIssues.push(node.value);
       }
 
       // Check for HTML elements used as JSX tags
-      if (node.type === 'JSXOpeningElement' && node.name?.type === 'Identifier') {
+      if (
+        node.type === "JSXOpeningElement" &&
+        node.name?.type === "Identifier"
+      ) {
         const tagName = node.name.value;
         if (HTML_ELEMENTS.includes(tagName)) {
           htmlElements.push(tagName);
@@ -63,7 +91,7 @@ async function validateComponent(filePath) {
       }
 
       for (const key in node) {
-        if (node[key] && typeof node[key] === 'object') walk(node[key], node);
+        if (node[key] && typeof node[key] === "object") walk(node[key], node);
       }
     };
     walk(ast, null);
@@ -75,26 +103,36 @@ async function validateComponent(filePath) {
     if (hasExportedInterface) {
       console.log("PASS: Exported Props interface found.");
     } else if (hasInterface) {
-      console.error("WARN: Props interface found but not exported. Add 'export' keyword.");
+      console.error(
+        "WARN: Props interface found but not exported. Add 'export' keyword.",
+      );
       valid = false;
     } else {
-      console.error("FAIL: Missing Props interface (must end in 'Props' and be exported).");
+      console.error(
+        "FAIL: Missing Props interface (must end in 'Props' and be exported).",
+      );
       valid = false;
     }
 
     if (colorIssues.length === 0) {
       console.log("PASS: No hardcoded color values found.");
     } else {
-      console.error(`FAIL: Found ${colorIssues.length} hardcoded colors. Use theme.ts instead.`);
-      colorIssues.forEach(c => console.error(`   - ${c}`));
+      console.error(
+        `FAIL: Found ${colorIssues.length} hardcoded colors. Use theme.ts instead.`,
+      );
+      colorIssues.forEach((c) => console.error(`   - ${c}`));
       valid = false;
     }
 
     if (htmlElements.length === 0) {
-      console.log("PASS: No HTML elements found. Using React Native primitives.");
+      console.log(
+        "PASS: No HTML elements found. Using React Native primitives.",
+      );
     } else {
       const unique = [...new Set(htmlElements)];
-      console.error(`FAIL: Found HTML elements: ${unique.join(', ')}. Replace with React Native components.`);
+      console.error(
+        `FAIL: Found HTML elements: ${unique.join(", ")}. Replace with React Native components.`,
+      );
       valid = false;
     }
 
