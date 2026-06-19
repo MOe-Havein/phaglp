@@ -1,6 +1,8 @@
 import { Navbar } from "@/components/navigation/navbar";
 import { Footer } from "@/components/navigation/footer"; 
 import { getNavigationMenus } from "@/lib/server/menus";
+import { Analytics } from "@vercel/analytics/next";
+
 
 export default async function PublicLayout({
   children,
@@ -20,6 +22,8 @@ export default async function PublicLayout({
       
       {/* Refactored Dynamic Footer: Maps Lucide icon strings from database automatically */}
       <Footer initialMenus={menus} />
-    </div>
+      <Analytics mode="production"/>
+
+      </div>
   );
 }
