@@ -39,7 +39,7 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60,
     loader: 'custom',
-    loaderFile: './src/utils/cloudinary-loader.ts', // Points to a file returning the Cloudinary fetch string
+    loaderFile: '@utils/cloudinary-loader.ts', // Points to a file returning the Cloudinary fetch string
     remotePatterns: [
  
       {
