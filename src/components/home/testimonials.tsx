@@ -11,7 +11,7 @@ const testimonials = [
     content:
       "The daily applied lectures challenged my mind in ways school never could. I've found my true intellectual peers here in the academy.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop",
+    avatar: "https://res.cloudinary.com/phaglp/image/upload/v1781899830/photo-1580489944761-15a19d654956_g6myqd.jpg",
   },
   {
     name: "Dr. Layla Vance",
@@ -19,7 +19,7 @@ const testimonials = [
     content:
       "The philosophical dialogue in the GP Groups is incredibly rigorous. It has completely refined my research methodology and reasoning structures.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop",
+    avatar: "https://res.cloudinary.com/phaglp/image/upload/v1781899813/photo-1519085360753-af0119f7cbe7_k62ldf.jpg",
   },
   {
     name: "Sophia Rossi",
@@ -27,7 +27,7 @@ const testimonials = [
     content:
       "GP Subjects allowed me to dive deep into mathematical logic and epistemology. The modules are advanced, specialized, and completely exclusive!",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop",
+    avatar: "https://res.cloudinary.com/phaglp/image/upload/v1781899791/photo-1472099645785-5658abf4ff4e_ilfkl0.jpg",
   },
   {
     name: "Mariam Al-Harbi",
@@ -35,7 +35,7 @@ const testimonials = [
     content:
       "The comprehensive care and support for my gifted son has been a blessing. The academy nurtures both his high intellect and noble character.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=100&auto=format&fit=crop",
+    avatar: "https://res.cloudinary.com/phaglp/image/upload/v1781899771/photo-1573496359142-b8d87734a5a2_hkue85.jpg",
   },
   {
     name: "Prof. David Miller",
@@ -43,7 +43,7 @@ const testimonials = [
     content:
       "Being part of the annual scientific conference and research programs has opened new horizons for my work in cognitive science and logic.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop",
+    avatar: "https://res.cloudinary.com/phaglp/image/upload/v1781899733/photo-1494790108377-be9c29b29330_cy9obx.jpg",
   },
   {
     name: "Tariq Mahmood",
@@ -51,7 +51,7 @@ const testimonials = [
     content:
       "The knowledge-based e-commerce platform provided me the perfect environment to apply my genius ideas into a successful digital business.",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=100&auto=format&fit=crop",
+    avatar: "https://res.cloudinary.com/phaglp/image/upload/v1781899753/photo-1534528741775-53994a69daeb_pohymd.jpg",
   },
   {
     name: "Sarah & Ahmed",
@@ -59,7 +59,7 @@ const testimonials = [
     content:
       "Alhamdulillah, the values-based matching process helped us find deep compatibility grounded in virtue. Truly a legendary project for families!",
     rating: 5,
-    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=100&auto=format&fit=crop",
+    avatar: "https://res.cloudinary.com/phaglp/image/upload/v1781899712/photo-1507003211169-0a1dd7228f2d_l8jaf1.jpg",
   },
 ];
 
