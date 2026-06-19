@@ -1,6 +1,7 @@
 import React from "react";
 import { prisma, safeDbQuery } from "@/lib/prisma";
 import { LatestLecturesClient } from "./LatestLecturesClient";
+import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
 
 // EXACT DATA SCHEMA REQUIRED BY THE SPECIFICATION
 export interface LETURES {
@@ -22,8 +23,9 @@ const FALLBACK_LECTURES: LETURES[] = [
     excerpt:
       "Delve into the foundational mechanics of cognitive architectures, artificial general intelligence constraints, and alignment methodologies.",
     slug: "cognitive-architectures-and-ai-alignment",
-    coverImage:
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=200&auto=format&fit=crop&q=80",
+    coverImage: getCloudinaryFetchUrl(
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=200&auto=format&fit=crop&q=80"
+    ),
     category: "Computer Science",
     readingTime: "12 min read",
     createdAt: "2026-05-15T08:00:00.000Z",
@@ -34,8 +36,9 @@ const FALLBACK_LECTURES: LETURES[] = [
     excerpt:
       "Analyze how traditional Socratic search for universal truth translates to statistical representations in high-dimensional vector spaces.",
     slug: "epistemology-in-the-digital-era",
-    coverImage:
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=200&auto=format&fit=crop&q=80",
+    coverImage: getCloudinaryFetchUrl(
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=200&auto=format&fit=crop&q=80"
+    ),
     category: "Philosophy",
     readingTime: "15 min read",
     createdAt: "2026-05-20T10:30:00.000Z",
@@ -46,8 +49,9 @@ const FALLBACK_LECTURES: LETURES[] = [
     excerpt:
       "A comprehensive introduction to qubit mathematics, state transformations, Bell states, and experimental quantum computational frameworks.",
     slug: "quantum-information-theory-gates-states",
-    coverImage:
-      "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200&auto=format&fit=crop&q=80",
+    coverImage: getCloudinaryFetchUrl(
+      "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200&auto=format&fit=crop&q=80"
+    ),
     category: "Physics",
     readingTime: "18 min read",
     createdAt: "2026-05-24T14:15:00.000Z",
@@ -84,9 +88,10 @@ export async function LatestLETURES({
           item.excerpt ||
           item.body.replace(/[#*`]/g, "").substring(0, 150) + "...",
         slug: item.slug,
-        coverImage:
+        coverImage: getCloudinaryFetchUrl(
           item.coverImage ||
-          "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop"
+        ),
         category: item.category,
         readingTime: `${item.readingTime || 5} min read`,
         createdAt:

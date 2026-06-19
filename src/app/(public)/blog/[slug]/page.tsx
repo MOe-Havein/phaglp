@@ -167,6 +167,10 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Article",
+              mainEntityOfPage: {
+                "@type": "WebPage",
+                "@id": `https://phaglp.com/blog/${post.slug}`,
+              },
               headline: post.title,
               image: post.coverImage ? [post.coverImage] : undefined,
               datePublished:
@@ -181,7 +185,15 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
                 "@type": "Person",
                 name: post.author?.name || "Anonymous",
               },
-            }).replace(/</g, '\\u003c'),
+              publisher: {
+                "@type": "Organization",
+                name: "PHAGLP",
+                logo: {
+                  "@type": "ImageObject",
+                  url: "https://phaglp.com/logo.png",
+                },
+              },
+            }).replace(/</g, "\\u003c"),
           }}
         />
       </div>

@@ -4,13 +4,15 @@ import prisma from "@/lib/db/prisma";
 import { HomepageSection } from "@/types/homepage";
 
 import { SaaSHero } from "@/components/home/SaaSHero";
-import { Features } from "@/components/home/Features";
-import { CTA } from "@/components/home/CTA";
-import { Media } from "@/components/home/Media";
-import { Testimonials } from "@/components/home/testimonials";
-import { LatestBlogPosts } from "@/components/home/LatestBlogPosts";
-import { LatestLETURES } from "@/components/home/LatestLETURES";
-import { CoursesPricing } from "@/components/home/CoursesPricing";
+import dynamic from "next/dynamic";
+
+const Features = dynamic(() => import("@/components/home/Features").then((mod) => mod.Features));
+const CTA = dynamic(() => import("@/components/home/CTA").then((mod) => mod.CTA));
+const Media = dynamic(() => import("@/components/home/Media").then((mod) => mod.Media));
+const Testimonials = dynamic(() => import("@/components/home/testimonials").then((mod) => mod.Testimonials));
+const LatestBlogPosts = dynamic(() => import("@/components/home/LatestBlogPosts").then((mod) => mod.LatestBlogPosts));
+const LatestLETURES = dynamic(() => import("@/components/home/LatestLETURES").then((mod) => mod.LatestLETURES));
+const CoursesPricing = dynamic(() => import("@/components/home/CoursesPricing").then((mod) => mod.CoursesPricing));
 
 // Corrected Word Splitting Implementation for dynamic text layout rendering
 function HeroSection({ data }: { data: HomepageSection }) {

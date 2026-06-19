@@ -27,21 +27,36 @@ const nextConfig = {
       "lucide-react",
       "@radix-ui/react-icons",
       "date-fns",
+      "lodash",
+      "clsx",
+      "tailwind-merge",
+      "prisma",
+      "@prisma/client",
+      "@vercel/analytics/next",
+      "@prisma/client/runtime",
       "@tanstack/react-query",
     ],
   },
 
   images: {
     formats: ["image/avif", "image/webp"],
-
+    minimumCacheTTL: 60, 
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
+        pathname: "/phaglp/**",
+
+      },
+      {
+       protocol: "https",
+       hostname: "://cloudinary.com",
+       pathname: "/phaglp/**",
       },
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+        pathname: "/**",
       },
     ],
   },

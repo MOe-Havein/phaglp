@@ -232,15 +232,12 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             {mounted && (
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" aria-label="Open navigation menu">
                   <Icons.Menu className="w-6 h-6" />
                 </Button>
               </SheetTrigger>
             )}
-            <SheetContent
-              side="right"
-              className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background"
-            >
+            <SheetContent side="right" className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background">
               <SheetHeader className="p-6 border-b">
                 <SheetTitle className="text-left text-primary dark:text-blue-400 flex items-center gap-2">
                   <Image

@@ -111,6 +111,7 @@ export function ChatbotWidget() {
                 size="icon"
                 onClick={() => setIsOpen(false)}
                 className="text-white hover:bg-emerald-700"
+                aria-label="Close chat"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -185,6 +186,7 @@ export function ChatbotWidget() {
                 disabled={loading || !input.trim()}
                 size="icon"
                 className="bg-emerald-600 hover:bg-emerald-700"
+                aria-label="Send message"
               >
                 <Send className="h-4 w-4" />
               </Button>

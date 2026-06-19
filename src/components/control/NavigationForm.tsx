@@ -116,7 +116,7 @@ export function NavigationForm({ initialData, pages }: NavigationFormProps) {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" asChild>
+          <Button variant="outline" size="icon" asChild aria-label="Back to Navigation">
             <Link href="/control/navigation">
               <ChevronLeft className="h-4 w-4" />
             </Link>

@@ -65,7 +65,7 @@ export function EditCourseForm({ course }: EditCourseFormProps) {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" asChild>
+          <Button variant="outline" size="icon" asChild aria-label="Back to Courses">
             <Link href="/control/courses">
               <ChevronLeft className="h-4 w-4" />
             </Link>

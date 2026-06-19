@@ -208,6 +208,34 @@ export default async function CourseDetailPage({
           </div>
         </div>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            name: course.title,
+            description: course.shortDescription || course.title,
+            provider: {
+              "@type": "Organization",
+              name: "PHAGLP",
+              sameAs: "https://phaglp.com"
+            },
+            hasCourseInstance: {
+              "@type": "CourseInstance",
+              courseMode: "online",
+              courseWorkload: "PT10H"
+            },
+            offers: {
+              "@type": "Offer",
+              price: course.price,
+              priceCurrency: "USD",
+              category: "Paid"
+            }
+          }).replace(/</g, "\\u003c"),
+        }}
+      />
     </div>
   );
 }
