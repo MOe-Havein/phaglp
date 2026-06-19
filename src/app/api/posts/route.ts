@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const result = await safeDbQuery(async () => {
-    return prisma.lecture.findMany({
+    return prisma.post.findMany({
       where: { published: true },
       orderBy: { createdAt: "desc" },
       take: 6,
