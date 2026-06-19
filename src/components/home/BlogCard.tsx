@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Clock, ArrowUpRight, Calendar } from "lucide-react";
+import Image from "next/image";
 
 export interface Post {
   id: string;
@@ -52,7 +53,7 @@ export function BlogCard({ post }: BlogCardProps) {
         )}
 
         {!imageError && post.coverImage ? (
-          <img
+          <Image
             src={post.coverImage}
             alt={post.title}
             className={[

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
+import Image from "next/image";
 
 interface MediaProps {
   title?: string | null;
@@ -67,8 +67,8 @@ export function Media({
 
             {/* Image Wrapper */}
             <div className="overflow-hidden rounded-b-xl aspect-video bg-slate-950">
-              <img
-                src={getCloudinaryFetchUrl(mediaUrl as string)}
+              <Image 
+                src={mediaUrl ?? ""}
                 alt={mediaAlt || "Interactive Media"}
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-102"
                 loading="lazy"

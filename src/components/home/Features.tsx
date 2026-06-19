@@ -3,7 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Cpu, GraduationCap, ShieldAlert, Award } from "lucide-react";
-import { getCloudinaryFetchUrl } from "@/utils/cloudinary-fetch";
+import Image from "next/image";
+
 
 interface FeaturesProps {
   title?: string | null;
@@ -124,8 +125,8 @@ export function Features({
                   <div className="w-3 h-3 rounded-full bg-green-400" />
                 </div>
                 <div className="relative aspect-video rounded-b-xl overflow-hidden bg-slate-100">
-                  <img
-                    src={getCloudinaryFetchUrl(mediaUrl as string)}
+                  <Image
+                    src={mediaUrl ?? ""}
                     alt={mediaAlt || "Feature preview"}
                     className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 hover:scale-103"
                     loading="lazy"
