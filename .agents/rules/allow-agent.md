@@ -27,7 +27,6 @@ rm -rf .
 
 ### Command Execution Policy
 
-Agents must never execute arbitrary shell commands.
 
 Allowed commands must be exposed as explicit tools.
 

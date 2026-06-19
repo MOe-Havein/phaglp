@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Star, Quote, ArrowRight } from "lucide-react";
 import { CldImage } from "next-cloudinary";

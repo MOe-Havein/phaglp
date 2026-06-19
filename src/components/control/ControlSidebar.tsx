@@ -11,7 +11,6 @@ import {
   FileCode,
   Mail,
   Navigation,
-  Home,
   Package,
   ClipboardCheck,
   Award,
