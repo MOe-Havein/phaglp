@@ -30,11 +30,11 @@ const nextConfig = {
       "lodash",
       "clsx",
       "tailwind-merge",
-      "prisma",
+    
      
       "@vercel/analytics/next",
-      "@prisma/client/runtime",
-      "@tanstack/react-query",
+  
+
     ],
   },
 
