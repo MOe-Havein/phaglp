@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { Readable } from "stream";
 
 // --- Constants ---
-const UPLOAD_FOLDER = "phaglp/lectures";
+const UPLOAD_FOLDER = "phaglp";
 const ALLOWED_MIME_TYPES = [
   "image/jpeg",
   "image/png",

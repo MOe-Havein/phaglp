@@ -38,16 +38,18 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60,
+    loader: 'custom',
+    loaderFile: './src/utils/cloudinary-loader.ts', // Points to a file returning the Cloudinary fetch string
     remotePatterns: [
  
       {
         protocol: "https",
-        hostname: "://cloudinary.com",
+        hostname: 'res.cloudinary.com',
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "://unsplash.com",
+        hostname: 'images.unsplash.com',
         pathname: "/**",
       },
     ],
