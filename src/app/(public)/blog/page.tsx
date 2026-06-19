@@ -1,52 +1,38 @@
 import prisma, { safeDbQuery } from "@/lib/prisma";
 import { BlogListing } from "@/features/blog/components/blog-listing";
-import { unstable_cache } from "next/cache";
-import { redis } from "@/lib/redis";
 
 // Ensure dynamic rendering to handle database state safely
 export const dynamic = "force-dynamic";
 
-const getCachedBlogPosts = unstable_cache(
-  async () => {
-    const cacheKey = "blog-posts";
-    const cached = await redis.get<any[]>(cacheKey);
-    if (cached) {
-      return cached;
-    }
-
-    const result = await safeDbQuery(async () => {
-      return prisma.post.findMany({
-        where: {
-          published: true,
-        },
-        include: {
-          author: {
-            select: {
-              name: true,
-            },
+// Simple, direct async database wrapper function replacing the broken cache block
+async function getCachedBlogPosts() {
+  const result = await safeDbQuery(async () => {
+    return prisma.post.findMany({
+      where: {
+        published: true,
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
           },
         },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-    }, []);
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }, []);
 
-    const data = result.data || [];
-
-    await redis.set(cacheKey, data, { ex: 300 });
-    return data;
-  },
-  ["blog-posts"],
-  { tags: ["blog-posts"], revalidate: 300 },
-);
+  return result?.data || [];
+}
 
 export default async function BlogPage() {
   let posts: any[] = [];
   try {
     posts = await getCachedBlogPosts();
   } catch (error) {
-    console.error("Failed to fetch cached blog posts:", error);
+    console.error("Failed to fetch blog posts:", error);
   }
 
   return (
@@ -56,8 +42,7 @@ export default async function BlogPage() {
           Latest Insights & Blog
         </h1>
         <p className="text-lg font-medium text-slate-600 dark:text-slate-400 leading-relaxed">
-          Explore articles, news, and community insights from the PHAGLP
-          ecosystem.
+          Explore articles, news, and community insights from the PHAGLP ecosystem.
         </p>
       </div>
 
