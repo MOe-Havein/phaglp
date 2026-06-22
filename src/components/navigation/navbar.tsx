@@ -72,7 +72,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
   };
 
   return (
-    <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50 transition-all duration-300">
+    <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50 transition-all duration-300 dark:bg-slate-900/50 dark:text-slate-300">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-1">
           <Link
