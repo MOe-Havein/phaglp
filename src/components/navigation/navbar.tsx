@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   ChevronDown,
@@ -58,10 +58,11 @@ interface NavbarProps {
 export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
-  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
-    null,
-  );
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  
+  // Add this line:
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -204,71 +205,61 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                       className="flex items-center gap-2 hover:opacity-90 focus:outline-none transition-all bg-slate-50 dark:bg-slate-900 border px-3 py-1.5 rounded-full shadow-sm"
                       aria-controls="user-dropdown"
                     >
-                      <Avatar className="w-7 h-7 border border-primary/20">
-                        <AvatarImage src={session.user.image || ""} />
-                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold uppercase">
-                          {session.user.name
-                            ? session.user.name.substring(0, 2)
-                            : "US"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-xs font-semibold text-foreground max-w-[100px] truncate">
-                        {session.user.name || "Student"}
-                      </span>
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
-                    id="user-dropdown"
-                  >
-                    <DropdownMenuLabel className="px-3 py-2">
-                      <div className="text-sm font-bold truncate">
-                        {session.user.name || "User"}
-                      </div>
-                      <div className="text-xs text-muted-foreground truncate">
-                        {session.user.email}
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      asChild
-                      className="rounded-xl cursor-pointer"
-                    >
-                      <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2 w-full"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-primary" />
-                        My Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                    {session.user.role === "ADMIN" && (
-                      <DropdownMenuItem
-                        asChild
-                        className="rounded-xl cursor-pointer"
-                      >
-                        <Link
-                          href="/control"
-                          className="flex items-center gap-2 w-full"
-                        >
-                          <Shield className="w-4 h-4 text-red-500" />
-                          Control Panel
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => signOut()}
-                      className="rounded-xl cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/20"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            ) : (
+                      <div className="flex flex-col gap-3">
+  <div className="flex items-center gap-3 px-1 py-1">
+    <Avatar className="w-10 h-10 border border-primary/20">
+      <AvatarImage src={session.user?.image || ""} />
+      <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
+        {session.user?.name ? session.user.name.substring(0, 2) : "US"}
+      </AvatarFallback>
+    </Avatar>
+    <div className="flex flex-col min-w-0">
+      <span className="text-sm font-bold text-foreground truncate">
+        {session.user?.name || "Student"}
+      </span>
+      <span className="text-xs text-muted-foreground truncate">
+        {session.user?.email}
+      </span>
+    </div>
+  </div>
+
+  <Button
+    asChild
+    variant="outline"
+    className="w-full justify-start gap-2 rounded-xl"
+  >
+    {/* Move onClick directly to the Link */}
+    <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+      <LayoutDashboard className="w-4 h-4 text-primary" />
+      My Dashboard
+    </Link>
+  </Button>
+
+  {/* Safely check the role using optional chaining */}
+  {session.user?.role === "ADMIN" && (
+    <Button
+      asChild
+      variant="outline"
+      className="w-full justify-start gap-2 rounded-xl"
+    >
+      <Link href="/control" onClick={() => setIsOpen(false)}>
+        <Shield className="w-4 h-4 text-red-500" />
+        Control Panel
+      </Link>
+    </Button>
+  )}
+
+  <Button
+    onClick={async () => {
+      setIsOpen(false);
+      await signOut({ callbackUrl: '/' }); // Explicitly redirect after closing
+    }}
+    className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
+  >
+    <LogOut className="w-4 h-4 mr-2" />
+    Logout
+  </Button>
+</div>            ) : (
               <div className="flex items-center gap-2">
                 <Button
                   asChild
@@ -429,57 +420,57 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                   ))}
               </div>
 
-              {/* Mobile Auth Actions */}
+             {/* Mobile Auth Actions */}
               <div className="p-6 border-t mt-auto space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
                 {session ? (
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-3 px-1 py-1">
                       <Avatar className="w-10 h-10 border border-primary/20">
-                        <AvatarImage src={session.user.image || ""} />
+                        <AvatarImage src={session.user?.image || ""} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
-                          {session.user.name ? session.user.name.substring(0, 2) : "US"}
+                          {session.user?.name ? session.user.name.substring(0, 2) : "US"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col min-w-0">
                         <span className="text-sm font-bold text-foreground truncate">
-                          {session.user.name || "Student"}
+                          {session.user?.name || "Student"}
                         </span>
                         <span className="text-xs text-muted-foreground truncate">
-                          {session.user.email}
+                          {session.user?.email}
                         </span>
                       </div>
                     </div>
 
                     <Button
-                      asChild
                       variant="outline"
                       className="w-full justify-start gap-2 rounded-xl"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        router.push("/dashboard");
+                      }}
                     >
-                      <Link href="/dashboard">
-                        <LayoutDashboard className="w-4 h-4 text-primary" />
-                        My Dashboard
-                      </Link>
+                      <LayoutDashboard className="w-4 h-4 text-primary" />
+                      My Dashboard
                     </Button>
 
-                    {session.user.role === "ADMIN" && (
+                    {session.user?.role === "ADMIN" && (
                       <Button
-                        asChild
                         variant="outline"
                         className="w-full justify-start gap-2 rounded-xl"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => {
+                          setIsOpen(false);
+                          router.push("/control");
+                        }}
                       >
-                        <Link href="/control">
-                          <Shield className="w-4 h-4 text-red-500" />
-                          Control Panel
-                        </Link>
+                        <Shield className="w-4 h-4 text-red-500" />
+                        Control Panel
                       </Button>
                     )}
 
                     <Button
-                      onClick={() => {
-                        signOut();
+                      onClick={async () => {
                         setIsOpen(false);
+                        await signOut({ callbackUrl: "/" });
                       }}
                       className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
                     >
@@ -490,25 +481,29 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                 ) : (
                   <div className="flex flex-col gap-2">
                     <Button
-                      asChild
                       variant="outline"
                       className="text-primary border-primary hover:bg-primary/10 w-full rounded-xl"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        router.push("/login");
+                      }}
                     >
-                      <Link href="/login">Login</Link>
+                      Login
                     </Button>
                     {isRegistrationAllowed && (
                       <Button
-                        asChild
                         className="bg-accent text-white hover:bg-accent/90 w-full rounded-xl"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => {
+                          setIsOpen(false);
+                          router.push("/register");
+                        }}
                       >
-                        <Link href="/register">Register</Link>
+                        Register
                       </Button>
                     )}
                   </div>
                 )}
-              </div>
+              </div>       
             </SheetContent>
           </Sheet>
         </div>
