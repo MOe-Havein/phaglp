@@ -15,11 +15,11 @@ export async function getSiteSettings(
     async () => {
       try {
         // Multi-tenant logic: normally looks up by hostname
-        // For now, we fallback to 'global' id or specific host mapping
+        // For now, falling back to 'global' id based on your schema
         const settings = await prisma.siteSettings.findFirst({
           where: {
-            // Logic to match hostname to tenant could go here
-            // e.g. domain: hostname
+            // Add your multi-tenant tenant matching logic here if needed:
+            // id: hostname === "phaglp.com" ? "global" : "global"
             id: "global",
           },
         });
@@ -31,16 +31,26 @@ export async function getSiteSettings(
           return siteConfig;
         }
 
+        // Dynamically map DB payload fields with proper string-to-boolean conversions
         return {
-          ...siteConfig, // Start with defaults
-          siteName: settings.siteName,
+          ...siteConfig, // Fallback to static defaults for missing items
+          id: settings.id,
+          siteName: settings.siteName || siteConfig.siteName,
+          siteUrl: settings.siteUrl || siteConfig.siteUrl,
+          metaTitle: settings.metaTitle || siteConfig.metaTitle,
+          metaDescription: settings.metaDescription || siteConfig.metaDescription,
           description: settings.description || siteConfig.description,
-          siteUrl: settings.siteUrl,
-          maintenanceMode: settings.maintenanceMode,
-          enableGoogleAnalytics: settings.enableGoogleAnalytics,
-          googleAnalyticsId: settings.googleAnalyticsId,
-          primaryColor: settings.primaryColor,
-          ogImage: settings.ogImage,
+          primaryColor: settings.primaryColor || siteConfig.primaryColor,
+          ogImage: settings.ogImage || siteConfig.ogImage,
+          logoUrl: settings.logoUrl || siteConfig.logoUrl,
+          faviconUrl: settings.faviconUrl || siteConfig.faviconUrl,
+          googleAnalyticsId: settings.googleAnalyticsId || siteConfig.googleAnalyticsId,
+          fullAddress: settings.fullAddress || siteConfig.fullAddress,
+          
+          // Handle "0" / "1" string-to-boolean casting safely
+          maintenanceMode: settings.maintenanceMode === "1",
+          enableGoogleAnalytics: settings.enableGoogleAnalytics === "1",
+          allowRegistration: settings.allowRegistration === "1",
         };
       } catch (error) {
         logger.error("Failed to fetch site settings from DB", error);
@@ -49,7 +59,7 @@ export async function getSiteSettings(
     },
     {
       tags: ["site-settings", `site-settings-${hostKey}`],
-      revalidate: 3600, // 1 hour default
+      revalidate: 3600, // 1 hour Next.js Data Cache revalidation
     },
   );
 }
