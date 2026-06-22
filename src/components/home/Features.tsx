@@ -16,15 +16,15 @@ interface FeaturesProps {
 const defaultFeatures = [
   {
     icon: <Cpu className="w-6 h-6 text-blue-500" />,
-    title: "AI Socratic Mapping",
+    title: "Education & Wisdom",
     description:
-      "Structure complex arguments and philosophical thoughts with real-time logical critique from our interactive AI assistant.",
+      "Deep dive into historical and modern philosophical systems",
   },
   {
-    icon: <GraduationCap className="w-6 h-6 text-orange-500" />,
-    title: "Gifted Education Paths",
+    icon: <Microscope className="w-6 h-6 text-orange-500" />,
+    title: "Applied Science",
     description:
-      "Designed for high cognitive abilities, offering specialized, rigorous curriculums in mathematical logic and epistemological science.",
+      "Bridging the gap between theoretical wisdom and practical scientific application.",
   },
   {
     icon: <ShieldAlert className="w-6 h-6 text-green-500" />,
@@ -33,10 +33,10 @@ const defaultFeatures = [
       "Instantly check outlines, essays, and debate nodes for logical errors, cognitive biases, and inconsistencies.",
   },
   {
-    icon: <Award className="w-6 h-6 text-purple-500" />,
-    title: "Intellectual Fellowship",
+    icon: <Users-Round className="w-6 h-6 text-purple-500" />,
+    title: "Global Community",
     description:
-      "A values-based, privacy-first ecosystem matching intellectual compatibility and scientific collaboration.",
+      "Connect with researchers, students, and thinkers from around the world",
   },
 ];
 
