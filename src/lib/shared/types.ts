@@ -1,12 +1,21 @@
 export interface SiteSettings {
+  id: string;
   siteName: string;
-  description: string;
   siteUrl: string;
-  ogImage?: string | null;
+  metaTitle: string;
+  metaDescription: string;
+  description: string;
   primaryColor?: string | null;
+  ogImage?: string | null;
+  logoUrl?: string | null;
+  faviconUrl?: string | null;
+  googleAnalyticsId?: string | null;
+  fullAddress?: string | null;
   maintenanceMode: boolean;
   enableGoogleAnalytics: boolean;
-  googleAnalyticsId?: string | null;
+  allowRegistration: boolean;
+  
+  // Layout & UI Structure
   navItems: NavItem[];
   footerLinks: FooterSection[];
 }
