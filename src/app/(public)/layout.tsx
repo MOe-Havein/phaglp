@@ -30,10 +30,10 @@ export const viewport = {
 export async function generateMetadata(): Promise<Metadata> {
   const siteConfig = await getSiteSettings();
   
-  // Use specialized SEO meta values if present; fallback gracefully to general definitions[span_0](start_span)[span_0](end_span)
-  const titleText = siteConfig.metaTitle || siteConfig.siteName;[span_1](start_span)[span_1](end_span)
-  const descriptionText = siteConfig.metaDescription || siteConfig.description;[span_2](start_span)[span_2](end_span)
-  const baseMetadataUrl = siteConfig.siteUrl ? new URL(siteConfig.siteUrl) : null;[span_3](start_span)[span_3](end_span)
+  // Use specialized SEO meta values if present; fallback gracefully to general definitions
+  const titleText = siteConfig.metaTitle || siteConfig.siteName;
+  const descriptionText = siteConfig.metaDescription || siteConfig.description;
+  const baseMetadataUrl = siteConfig.siteUrl ? new URL(siteConfig.siteUrl) : null;
 
   return {
     title: {
@@ -46,10 +46,10 @@ export async function generateMetadata(): Promise<Metadata> {
     creator: "MOe Hamid",
     ...(baseMetadataUrl && { metadataBase: baseMetadataUrl }),
     
-    // Wire dynamic brand icons natively into Next.js Metadata API[span_4](start_span)[span_4](end_span)
+    // Wire dynamic brand icons natively into Next.js Metadata API
     icons: {
-      icon: siteConfig.faviconUrl || "/favicon.ico",[span_5](start_span)[span_5](end_span)
-      apple: siteConfig.logoUrl || "/apple-icon.png",[span_6](start_span)[span_6](end_span)
+      icon: siteConfig.faviconUrl || "/favicon.ico",
+      apple: siteConfig.logoUrl || "/apple-icon.png",
     },
     
     openGraph: {
@@ -65,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: titleText,
       description: descriptionText,
-      creator: "@moaljaaly",
+      creator: "@yourhandle",
       images: siteConfig.ogImage ? [siteConfig.ogImage] : [],
     },
     robots: {
@@ -82,8 +82,8 @@ export default async function RootLayout({
 }>) {
   const siteConfig = await getSiteSettings();
   
-  // Clean fallback mapping for JSON-LD schema metrics[span_7](start_span)[span_7](end_span)
-  const displayLogo = siteConfig.logoUrl || `${siteConfig.siteUrl}/logo.png`;[span_8](start_span)[span_8](end_span)
+  // Clean fallback mapping for JSON-LD schema metrics
+  const displayLogo = siteConfig.logoUrl || `${siteConfig.siteUrl}/logo.png`;
 
   return (
     <html
@@ -94,8 +94,8 @@ export default async function RootLayout({
       <body className="font-sans antialiased" suppressHydrationWarning>
         <LayoutClient>{children}</LayoutClient>
         
-        {/* Google Analytics Injection[span_9](start_span)[span_9](end_span) */}
-        {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && ([span_10](start_span)[span_10](end_span)
+        {/* Google Analytics Injection */}
+        {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
@@ -112,7 +112,7 @@ export default async function RootLayout({
           </>
         )}
 
-        {/* Dynamic Schema.org Structural Profile Markup[span_11](start_span)[span_11](end_span) */}
+        {/* Dynamic Schema.org Structural Profile Markup */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -122,11 +122,11 @@ export default async function RootLayout({
               name: siteConfig.siteName,
               url: siteConfig.siteUrl,
               logo: displayLogo,
-              // Seamlessly append dynamic location details for local search indexers if set[span_12](start_span)[span_12](end_span)
-              ...(siteConfig.fullAddress && {[span_13](start_span)[span_13](end_span)
+              // Seamlessly append dynamic location details for local search indexers if set
+              ...(siteConfig.fullAddress && {
                 address: {
                   "@type": "PostalAddress",
-                  streetAddress: siteConfig.fullAddress,[span_14](start_span)[span_14](end_span)
+                  streetAddress: siteConfig.fullAddress,
                 },
               }),
             }),
