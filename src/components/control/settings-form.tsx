@@ -28,6 +28,8 @@ const formSchema = z.object({
   description: z.string().min(10).max(500),
   maintenanceMode: z.boolean(),
   allowRegistration: z.boolean(),
+  enableGoogleAnalytics: z.boolean(),
+  googleAnalyticsId: z.string().optional().nullable(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   primaryColor: z.string().optional(),
@@ -43,6 +45,8 @@ interface SiteSettingsData {
   description?: string | null;
   maintenanceMode?: boolean;
   allowRegistration?: boolean;
+  enableGoogleAnalytics?: boolean | string; // Handled stringified data safely
+  googleAnalyticsId?: string | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
   primaryColor?: string | null;
@@ -62,17 +66,22 @@ export function SettingsForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      siteName: initialData?.siteName || "PHAGLP Platform",
-      siteUrl: initialData?.siteUrl || "https://phaglp.com",
-      description:
-        initialData?.description ||
-        "A modern application for philosophical education.",
-      maintenanceMode: initialData?.maintenanceMode || false,
-      allowRegistration: initialData?.allowRegistration ?? true,
+      siteName: initialData?.siteName || "phaglp",
+      siteUrl: initialData?.siteUrl || "https://www.phaglp.com",
+      description: initialData?.description || "Unified Dashboard Management Engine.",
+      maintenanceMode: initialData?.maintenanceMode ?? false,
+      allowRegistration: initialData?.allowRegistration ?? false,
+      
+      // Clean handling for analytics data
+      enableGoogleAnalytics: initialData?.enableGoogleAnalytics === true || initialData?.enableGoogleAnalytics === "1",
+      googleAnalyticsId: initialData?.googleAnalyticsId || "",
+      
       metaTitle: initialData?.metaTitle || "",
       metaDescription: initialData?.metaDescription || "",
-      primaryColor: initialData?.primaryColor || "#1E3A8A",
+      primaryColor: initialData?.primaryColor || "#3b82f6",
       fullAddress: initialData?.fullAddress || "",
+      
+      // Null-guards prevent "uncontrolled to controlled" inputs warnings
       logoUrl: initialData?.logoUrl || "",
       ogImage: initialData?.ogImage || "",
       faviconUrl: initialData?.faviconUrl || "",
@@ -185,7 +194,81 @@ export function SettingsForm({
           />
         </div>
 
-        <div className="space-y-4">
+        {/* Brand Appearance Customization */}
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Theme Customization
+          </h3>
+          <FormField
+            control={form.control}
+            name="primaryColor"
+            render={({ field }) => (
+              <FormItem className="max-w-[200px]">
+                <FormLabel>Primary Color Hex</FormLabel>
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input placeholder="#3b82f6" {...field} />
+                  </FormControl>
+                  <div 
+                    className="w-10 h-10 rounded border shadow-sm shrink-0" 
+                    style={{ backgroundColor: field.value || "#3b82f6" }}
+                  />
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Integration Controls for Analytics Tracking */}
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Analytics Configurations
+          </h3>
+          <div className="grid md:grid-cols-3 gap-6 items-end">
+            <div className="md:col-span-1">
+              <FormField
+                control={form.control}
+                name="enableGoogleAnalytics"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white/40 dark:bg-slate-900/10">
+                    <div className="space-y-0.5">
+                      <FormLabel>Google Analytics</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <FormField
+                control={form.control}
+                name="googleAnalyticsId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Measurement ID (G-XXXXXX)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="G-XXXXXXXXXX" 
+                        {...field} 
+                        value={field.value ?? ""} 
+                        disabled={!form.watch("enableGoogleAnalytics")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 pt-4 border-t">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             SEO & Meta Tags
           </h3>
@@ -311,7 +394,7 @@ export function SettingsForm({
                       />
                     )}
                     <CloudinaryUploadButton
-                      onUpload={(url) => field.onChange(url)}
+                      =onUpload={(url) => field.onChange(url)}
                     >
                       Upload Cover
                     </CloudinaryUploadButton>
