@@ -419,7 +419,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                   ))}
               </div>
 
-              {/* Mobile Auth Actions */}
+                      {/* Mobile Auth Actions */}
               <div className="p-6 border-t mt-auto space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
                 {session ? (
                   <div className="flex flex-col gap-3">
@@ -427,9 +427,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                       <Avatar className="w-10 h-10 border border-primary/20">
                         <AvatarImage src={session.user.image || ""} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
-                          {session.user.name
-                            ? session.user.name.substring(0, 2)
-                            : "US"}
+                          {session.user.name ? session.user.name.substring(0, 2) : "US"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col min-w-0">
@@ -470,8 +468,8 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
 
                     <Button
                       onClick={() => {
-                        signOut();
-                        setIsOpen(false);
+                        signOut()
+                        setIsOpen(false)
                       }}
                       className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
                     >
@@ -504,5 +502,5 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
         </div>
       </div>
     </header>
-  );
+  )
 }
