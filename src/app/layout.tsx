@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-// Revalidate root layout every hour
+// Revalidate layout every hour
 export const revalidate = 3600;
 
 export const viewport = {
@@ -29,29 +29,44 @@ export const viewport = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteConfig = await getSiteSettings();
+  
+  // Use specialized SEO meta values if present; fallback gracefully to general definitions
+  const titleText = siteConfig.metaTitle || siteConfig.siteName;
+  const descriptionText = siteConfig.metaDescription || siteConfig.description;
+  const baseMetadataUrl = siteConfig.siteUrl ? new URL(siteConfig.siteUrl) : null;
+
   return {
     title: {
-      default: siteConfig.siteName,
+      default: titleText,
       template: `%s | ${siteConfig.siteName}`,
     },
-    description: siteConfig.description,
+    description: descriptionText,
     keywords: ["Next.js", "React", "Full-stack", "Modern", siteConfig.siteName],
     authors: [{ name: "MOe Hamid" }],
     creator: "MOe Hamid",
-    metadataBase: new URL(siteConfig.siteUrl),
+    ...(baseMetadataUrl && { metadataBase: baseMetadataUrl }),
+    
+    // Wire dynamic brand icons natively into Next.js Metadata API
+    icons: {
+      icon: siteConfig.faviconUrl || "/favicon.ico",
+      apple: siteConfig.logoUrl || "/apple-icon.png",
+    },
+    
     openGraph: {
       type: "website",
       locale: "en_US",
       url: siteConfig.siteUrl,
-      title: siteConfig.siteName,
-      description: siteConfig.description,
+      title: titleText,
+      description: descriptionText,
       siteName: siteConfig.siteName,
+      images: siteConfig.ogImage ? [{ url: siteConfig.ogImage }] : [],
     },
     twitter: {
       card: "summary_large_image",
-      title: siteConfig.siteName,
-      description: siteConfig.description,
+      title: titleText,
+      description: descriptionText,
       creator: "@yourhandle",
+      images: siteConfig.ogImage ? [siteConfig.ogImage] : [],
     },
     robots: {
       index: true,
@@ -66,6 +81,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const siteConfig = await getSiteSettings();
+  
+  // Clean fallback mapping for JSON-LD schema metrics
+  const displayLogo = siteConfig.logoUrl || `${siteConfig.siteUrl}/logo.png`;
+
   return (
     <html
       lang="en"
@@ -74,6 +93,7 @@ export default async function RootLayout({
     >
       <body className="font-sans antialiased" suppressHydrationWarning>
         <LayoutClient>{children}</LayoutClient>
+        
         {/* Google Analytics Injection */}
         {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
           <>
@@ -83,16 +103,16 @@ export default async function RootLayout({
             />
             <Script id="google-analytics" strategy="lazyOnload">
               {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${siteConfig.googleAnalyticsId}');
-          `}
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${siteConfig.googleAnalyticsId}');
+              `}
             </Script>
           </>
         )}
 
-        {/* JSON-LD Structured Data */}
+        {/* Dynamic Schema.org Structural Profile Markup */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -101,7 +121,14 @@ export default async function RootLayout({
               "@type": "Organization",
               name: siteConfig.siteName,
               url: siteConfig.siteUrl,
-              logo: `${siteConfig.siteUrl}/logo.png`,
+              logo: displayLogo,
+              // Seamlessly append dynamic location details for local search indexers if set
+              ...(siteConfig.fullAddress && {
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: siteConfig.fullAddress,
+                },
+              }),
             }),
           }}
         />
