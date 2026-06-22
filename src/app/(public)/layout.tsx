@@ -1,47 +1,26 @@
-import type { Metadata } from "next";
-import { getSiteSettings } from "@/lib/server/site-settings";
-import { Navbar } from "@/components/navigation/navbar"; // Ensure correct import path
-import { Footer } from "@/components/navigation/footer"; // Ensure correct import path
-import LayoutClient from "@/app/layout-client";
-import Script from "next/script";
+import { Navbar } from "@/components/navigation/navbar";
+// 🔄 Updated import path to target your refactored, lucide-supported Footer component
+import { Footer } from "@/components/navigation/footer"; 
+import { getNavigationMenus } from "@/lib/server/menus";
 
 export default async function PublicLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  // Fetch live settings and layout menus directly on the server
-  const siteConfig = await getSiteSettings();
+}) {
+  // Parallel data fetching on the Vercel server layer for zero client-side lag
+  const menus = await getNavigationMenus();
 
   return (
-    <>
-      {/* 1. Pass the settings directly down to the Navbar */}
-      <Navbar currentSettings={siteConfig} initialMenus={[]} />
+    <div className="flex flex-col min-h-screen bg-[#0F1D45]">
+      {/* Dynamic Navbar Layer */}
+      <Navbar initialMenus={menus} />
       
-      <main className="flex-1">
-        <LayoutClient>{children}</LayoutClient>
-      </main>
+      {/* Core Main Viewport Children */}
+      <main className="flex-grow">{children}</main>
       
-      {/* 2. Pass the settings directly down to the Footer */}
-      <Footer currentSettings={siteConfig} initialMenus={[]} />
-
-      {/* Google Analytics Injection */}
-      {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
-        <>
-          <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
-            strategy="lazyOnload"
-          />
-          <Script id="google-analytics" strategy="lazyOnload">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${siteConfig.googleAnalyticsId}');
-            `}
-          </Script>
-        </>
-      )}
-    </>
+      {/* 🆕 Refactored Dynamic Footer: Maps Lucide icon strings from database automatically */}
+      <Footer initialMenus={menus} />
+    </div>
   );
 }
