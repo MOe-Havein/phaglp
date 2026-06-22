@@ -283,7 +283,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
         </nav>
 
         {/* Mobile Navigation */}
-        <div className="flex items-center gap-2 xl:hidden">
+        <div className="flex items-center gap-2 xl:hidden ">
           {mounted && <ThemeToggle />}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             {mounted && (
@@ -302,7 +302,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
               className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background"
             >
               <SheetHeader className="p-6 border-b">
-                <SheetTitle className="text-left text-primary dark:text-blue-400 flex items-center gap-2">
+                <SheetTitle className="text-left text-primary dark:bg-slate-900 dark:text-slate-100 flex  items-center gap-2">
                   <Image
                     src="/phaglp-logo.webp"
                     alt="PHAGLP Logo"
