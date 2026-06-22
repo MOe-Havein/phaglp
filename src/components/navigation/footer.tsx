@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { DynamicMenu } from "@/lib/server/menus";
+import { SiteSettings } from "@/lib/shared/types";
 
 import {
   BookOpen,
@@ -10,6 +11,7 @@ import {
   Mail,
   Menu,
   ExternalLink,
+  MapPin,
 } from "lucide-react";
 
 // Native dictionary matching string names to explicit imports safely
@@ -19,13 +21,15 @@ const LucideIconMap: Record<string, React.ComponentType<any>> = {
   Users,
   Mail,
   Menu,
+  MapPin,
 };
 
 interface FooterProps {
   initialMenus?: DynamicMenu[];
+  currentSettings?: Partial<SiteSettings> | null;
 }
 
-export function Footer({ initialMenus = [] }: FooterProps) {
+export function Footer({ initialMenus = [], currentSettings }: FooterProps) {
   // Filter active database menus that have valid child link arrays and are marked for footer visibility
   const activeFooterMenus = initialMenus.filter(
     (menu) =>
@@ -36,8 +40,8 @@ export function Footer({ initialMenus = [] }: FooterProps) {
     <footer className="bg-[#0F1D45] text-white border-t border-perfectsky-200/50 dark:border-perfectsky-800/40 py-16 px-4 antialiased">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
-          {/* Logo & Identity Segment */}
-          <BrandSegment />
+          {/* Logo, Identity & Address Segment */}
+          <BrandSegment currentSettings={currentSettings} />
 
           {/* Dynamic or Static Navigation Columns */}
           <div className="lg:col-span-8">
@@ -110,31 +114,45 @@ function DynamicLucideIcon({
 /**
  * Sub-Component: Identity and Brand Information
  */
-function BrandSegment() {
+function BrandSegment({ currentSettings }: { currentSettings?: Partial<SiteSettings> | null }) {
   const currentYear = new Date().getFullYear();
-  const defaultDesc =
-    "Bridging classical philosophical teachings with state-of-the-art cognitive training and learning technologies.";
+  
+  const activeSiteName = currentSettings?.siteName || siteConfig.siteName;
+  const activeDescription = currentSettings?.description || siteConfig.description || "Unified Dashboard Management Engine.";
+  const activeLogoUrl = currentSettings?.logoUrl || "/phaglp-logo.webp";
+  const activeAddress = currentSettings?.fullAddress || "2501 CASE STREET, BATESVILLE 72501, ARKANSAS, USA ";
 
   return (
-    <div className="lg:col-span-4 space-y-4">
+    <div className="lg:col-span-4 space-y-5">
       <div className="flex items-center gap-2">
         <Image
-          src="/phaglp-logo.png"
-          alt={`${siteConfig.siteName} Logo`}
+          src={activeLogoUrl}
+          alt={`${activeSiteName} Logo`}
           width={128}
           height={128}
           className="h-9 w-auto object-contain transition-all"
           priority
+          unoptimized
         />
         <span className="text-xl font-bold tracking-tight text-blue-400">
-          {siteConfig.siteName}
+          {activeSiteName}
         </span>
       </div>
+      
       <p className="text-sm text-gray-300 leading-relaxed max-w-sm">
-        {siteConfig.description || defaultDesc}
+        {activeDescription}
       </p>
-      <div className="text-xs text-gray-400 pt-2">
-        &copy; {currentYear} {siteConfig.siteName}. All rights reserved.
+
+      {/* Corporate Location Address Block */}
+      {activeAddress && (
+        <div className="flex items-start gap-2 text-sm text-gray-400 max-w-sm pt-2 border-t border-white/10">
+          <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+          <span className="leading-relaxed">{activeAddress}</span>
+        </div>
+      )}
+
+      <div className="text-xs text-gray-400 pt-1">
+        &copy; {currentYear} {activeSiteName}. All rights reserved.
       </div>
     </div>
   );
@@ -163,7 +181,6 @@ function MenuColumn({
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-bold tracking-wider uppercase text-gray-200 flex items-center gap-2">
-        {/* FIX: Force exact optional parameter compliance via strict string fallback value */}
         <DynamicLucideIcon
           name={iconName ?? ""}
           className="w-4 h-4 text-blue-400"
@@ -179,7 +196,6 @@ function MenuColumn({
               rel={link.external ? "noopener noreferrer" : undefined}
               className="text-sm text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5 group w-fit"
             >
-              {/* FIX: Cleaned up link icon name resolution values */}
               <DynamicLucideIcon
                 name={link.iconName ?? ""}
                 className="w-3.5 h-3.5 text-gray-500 group-hover:text-blue-400 transition-colors"
