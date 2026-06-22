@@ -304,7 +304,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
               <SheetHeader className="p-6 border-b">
                 <SheetTitle className="text-left text-primary dark:text-blue-400 flex items-center gap-2">
                   <Image
-                    src="/phaglp-logo.png"
+                    src="/phaglp-logo.webp"
                     alt="PHAGLP Logo"
                     width={32}
                     height={32}
