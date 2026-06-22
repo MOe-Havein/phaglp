@@ -51,8 +51,9 @@ function NavIcon({
 
 interface NavbarProps {
   initialMenus?: DynamicMenu[];
-  currentSettings?: Partial<SiteSettings> | null;
+  currentSettings?: Partial<SiteSettings> | null | undefined;
 }
+
 
 export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
