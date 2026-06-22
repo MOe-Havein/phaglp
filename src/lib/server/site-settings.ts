@@ -45,10 +45,11 @@ export async function getSiteSettings(
           fullAddress: settings.fullAddress ?? siteConfig.fullAddress ?? null,
           
           // Handle string-to-boolean casting cleanly
-          maintenanceMode: settings.maintenanceMode === "1",
-          enableGoogleAnalytics: settings.enableGoogleAnalytics === "1",
-          allowRegistration: settings.allowRegistration === "1",
-          
+          //  Pass the natively typed booleans directly (or force a safe boolean cast just in case)
+maintenanceMode: Boolean(settings.maintenanceMode),
+enableGoogleAnalytics: Boolean(settings.enableGoogleAnalytics),
+allowRegistration: Boolean(settings.allowRegistration),
+
           // Static layout components array structures
           navItems: siteConfig.navItems,
           footerLinks: siteConfig.footerLinks,
