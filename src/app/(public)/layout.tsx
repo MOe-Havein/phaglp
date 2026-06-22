@@ -1,6 +1,7 @@
 import { getSiteSettings } from "@/lib/server/site-settings";
 import { Navbar } from "@/components/navigation/navbar";
 import { Footer } from "@/components/navigation/footer";
+import { getNavigationMenus } from "@/lib/server/menus";
 
 // We do not need fonts, metadata, or scripts here because the Root Layout handles them.
 // This layout strictly wraps public pages with the Navbar and Footer.
