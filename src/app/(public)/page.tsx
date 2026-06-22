@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 const Features = dynamic(() =>
   import("@/components/home/Features").then((mod) => mod.Features),
 );
-const CTA = dynamic(() =>
+/*const CTA = dynamic(() =>
   import("@/components/home/CTA").then((mod) => mod.CTA),
 );
 const Media = dynamic(() =>
@@ -18,6 +18,7 @@ const Media = dynamic(() =>
 const Testimonials = dynamic(() =>
   import("@/components/home/testimonials").then((mod) => mod.Testimonials),
 );
+*/
 const LatestBlogPosts = dynamic(() =>
   import("@/components/home/LatestBlogPosts").then(
     (mod) => mod.LatestBlogPosts,
