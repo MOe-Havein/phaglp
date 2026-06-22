@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DynamicMenu } from "@/lib/server/menus";
+import { SiteSettings } from "@/lib/shared/types";
 import * as Icons from "lucide-react";
 
 // Unified NavIcon component shared across all layouts
@@ -50,9 +51,10 @@ function NavIcon({
 
 interface NavbarProps {
   initialMenus?: DynamicMenu[];
+  currentSettings?: Partial<SiteSettings> | null;
 }
 
-export function Navbar({ initialMenus = [] }: NavbarProps) {
+export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
@@ -63,6 +65,11 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Use values resolved from the Database, falling back to static config defaults
+  const activeSiteName = currentSettings?.siteName || siteConfig.siteName;
+  const activeLogoUrl = currentSettings?.logoUrl || "/phaglp-logo.webp";
+  const isRegistrationAllowed = currentSettings?.allowRegistration ?? true;
 
   const menusToRender =
     initialMenus.length > 0 ? initialMenus.filter((m) => m.showInHeader) : [];
@@ -80,8 +87,8 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
             className="flex items-center gap-1.5 hover:opacity-95 transition-opacity"
           >
             <Image
-              src="/phaglp-logo.webp"
-              alt="PHAGLP Logo"
+              src={activeLogoUrl}
+              alt={`${activeSiteName} Logo`}
               width={64}
               height={64}
               priority // Ensures the logo loads instantly as a critical asset
@@ -89,7 +96,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
               className="h-9 w-auto object-contain"
             />
             <span className="text-xl font-bold tracking-tight text-primary dark:text-blue-400">
-              {siteConfig.siteName}
+              {activeSiteName}
             </span>
           </Link>
         </div>
@@ -261,7 +268,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 </DropdownMenu>
               </div>
             ) : (
-              <>
+              <div className="flex items-center gap-2">
                 <Button
                   asChild
                   variant="outline"
@@ -270,14 +277,16 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                 >
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className="bg-accent text-white hover:bg-accent/90 rounded-xl"
-                >
-                  <Link href="/register">Register</Link>
-                </Button>
-              </>
+                {isRegistrationAllowed && (
+                  <Button
+                    asChild
+                    size="sm"
+                    className="bg-accent text-white hover:bg-accent/90 rounded-xl"
+                  >
+                    <Link href="/register">Register</Link>
+                  </Button>
+                )}
+              </div>
             )}
           </div>
         </nav>
@@ -302,10 +311,10 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
               className="w-[320px] sm:w-[360px] p-0 flex flex-col h-full rounded-l-3xl border-l border-primary/10 bg-background"
             >
               <SheetHeader className="p-6 border-b">
-                <SheetTitle className="text-left text-primary dark:bg-slate-900 dark:text-slate-100 flex  items-center gap-2">
+                <SheetTitle className="text-left text-primary dark:bg-slate-900 dark:text-slate-100 flex items-center gap-2">
                   <Image
-                    src="/phaglp-logo.webp"
-                    alt="PHAGLP Logo"
+                    src={activeLogoUrl}
+                    alt={`${activeSiteName} Logo`}
                     width={32}
                     height={32}
                     className="h-8 w-auto object-contain"
@@ -419,7 +428,7 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                   ))}
               </div>
 
-                      {/* Mobile Auth Actions */}
+              {/* Mobile Auth Actions */}
               <div className="p-6 border-t mt-auto space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
                 {session ? (
                   <div className="flex flex-col gap-3">
@@ -468,8 +477,8 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
 
                     <Button
                       onClick={() => {
-                        signOut()
-                        setIsOpen(false)
+                        signOut();
+                        setIsOpen(false);
                       }}
                       className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
                     >
@@ -487,13 +496,15 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
                     >
                       <Link href="/login">Login</Link>
                     </Button>
-                    <Button
-                      asChild
-                      className="bg-accent text-white hover:bg-accent/90 w-full rounded-xl"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Link href="/register">Register</Link>
-                    </Button>
+                    {isRegistrationAllowed && (
+                      <Button
+                        asChild
+                        className="bg-accent text-white hover:bg-accent/90 w-full rounded-xl"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link href="/register">Register</Link>
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
@@ -502,5 +513,5 @@ export function Navbar({ initialMenus = [] }: NavbarProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }
