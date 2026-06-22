@@ -77,14 +77,14 @@ export function Testimonials({
   ctaHref,
 }: TestimonialsProps) {
   return (
-    <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900/50">
+    <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-primary dark:text-blue-400 tracking-tight text-balance uppercase">
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-primary dark:text-blue-200 tracking-tight text-balance uppercase">
             {title}
           </h2>
           {body && (
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium dark:text-slate-800">
               {body}
             </p>
           )}
