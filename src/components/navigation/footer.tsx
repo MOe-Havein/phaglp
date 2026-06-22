@@ -114,7 +114,8 @@ function DynamicLucideIcon({
 /**
  * Sub-Component: Identity and Brand Information
  */
-function BrandSegment({ currentSettings }: { currentSettings?: Partial<SiteSettings> | null }) {
+function BrandSegment({ currentSettings }: { currentSettings?: Partial<SiteSettings> | null | undefined }) {
+
   const currentYear = new Date().getFullYear();
   
   const activeSiteName = currentSettings?.siteName || siteConfig.siteName;
