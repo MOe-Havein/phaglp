@@ -232,13 +232,17 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                       asChild
                       className="rounded-xl cursor-pointer"
                     >
-                      <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2 w-full"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-primary" />
-                        My Dashboard
-                      </Link>
+                   <button 
+  onClick={() => {
+    setIsOpen(false);
+    // Add any complex logic here before routing
+    router.push("/dashboard");
+  }}
+  className="flex items-center gap-2 w-full justify-start rounded-xl border border-slate-200 px-4 py-2 hover:bg-slate-50 transition-colors text-slate-700"
+>
+  <LayoutDashboard className="w-4 h-4 text-blue-500" />
+  My Dashboard
+</button>
                     </DropdownMenuItem>
                     {session.user?.role === "ADMIN" && (
                       <DropdownMenuItem
