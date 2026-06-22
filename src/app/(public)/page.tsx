@@ -45,45 +45,27 @@ export default function PublicHomepage() {
   return (
     <main className="w-full flex flex-col">
       <SaaSHero
-        badgeText="New Feature Release ->"
-        headlinePre="Supercharge Your"
-        headlineHighlight="Intellectual Workflow"
-        headlinePost="with AI Socratic Mapping"
-        subheadline="Join thousands of professionals organizing their thoughts and accelerating their learning with our advanced AI tools."
+        badgeText="Phaglp - Philosophical Platform"
+        headlinePre="THE PHILOSOPHICAL ACADEMY "
+        headlineHighlight="FOR GENIUSES LIFE PLANNING"
+        headlinePost="A modern application for philosophical education."
+       
         primaryCtaText="Get Started"
-        primaryCtaHref="/signup"
-        secondaryCtaText="Watch Demo"
-        secondaryCtaHref="#demo"
+        primaryCtaHref="/courses"
+        secondaryCtaText="Read Lectures"
+        secondaryCtaHref="/lectures"
       />
       <div className="h-1 w-full bg-tinfoil" />
 
       <Features
-        title="Powerful Features"
-        body="Discover the tools that will transform the way you work and learn."
+        title="Explore Our Core Pillars"
+        body="A comprehensive approach to education, science, and philosophical wisdom"
         mediaUrl=""
-        mediaAlt="App Features Interface"
+        mediaAlt="Explore Our Core Pillars"
       />
 
-      <Media
-        title="See It In Action"
-        body="Watch how our platform effortlessly handles complex workflows."
-        mediaUrl=""
-        mediaAlt="Product Demo Video or Image"
-      />
+ 
 
-      <Testimonials
-        title="What Our Users Say"
-        body="Join our growing community of satisfied learners."
-        ctaLabel="Read More Stories"
-        ctaHref="/testimonials"
-      />
-
-      <CTA
-        title="Ready to Elevate Your Knowledge?"
-        body="Start your free trial today and experience the difference."
-        ctaLabel="Sign Up Now"
-        ctaHref="/signup"
-      />
 
       <CoursesPricing />
       <LatestLETURES />
