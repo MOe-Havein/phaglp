@@ -61,7 +61,7 @@ export default function LoginPage() {
           >
             <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-white p-2 shadow-sm border border-slate-100 dark:border-slate-800 dark:bg-slate-950">
               <Image
-                src="/phaglp-logo.png"
+                src="/phaglp-logo.webp"
                 alt="phaglp"
                 fill
                 priority
