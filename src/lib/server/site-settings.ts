@@ -12,14 +12,10 @@ export async function getSiteSettings(
 
   return cached<SiteSettings>(
     `site-settings-${hostKey}`,
-    async () => {
+    async (): Promise<SiteSettings> => {
       try {
-        // Multi-tenant logic: normally looks up by hostname
-        // For now, falling back to 'global' id based on your schema
         const settings = await prisma.siteSettings.findFirst({
           where: {
-            // Add your multi-tenant tenant matching logic here if needed:
-            // id: hostname === "phaglp.com" ? "global" : "global"
             id: "global",
           },
         });
@@ -31,26 +27,31 @@ export async function getSiteSettings(
           return siteConfig;
         }
 
-        // Dynamically map DB payload fields with proper string-to-boolean conversions
+        // Return a complete object with safe fallbacks ensuring zero undefined references leak
         return {
-          ...siteConfig, // Fallback to static defaults for missing items
           id: settings.id,
           siteName: settings.siteName || siteConfig.siteName,
           siteUrl: settings.siteUrl || siteConfig.siteUrl,
           metaTitle: settings.metaTitle || siteConfig.metaTitle,
           metaDescription: settings.metaDescription || siteConfig.metaDescription,
           description: settings.description || siteConfig.description,
-          primaryColor: settings.primaryColor || siteConfig.primaryColor,
-          ogImage: settings.ogImage || siteConfig.ogImage,
-          logoUrl: settings.logoUrl || siteConfig.logoUrl,
-          faviconUrl: settings.faviconUrl || siteConfig.faviconUrl,
-          googleAnalyticsId: settings.googleAnalyticsId || siteConfig.googleAnalyticsId,
-          fullAddress: settings.fullAddress || siteConfig.fullAddress,
           
-          // Handle "0" / "1" string-to-boolean casting safely
+          // Strict conversions to completely avoid 'undefined' type mismatches
+          primaryColor: settings.primaryColor ?? siteConfig.primaryColor ?? null,
+          ogImage: settings.ogImage ?? siteConfig.ogImage ?? null,
+          logoUrl: settings.logoUrl ?? siteConfig.logoUrl ?? null,
+          faviconUrl: settings.faviconUrl ?? siteConfig.faviconUrl ?? null,
+          googleAnalyticsId: settings.googleAnalyticsId ?? siteConfig.googleAnalyticsId ?? null,
+          fullAddress: settings.fullAddress ?? siteConfig.fullAddress ?? null,
+          
+          // Handle string-to-boolean casting cleanly
           maintenanceMode: settings.maintenanceMode === "1",
           enableGoogleAnalytics: settings.enableGoogleAnalytics === "1",
           allowRegistration: settings.allowRegistration === "1",
+          
+          // Static layout components array structures
+          navItems: siteConfig.navItems,
+          footerLinks: siteConfig.footerLinks,
         };
       } catch (error) {
         logger.error("Failed to fetch site settings from DB", error);
@@ -59,7 +60,7 @@ export async function getSiteSettings(
     },
     {
       tags: ["site-settings", `site-settings-${hostKey}`],
-      revalidate: 3600, // 1 hour Next.js Data Cache revalidation
+      revalidate: 3600,
     },
   );
 }
