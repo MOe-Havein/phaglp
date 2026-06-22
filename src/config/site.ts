@@ -1,12 +1,22 @@
 import { SiteSettings } from "@/lib/shared/types";
 
 export const siteConfig: SiteSettings = {
-  siteName: "Phaglp",
-  description:
-    "Education, Instruction, Culture, and Life Planning for geniuses, gifted, and talented, young and adult.",
-  siteUrl: "https://phaglp.com",
-  maintenanceMode: false,
+  
+  id: "global",
+  siteName: "phaglp",
+  siteUrl: "https://www.phaglp.com",
+  metaTitle: "The Philosophical Academy Platform | phaglp",
+  metaDescription: "High-performance app architecture.",
+  description: "Unified Dashboard Management Engine.",
+  primaryColor: "#3b82f6",
+  ogImage: null,
+  logoUrl: null,
+  faviconUrl: null,
+  googleAnalyticsId: null,
   enableGoogleAnalytics: false,
+  maintenanceMode: false,
+  allowRegistration: false,
+  fullAddress: "2501 CASE STREET, BATESVILLE 72501, ARKANSAS, USA ",
   navItems: [
     { title: "Courses", href: "/courses" },
     { title: "Lectures", href: "/lectures" },
