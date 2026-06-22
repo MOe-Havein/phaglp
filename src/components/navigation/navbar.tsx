@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   ChevronDown,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import {
@@ -54,15 +55,14 @@ interface NavbarProps {
   currentSettings?: Partial<SiteSettings> | null | undefined;
 }
 
-
 export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
+  const router = useRouter(); // Using Next.js router for clean mobile sheet closing
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
-  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
+    null,
+  );
   const [mounted, setMounted] = useState(false);
-  
-  // Add this line:
-  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -93,8 +93,8 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
               alt={`${activeSiteName} Logo`}
               width={64}
               height={64}
-              priority // Ensures the logo loads instantly as a critical asset
-              unoptimized // Bypasses unnecessary pixel conversion engines   
+              priority
+              unoptimized
               className="h-9 w-auto object-contain"
             />
             <span className="text-xl font-bold tracking-tight text-primary dark:text-blue-400">
@@ -106,7 +106,6 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
         {/* Desktop Navigation */}
         <nav className="hidden xl:flex items-center gap-4">
           {menusToRender.map((menu) => {
-            // Case 1: Dropdown Menu (has sub-items and no direct link)
             if (menu.items && menu.items.length > 0 && !menu.href) {
               return (
                 <DropdownMenu key={menu.id}>
@@ -162,7 +161,6 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
               );
             }
 
-            // Case 2: Direct Link
             const linkHref = menu.href || "#";
             return (
               <Link
@@ -179,7 +177,6 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
             );
           })}
 
-          {/* Fallback Static configuration elements */}
           {menusToRender.length === 0 &&
             siteConfig.navItems.map((item) => (
               <Link
@@ -195,6 +192,7 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
               </Link>
             ))}
 
+          {/* Desktop Auth Menu */}
           <div className="flex items-center gap-2 border-l pl-4 ml-1">
             {mounted && <ThemeToggle />}
             {session ? (
@@ -205,61 +203,69 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                       className="flex items-center gap-2 hover:opacity-90 focus:outline-none transition-all bg-slate-50 dark:bg-slate-900 border px-3 py-1.5 rounded-full shadow-sm"
                       aria-controls="user-dropdown"
                     >
-                      <div className="flex flex-col gap-3">
-  <div className="flex items-center gap-3 px-1 py-1">
-    <Avatar className="w-10 h-10 border border-primary/20">
-      <AvatarImage src={session.user?.image || ""} />
-      <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
-        {session.user?.name ? session.user.name.substring(0, 2) : "US"}
-      </AvatarFallback>
-    </Avatar>
-    <div className="flex flex-col min-w-0">
-      <span className="text-sm font-bold text-foreground truncate">
-        {session.user?.name || "Student"}
-      </span>
-      <span className="text-xs text-muted-foreground truncate">
-        {session.user?.email}
-      </span>
-    </div>
-  </div>
-
-  <Button
-    asChild
-    variant="outline"
-    className="w-full justify-start gap-2 rounded-xl"
-  >
-    {/* Move onClick directly to the Link */}
-    <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-      <LayoutDashboard className="w-4 h-4 text-primary" />
-      My Dashboard
-    </Link>
-  </Button>
-
-  {/* Safely check the role using optional chaining */}
-  {session.user?.role === "ADMIN" && (
-    <Button
-      asChild
-      variant="outline"
-      className="w-full justify-start gap-2 rounded-xl"
-    >
-      <Link href="/control" onClick={() => setIsOpen(false)}>
-        <Shield className="w-4 h-4 text-red-500" />
-        Control Panel
-      </Link>
-    </Button>
-  )}
-
-  <Button
-    onClick={async () => {
-      setIsOpen(false);
-      await signOut({ callbackUrl: '/' }); // Explicitly redirect after closing
-    }}
-    className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
-  >
-    <LogOut className="w-4 h-4 mr-2" />
-    Logout
-  </Button>
-</div>            ) : (
+                      <Avatar className="w-7 h-7 border border-primary/20">
+                        <AvatarImage src={session.user?.image || ""} />
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold uppercase">
+                          {session.user?.name ? session.user.name.substring(0, 2) : "US"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-xs font-semibold text-foreground max-w-[100px] truncate">
+                        {session.user?.name || "Student"}
+                      </span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
+                    id="user-dropdown"
+                  >
+                    <DropdownMenuLabel className="px-3 py-2">
+                      <div className="text-sm font-bold truncate">
+                        {session.user?.name || "User"}
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {session.user?.email}
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      asChild
+                      className="rounded-xl cursor-pointer"
+                    >
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 w-full"
+                      >
+                        <LayoutDashboard className="w-4 h-4 text-primary" />
+                        My Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    {session.user?.role === "ADMIN" && (
+                      <DropdownMenuItem
+                        asChild
+                        className="rounded-xl cursor-pointer"
+                      >
+                        <Link
+                          href="/control"
+                          className="flex items-center gap-2 w-full"
+                        >
+                          <Shield className="w-4 h-4 text-red-500" />
+                          Control Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => signOut()}
+                      className="rounded-xl cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/20"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
               <div className="flex items-center gap-2">
                 <Button
                   asChild
@@ -420,7 +426,7 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                   ))}
               </div>
 
-             {/* Mobile Auth Actions */}
+              {/* Mobile Auth Actions - Using router.push for bug-free routing */}
               <div className="p-6 border-t mt-auto space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
                 {session ? (
                   <div className="flex flex-col gap-3">
@@ -503,7 +509,7 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                     )}
                   </div>
                 )}
-              </div>       
+              </div>
             </SheetContent>
           </Sheet>
         </div>
