@@ -8,24 +8,22 @@ import { getNavigationMenus } from "@/lib/server/menus";
 
 export default async function PublicLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  // Fetch the dynamic settings to pass to your Navbar and Footer
-  const siteConfig = await getSiteSettings();
+}) {
+  // Parallel data fetching on the Vercel server layer for zero client-side lag
+  const menus = await getNavigationMenus();
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* 1. Inject the Navbar at the top */}
-      <Navbar currentSettings={siteConfig} initialMenus={[]} />
+    <div className="flex flex-col min-h-screen bg-[#0F1D45]">
+      {/* Dynamic Navbar Layer */}
+      <Navbar initialMenus={menus} />
       
-      {/* 2. The page content goes here, expanding to fill the middle space */}
-      <main className="flex-1 flex flex-col">
-        {children}
-      </main>
+      {/* Core Main Viewport Children */}
+      <main className="flex-grow">{children}</main>
       
-      {/* 3. Inject the Footer at the bottom */}
-      <Footer currentSettings={siteConfig} initialMenus={[]} />
+      {/* 🆕 Refactored Dynamic Footer: Maps Lucide icon strings from database automatically */}
+      <Footer initialMenus={menus} />
     </div>
   );
 }
