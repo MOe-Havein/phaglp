@@ -393,11 +393,13 @@ export function SettingsForm({
                         className="h-24 w-auto object-cover border rounded-md"
                       />
                     )}
-                    <CloudinaryUploadButton
-                      =onUpload={(url) => field.onChange(url)}
-                    >
-                      Upload Cover
-                    </CloudinaryUploadButton>
+                    //  FIXED
+<CloudinaryUploadButton
+  onUpload={(url) => field.onChange(url)}
+>
+  Upload Cover
+</CloudinaryUploadButton>
+
                   </div>
                   <FormMessage />
                 </FormItem>
