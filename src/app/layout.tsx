@@ -85,7 +85,7 @@ export default async function RootLayout({
   const siteConfig = await getSiteSettings();
   
   // Clean fallback mapping for JSON-LD schema metrics
-  const displayLogo = siteConfig.logoUrl || `${siteConfig.siteUrl}/logo.png`;
+  const displayLogo = siteConfig.logoUrl || `${siteConfig.siteUrl}/phaglp-logo.webp`;
 
   return (
     <html
