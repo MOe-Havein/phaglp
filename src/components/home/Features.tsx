@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Cpu, GraduationCap, ShieldAlert, Award } from "lucide-react";
+import { Cpu, Microscope, ShieldAlert, Award } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 
 
@@ -33,7 +33,7 @@ const defaultFeatures = [
       "Instantly check outlines, essays, and debate nodes for logical errors, cognitive biases, and inconsistencies.",
   },
   {
-    icon: <Users-Round className="w-6 h-6 text-purple-500" />,
+    icon: <Award className="w-6 h-6 text-purple-500" />,
     title: "Global Community",
     description:
       "Connect with researchers, students, and thinkers from around the world",
