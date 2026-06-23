@@ -86,7 +86,7 @@ Discover the comprehensive pathways engineered to lead minds toward absolute exc
               Join Learning Path <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </Button>
-
+        </div>
       </section>
       
     </main>
