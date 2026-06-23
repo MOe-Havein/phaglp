@@ -3,8 +3,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, Clock } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { CldImage } from "next-cloudinary";
 
 interface LectureCardProps {
   title: string;
@@ -115,17 +115,10 @@ export function LectureCard({
         <div className="flex justify-center mb-6">
           {coverImage ? (
             <div className="relative w-32 h-32 rounded-full overflow-hidden">
-              <CldImage
-                src={(() => {
-                  const isExternal = coverImage?.includes('://');
-                  if (!isExternal) return coverImage as string;
-                  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
-                  return `https://res.cloudinary.com/${cloudName}/image/fetch/${encodeURIComponent(coverImage as string)}`;
-                })()}
+              <Image
+                src={coverImage}
                 alt={title}
                 fill
-                format="auto"
-                quality="auto"
                 sizes="(max-width: 768px) 128px, 128px"
                 className="object-cover"
               />

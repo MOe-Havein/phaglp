@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 import { Calendar, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { LETURES } from "./LatestLETURES";
@@ -74,16 +74,20 @@ export function LatestLecturesClient({
               <div className="flex flex-row gap-4 p-4 rounded-xl border border-border bg-card text-foreground hover:bg-accent/5 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-200 shadow-sm hover:shadow-md h-full">
                 {/* Left: 80x80px square thumbnail using coverImage */}
                 <div className="relative w-20 h-20 shrink-0 overflow-hidden rounded-md border border-border bg-muted">
-                  <CldImage
-                    src={lecture.coverImage}
-                    alt={lecture.title}
-                    width={80}
-                    height={80}
-                    format="auto"
-                    quality="auto"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    priority={index === 0}
-                  />
+                  {lecture.coverImage ? (
+                    <Image
+                      src={lecture.coverImage}
+                      alt={lecture.title}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      priority={index === 0}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-secondary text-secondary-foreground text-xs font-bold">
+                      No Image
+                    </div>
+                  )}
                 </div>
 
                 {/* Right: Content Stack */}

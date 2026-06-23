@@ -26,6 +26,25 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeSanitize]}
+        components={{
+          img: ({ src, alt, ...props }) => {
+            const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "phaglp";
+            // If the src is a public ID (does not start with http, https or /)
+            const isPublicId = src && !src.startsWith("http") && !src.startsWith("/");
+            const resolvedSrc = isPublicId
+              ? `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${src}`
+              : src;
+            return (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={resolvedSrc}
+                alt={alt || "Blog post image"}
+                className="rounded-xl border border-slate-200 dark:border-slate-800 my-6 max-h-[500px] object-contain shadow-sm"
+                {...props}
+              />
+            );
+          }
+        }}
       >
         {value}
       </ReactMarkdown>

@@ -195,100 +195,98 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
           {/* Desktop Auth Menu */}
           <div className="flex items-center gap-2 border-l pl-4 ml-1">
             {mounted && <ThemeToggle />}
-            {session ? (
-              <div className="flex items-center gap-3">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild={true}>
-                    <button
-                      className="flex items-center gap-2 hover:opacity-90 focus:outline-none transition-all bg-slate-50 dark:bg-slate-900 border px-3 py-1.5 rounded-full shadow-sm"
-                      aria-controls="user-dropdown"
+            {mounted && (
+              session ? (
+                <div className="flex items-center gap-3">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild={true}>
+                      <button
+                        className="flex items-center gap-2 hover:opacity-90 focus:outline-none transition-all bg-slate-50 dark:bg-slate-900 border px-3 py-1.5 rounded-full shadow-sm"
+                        aria-controls="user-dropdown"
+                      >
+                        <Avatar className="w-7 h-7 border border-primary/20">
+                          <AvatarImage src={session.user?.image || ""} />
+                          <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold uppercase">
+                            {session.user?.name ? session.user.name.substring(0, 2) : "US"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs font-semibold text-foreground max-w-[100px] truncate">
+                          {session.user?.name || "Student"}
+                        </span>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
+                      id="user-dropdown"
                     >
-                      <Avatar className="w-7 h-7 border border-primary/20">
-                        <AvatarImage src={session.user?.image || ""} />
-                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold uppercase">
-                          {session.user?.name ? session.user.name.substring(0, 2) : "US"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-xs font-semibold text-foreground max-w-[100px] truncate">
-                        {session.user?.name || "Student"}
-                      </span>
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-56 rounded-2xl shadow-xl p-2 border mt-1"
-                    id="user-dropdown"
-                  >
-                    <DropdownMenuLabel className="px-3 py-2">
-                      <div className="text-sm font-bold truncate">
-                        {session.user?.name || "User"}
-                      </div>
-                      <div className="text-xs text-muted-foreground truncate">
-                        {session.user?.email}
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      asChild
-                      className="rounded-xl cursor-pointer"
-                    >
-                   <button 
-  onClick={() => {
-    setIsOpen(false);
-    // Add any complex logic here before routing
-    router.push("/dashboard");
-  }}
-  className="flex items-center gap-2 w-full justify-start rounded-xl border border-slate-200 px-4 py-2 hover:bg-slate-50 transition-colors text-slate-700"
->
-  <LayoutDashboard className="w-4 h-4 text-blue-500" />
-  My Dashboard
-</button>
-                    </DropdownMenuItem>
-                    {session.user?.role === "ADMIN" && (
+                      <DropdownMenuLabel className="px-3 py-2">
+                        <div className="text-sm font-bold truncate">
+                          {session.user?.name || "User"}
+                        </div>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {session.user?.email}
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem
                         asChild
                         className="rounded-xl cursor-pointer"
                       >
                         <Link
-                          href="/control"
+                          href="/dashboard"
                           className="flex items-center gap-2 w-full"
                         >
-                          <Shield className="w-4 h-4 text-red-500" />
-                          Control Panel
+                          <LayoutDashboard className="w-4 h-4 text-blue-500" />
+                          My Dashboard
                         </Link>
                       </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => signOut()}
-                      className="rounded-xl cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/20"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="text-primary border-primary hover:bg-primary/10 rounded-xl"
-                >
-                  <Link href="/login">Login</Link>
-                </Button>
-                {isRegistrationAllowed && (
+                      {session.user?.role === "ADMIN" && (
+                        <DropdownMenuItem
+                          asChild
+                          className="rounded-xl cursor-pointer"
+                        >
+                          <Link
+                            href="/control"
+                            className="flex items-center gap-2 w-full"
+                          >
+                            <Shield className="w-4 h-4 text-red-500" />
+                            Control Panel
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => signOut()}
+                        className="rounded-xl cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/20"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
                   <Button
                     asChild
+                    variant="outline"
                     size="sm"
-                    className="bg-accent text-white hover:bg-accent/90 rounded-xl"
+                    className="text-primary border-primary hover:bg-primary/10 rounded-xl"
                   >
-                    <Link href="/register">Register</Link>
+                    <Link href="/login">Login</Link>
                   </Button>
-                )}
-              </div>
+                  {isRegistrationAllowed && (
+                    <Button
+                      asChild
+                      size="sm"
+                      className="bg-accent text-white hover:bg-accent/90 rounded-xl"
+                    >
+                      <Link href="/register">Register</Link>
+                    </Button>
+                  )}
+                </div>
+              )
             )}
           </div>
         </nav>
@@ -432,86 +430,96 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
 
               {/* Mobile Auth Actions - Using router.push for bug-free routing */}
               <div className="p-6 border-t mt-auto space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
-                {session ? (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-3 px-1 py-1">
-                      <Avatar className="w-10 h-10 border border-primary/20">
-                        <AvatarImage src={session.user?.image || ""} />
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
-                          {session.user?.name ? session.user.name.substring(0, 2) : "US"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-sm font-bold text-foreground truncate">
-                          {session.user?.name || "Student"}
-                        </span>
-                        <span className="text-xs text-muted-foreground truncate">
-                          {session.user?.email}
-                        </span>
+                {mounted && (
+                  session ? (
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-3 px-1 py-1">
+                        <Avatar className="w-10 h-10 border border-primary/20">
+                          <AvatarImage src={session.user?.image || ""} />
+                          <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
+                            {session.user?.name ? session.user.name.substring(0, 2) : "US"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-bold text-foreground truncate">
+                            {session.user?.name || "Student"}
+                          </span>
+                          <span className="text-xs text-muted-foreground truncate">
+                            {session.user?.email}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start gap-2 rounded-xl"
-                      onClick={() => {
-                        setIsOpen(false);
-                        router.push("/dashboard");
-                      }}
-                    >
-                      <LayoutDashboard className="w-4 h-4 text-primary" />
-                      My Dashboard
-                    </Button>
-
-                    {session.user?.role === "ADMIN" && (
                       <Button
                         variant="outline"
                         className="w-full justify-start gap-2 rounded-xl"
-                        onClick={() => {
-                          setIsOpen(false);
-                          router.push("/control");
-                        }}
+                        asChild
                       >
-                        <Shield className="w-4 h-4 text-red-500" />
-                        Control Panel
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-primary" />
+                          My Dashboard
+                        </Link>
                       </Button>
-                    )}
 
-                    <Button
-                      onClick={async () => {
-                        setIsOpen(false);
-                        await signOut({ callbackUrl: "/" });
-                      }}
-                      className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="outline"
-                      className="text-primary border-primary hover:bg-primary/10 w-full rounded-xl"
-                      onClick={() => {
-                        setIsOpen(false);
-                        router.push("/login");
-                      }}
-                    >
-                      Login
-                    </Button>
-                    {isRegistrationAllowed && (
+                      {session.user?.role === "ADMIN" && (
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start gap-2 rounded-xl"
+                          asChild
+                        >
+                          <Link
+                            href="/control"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <Shield className="w-4 h-4 text-red-500" />
+                            Control Panel
+                          </Link>
+                        </Button>
+                      )}
+
                       <Button
-                        className="bg-accent text-white hover:bg-accent/90 w-full rounded-xl"
-                        onClick={() => {
+                        onClick={async () => {
                           setIsOpen(false);
-                          router.push("/register");
+                          await signOut({ callbackUrl: "/" });
                         }}
+                        className="bg-red-600 text-white hover:bg-red-700 w-full rounded-xl mt-1"
                       >
-                        Register
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
                       </Button>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        variant="outline"
+                        className="text-primary border-primary hover:bg-primary/10 w-full rounded-xl"
+                        asChild
+                      >
+                        <Link
+                          href="/login"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Login
+                        </Link>
+                      </Button>
+                      {isRegistrationAllowed && (
+                        <Button
+                          className="bg-accent text-white hover:bg-accent/90 w-full rounded-xl"
+                          asChild
+                        >
+                          <Link
+                            href="/register"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            Register
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
+                  )
                 )}
               </div>
             </SheetContent>
