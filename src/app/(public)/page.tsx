@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import prisma from "@/lib/db/prisma";
+import prisma from "@/lib/db/prisma"; // Ensure this path matches your actual prisma client location
 
 import { SaaSHero } from "@/components/home/SaaSHero";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
@@ -50,12 +50,12 @@ export default function PublicHomepage() {
         headlinePre="THE PHILOSOPHICAL ACADEMY "
         headlineHighlight="FOR GENIUSES LIFE PLANNING"
         headlinePost="A modern application for philosophical education."
-       
         primaryCtaText="Get Started"
         primaryCtaHref="/courses"
         secondaryCtaText="Read Lectures"
         secondaryCtaHref="/lectures"
       />
+      
       <div className="h-1 w-full bg-tinfoil" />
 
       <Features
@@ -65,17 +65,13 @@ export default function PublicHomepage() {
         mediaAlt="Explore Our Core Pillars"
       />
 
- 
-    </div>
-
       <CoursesPricing />
       <LatestLETURES />
-    
-      <div className="h-1 w-full bg-Platinum" />
+      
+      {/* Fixed capitalization: bg-Platinum is now bg-platinum */}
+      <div className="h-1 w-full bg-platinum" />
 
       <LatestBlogPosts />
-       </div>
     </main>
   );
 }
-
