@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { unstable_cache } from "next/cache";
 import nextDynamic from "next/dynamic";
@@ -151,14 +152,24 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
             </div>
           </header>
 
+   
+
+
+
           {/* Curved Premium Frame Cover Image */}
           {post.coverImage && (
-            <div className="mb-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm max-h-96 w-full">
-              <img
+            <div className="relative mb-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm w-full h-64 md:h-96 bg-slate-100 dark:bg-slate-900">
+              <Image
                 src={post.coverImage}
                 alt={post.title}
-                className="w-full h-full object-cover"
+                fill
+                priority // Tells Next.js to load this immediately since it's at the top of the page
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 768px"
               />
+            </div>
+          )}
+
             </div>
           )}
 
