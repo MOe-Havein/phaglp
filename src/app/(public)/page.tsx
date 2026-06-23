@@ -66,28 +66,27 @@ export default function PublicHomepage() {
 
       <LatestBlogPosts />
 
-<section className="py-24 px-4 pg-platinum relative">
+<section className="py-24 px-4 bg-platinum relative">
+  <div className="container mx-auto text-center relative">
+    {/* Changed text-white to text-slate-900 for high contrast against platinum */}
+    <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 text-balance">
+      GENERAL PROGRAM OF LIFE PLANNING?!
+    </h2>
+    <p className="text-perfectsky text-lg mb-8 max-w-2xl mx-auto font-medium">
+      Discover the comprehensive pathways engineered to lead minds toward absolute excellence.
+    </p>
+    <Button
+      size="lg"
+      className="bg-tartorange text-white hover:bg-tartorange/90 shadow-xl shadow-tartorange/20 text-lg px-12 py-6 h-auto transition-all hover:scale-105 active:scale-95"
+      asChild
+    >
+      <Link href="/learning-path">
+        Join Learning Path <ArrowRight className="ml-2 w-5 h-5" />
+      </Link>
+    </Button>
+  </div>
+</section>
 
-
-        <div className="container mx-auto text-center relative">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">
-            GENERAL PROGRAM OF LIFE PLANNING?!
-          </h2>
-          <p className="text-perfectsky text-lg mb-8 max-w-2xl mx-auto">
-
-Discover the comprehensive pathways engineered to lead minds toward absolute excellence.
-          </p>
-          <Button
-            size="lg"
-            className="bg-tartorange text-white hover:bg-tartorange/90 shadow-xl shadow-tartorange-950/20 text-lg px-12 py-6 h-auto"
-            asChild
-          >
-            <Link href="/learning-path">
-              Join Learning Path <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-          </Button>
-        </div>
-      </section>
       
     </main>
   );
