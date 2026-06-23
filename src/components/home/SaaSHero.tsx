@@ -51,9 +51,8 @@ export function SaaSHero({
         </h1>
         
         {/* 5. Inject the dynamic subheadline */}
-        {/* NOTE: You may want to change text-platinum to something darker since the background is now frost! */}
         {subheadline && (
-          <p className="text-xl text-platinum mb-8 leading-relaxed text-pretty max-w-2xl mx-auto">
+          <p className="text-xl text-perfectsky mb-8 leading-relaxed text-pretty max-w-2xl mx-auto">
             {subheadline}
           </p>
         )}
@@ -74,12 +73,12 @@ export function SaaSHero({
             size="lg"
             variant="outline"
             asChild
-            className="border-platinum/30 text-platinum hover:bg-platinum/10 bg-transparent transition-all hover:scale-105 active:scale-95"
+            className="border-perfectsky/30 text-perfectsky hover:bg-perfectsky/10 bg-transparent transition-all hover:scale-105 active:scale-95"
           >
             <Link href={secondaryCtaHref}>{secondaryCtaText}</Link>
           </Button>
         </div>
-      </div> {/* <-- THIS CLOSING DIV WAS MISSING */}
+      </div> 
       
     </section>
   );
