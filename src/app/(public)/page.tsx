@@ -58,10 +58,33 @@ export default function PublicHomepage() {
       <CoursesPricing />
       <LatestLETURES />
       
-      {/* Fixed capitalization: bg-Platinum is now bg-platinum */}
-      <div className="h-1 w-full bg-platinum" />
+
+
 
       <LatestBlogPosts />
+
+<section className="py-24 px-4 bg-gradient-to-br from-tinfoi via-platinum-900 to-platinum relative">
+        <div className="absolute inset-0 carbon-fibre opacity-10" />
+        <div className="container mx-auto text-center relative">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">
+            Ready to Start Your Journey?
+          </h2>
+          <p className="text-perfectsky text-lg mb-8 max-w-2xl mx-auto">
+            Join the PHAGLP community today and gain access to exclusive courses, research, and
+            wisdom.
+          </p>
+          <Button
+            size="lg"
+            className="bg-tartorange text-white hover:bg-tartorange/90 shadow-xl shadow-tartorange-950/20 text-lg px-12 py-6 h-auto"
+            asChild
+          >
+            <Link href="/learning-path">
+              Join Now <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+      
     </main>
   );
 }
