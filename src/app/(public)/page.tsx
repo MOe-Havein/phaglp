@@ -1,5 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
+import Link from "next/link";
+import ArrowRight from "lucide-react";
 import { Button } from "@/components/ui/button"
 import prisma from "@/lib/db/prisma"; // Ensure this path matches your actual prisma client location
 import { SaaSHero } from "@/components/home/SaaSHero";
@@ -80,7 +82,7 @@ Discover the comprehensive pathways engineered to lead minds toward absolute exc
             asChild
           >
             <Link href="/learning-path">
-              Join Now <ArrowRight className="ml-2 w-5 h-5" />
+              Join Learning Path <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </Button>
         </div>
