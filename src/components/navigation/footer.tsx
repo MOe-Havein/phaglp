@@ -146,7 +146,7 @@ function BrandSegment({ currentSettings }: { currentSettings?: Partial<SiteSetti
 
       {/* Corporate Location Address Block */}
       {activeAddress && (
-        <div className="flex items-start gap-2 text-sm text-gray-400 max-w-sm pt-2 border-t border-white/10">
+        <div className="flex items-start gap-2 text-sm text-white max-w-sm pt-2 border-t border-white/10">
           <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
           <span className="leading-relaxed">{activeAddress}</span>
         </div>
