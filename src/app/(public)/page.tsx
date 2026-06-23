@@ -67,7 +67,8 @@ export default function PublicHomepage() {
       <LatestBlogPosts />
 
 <section className="py-24 px-4 pg-platinum relative">
-        <div className="absolute inset-0 carbon-fibre opacity-10" />
+<div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
+
         <div className="container mx-auto text-center relative">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">
             GENERAL PROGRAM OF LIFE PLANNING?!
