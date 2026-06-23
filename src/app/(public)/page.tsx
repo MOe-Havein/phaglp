@@ -67,11 +67,11 @@ export default function PublicHomepage() {
         <div className="absolute inset-0 carbon-fibre opacity-10" />
         <div className="container mx-auto text-center relative">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">
-            Ready to Start Your Journey?
+            GENERAL PROGRAM OF LIFE PLANNING?!
           </h2>
           <p className="text-perfectsky text-lg mb-8 max-w-2xl mx-auto">
-            Join the PHAGLP community today and gain access to exclusive courses, research, and
-            wisdom.
+
+Discover the comprehensive pathways engineered to lead minds toward absolute excellence.
           </p>
           <Button
             size="lg"
