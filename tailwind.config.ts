@@ -64,6 +64,13 @@ const config: Config = {
           border: "#c3c6d6",
           ring: "#0056d2",
         },
+        // Your Custom Config Palette
+        frost: "#edf2f4",
+        platinum: "#c5cbd3",
+        perfectsky: "#1f7bc6",
+        tartorange: "#e65c23",
+        laser: "#7cb625",
+        celebration: "#f1d48c",
       },
       borderRadius: {
         xl: "1.5rem",
