@@ -66,10 +66,10 @@ export default function PublicHomepage() {
 
       <LatestBlogPosts />
 
-<section className="py-24 px-4 bg-platinum relative">
+<section className="py-24 px-4 bg-frost relative">
   <div className="container mx-auto text-center relative">
     {/* Changed text-white to text-slate-900 for high contrast against platinum */}
-    <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 text-balance">
+    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 text-balance">
       GENERAL PROGRAM OF LIFE PLANNING?!
     </h2>
     <p className="text-perfectsky text-lg mb-8 max-w-2xl mx-auto font-medium">

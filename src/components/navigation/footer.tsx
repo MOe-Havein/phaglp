@@ -37,14 +37,14 @@ export function Footer({ initialMenus = [], currentSettings }: FooterProps) {
   );
 
   return (
-    <footer className="bg-perfectsky text-white border-t border-perfectsky-200/50 dark:border-perfectsky-800/40 py-16 px-4 antialiased">
+    <footer className="bg-perfectsky text-white border-t  border-perfectsky-200/50 dark:border-perfectsky-800/40 py-16 px-4 antialiased">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
           {/* Logo, Identity & Address Segment */}
           <BrandSegment currentSettings={currentSettings} />
 
           {/* Dynamic or Static Navigation Columns */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 ">
             {activeFooterMenus.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {activeFooterMenus.map((menu) => (
@@ -152,7 +152,7 @@ function BrandSegment({ currentSettings }: { currentSettings?: Partial<SiteSetti
         </div>
       )}
 
-      <div className="text-xs text-gray-400 pt-1">
+      <div className="text-xs  pt-1">
         &copy; {currentYear} {activeSiteName}. All rights reserved.
       </div>
     </div>
@@ -195,17 +195,17 @@ function MenuColumn({
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
-              className="text-sm text-gray-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1.5 group w-fit"
+              className="text-sm text-white hover:text-white hover:font-bold transition-colors inline-flex items-center gap-1.5 group w-fit"
             >
               <DynamicLucideIcon
                 name={link.iconName ?? ""}
-                className="w-3.5 h-3.5 text-gray-500 group-hover:text-blue-400 transition-colors"
+                className="w-3.5 h-3.5 text-white group-hover:text-tartorange transition-colors"
               />
-              <span className="group-hover:underline underline-offset-4">
+              <span className="text-white">
                 {link.label}
               </span>
               {link.external && (
-                <ExternalLink className="w-3 h-3 text-gray-500 group-hover:text-blue-400 transition-colors" />
+                <ExternalLink className="w-3 h-3 text-white group-hover:text-white transition-colors" />
               )}
             </Link>
           </li>

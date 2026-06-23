@@ -65,7 +65,7 @@ function Spinner({
             {/* Central Transparent Application Logo Asset (Stays Upright) */}
             <div className="absolute size-9 animate-pulse [animation-duration:2s]">
               <Image
-                src="/phaglp-logo.png"
+                src="/phaglp-logo.webp"
                 alt="Loading..."
                 fill
                 sizes="36px"
