@@ -29,8 +29,8 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
         components={{
           img: ({ src, alt, ...props }) => {
             const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "phaglp";
-            // If the src is a public ID (does not start with http, https or /)
-            const isPublicId = src && !src.startsWith("http") && !src.startsWith("/");
+            const isStringSrc = typeof src === "string";
+            const isPublicId = isStringSrc && !src.startsWith("http") && !src.startsWith("/");
             const resolvedSrc = isPublicId
               ? `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${src}`
               : src;

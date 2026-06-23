@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
 import { siteConfig } from "@/config/site";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import {
@@ -56,7 +56,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
-  const router = useRouter(); // Using Next.js router for clean mobile sheet closing
+
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
