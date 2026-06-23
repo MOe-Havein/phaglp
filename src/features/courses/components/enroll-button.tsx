@@ -14,7 +14,6 @@ interface EnrollButtonProps {
   isEnrolled: boolean;
   price: number;
   courseSlug?: string | undefined;
-  foxyUrl?: string | undefined;
 }
 
 export function EnrollButton({
@@ -22,7 +21,6 @@ export function EnrollButton({
   isEnrolled,
   price,
   courseSlug,
-  foxyUrl,
 }: EnrollButtonProps) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
@@ -61,7 +59,7 @@ export function EnrollButton({
     );
   }
 
-  // If it's a paid course, redirect to FoxyCart checkout if logged in, or prompt login if not
+  // If it's a paid course, verify session and enroll directly
   if (price > 0) {
     if (!session) {
       return (
@@ -78,10 +76,11 @@ export function EnrollButton({
 
     return (
       <Button
-        asChild
+        onClick={handleEnroll}
+        disabled={loading}
         className="w-full mb-4 bg-accent text-white hover:bg-accent/90 h-12 text-lg font-bold shadow-lg shadow-accent/20"
       >
-        <a href={foxyUrl || "#"}>Enroll for ${price.toFixed(2)}</a>
+        {loading ? "Processing..." : `Enroll for $${price.toFixed(2)}`}
       </Button>
     );
   }

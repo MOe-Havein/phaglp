@@ -15,7 +15,6 @@ import {
   ClipboardCheck,
   Award,
   Rocket,
-  DollarSign,
 } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,6 @@ const sidebarGroups: SidebarGroup[] = [
     label: "Overview",
     items: [
       { title: "Dashboard", href: "/control", icon: LayoutDashboard },
-      { title: "Sales (Foxy)", href: "/control/sales", icon: DollarSign },
       { title: "Deployments", href: "/control/deployments", icon: Rocket },
     ],
   },

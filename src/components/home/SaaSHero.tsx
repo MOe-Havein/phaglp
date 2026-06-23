@@ -35,16 +35,16 @@ export function SaaSHero({
     <section className="relative min-h-screen flex flex-col justify-center items-center py-10 px-3 overflow-hidden select-none bg-frost">
       
       {/* Foreground Content */}
-      <div className="container mx-auto text-center max-w-4xl relative">
+      <div className="container mx-auto text-center max-w-3xl relative">
         {/* 3. Inject the dynamic badgeText */}
         {badgeText && (
-          <Badge className="mb-4 text-lg bg-perfectsky/10 text-perfectsky hover:bg-perfectsky/15 border-perfectsky/20 transition-all duration-300 hover:scale-105">
+          <Badge className="mb-4 text-lg bg-perfectsky/10 text-perfectsky hover:bg-perfectsky/15 border-perfectsky/20 transition-all duration-300 80">
             {badgeText}
           </Badge>
         )}
         
         {/* 4. Inject the dynamic headline pieces */}
-        <h1 className="text-6xl md:text-4xl font-bold mb-3 text-balance bg-gradient-to-r from-perfectsky via-tartorange to-celebration bg-clip-text text-transparent drop-shadow-sm flex flex-col gap-1">
+        <h1 className="text-5xl md:text-4xl font-bold mb-3 text-balance bg-gradient-to-r from-perfectsky via-tartorange to-celebration bg-clip-text text-transparent drop-shadow-sm flex flex-col gap-1">
           <span>{headlinePre}</span>
           <span>{headlineHighlight}</span>
           {headlinePost && <span>{headlinePost}</span>}

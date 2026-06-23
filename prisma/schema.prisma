@@ -97,7 +97,6 @@ model User {
   assetAllocations AssetAllocation[]
   certificates     Certificate[]
   lessonProgress   LessonProgress[]
-  foxyTransactions FoxyTransaction[]
 
   @@index([role])
   @@index([tier])
@@ -566,20 +565,5 @@ model LessonProgress {
   @@index([lessonId])
 }
 
-model FoxyTransaction {
-  id             String   @id @default(cuid())
-  foxyId         String   @unique
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  email          String
-  totalOrder     Float
-  currency       String   @default("USD")
-  status         String
-  itemsJson      String   // Stored as JSON string to support SQlite/Postgres seamlessly
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
 
-  @@index([userId])
-  @@index([foxyId])
-}
 

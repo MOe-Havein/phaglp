@@ -4,7 +4,6 @@
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { FoxyLoader } from "@/components/foxy/foxy-loader";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
@@ -22,7 +21,6 @@ export default function LayoutClient({ children }: { children: ReactNode }) {
     <ThemeProvider>
       <SessionProvider>{children}</SessionProvider>
       <Toaster position="top-center" richColors />
-      <FoxyLoader />
       <Analytics />
       <SpeedInsights />
       <ChatbotWidget />

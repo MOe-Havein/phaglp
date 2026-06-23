@@ -99,4 +99,4 @@ pnpm exec playwright test
 - **Vercel MCP Tool Submodule Issue Resolved**: Reintegrated `mcp-vercel` as a standard local directory rather than a missing git submodule, ensuring the GitHub Actions runner completes build and deploy processes without `npm ci` failures.
 - **Responsive Admin Dashboard Redesign**: Restructured the control sidebar (`ControlSidebar.tsx`) and admin layouts to use a sleek mobile-friendly bottom/top sticky design alongside a fixed desktop navigation.
 - **Accessibility & Type Safety**: Replaced missing dialog descriptions for Radix UI, added `VisuallyHidden` fallbacks for screen-reader alerts, and fixed strict React type violations in drag-and-drop components.
-- **Content Security Policy (CSP)**: Integrated FoxyCart and Vercel domains securely in Next.js security headers.
+- **Content Security Policy (CSP)**: Integrated Vercel domains securely in Next.js security headers.

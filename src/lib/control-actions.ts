@@ -42,11 +42,6 @@ export async function deleteUser(userId: string) {
         where: { userId: userId },
       });
 
-      // 5. Delete FoxyTransactions
-      await prisma.foxyTransaction.deleteMany({
-        where: { userId: userId },
-      });
-
       // 6. Delete AssetAllocations
       await prisma.assetAllocation.deleteMany({
         where: { userId: userId },

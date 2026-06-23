@@ -38,8 +38,6 @@ export default auth(
       // JavaScript
       // Remove 'unsafe-eval' if your app doesn't require it.
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' " +
-        "https://cdn.foxycart.com " +
-        "https://phaglp.foxycart.com " +
         "https://va.vercel-scripts.com " +
         "https://vercel.live " +
         "https://upload-widget.cloudinary.com " +
@@ -47,21 +45,18 @@ export default auth(
         "https://*.cloudinary.com",
 
       // CSS
-      "style-src 'self' 'unsafe-inline' https://cdn.foxycart.com",
+      "style-src 'self' 'unsafe-inline'",
 
       // Images
       "img-src 'self' data: blob: " +
         "https://res.cloudinary.com " +
-        "https://*.cloudinary.com " +
-        "https://cdn.foxycart.com",
+        "https://*.cloudinary.com",
 
       // Fonts
       "font-src 'self' data:",
 
       // API calls, fetch(), WebSockets, analytics
       "connect-src 'self' " +
-        "https://phaglp.foxycart.com " +
-        "https://cdn.foxycart.com " +
         "https://api.cloudinary.com " +
         "https://res.cloudinary.com " +
         "https://va.vercel-scripts.com " +
@@ -70,8 +65,6 @@ export default auth(
 
       // Embeds / iframes
       "frame-src 'self' " +
-        "https://phaglp.foxycart.com " +
-        "https://cdn.foxycart.com " +
         "https://vercel.live " +
         "https://www.youtube.com " +
         "https://www.youtube-nocookie.com " +
@@ -80,7 +73,7 @@ export default auth(
         "https://*.cloudinary.com",
 
       // Form submissions
-      "form-action 'self' https://phaglp.foxycart.com",
+      "form-action 'self'",
 
       // Prevent plugin content
       "object-src 'none'",

@@ -14,7 +14,6 @@ const MarkdownViewer = nextDynamic(
 
 import { auth } from "@/auth";
 import { EnrollButton } from "@/features/courses/components/enroll-button";
-import { getFoxyCartUrl } from "@/lib/foxy";
 
 export default async function CourseDetailPage({
   params,
@@ -61,17 +60,6 @@ export default async function CourseDetailPage({
   }
 
   const isEnrolled = course.enrollments?.length > 0;
-
-  const foxyUrl =
-    course.price > 0
-      ? getFoxyCartUrl({
-          code: course.id,
-          name: course.title,
-          price: course.price,
-          userId: session?.user?.id || undefined,
-          userEmail: session?.user?.email || undefined,
-        })
-      : undefined;
 
   return (
     <div className="bg-background">
@@ -186,7 +174,6 @@ export default async function CourseDetailPage({
                 isEnrolled={isEnrolled}
                 price={course.price}
                 courseSlug={course.slug}
-                foxyUrl={foxyUrl}
               />
               <Button variant="outline" size="lg" className="w-full mb-8 h-12">
                 Preview Course

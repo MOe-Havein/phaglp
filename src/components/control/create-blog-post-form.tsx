@@ -263,8 +263,7 @@ export function CreateBlogPostForm() {
             <CardContent>
               <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
                 You can write complete tables, lists, and formatted HTML in the
-                rich text area. Add links for in-article FoxyCart checkout
-                directly from the link toolbar.
+                rich text area. Add links directly from the link toolbar.
               </p>
             </CardContent>
           </Card>

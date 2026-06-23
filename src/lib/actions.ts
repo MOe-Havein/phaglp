@@ -48,3 +48,39 @@ export async function signInWithCredentials(formData: FormData) {
     };
   }
 }
+
+import { prisma, safeDbQuery } from "@/lib/prisma";
+import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
+import { SubscriptionTier } from "@prisma/client";
+
+export async function selfUpgradeUserTier(tier: SubscriptionTier) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "You must be logged in to upgrade." };
+  }
+
+  const userId = session.user.id;
+
+  try {
+    const result = await safeDbQuery(async () => {
+      return prisma.user.update({
+        where: { id: userId },
+        data: { tier },
+      });
+    });
+
+    if (result.success) {
+      revalidatePath("/pricing");
+      revalidatePath("/dashboard");
+    }
+
+    return result;
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || "Failed to upgrade subscription tier",
+    };
+  }
+}
+
