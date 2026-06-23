@@ -192,6 +192,29 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
               </Link>
             ))}
 
+          {/* Logged in Dashboard/Control links in main desktop navbar */}
+          {mounted && session && (
+            <>
+              <span className="h-5 w-px bg-border/80 self-center mx-1" />
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 flex items-center gap-1.5"
+              >
+                <LayoutDashboard className="w-4 h-4 text-blue-500" />
+                <span>Dashboard</span>
+              </Link>
+              {session.user?.role === "ADMIN" && (
+                <Link
+                  href="/control"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 flex items-center gap-1.5"
+                >
+                  <Shield className="w-4 h-4 text-red-500" />
+                  <span>Control Panel</span>
+                </Link>
+              )}
+            </>
+          )}
+
           {/* Desktop Auth Menu */}
           <div className="flex items-center gap-2 border-l pl-4 ml-1">
             {mounted && <ThemeToggle />}
@@ -426,6 +449,33 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                       </div>
                     </Link>
                   ))}
+
+                {mounted && session && (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <LayoutDashboard className="w-4 h-4 text-blue-500" />
+                        <span>Dashboard</span>
+                      </div>
+                    </Link>
+                    {session.user?.role === "ADMIN" && (
+                      <Link
+                        href="/control"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-between py-3 border-b text-base font-semibold text-foreground hover:text-primary transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Shield className="w-4 h-4 text-red-500" />
+                          <span>Control Panel</span>
+                        </div>
+                      </Link>
+                    )}
+                  </>
+                )}
               </div>
 
               {/* Mobile Auth Actions - Using router.push for bug-free routing */}
