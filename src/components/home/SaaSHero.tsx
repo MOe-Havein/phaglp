@@ -3,6 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge"
+
 
 // Assuming you are using shadcn/ui for Button and Badge.
 // If your paths are different, adjust these imports accordingly.
