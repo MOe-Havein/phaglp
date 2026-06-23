@@ -32,9 +32,8 @@ export function SaaSHero({
   secondaryCtaHref = "/lectures",
 }: SaaSHeroProps) {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-center py-20 px-4 overflow-hidden select-none bg-slate-950">
+    <section className="relative min-h-screen flex flex-col justify-center items-center py-20 px-4 overflow-hidden select-none bg-frost">
       {/* Background Radial Glow */}
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-tartorange/20 via-transparent to-transparent dark:from-tartorange/10" />
       
       {/* Foreground Content */}
       <div className="container mx-auto text-center max-w-4xl relative">
@@ -80,7 +79,7 @@ export function SaaSHero({
             <Link href={secondaryCtaHref}>{secondaryCtaText}</Link>
           </Button>
         </div>
-      </div>
+  
     </section>
   );
 }
