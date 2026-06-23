@@ -7,7 +7,6 @@ import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-
 import nextDynamic from "next/dynamic";
 
 const MarkdownViewer = nextDynamic(
@@ -22,27 +21,23 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// 1. Cleaned up function with no lingering commas or cache wrappers
 const getBlogPostBySlug = async (slug: string) => {
-  return (
-    async () => {
-      const result = await safeDbQuery(async () => {
-        return prisma.post.findUnique({
-          where: { slug },
-          include: {
-            author: {
-              select: {
-                name: true,
-              },
-            },
+  const result = await safeDbQuery(async () => {
+    return prisma.post.findUnique({
+      where: { slug },
+      include: {
+        author: {
+          select: {
+            name: true,
           },
-        });
-      });
-      return result.data;
-    },
-    [`blog-post-${slug}`],
-    { tags: ["blog-posts"], revalidate: 300 },
-  )();
-};
+        },
+      },
+    });
+  });
+  
+  return result.data;
+}; 
 
 export async function generateMetadata({
   params,
@@ -152,10 +147,6 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
             </div>
           </header>
 
-   
-
-
-
           {/* Curved Premium Frame Cover Image */}
           {post.coverImage && (
             <div className="relative mb-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm w-full h-64 md:h-96 bg-slate-100 dark:bg-slate-900">
@@ -170,7 +161,6 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
             </div>
           )}
 
-    
           {/* Body content slot */}
           <div className="prose prose-slate max-w-none dark:prose-invert">
             <MarkdownViewer
