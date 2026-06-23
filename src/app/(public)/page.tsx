@@ -44,16 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function PublicHomepage() {
   return (
     <main className="w-full flex flex-col">
-      <SaaSHero
-        badgeText="Phaglp - Philosophical Platform"
-        headlinePre="THE PHILOSOPHICAL ACADEMY "
-        headlineHighlight="FOR GENIUSES LIFE PLANNING"
-        headlinePost="A modern application for philosophical education."
-        primaryCtaText="Get Started"
-        primaryCtaHref="/courses"
-        secondaryCtaText="Read Lectures"
-        secondaryCtaHref="/lectures"
-      />
+      <SaaSHero />
       
       <div className="h-1 w-full bg-tinfoil" />
 
