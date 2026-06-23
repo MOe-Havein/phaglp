@@ -170,9 +170,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
             </div>
           )}
 
-            </div>
-          )}
-
+    
           {/* Body content slot */}
           <div className="prose prose-slate max-w-none dark:prose-invert">
             <MarkdownViewer
