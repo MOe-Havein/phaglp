@@ -71,7 +71,7 @@ export default function PublicHomepage() {
       <CoursesPricing />
       <LatestLETURES />
 
-      <LatestBlogPosts />
+      <LatestBlogPosts className="bg-Platinum" />
     </main>
   );
 }
