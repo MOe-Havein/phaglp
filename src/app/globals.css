@@ -4,6 +4,9 @@
 
 @layer base {
   :root {
+     :root {
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
     --radius: 0.5rem;
   }
 }
@@ -13,6 +16,6 @@
     @apply border-border dark:border-slate-700;
   }
   body {
-    @apply bg-background text-foreground dark:bg-slate-900 dark:text-slate-50 antialiased font-sans;
+    @apply bg-background text-foreground dark:bg-slate-900 dark:text-slate-50 antialiased;
   }
 }
