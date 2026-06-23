@@ -1,5 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
+import { Button } from "@/components/ui/button"
 import prisma from "@/lib/db/prisma"; // Ensure this path matches your actual prisma client location
 import { SaaSHero } from "@/components/home/SaaSHero";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
