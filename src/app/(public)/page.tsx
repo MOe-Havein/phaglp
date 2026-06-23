@@ -66,12 +66,15 @@ export default function PublicHomepage() {
       />
 
  
-
+    </div>
 
       <CoursesPricing />
       <LatestLETURES />
+    
+      <div className="h-1 w-full bg-Platinum" />
 
-      <LatestBlogPosts className="bg-Platinum" />
+      <LatestBlogPosts />
+       </div>
     </main>
   );
 }
