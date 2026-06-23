@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import prisma from "@/lib/db/prisma"; // Ensure this path matches your actual prisma client location
-
+import { Badge } from "@/components/ui/badge"
 import { SaaSHero } from "@/components/home/SaaSHero";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
 import dynamic from "next/dynamic";
