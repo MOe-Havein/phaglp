@@ -7,7 +7,7 @@ import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { unstable_cache } from "next/cache";
+
 import nextDynamic from "next/dynamic";
 
 const MarkdownViewer = nextDynamic(
@@ -23,7 +23,7 @@ interface PageProps {
 }
 
 const getBlogPostBySlug = async (slug: string) => {
-  return unstable_cache(
+  return (
     async () => {
       const result = await safeDbQuery(async () => {
         return prisma.post.findUnique({
