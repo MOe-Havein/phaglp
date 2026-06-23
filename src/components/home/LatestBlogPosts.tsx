@@ -66,7 +66,7 @@ export function LatestBlogPosts() {
 
   if (error) {
     return (
-      <section className="py-24 px-4 bg-background border-t border-border/40">
+      <section className="py-24 px-4 bg-platinum border-t border-border/40">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-center justify-center py-16 px-6 bg-rose-50/50 dark:bg-rose-950/10 rounded-3xl border border-rose-200/50 dark:border-rose-900/30 text-center max-w-xl mx-auto shadow-inner">
             <div className="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-950 flex items-center justify-center mb-4 text-rose-600 dark:text-rose-400 shadow-sm animate-bounce">
