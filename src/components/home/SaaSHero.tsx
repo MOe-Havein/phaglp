@@ -33,7 +33,6 @@ export function SaaSHero({
 }: SaaSHeroProps) {
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center py-20 px-4 overflow-hidden select-none bg-frost">
-      {/* Background Radial Glow */}
       
       {/* Foreground Content */}
       <div className="container mx-auto text-center max-w-4xl relative">
@@ -52,6 +51,7 @@ export function SaaSHero({
         </h1>
         
         {/* 5. Inject the dynamic subheadline */}
+        {/* NOTE: You may want to change text-platinum to something darker since the background is now frost! */}
         {subheadline && (
           <p className="text-xl text-platinum mb-8 leading-relaxed text-pretty max-w-2xl mx-auto">
             {subheadline}
@@ -79,7 +79,8 @@ export function SaaSHero({
             <Link href={secondaryCtaHref}>{secondaryCtaText}</Link>
           </Button>
         </div>
-  
+      </div> {/* <-- THIS CLOSING DIV WAS MISSING */}
+      
     </section>
   );
 }
