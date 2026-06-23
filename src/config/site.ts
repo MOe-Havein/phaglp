@@ -3,7 +3,7 @@ import { SiteSettings } from "@/lib/shared/types";
 export const siteConfig: SiteSettings = {
   
   id: "global",
-  siteName: "phaglp",
+  siteName: "",
   siteUrl: "https://www.phaglp.com",
   metaTitle: "The Philosophical Academy Platform | phaglp",
   metaDescription: "High-performance app architecture.",
