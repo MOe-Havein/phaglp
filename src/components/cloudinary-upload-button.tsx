@@ -25,7 +25,7 @@ export function CloudinaryUploadButton({
       signatureEndpoint="/api/sign-cloudinary-params"
       options={{
         multiple: false,
-        folder: "phaglp/lectures",
+        folder: "phaglp/",
       }}
       // src/components/cloudinary-upload-button.tsx
       onSuccess={(result: CloudinaryUploadWidgetResults) => {
