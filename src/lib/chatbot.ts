@@ -188,7 +188,10 @@ ${context}
     }
 
     // Build the message list (system + history + user)
-    const messages: { role: "system" | "user" | "assistant"; content: string }[] = [
+    const messages: {
+      role: "system" | "user" | "assistant";
+      content: string;
+    }[] = [
       { role: "system", content: systemMessage },
       ...chatHistory.map((m) => ({
         role: m.role.toLowerCase() as "user" | "assistant",
@@ -206,7 +209,10 @@ ${context}
     let answer: string;
     if (HERMES_BASE && HERMES_KEY) {
       try {
-        const hermes = createOpenAI({ baseURL: HERMES_BASE, apiKey: HERMES_KEY });
+        const hermes = createOpenAI({
+          baseURL: HERMES_BASE,
+          apiKey: HERMES_KEY,
+        });
         const { text } = await generateText({
           model: hermes(HERMES_MODEL === "auto" ? "gpt-4o-mini" : HERMES_MODEL),
           messages,
