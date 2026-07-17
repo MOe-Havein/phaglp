@@ -43,6 +43,7 @@ import {
   RefreshCw,
   Activity,
 } from "lucide-react";
+import { ModelSelector, useDefaultAIModel } from "@/components/model-selector";
 
 interface TechConceptsDashboardProps {
   user: {
@@ -82,6 +83,8 @@ export function TechConceptsDashboard({
   const [aiGoal, setAiGoal] = useState<string>("both");
   const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false);
   const [aiGeneratedData, setAiGeneratedData] = useState<any>(null);
+  const [aiUsedModel, setAiUsedModel] = useState<string | null>(null);
+  const { model: aiModel, setModel: setAiModel } = useDefaultAIModel();
   const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false);
 
@@ -208,6 +211,7 @@ export function TechConceptsDashboard({
           action: "generate",
           topic: aiTopic,
           goal: aiGoal,
+          model: aiModel || undefined,
         }),
       });
 
@@ -215,8 +219,9 @@ export function TechConceptsDashboard({
         const payload = await response.json();
         if (payload.success) {
           setAiGeneratedData(payload.data);
+          setAiUsedModel(payload.model ?? null);
           toast.success(
-            `Success! Rendered content for "${aiTopic}" via ${payload.source === "cohere" ? "Cohere AI engine" : "Fidelity engine"}`,
+            `Success! Rendered content for "${aiTopic}" via ${payload.source === "cohere" ? "Cohere AI engine" : payload.source === "google" ? "Google Gemini" : "Fidelity engine"}`,
           );
           logDatabaseEvent("GENERATED_AI_CONTENT", {
             topic: aiTopic,
@@ -754,7 +759,7 @@ export function TechConceptsDashboard({
               </CardHeader>
               <CardContent className="space-y-6 pt-5">
                 {/* Inputs */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label
                       htmlFor="ai-topic"
@@ -804,6 +809,10 @@ export function TechConceptsDashboard({
                       <option value="quiz">Interactive Graded Quiz Only</option>
                     </select>
                   </div>
+
+                  <div className="space-y-2">
+                    <ModelSelector value={aiModel || ""} onChange={setAiModel} />
+                  </div>
                 </div>
 
                 <Button
@@ -835,7 +844,9 @@ export function TechConceptsDashboard({
                         variant="outline"
                         className="text-[9px] bg-indigo-500/5 text-indigo-500 font-bold border-indigo-500/20"
                       >
-                        Cohere Verified Syllabus
+                        {aiUsedModel
+                          ? `Model: ${aiUsedModel}`
+                          : "Cohere Verified Syllabus"}
                       </Badge>
                     </div>
 

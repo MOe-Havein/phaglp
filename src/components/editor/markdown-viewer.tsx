@@ -28,9 +28,11 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
         rehypePlugins={[rehypeRaw, rehypeSanitize]}
         components={{
           img: ({ src, alt, ...props }) => {
-            const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "phaglp";
+            const cloudName =
+              process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "phaglp";
             const isStringSrc = typeof src === "string";
-            const isPublicId = isStringSrc && !src.startsWith("http") && !src.startsWith("/");
+            const isPublicId =
+              isStringSrc && !src.startsWith("http") && !src.startsWith("/");
             const resolvedSrc = isPublicId
               ? `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${src}`
               : src;
@@ -43,7 +45,7 @@ export function MarkdownViewer({ value, className }: MarkdownViewerProps) {
                 {...props}
               />
             );
-          }
+          },
         }}
       >
         {value}

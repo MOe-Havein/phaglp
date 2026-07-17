@@ -33,22 +33,25 @@ export async function getSiteSettings(
           siteName: settings.siteName || siteConfig.siteName,
           siteUrl: settings.siteUrl || siteConfig.siteUrl,
           metaTitle: settings.metaTitle || siteConfig.metaTitle,
-          metaDescription: settings.metaDescription || siteConfig.metaDescription,
+          metaDescription:
+            settings.metaDescription || siteConfig.metaDescription,
           description: settings.description || siteConfig.description,
-          
+
           // Strict conversions to completely avoid 'undefined' type mismatches
-          primaryColor: settings.primaryColor ?? siteConfig.primaryColor ?? null,
+          primaryColor:
+            settings.primaryColor ?? siteConfig.primaryColor ?? null,
           ogImage: settings.ogImage ?? siteConfig.ogImage ?? null,
           logoUrl: settings.logoUrl ?? siteConfig.logoUrl ?? null,
           faviconUrl: settings.faviconUrl ?? siteConfig.faviconUrl ?? null,
-          googleAnalyticsId: settings.googleAnalyticsId ?? siteConfig.googleAnalyticsId ?? null,
+          googleAnalyticsId:
+            settings.googleAnalyticsId ?? siteConfig.googleAnalyticsId ?? null,
           fullAddress: settings.fullAddress ?? siteConfig.fullAddress ?? null,
-          
+
           // Handle string-to-boolean casting cleanly
           //  Pass the natively typed booleans directly (or force a safe boolean cast just in case)
-maintenanceMode: Boolean(settings.maintenanceMode),
-enableGoogleAnalytics: Boolean(settings.enableGoogleAnalytics),
-allowRegistration: Boolean(settings.allowRegistration),
+          maintenanceMode: Boolean(settings.maintenanceMode),
+          enableGoogleAnalytics: Boolean(settings.enableGoogleAnalytics),
+          allowRegistration: Boolean(settings.allowRegistration),
 
           // Static layout components array structures
           navItems: siteConfig.navItems,

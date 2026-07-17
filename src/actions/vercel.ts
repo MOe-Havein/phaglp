@@ -61,19 +61,9 @@ export interface VercelDeployment {
   url: string;
   created: number;
   state:
-    | "BUILDING"
-    | "ERROR"
-    | "INITIALIZING"
-    | "QUEUED"
-    | "READY"
-    | "CANCELED";
+    "BUILDING" | "ERROR" | "INITIALIZING" | "QUEUED" | "READY" | "CANCELED";
   readyState:
-    | "BUILDING"
-    | "ERROR"
-    | "INITIALIZING"
-    | "QUEUED"
-    | "READY"
-    | "CANCELED";
+    "BUILDING" | "ERROR" | "INITIALIZING" | "QUEUED" | "READY" | "CANCELED";
   readySubstate?: string;
   type: string;
   creator: {

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const serverOnly = z.string().min(1, "Required server env missing");
 const serverOpt = z.string().optional();
-const publicStr = z.string().optional();
+const publicOpt = z.string().optional();
 
 export const env = z
   .object({
@@ -15,12 +15,12 @@ export const env = z
     CLOUDINARY_CLOUD_NAME: serverOpt,
     CLOUDINARY_API_KEY: serverOpt,
     CLOUDINARY_API_SECRET: serverOpt,
-    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: publicStr,
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: publicOpt,
     CLOUDINARY_FOLDER: serverOpt,
     CLOUDINARY_PRESET: serverOpt,
     COHERE_API_KEY: serverOpt,
     VERCEL_API_TOKEN: serverOpt,
-    NEXT_PUBLIC_STATSIG_CLIENT_KEY: publicStr,
+    NEXT_PUBLIC_STATSIG_CLIENT_KEY: publicOpt,
     CONVERTKIT_API_KEY: serverOpt,
     CONVERTKIT_FORM_ID: serverOpt,
   })
@@ -36,12 +36,12 @@ const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: serverOpt,
   CLOUDINARY_API_KEY: serverOpt,
   CLOUDINARY_API_SECRET: serverOpt,
-  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: publicStr,
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: publicOpt,
   CLOUDINARY_FOLDER: serverOpt,
   CLOUDINARY_PRESET: serverOpt,
   COHERE_API_KEY: serverOpt,
   VERCEL_API_TOKEN: serverOpt,
-  NEXT_PUBLIC_STATSIG_CLIENT_KEY: publicStr,
+  NEXT_PUBLIC_STATSIG_CLIENT_KEY: publicOpt,
   CONVERTKIT_API_KEY: serverOpt,
   CONVERTKIT_FORM_ID: serverOpt,
 });

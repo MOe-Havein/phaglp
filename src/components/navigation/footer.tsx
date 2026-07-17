@@ -114,14 +114,22 @@ function DynamicLucideIcon({
 /**
  * Sub-Component: Identity and Brand Information
  */
-function BrandSegment({ currentSettings }: { currentSettings?: Partial<SiteSettings> | null | undefined }) {
-
+function BrandSegment({
+  currentSettings,
+}: {
+  currentSettings?: Partial<SiteSettings> | null | undefined;
+}) {
   const currentYear = new Date().getFullYear();
-  
+
   const activeSiteName = currentSettings?.siteName || siteConfig.siteName;
-  const activeDescription = currentSettings?.description || siteConfig.description || "Unified Dashboard Management Engine.";
+  const activeDescription =
+    currentSettings?.description ||
+    siteConfig.description ||
+    "Unified Dashboard Management Engine.";
   const activeLogoUrl = currentSettings?.logoUrl || "/phaglp-logo.webp";
-  const activeAddress = currentSettings?.fullAddress || "2501 CASE STREET, BATESVILLE 72501, ARKANSAS, USA ";
+  const activeAddress =
+    currentSettings?.fullAddress ||
+    "2501 CASE STREET, BATESVILLE 72501, ARKANSAS, USA ";
 
   return (
     <div className="lg:col-span-4 space-y-5">
@@ -139,7 +147,7 @@ function BrandSegment({ currentSettings }: { currentSettings?: Partial<SiteSetti
           {activeSiteName}
         </span>
       </div>
-      
+
       <p className="text-sm text-gray-300 leading-relaxed max-w-sm">
         {activeDescription}
       </p>
@@ -201,9 +209,7 @@ function MenuColumn({
                 name={link.iconName ?? ""}
                 className="w-3.5 h-3.5 text-white group-hover:text-tartorange transition-colors"
               />
-              <span className="text-white">
-                {link.label}
-              </span>
+              <span className="text-white">{link.label}</span>
               {link.external && (
                 <ExternalLink className="w-3 h-3 text-white group-hover:text-white transition-colors" />
               )}

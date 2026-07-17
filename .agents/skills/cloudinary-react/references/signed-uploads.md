@@ -13,6 +13,7 @@ Complete guide for implementing signed uploads with Cloudinary.
 **Do NOT** put in root `.env` used by Vite.
 
 ✅ Create `server/.env`:
+
 ```
 CLOUDINARY_CLOUD_NAME=your_cloud
 CLOUDINARY_API_KEY=your_key
@@ -30,29 +31,31 @@ Use `uploadSignature` as a function (not `signatureEndpoint`):
 
 ```tsx
 // 1. Fetch api_key from server first
-const response = await fetch('/api/sign-image', { method: 'POST' });
+const response = await fetch("/api/sign-image", { method: "POST" });
 const data = await response.json();
 
 // 2. Configure widget
 const widgetConfig = {
-  cloudName: 'your_cloud',
+  cloudName: "your_cloud",
   api_key: data.api_key, // from server
-  uploadPreset: 'ml_default', // or your signed preset
-  uploadSignature: function(callback, params_to_sign) {
-    const paramsWithPreset = { 
-      ...params_to_sign, 
-      upload_preset: 'ml_default' 
+  uploadPreset: "ml_default", // or your signed preset
+  uploadSignature: function (callback, params_to_sign) {
+    const paramsWithPreset = {
+      ...params_to_sign,
+      upload_preset: "ml_default",
     };
-    
-    fetch('/api/sign-image', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
+    fetch("/api/sign-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ params_to_sign: paramsWithPreset }),
     })
-      .then(r => r.json())
-      .then(data => data.signature ? callback(data.signature) : callback(''))
-      .catch(() => callback(''));
-  }
+      .then((r) => r.json())
+      .then((data) =>
+        data.signature ? callback(data.signature) : callback(""),
+      )
+      .catch(() => callback(""));
+  },
 };
 
 // 3. Create widget with config
@@ -62,25 +65,25 @@ window.cloudinary.createUploadWidget(widgetConfig, callback);
 ## Server Pattern (Node/Express with SDK v2)
 
 ```ts
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
-app.post('/api/sign-image', (req, res) => {
+app.post("/api/sign-image", (req, res) => {
   const params = req.body.params_to_sign || {};
-  const paramsToSign = { 
-    ...params, 
-    upload_preset: params.upload_preset || 'ml_default' 
+  const paramsToSign = {
+    ...params,
+    upload_preset: params.upload_preset || "ml_default",
   };
-  
+
   const signature = cloudinary.utils.api_sign_request(
-    paramsToSign, 
-    process.env.CLOUDINARY_API_SECRET
+    paramsToSign,
+    process.env.CLOUDINARY_API_SECRET,
   );
-  
-  res.json({ 
-    signature, 
-    timestamp: paramsToSign.timestamp, 
+
+  res.json({
+    signature,
+    timestamp: paramsToSign.timestamp,
     api_key: process.env.CLOUDINARY_API_KEY,
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   });
 });
 ```
@@ -108,13 +111,16 @@ app.post('/api/sign-image', (req, res) => {
 ## Debugging Signed Uploads
 
 ### "Invalid Signature"
+
 - Check: Using `uploadSignature` function? `api_key` fetched from server? `uploadPreset` in widget config? Server includes `upload_preset` in signature?
 
 ### "Missing required parameter - api_key"
+
 - Fetch `api_key` from server before creating widget
 - API key is NOT secret - safe to use in client
 
 ### Preset doesn't exist
+
 - Use `ml_default` if available (default signed preset)
 - Or create signed preset in dashboard
 

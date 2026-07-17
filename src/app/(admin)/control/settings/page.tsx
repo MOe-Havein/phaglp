@@ -1,6 +1,7 @@
 import { Settings } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { SettingsForm } from "@/components/control/settings-form";
+import { DefaultAIModelCard } from "@/components/control/default-ai-model-card";
 
 export const metadata = {
   title: "Site Settings — PHAGLP Control",
@@ -33,6 +34,8 @@ export default async function SettingsPage() {
       </div>
 
       <SettingsForm initialData={settings} />
+
+      <DefaultAIModelCard />
     </div>
   );
 }

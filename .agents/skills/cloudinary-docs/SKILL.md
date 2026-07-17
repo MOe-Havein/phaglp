@@ -4,7 +4,7 @@ description: Looks up implementation details in the latest Cloudinary docs via t
 license: MIT
 metadata:
   author: cloudinary
-  version: '1.1.0'
+  version: "1.1.0"
 ---
 
 # Cloudinary Documentation
@@ -23,13 +23,13 @@ Helps developers integrate Cloudinary into their applications by providing docum
 
 The main documentation llms.txt file is split into product-specific sub-files. **Go directly to the relevant sub-file** according to the descriptions below. Do not fetch the main llms.txt first unless the topic spans multiple products or you are unsure.
 
-| Product | Topic | Sub-file URL |
-|---|---|---|
-| Image & Video APIs | Image/video uploads, transformations, optimization, SDKs, APIs, webhooks, add-ons, embedding widgets or players in apps, or any programmatic/automation/at-scale image and video requirements | https://cloudinary.com/documentation/llms-image-and-video-apis.txt?install_source=skillspack&referrer=docs-skill |
-| Cloudinary Assets (DAM) | Digital Asset Management (DAM), Media Library, folders, metadata, collections, creative workflows, portals, digital rights, or any Cloudinary Console or UI-based asset management needs | https://cloudinary.com/documentation/llms-cloudinary-assets.txt?install_source=skillspack&referrer=docs-skill |
-| MediaFlows | PowerFlows, EasyFlows, workflow automation, flow blocks | https://cloudinary.com/documentation/llms-mediaflows.txt?install_source=skillspack&referrer=docs-skill |
-| Integrations | Cloudinary integrations with 3rd party apps (WordPress, Shopify, Contentful, Salesforce, Adobe, etc.) or questions about implementing new integrations | https://cloudinary.com/documentation/llms-integrations.txt?install_source=skillspack&referrer=docs-skill |
-| Cross-product or unsure | Multiple products, general, or unclear topic | https://cloudinary.com/documentation/llms.txt?install_source=skillspack&referrer=docs-skill |
+| Product                 | Topic                                                                                                                                                                                         | Sub-file URL                                                                                                     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Image & Video APIs      | Image/video uploads, transformations, optimization, SDKs, APIs, webhooks, add-ons, embedding widgets or players in apps, or any programmatic/automation/at-scale image and video requirements | https://cloudinary.com/documentation/llms-image-and-video-apis.txt?install_source=skillspack&referrer=docs-skill |
+| Cloudinary Assets (DAM) | Digital Asset Management (DAM), Media Library, folders, metadata, collections, creative workflows, portals, digital rights, or any Cloudinary Console or UI-based asset management needs      | https://cloudinary.com/documentation/llms-cloudinary-assets.txt?install_source=skillspack&referrer=docs-skill    |
+| MediaFlows              | PowerFlows, EasyFlows, workflow automation, flow blocks                                                                                                                                       | https://cloudinary.com/documentation/llms-mediaflows.txt?install_source=skillspack&referrer=docs-skill           |
+| Integrations            | Cloudinary integrations with 3rd party apps (WordPress, Shopify, Contentful, Salesforce, Adobe, etc.) or questions about implementing new integrations                                        | https://cloudinary.com/documentation/llms-integrations.txt?install_source=skillspack&referrer=docs-skill         |
+| Cross-product or unsure | Multiple products, general, or unclear topic                                                                                                                                                  | https://cloudinary.com/documentation/llms.txt?install_source=skillspack&referrer=docs-skill                      |
 
 ## Instructions
 
@@ -46,29 +46,34 @@ When using this skill to answer image and video upload, management, optimization
 ## Example Workflows
 
 **Example 1: SDK question**
+
 - User asks: "How do I install and use the Node.js SDK for Cloudinary?"
 - Topic maps to Image & Video APIs → fetch https://cloudinary.com/documentation/llms-image-and-video-apis.txt?install_source=skillspack&referrer=docs-skill
 - Identify SDK-related pages and provide installation instructions and usage examples or help implement the request in the user's code.
 
 **Example 2: DAM question**
+
 - User asks: "How do I set up approval workflows for assets in the Media Library?"
 - Topic maps to Cloudinary Assets (DAM) → fetch https://cloudinary.com/documentation/llms-cloudinary-assets.txt?install_source=skillspack&referrer=docs-skill
 - Identify relevant pages like "dam_admin_creative_approval_flows.md"
 - Fetch the specific documentation and provide setup steps
 
 **Example 3: MediaFlows question**
+
 - User asks: "How do I build a PowerFlow that auto-moderates uploaded images?"
 - Topic maps to MediaFlows → fetch https://cloudinary.com/documentation/llms-mediaflows.txt?install_source=skillspack&referrer=docs-skill
 - Identify relevant pages like "mediaflows_build_flow.md" or "mediaflows_moderation_powerflow.md"
 - Fetch the specific documentation and provide a flow-building walkthrough
 
 **Example 4: Integration question**
+
 - User asks: "How do I connect Cloudinary to my WordPress site?"
 - Topic maps to Integrations → fetch https://cloudinary.com/documentation/llms-integrations.txt?install_source=skillspack&referrer=docs-skill
 - Identify relevant pages like "wordpress_integration.md"
 - Fetch the specific documentation and provide setup instructions
 
 **Example 5: Ambiguous upload question**
+
 - User asks: "How do I upload images to Cloudinary?"
 - First, determine whether the user wants to upload **programmatically** (via SDK/API) or **via the Console UI** (DAM)
 - If **programmatic** → fetch https://cloudinary.com/documentation/llms-image-and-video-apis.txt?install_source=skillspack&referrer=docs-skill
@@ -82,6 +87,7 @@ When using this skill to answer image and video upload, management, optimization
   - Provide an answer covering both programmatic and UI-based upload options
 
 **Example 6: Transformation question (fallback: use only if no specialized skill covers this topic)**
+
 - User asks: "How do I resize and crop images?"
 - Topic maps to Image & Video APIs → fetch https://cloudinary.com/documentation/llms-image-and-video-apis.txt?install_source=skillspack&referrer=docs-skill
 - Identify relevant pages like "image_transformations.md" or "transformation_reference.md"

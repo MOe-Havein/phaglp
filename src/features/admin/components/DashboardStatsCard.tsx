@@ -10,13 +10,7 @@ export interface DashboardStatsCardProps {
   description: string;
   icon: ComponentType<{ className?: string }>;
   colorTheme?:
-    | "blue"
-    | "violet"
-    | "emerald"
-    | "amber"
-    | "rose"
-    | "cyan"
-    | undefined;
+    "blue" | "violet" | "emerald" | "amber" | "rose" | "cyan" | undefined;
   badgeText?: string | undefined;
   isLoading?: boolean | undefined;
   onClick?: (() => void) | undefined;

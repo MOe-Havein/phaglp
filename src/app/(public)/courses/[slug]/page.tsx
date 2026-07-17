@@ -8,8 +8,11 @@ import { CheckCircle, Clock, GraduationCap, BookOpen } from "lucide-react";
 import nextDynamic from "next/dynamic";
 
 const MarkdownViewer = nextDynamic(
-  () => import("@/components/editor/markdown-viewer").then((mod) => mod.MarkdownViewer),
-  { ssr: true }
+  () =>
+    import("@/components/editor/markdown-viewer").then(
+      (mod) => mod.MarkdownViewer,
+    ),
+  { ssr: true },
 );
 
 import { auth } from "@/auth";

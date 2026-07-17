@@ -8,7 +8,6 @@ import {
 import { UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
-
 interface CloudinaryUploadButtonProps {
   onUpload: (url: string) => void;
   className?: string;
@@ -29,7 +28,11 @@ export function CloudinaryUploadButton({
       }}
       // src/components/cloudinary-upload-button.tsx
       onSuccess={(result: CloudinaryUploadWidgetResults) => {
-        if (typeof result.info === "object" && result.info !== null && "public_id" in result.info) {
+        if (
+          typeof result.info === "object" &&
+          result.info !== null &&
+          "public_id" in result.info
+        ) {
           // Pass the Cloudinary public ID to the parent component
           const publicId = result.info.public_id as string;
           onUpload(publicId);

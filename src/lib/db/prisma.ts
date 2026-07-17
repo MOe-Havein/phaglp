@@ -1,34 +1,54 @@
+import "server-only";
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { env } from "@/env";
 
 const prismaClientSingleton = () => {
-  const url = env.DATABASE_URL;
+  const remoteUrl = env.DATABASE_URL;
   const isRemote =
-    url.startsWith("libsql://") ||
-    url.startsWith("http://") ||
-    url.startsWith("https://");
+    typeof remoteUrl === "string" &&
+    (remoteUrl.startsWith("libsql://") ||
+      remoteUrl.startsWith("http://") ||
+      remoteUrl.startsWith("https://"));
 
-  const config: { url: string; authToken?: string } = { url };
-  if (isRemote && process.env.TURSO_AUTH_TOKEN) {
-    config.authToken = process.env.TURSO_AUTH_TOKEN;
+  if (
+    isRemote &&
+    process.env.NEXT_RUNTIME === "nodejs" &&
+    typeof process.env.TURSO_AUTH_TOKEN === "string"
+  ) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { PrismaLibSql } = require("@prisma/adapter-libsql");
+      const adapter = new PrismaLibSql({
+        url: remoteUrl,
+        authToken: process.env.TURSO_AUTH_TOKEN,
+      });
+      return new PrismaClient({
+        log:
+          env.NODE_ENV === "development"
+            ? ["query", "error", "warn"]
+            : ["error"],
+        adapter,
+      });
+    } catch (error) {
+      if (env.NODE_ENV !== "test") {
+        console.warn(
+          "[Prisma] Remote adapter unavailable, falling back to local DB:",
+          error,
+        );
+      }
+    }
   }
 
-  if (isRemote) {
-    const adapter = new PrismaLibSql(config);
-    return new PrismaClient({
-      log:
-        env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-      adapter,
-    });
-  }
+  const relative = "./prisma/dev.db";
+  const localUrl =
+    process.platform === "win32"
+      ? `file:${relative.replace(/\\/g, "/")}`
+      : `file:${relative}`;
 
   return new PrismaClient({
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-    datasources: {
-      db: { url },
-    },
+    datasources: { db: { url: localUrl } },
   });
 };
 
@@ -38,9 +58,16 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClientSingleton | undefined;
 };
 
-export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+export const prisma: PrismaClientSingleton = (() => {
+  try {
+    return globalForPrisma.prisma ?? prismaClientSingleton();
+  } catch (error) {
+    console.error("[Prisma initialization failed]", error);
+    return undefined as any;
+  }
+})();
 
-if (env.NODE_ENV !== "production") {
+if (env.NODE_ENV !== "production" && prisma) {
   globalForPrisma.prisma = prisma;
 }
 
@@ -57,11 +84,7 @@ export async function safeDbQuery<T>(
 ): Promise<{ success: boolean; data: T | null; error: string | null }> {
   try {
     const result = await queryFn();
-    return {
-      success: true,
-      data: serializePrisma(result),
-      error: null,
-    };
+    return { success: true, data: serializePrisma(result), error: null };
   } catch (error: unknown) {
     const message =
       error instanceof Error
@@ -70,10 +93,6 @@ export async function safeDbQuery<T>(
     if (env.NODE_ENV === "development") {
       console.error("[Database Error]:", error);
     }
-    return {
-      success: false,
-      data: fallbackValue,
-      error: message,
-    };
+    return { success: false, data: fallbackValue, error: message };
   }
 }

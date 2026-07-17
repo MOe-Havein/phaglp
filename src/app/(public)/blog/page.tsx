@@ -42,7 +42,8 @@ export default async function BlogPage() {
           Latest Insights & Blog
         </h1>
         <p className="text-lg font-medium text-slate-600 dark:text-slate-400 leading-relaxed">
-          Explore articles, news, and community insights from the PHAGLP ecosystem.
+          Explore articles, news, and community insights from the PHAGLP
+          ecosystem.
         </p>
       </div>
 

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { logger } from "@/server/utils/logger.util";
+import { logger } from "@/lib/server/logger";
 
 export async function register() {
   // Graceful Shutdown Handler
@@ -8,7 +8,7 @@ export async function register() {
       logger.info("SIGTERM received. Closing backend connections...");
 
       try {
-        await prisma.$disconnect();
+        await prisma?.$disconnect();
         logger.info("Connections closed successfully.");
       } catch (error) {
         logger.error("Error during graceful shutdown", error);

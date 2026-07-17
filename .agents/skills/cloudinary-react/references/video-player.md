@@ -24,8 +24,8 @@ npm install cloudinary-video-player
 ## Imports
 
 ```tsx
-import { videoPlayer } from 'cloudinary-video-player';
-import 'cloudinary-video-player/cld-video-player.min.css';
+import { videoPlayer } from "cloudinary-video-player";
+import "cloudinary-video-player/cld-video-player.min.css";
 ```
 
 Note: No `dist/` in CSS path - package exposes `lib/` paths via exports
@@ -33,23 +33,23 @@ Note: No `dist/` in CSS path - package exposes `lib/` paths via exports
 ## Complete Implementation Pattern
 
 ```tsx
-import { useRef, useLayoutEffect } from 'react';
-import { videoPlayer } from 'cloudinary-video-player';
-import 'cloudinary-video-player/cld-video-player.min.css';
+import { useRef, useLayoutEffect } from "react";
+import { videoPlayer } from "cloudinary-video-player";
+import "cloudinary-video-player/cld-video-player.min.css";
 
 function VideoPlayerComponent({ cloudName, publicId }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<ReturnType<typeof videoPlayer> | null>(null);
-  
+
   useLayoutEffect(() => {
     // Check container is in DOM
     if (!cloudName || !containerRef.current?.isConnected) return;
-    
+
     // Create imperative video element
-    const el = document.createElement('video');
-    el.className = 'cld-video-player cld-fluid';
+    const el = document.createElement("video");
+    el.className = "cld-video-player cld-fluid";
     containerRef.current.appendChild(el);
-    
+
     try {
       const player = videoPlayer(el, {
         cloudName,
@@ -57,26 +57,26 @@ function VideoPlayerComponent({ cloudName, publicId }) {
         controls: true,
         fluid: true,
         posterOptions: {
-          transformation: { startOffset: '0' },  // Use first frame
-          posterColor: '#0f0f0f',                // Fallback color
+          transformation: { startOffset: "0" }, // Use first frame
+          posterColor: "#0f0f0f", // Fallback color
         },
       });
-      
+
       // Source takes an object, not a string
       player.source({ publicId });
       playerRef.current = player;
     } catch (err) {
-      console.error('Video player init failed:', err);
+      console.error("Video player init failed:", err);
       // Fallback to AdvancedVideo if init fails
     }
-    
+
     // Cleanup
     return () => {
       if (playerRef.current) {
-        try { 
-          playerRef.current.dispose(); 
-        } catch (e) { 
-          console.warn('Player disposal error:', e); 
+        try {
+          playerRef.current.dispose();
+        } catch (e) {
+          console.warn("Player disposal error:", e);
         }
         playerRef.current = null;
       }
@@ -86,7 +86,7 @@ function VideoPlayerComponent({ cloudName, publicId }) {
       }
     };
   }, [cloudName, publicId]);
-  
+
   return <div ref={containerRef} />;
 }
 ```
@@ -94,6 +94,7 @@ function VideoPlayerComponent({ cloudName, publicId }) {
 ## Key Points
 
 ### Poster Options
+
 Always include `posterOptions` for reliable poster display:
 
 ```tsx
@@ -106,6 +107,7 @@ posterOptions: {
 Override via props if needed (e.g. `startOffset: '5'` for 5 seconds in)
 
 ### player.source()
+
 Takes an **object**, not a string:
 
 ```tsx
@@ -114,11 +116,13 @@ Takes an **object**, not a string:
 ```
 
 ### Cleanup Pattern
+
 1. Call `player.dispose()` (wrap in try-catch)
 2. Set ref to null
 3. Remove element only if `el.parentNode` exists (avoids NotFoundError)
 
 ### If Init Fails
+
 - CSP restrictions or browser extensions may block player
 - **Do NOT** relax CSP or ask user to disable extensions
 - ✅ Fall back to **AdvancedVideo** with same publicId
@@ -126,37 +130,42 @@ Takes an **object**, not a string:
 ## Common Errors
 
 ### "Invalid target for null#on" or React removeChild error
+
 ❌ Problem: Passed React-managed `<video ref>` to player
 ✅ Solution: Use imperative element (createElement, append to container)
 
 ### "source is not a function"
+
 ❌ Problem: Wrong import or calling source incorrectly
 ✅ Solution: `import { videoPlayer }` (named), call `player.source({ publicId })`
 
 ### Poster image missing or broken
+
 ❌ Problem: No posterOptions configured
 ✅ Solution: Always include `posterOptions` with `startOffset: '0'` and `posterColor`
 
 ### Failed HEAD requests or CORS console noise
+
 - Analytics/telemetry from player - doesn't necessarily mean playback fails
 - Do not add preflight GET
 - If video doesn't play, check imperative pattern and fall back to AdvancedVideo
 
 ### Memory leak
+
 ❌ Problem: Not disposing player in cleanup
 ✅ Solution: Always dispose in cleanup (see pattern above)
 
 ## AdvancedVideo vs Video Player
 
-| Feature | AdvancedVideo | Video Player |
-|---------|---------------|--------------|
-| Purpose | Display video | Full player |
-| Package | `@cloudinary/react` | `cloudinary-video-player` |
-| CSS | Not needed | Required |
-| Setup | Declarative | Imperative |
-| Controls | Native HTML5 | Styled custom |
-| Playlists | No | Yes |
-| Use when | Show video | Need player UI |
+| Feature   | AdvancedVideo       | Video Player              |
+| --------- | ------------------- | ------------------------- |
+| Purpose   | Display video       | Full player               |
+| Package   | `@cloudinary/react` | `cloudinary-video-player` |
+| CSS       | Not needed          | Required                  |
+| Setup     | Declarative         | Imperative                |
+| Controls  | Native HTML5        | Styled custom             |
+| Playlists | No                  | Yes                       |
+| Use when  | Show video          | Need player UI            |
 
 ## Documentation
 

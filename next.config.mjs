@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
@@ -8,13 +7,11 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: false },
 
-  // ✅ Move this back inside experimental to clear the Next.js 15 warning
   experimental: {
     optimizePackageImports: [
       "lucide-react",
       "@radix-ui/react-icons",
       "date-fns",
-      "lodash",
       "clsx",
       "tailwind-merge",
       "@vercel/analytics/next",
@@ -25,23 +22,45 @@ const nextConfig = {
     "@prisma/client",
     "prisma",
     "isomorphic-dompurify",
+    "@prisma/adapter-libsql",
+    "@libsql/client",
+    "@libsql/win32-x64-msvc",
+    "libsql",
+    "@libsql/hrana-client",
+    "@libsql/isomorphic-ws",
     "jsdom",
   ],
+
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...(config.resolve.fallback || {}),
+        path: false,
+        os: false,
+      };
+    }
+
+    config.module.rules.push({
+      test: /\.(md|txt|LICENSE)$/,
+      type: "asset/resource",
+    });
+
+    return config;
+  },
 
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60,
-    loader: 'custom',
-    loaderFile: './src/utils/cloudinary-loader.ts',
+    loader: "custom",
+    loaderFile: "./src/utils/cloudinary-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
-        hostname: 'res.cloudinary.com',
+        hostname: "res.cloudinary.com",
         pathname: "/**",
       },
     ],
   },
-  // ... keep your webpack config below
 };
 
 export default nextConfig;

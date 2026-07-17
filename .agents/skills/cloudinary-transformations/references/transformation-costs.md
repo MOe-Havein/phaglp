@@ -5,10 +5,12 @@
 **Note:** "tx" = transformation credits. Numbers shown (e.g., 75 tx) indicate additional transformation credits consumed per use.
 
 ## Standard Transformations
+
 - Basic image transformations: 1 transformation credit (1 tx)
 - Video transformations: Counted per second (varies by resolution and codec)
 
 ## High-Cost Effects (per use)
+
 - **Generative AI**: `e_gen_background_replace` (230 tx), `e_gen_replace` (120 tx), `e_gen_restore` (100 tx)
 - **AI Enhancement**: `e_auto_enhance` (100 tx), `e_enhance` (100 tx)
 - **Background Removal**: `e_background_removal` (75 tx), `e_extract` (75 tx)

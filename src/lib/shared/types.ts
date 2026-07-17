@@ -14,7 +14,7 @@ export interface SiteSettings {
   maintenanceMode: boolean;
   enableGoogleAnalytics: boolean;
   allowRegistration: boolean;
-  
+
   // Layout & UI Structure
   navItems: NavItem[];
   footerLinks: FooterSection[];

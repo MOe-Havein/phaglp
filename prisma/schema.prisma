@@ -85,6 +85,10 @@ model User {
   // Dashboard preferences
   lecturePreferences Json
 
+  // Preferred AI model used across generative routes
+  // Value must be a key from the AI_MODEL_REGISTRY (see src/lib/ai-models.ts).
+  aiModel String @default("cohere-command-a-reasoning")
+
   chatMessages ChatMessage[]
   comments     Comment[]
   courses      Course[]         @relation("InstructorCourses")

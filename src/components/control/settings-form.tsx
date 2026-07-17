@@ -68,19 +68,22 @@ export function SettingsForm({
     defaultValues: {
       siteName: initialData?.siteName || "phaglp",
       siteUrl: initialData?.siteUrl || "https://www.phaglp.com",
-      description: initialData?.description || "Unified Dashboard Management Engine.",
+      description:
+        initialData?.description || "Unified Dashboard Management Engine.",
       maintenanceMode: initialData?.maintenanceMode ?? false,
       allowRegistration: initialData?.allowRegistration ?? false,
-      
+
       // Clean handling for analytics data
-      enableGoogleAnalytics: initialData?.enableGoogleAnalytics === true || initialData?.enableGoogleAnalytics === "1",
+      enableGoogleAnalytics:
+        initialData?.enableGoogleAnalytics === true ||
+        initialData?.enableGoogleAnalytics === "1",
       googleAnalyticsId: initialData?.googleAnalyticsId || "",
-      
+
       metaTitle: initialData?.metaTitle || "",
       metaDescription: initialData?.metaDescription || "",
       primaryColor: initialData?.primaryColor || "#3b82f6",
       fullAddress: initialData?.fullAddress || "",
-      
+
       // Null-guards prevent "uncontrolled to controlled" inputs warnings
       logoUrl: initialData?.logoUrl || "",
       ogImage: initialData?.ogImage || "",
@@ -209,8 +212,8 @@ export function SettingsForm({
                   <FormControl>
                     <Input placeholder="#3b82f6" {...field} />
                   </FormControl>
-                  <div 
-                    className="w-10 h-10 rounded border shadow-sm shrink-0" 
+                  <div
+                    className="w-10 h-10 rounded border shadow-sm shrink-0"
                     style={{ backgroundColor: field.value || "#3b82f6" }}
                   />
                 </div>
@@ -253,10 +256,10 @@ export function SettingsForm({
                   <FormItem>
                     <FormLabel>Measurement ID (G-XXXXXX)</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="G-XXXXXXXXXX" 
-                        {...field} 
-                        value={field.value ?? ""} 
+                      <Input
+                        placeholder="G-XXXXXXXXXX"
+                        {...field}
+                        value={field.value ?? ""}
                         disabled={!form.watch("enableGoogleAnalytics")}
                       />
                     </FormControl>
@@ -393,13 +396,12 @@ export function SettingsForm({
                         className="h-24 w-auto object-cover border rounded-md"
                       />
                     )}
-                    //  FIXED
-<CloudinaryUploadButton
-  onUpload={(url) => field.onChange(url)}
->
-  Upload Cover
-</CloudinaryUploadButton>
-
+                    // FIXED
+                    <CloudinaryUploadButton
+                      onUpload={(url) => field.onChange(url)}
+                    >
+                      Upload Cover
+                    </CloudinaryUploadButton>
                   </div>
                   <FormMessage />
                 </FormItem>

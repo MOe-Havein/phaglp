@@ -1,7 +1,8 @@
 import { generateText } from "ai";
-import { google } from "@ai-sdk/google";
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { resolveModelForRequest } from "@/lib/ai-client";
+import { DEFAULT_AI_MODEL_ID } from "@/lib/ai-models";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,7 +11,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { prompt, type } = await request.json();
+    const { prompt, type, model } = await request.json();
+
+    const userDefault = DEFAULT_AI_MODEL_ID; // generate-content has no user-scoped default lookup; routes still honor explicit `model`
+    const resolved = resolveModelForRequest(model, userDefault);
 
     const systemPrompts = {
       hero: "You are a professional copywriter specializing in hero sections. Create compelling headlines and subheadings that grab attention and clearly communicate value propositions.",
@@ -24,7 +28,7 @@ export async function POST(request: NextRequest) {
     };
 
     const { text } = await generateText({
-      model: google("gemini-1.5-pro"),
+      model: (await import("@ai-sdk/google")).google(resolved.param),
       system:
         systemPrompts[type as keyof typeof systemPrompts] ||
         systemPrompts.custom,
@@ -49,7 +53,7 @@ export async function POST(request: NextRequest) {
       content = { text };
     }
 
-    return NextResponse.json({ content, type });
+    return NextResponse.json({ content, type, model: resolved.modelId });
   } catch (error) {
     console.error("Content generation error:", error);
     return NextResponse.json(
