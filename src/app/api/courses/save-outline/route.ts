@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       Math.random().toString(36).substring(2, 7);
 
     // Save Course, Modules, and Lessons within a single transaction
-    const savedCourse = await prisma.$transaction(async (tx) => {
+    const savedCourse = await prisma.$transaction(async (tx: any) => {
       // 1. Create Course record
       const course = await tx.course.create({
         data: {

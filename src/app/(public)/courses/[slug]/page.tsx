@@ -116,14 +116,14 @@ export default async function CourseDetailPage({
                     </p>
                   </div>
                 ) : (
-                  course.modules.map((module, i) => (
+                  course.modules.map((module: { id: number | string; title: string | null; lessons: Array<{ id: number }> }, index: number) => (
                     <div
                       key={module.id}
                       className="border rounded-xl p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors"
                     >
                       <div className="flex items-center gap-4">
                         <span className="text-primary font-bold font-mono">
-                          {(i + 1).toString().padStart(2, "0")}
+                          {(index + 1).toString().padStart(2, "0")}
                         </span>
                         <span className="font-semibold text-lg">
                           {module.title}

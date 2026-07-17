@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import prisma from "@/lib/db/prisma"; // Ensure this path matches your actual prisma client location
+import prisma from "@/lib/prisma"; // Ensure this path matches your actual prisma client location
 import { SaaSHero } from "@/components/home/SaaSHero";
 import { LatestLETURES } from "@/components/home/LatestLETURES";
 import dynamic from "next/dynamic";
