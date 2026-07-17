@@ -1,15 +1,16 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "./auth.config";
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/db/prisma";
+import { env } from "@/env";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   session: { strategy: "jwt" },
-  secret: authConfig.secret,
-  trustHost: true,
+  secret: env.NEXTAUTH_SECRET,
+  trustHost: env.NODE_ENV !== "production",
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -51,7 +52,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             };
           }
         } catch (dbError) {
-          // Re-throw DB errors so Auth.js surfaces them properly
           throw dbError;
         }
 

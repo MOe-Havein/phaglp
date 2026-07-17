@@ -1,27 +1,49 @@
 import { z } from "zod";
 
-const envSchema = z.object({
-  NODE_ENV: z
-    .enum(["development", "test", "production"])
-    .default("development"),
-  DATABASE_URL: z.string().min(1).catch("file:./dev.db"),
-  NEXTAUTH_SECRET: z.string().min(32).optional(),
-  AUTH_SECRET: z.string().min(32).optional(),
-  CLOUDINARY_URL: z.string().min(1),
-  CLOUDINARY_API_KEY: z.string().min(1).optional(),
-  CLOUDINARY_API_SECRET: z.string().min(1).optional(),
-  CLOUDINARY_CLOUD_NAME: z.string().min(1).optional(), // PHAGLP-CLOUDINARY
-  CLOUDINARY_FOLDER: z.string().min(1).optional(), // blog-images
-  CLOUDINARY_PRESET: z.string().min(1).optional(), // image-presets
+const serverOnly = z.string().min(1, "Required server env missing");
+const serverOpt = z.string().optional();
+const publicStr = z.string().optional();
 
-  // Add other required env vars here
+export const env = z
+  .object({
+    NODE_ENV: z.enum(["development", "test", "production"]),
+    NEXTAUTH_SECRET: serverOnly,
+    AUTH_SECRET: serverOpt,
+    DATABASE_URL: serverOnly,
+    TURSO_AUTH_TOKEN: serverOpt,
+    CLOUDINARY_URL: serverOpt,
+    CLOUDINARY_CLOUD_NAME: serverOpt,
+    CLOUDINARY_API_KEY: serverOpt,
+    CLOUDINARY_API_SECRET: serverOpt,
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: publicStr,
+    CLOUDINARY_FOLDER: serverOpt,
+    CLOUDINARY_PRESET: serverOpt,
+    COHERE_API_KEY: serverOpt,
+    VERCEL_API_TOKEN: serverOpt,
+    NEXT_PUBLIC_STATSIG_CLIENT_KEY: publicStr,
+    CONVERTKIT_API_KEY: serverOpt,
+    CONVERTKIT_FORM_ID: serverOpt,
+  })
+  .parse(process.env);
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(["development", "test", "production"]),
+  NEXTAUTH_SECRET: serverOnly,
+  AUTH_SECRET: serverOpt,
+  DATABASE_URL: serverOnly,
+  TURSO_AUTH_TOKEN: serverOpt,
+  CLOUDINARY_URL: serverOpt,
+  CLOUDINARY_CLOUD_NAME: serverOpt,
+  CLOUDINARY_API_KEY: serverOpt,
+  CLOUDINARY_API_SECRET: serverOpt,
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: publicStr,
+  CLOUDINARY_FOLDER: serverOpt,
+  CLOUDINARY_PRESET: serverOpt,
+  COHERE_API_KEY: serverOpt,
+  VERCEL_API_TOKEN: serverOpt,
+  NEXT_PUBLIC_STATSIG_CLIENT_KEY: publicStr,
+  CONVERTKIT_API_KEY: serverOpt,
+  CONVERTKIT_FORM_ID: serverOpt,
 });
 
-const _env = envSchema.safeParse(process.env);
-
-if (!_env.success) {
-  console.error("❌ Invalid environment variables:", _env.error.format());
-  throw new Error("Invalid environment variables");
-}
-
-export const env = _env.data;
+export type Env = z.infer<typeof envSchema>;

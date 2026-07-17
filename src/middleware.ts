@@ -36,13 +36,7 @@ export default auth(
       "default-src 'self'",
 
       // JavaScript
-      // Remove 'unsafe-eval' if your app doesn't require it.
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' " +
-        "https://va.vercel-scripts.com " +
-        "https://vercel.live " +
-        "https://upload-widget.cloudinary.com " +
-        "https://res.cloudinary.com " +
-        "https://*.cloudinary.com",
+      "script-src 'self' https://va.vercel-scripts.com https://vercel.live https://upload-widget.cloudinary.com https://res.cloudinary.com",
 
       // CSS
       "style-src 'self' 'unsafe-inline'",
