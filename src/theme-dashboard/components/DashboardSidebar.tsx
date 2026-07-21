@@ -6,6 +6,7 @@ const SECTIONS = [
   { id: "file-structure", title: "File Structure" },
   { id: "admin-ui", title: "Admin UI" },
   { id: "server-actions", title: "Server Actions" },
+  { id: "preview-diff", title: "Preview Diff" },
   { id: "roadmap", title: "Implementation Phases" },
 ] as const;
 

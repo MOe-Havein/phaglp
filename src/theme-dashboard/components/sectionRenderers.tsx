@@ -232,6 +232,49 @@ const renderRoadmap = (data: ThemeDashboardData) => (
   </div>
 );
 
+const renderPreviewDiff = (_data: ThemeDashboardData) => (
+  <div className="grid gap-4">
+    <SectionCard title="Theme Preview Diff">
+      <div className="grid gap-4 md:grid-cols-2">
+        <div>
+          <p className="text-xs font-semibold text-[var(--on-surface,#181c22)]">Before</p>
+          <div
+            className="mt-2 rounded-xl border border-black/10 p-4"
+            style={{
+              backgroundColor: "#f8f9ff",
+              color: "#181c22",
+              borderRadius: "0.5rem",
+            }}
+          >
+            <div className="text-sm font-semibold">Sample card</div>
+            <div className="mt-1 text-xs opacity-80">Surface / text token preview</div>
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-[var(--on-surface,#181c22)]">After</p>
+          <div
+            className="mt-2 rounded-xl border border-black/10 p-4"
+            style={{
+              backgroundColor: "#dfe2eb",
+              color: "#111827",
+              borderRadius: "0.75rem",
+            }}
+          >
+            <div className="text-sm font-semibold">Sample card</div>
+            <div className="mt-1 text-xs opacity-80">Updated surface / radius / contrast</div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-4 rounded-lg border border-black/5 bg-[var(--surface-container-low,#f8f9ff)] p-3">
+        <p className="text-xs font-semibold text-[var(--on-surface,#181c22)]">Expected CSS variable diff</p>
+        <pre className="mt-2 overflow-auto rounded-md border border-black/10 bg-[#1f2430] px-3 py-2 text-xs text-[#e6edf3]">{`--surface-container-low: #f8f9ff -> #dfe2eb
+--on-surface: #181c22 -> #111827
+--radius-card: 0.5rem -> 0.75rem`}</pre>
+      </div>
+    </SectionCard>
+  </div>
+);
+
 export const sectionRenderers = {
   "file-scan": ({ data }: { data: ThemeDashboardData }) => renderFileScan(data),
   architecture: ({ data }: { data: ThemeDashboardData }) => renderArchitecture(data),
@@ -240,4 +283,5 @@ export const sectionRenderers = {
   "admin-ui": ({ data }: { data: ThemeDashboardData }) => renderAdminUi(data),
   "server-actions": ({ data }: { data: ThemeDashboardData }) => renderServerActions(data),
   roadmap: ({ data }: { data: ThemeDashboardData }) => renderRoadmap(data),
+  "preview-diff": () => renderPreviewDiff({} as ThemeDashboardData),
 };
