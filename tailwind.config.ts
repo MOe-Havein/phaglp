@@ -65,7 +65,7 @@ const config: Config = {
           ring: "#0056d2",
         },
         // Your Custom Config Palette
-        frost: "rgb(var(--color-frost) / <alpha-value>)",
+        frost: "rgb(var(--color-background) / <alpha-value>)",
         platinum: "#c5cbd3",
         tinfoil: "rgb(var(--color-surface) / <alpha-value>)",
         perfectsky: "rgb(var(--color-secondary) / <alpha-value>)",
