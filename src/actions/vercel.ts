@@ -3,7 +3,7 @@
 import { logger } from "@/lib/server/logger";
 
 const VERCEL_API = "https://api.vercel.com";
-const VERCEL_API_TOKEN = process.env.VERCEL_API_TOKEN;
+const VERCEL_API_TOKEN = process.env.VERCEL_API_TOKEN || process.env.VERCEL_OIDC_TOKEN;
 
 async function vercelFetch<T>(
   endpoint: string,
@@ -61,19 +61,9 @@ export interface VercelDeployment {
   url: string;
   created: number;
   state:
-    | "BUILDING"
-    | "ERROR"
-    | "INITIALIZING"
-    | "QUEUED"
-    | "READY"
-    | "CANCELED";
+    "BUILDING" | "ERROR" | "INITIALIZING" | "QUEUED" | "READY" | "CANCELED";
   readyState:
-    | "BUILDING"
-    | "ERROR"
-    | "INITIALIZING"
-    | "QUEUED"
-    | "READY"
-    | "CANCELED";
+    "BUILDING" | "ERROR" | "INITIALIZING" | "QUEUED" | "READY" | "CANCELED";
   readySubstate?: string;
   type: string;
   creator: {
@@ -160,5 +150,57 @@ export async function getVercelDeployments(filters: {
       error: error.message || "Failed to list deployments",
       deployments: [],
     };
+  }
+}
+
+export interface CreatePreviewDeploymentInput {
+  projectId?: string;
+  name?: string;
+  gitSource?: {
+    repo?: string;
+    ref?: string;
+    sha?: string;
+    org?: string;
+  };
+}
+
+export interface CreatePreviewDeploymentResult {
+  id: string;
+  url: string;
+  inspectorUrl: string;
+  target: "preview";
+  readyState: string;
+}
+
+export async function createVercelPreviewDeployment(
+  input: CreatePreviewDeploymentInput = {},
+): Promise<CreatePreviewDeploymentResult | null> {
+  try {
+    const body: Record<string, any> = {
+      name: input.name,
+      target: "preview",
+      gitSource: input.gitSource
+        ? {
+            type: "github",
+            repo: input.gitSource.repo,
+            ref: input.gitSource.ref,
+            sha: input.gitSource.sha,
+            org: input.gitSource.org,
+          }
+        : undefined,
+    };
+
+    const data = await vercelFetch<CreatePreviewDeploymentResult>(
+      "v13/deployments",
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+      },
+    );
+
+    return data ?? null;
+  } catch (error: any) {
+    logger.error("Failed to create Vercel preview deployment", error);
+    return null;
   }
 }
