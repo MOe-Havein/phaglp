@@ -25,6 +25,9 @@ export default async function AdminThemePage() {
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           Manage public theme colors and optional admin panel overrides.
         </p>
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Note: this route currently uses the shared full-settings save flow, so saving here also persists non-theme fields.
+        </p>
       </div>
 
       <SettingsForm initialData={settings} />
