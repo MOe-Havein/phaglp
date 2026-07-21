@@ -3,6 +3,8 @@
 import { prisma, safeDbQuery } from "@/lib/prisma";
 import { generateTextEmbedding, cosineSimilarity } from "@/lib/embeddings";
 import { CohereClient } from "cohere-ai";
+import { generateText } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 let cohereInstance: CohereClient | null = null;
 
@@ -106,6 +108,29 @@ export async function findRelevantKnowledge(
 }
 
 /**
+ * Generate a chat answer via Cohere (fallback when Hermes isn't configured
+ * or fails). Embeddings/RAG retrieval remain on Cohere regardless.
+ */
+async function cohereChat(
+  messages: { role: "system" | "user" | "assistant"; content: string }[],
+  _systemMessage: string,
+  _question: string,
+): Promise<string> {
+  const cohere = getCohereClient();
+  const response = await cohere.v2.chat({
+    model: "command-a-reasoning-08-2025",
+    messages: messages.map((m) => ({ role: m.role, content: m.content })),
+  });
+
+  const textContent = response.message?.content?.find(
+    (item) => item.type === "text",
+  );
+  return textContent?.type === "text"
+    ? textContent.text
+    : "I couldn't generate a response.";
+}
+
+/**
  * Answer a question using RAG (Retrieval Augmented Generation)
  */
 export async function answerQuestion(
@@ -162,33 +187,46 @@ ${context}
       }
     }
 
-    // Call Cohere for response
-    const cohere = getCohereClient();
-    const response = await cohere.v2.chat({
-      model: "command-a-reasoning-08-2025",
-      messages: [
-        {
-          role: "system",
-          content: systemMessage,
-        },
-        ...chatHistory.map((m) => ({
-          role: m.role.toLowerCase() as "user" | "assistant",
-          content: m.content,
-        })),
-        {
-          role: "user",
-          content: question,
-        },
-      ],
-    });
+    // Build the message list (system + history + user)
+    const messages: {
+      role: "system" | "user" | "assistant";
+      content: string;
+    }[] = [
+      { role: "system", content: systemMessage },
+      ...chatHistory.map((m) => ({
+        role: m.role.toLowerCase() as "user" | "assistant",
+        content: m.content,
+      })),
+      { role: "user", content: question },
+    ];
 
-    const textContent = response.message?.content?.find(
-      (item) => item.type === "text",
-    );
-    const answer =
-      textContent?.type === "text"
-        ? textContent.text
-        : "I couldn't generate a response.";
+    // Prefer the Hermes Agent OpenAI-compatible endpoint when configured.
+    // Falls back to Cohere (embeddings/RAG stay on Cohere either way).
+    const HERMES_BASE = process.env.HERMES_API_BASE?.trim();
+    const HERMES_KEY = process.env.HERMES_API_KEY?.trim();
+    const HERMES_MODEL = process.env.HERMES_MODEL?.trim() || "auto";
+
+    let answer: string;
+    if (HERMES_BASE && HERMES_KEY) {
+      try {
+        const hermes = createOpenAI({
+          baseURL: HERMES_BASE,
+          apiKey: HERMES_KEY,
+        });
+        const { text } = await generateText({
+          model: hermes(HERMES_MODEL === "auto" ? "gpt-4o-mini" : HERMES_MODEL),
+          messages,
+          temperature: 0.7,
+          maxOutputTokens: 700,
+        });
+        answer = text.trim() || "I couldn't generate a response.";
+      } catch (hermesErr) {
+        console.error("Hermes chat failed, falling back to Cohere:", hermesErr);
+        answer = await cohereChat(messages, systemMessage, question);
+      }
+    } else {
+      answer = await cohereChat(messages, systemMessage, question);
+    }
 
     // Save messages to database if session provided
     if (sessionId) {

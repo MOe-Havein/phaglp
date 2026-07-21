@@ -226,6 +226,9 @@ model SiteSettings {
   metaDescription       String
   description           String?
   primaryColor          String
+  secondaryColor        String?
+  backgroundColor       String?
+  textColor             String?
   ogImage               String?
   logoUrl               String?
   faviconUrl            String?

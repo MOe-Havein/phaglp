@@ -32,7 +32,10 @@ const formSchema = z.object({
   googleAnalyticsId: z.string().optional().nullable(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
-  primaryColor: z.string().optional(),
+  primaryColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
+  secondaryColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
+  backgroundColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
+  textColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
   fullAddress: z.string().optional(),
   logoUrl: z.string().optional().nullable(),
   ogImage: z.string().optional().nullable(),
@@ -50,6 +53,9 @@ interface SiteSettingsData {
   metaTitle?: string | null;
   metaDescription?: string | null;
   primaryColor?: string | null;
+  secondaryColor?: string | null;
+  backgroundColor?: string | null;
+  textColor?: string | null;
   fullAddress?: string | null;
   logoUrl?: string | null;
   ogImage?: string | null;
@@ -78,7 +84,10 @@ export function SettingsForm({
       
       metaTitle: initialData?.metaTitle || "",
       metaDescription: initialData?.metaDescription || "",
-      primaryColor: initialData?.primaryColor || "#3b82f6",
+      primaryColor: initialData?.primaryColor || "#0040a1",
+      secondaryColor: initialData?.secondaryColor || "#565e71",
+      backgroundColor: initialData?.backgroundColor || "#f8f9ff",
+      textColor: initialData?.textColor || "#181c22",
       fullAddress: initialData?.fullAddress || "",
       
       // Null-guards prevent "uncontrolled to controlled" inputs warnings
