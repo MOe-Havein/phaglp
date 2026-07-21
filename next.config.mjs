@@ -31,12 +31,12 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60,
-    loader: 'custom',
-    loaderFile: './src/utils/cloudinary-loader.ts',
+    loader: "custom",
+    loaderFile: "./src/utils/cloudinary-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
-        hostname: 'res.cloudinary.com',
+        hostname: "res.cloudinary.com",
         pathname: "/**",
       },
     ],

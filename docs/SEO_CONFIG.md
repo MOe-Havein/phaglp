@@ -12,5 +12,11 @@ Refactored the `/admin/settings` page to allow admins to configure global Websit
 
 - **SEO**: Manage meta titles, descriptions, and OpenGraph images.
 - **Branding**: Update logo URLs, favicons, and primary theme colors.
+- **Appearance**: Edit runtime theme colors from the admin panel:
+  - `primaryColor`
+  - `secondaryColor`
+  - `backgroundColor`
+  - `textColor`
 - **Maintenance Mode**: Toggle global site accessibility.
 - **Dynamic Metadata**: Integrated via `src/lib/seo.ts` into the root layout.
+- **Live Theme Application**: Color changes are stored in `SiteSettings` and injected at runtime through `src/components/ui/theme-color-provider.tsx` using CSS custom properties, so updates apply without rebuilding Tailwind config.

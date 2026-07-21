@@ -70,6 +70,7 @@ const sidebarGroups: SidebarGroup[] = [
       { title: "Tasks & Plan", href: "/control/tasks", icon: ClipboardCheck },
       { title: "Monitoring", href: "/control/vercel-monitor", icon: Rocket },
       { title: "Settings", href: "/control/settings", icon: Settings },
+      { title: "Theme", href: "/control/settings/theme", icon: Settings },
     ],
   },
 ];

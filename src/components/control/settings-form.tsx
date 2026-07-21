@@ -21,6 +21,7 @@ import { updateSiteSettings } from "@/lib/control-actions";
 import { toast } from "sonner";
 import { Loader2, Save } from "lucide-react";
 import { CloudinaryUploadButton } from "@/components/cloudinary-upload-button";
+import { ColorPickerField } from "@/components/control/color-picker-field";
 
 const formSchema = z.object({
   siteName: z.string().min(2).max(50),
@@ -29,13 +30,42 @@ const formSchema = z.object({
   maintenanceMode: z.boolean(),
   allowRegistration: z.boolean(),
   enableGoogleAnalytics: z.boolean(),
+  enableAdminTheme: z.boolean(),
   googleAnalyticsId: z.string().optional().nullable(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
-  primaryColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
-  secondaryColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
-  backgroundColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
-  textColor: z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/).optional(),
+  primaryColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
+  secondaryColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
+  backgroundColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
+  textColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
+  adminPrimaryColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
+  adminSecondaryColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
+  adminBackgroundColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
+  adminTextColor: z
+    .string()
+    .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/)
+    .optional(),
   fullAddress: z.string().optional(),
   logoUrl: z.string().optional().nullable(),
   ogImage: z.string().optional().nullable(),
@@ -49,6 +79,7 @@ interface SiteSettingsData {
   maintenanceMode?: boolean;
   allowRegistration?: boolean;
   enableGoogleAnalytics?: boolean | string; // Handled stringified data safely
+  enableAdminTheme?: boolean | null;
   googleAnalyticsId?: string | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
@@ -56,6 +87,10 @@ interface SiteSettingsData {
   secondaryColor?: string | null;
   backgroundColor?: string | null;
   textColor?: string | null;
+  adminPrimaryColor?: string | null;
+  adminSecondaryColor?: string | null;
+  adminBackgroundColor?: string | null;
+  adminTextColor?: string | null;
   fullAddress?: string | null;
   logoUrl?: string | null;
   ogImage?: string | null;
@@ -74,22 +109,30 @@ export function SettingsForm({
     defaultValues: {
       siteName: initialData?.siteName || "phaglp",
       siteUrl: initialData?.siteUrl || "https://www.phaglp.com",
-      description: initialData?.description || "Unified Dashboard Management Engine.",
+      description:
+        initialData?.description || "Unified Dashboard Management Engine.",
       maintenanceMode: initialData?.maintenanceMode ?? false,
       allowRegistration: initialData?.allowRegistration ?? false,
-      
+
       // Clean handling for analytics data
-      enableGoogleAnalytics: initialData?.enableGoogleAnalytics === true || initialData?.enableGoogleAnalytics === "1",
+      enableGoogleAnalytics:
+        initialData?.enableGoogleAnalytics === true ||
+        initialData?.enableGoogleAnalytics === "1",
+      enableAdminTheme: initialData?.enableAdminTheme ?? false,
       googleAnalyticsId: initialData?.googleAnalyticsId || "",
-      
+
       metaTitle: initialData?.metaTitle || "",
       metaDescription: initialData?.metaDescription || "",
       primaryColor: initialData?.primaryColor || "#0040a1",
       secondaryColor: initialData?.secondaryColor || "#565e71",
       backgroundColor: initialData?.backgroundColor || "#f8f9ff",
       textColor: initialData?.textColor || "#181c22",
+      adminPrimaryColor: initialData?.adminPrimaryColor || "",
+      adminSecondaryColor: initialData?.adminSecondaryColor || "",
+      adminBackgroundColor: initialData?.adminBackgroundColor || "",
+      adminTextColor: initialData?.adminTextColor || "",
       fullAddress: initialData?.fullAddress || "",
-      
+
       // Null-guards prevent "uncontrolled to controlled" inputs warnings
       logoUrl: initialData?.logoUrl || "",
       ogImage: initialData?.ogImage || "",
@@ -208,25 +251,172 @@ export function SettingsForm({
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Theme Customization
           </h3>
-          <FormField
-            control={form.control}
-            name="primaryColor"
-            render={({ field }) => (
-              <FormItem className="max-w-[200px]">
-                <FormLabel>Primary Color Hex</FormLabel>
-                <div className="flex gap-2">
-                  <FormControl>
-                    <Input placeholder="#3b82f6" {...field} />
-                  </FormControl>
-                  <div 
-                    className="w-10 h-10 rounded border shadow-sm shrink-0" 
-                    style={{ backgroundColor: field.value || "#3b82f6" }}
+          <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="primaryColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Primary Color"
+                    description="Used for buttons, links, and accents."
+                    value={field.value}
+                    onChange={field.onChange}
                   />
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="secondaryColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Secondary Color"
+                    description="Used for muted actions and secondary UI elements."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="backgroundColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Background Color"
+                    description="Base background tone of the UI."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="textColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Text Color"
+                    description="Default body text color."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Admin Theme Colors
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            Optional dedicated admin palette. When enabled, these override
+            public colors in the control panel.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="adminPrimaryColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Admin Primary Color"
+                    description="Admin panel accent color."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="adminSecondaryColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Admin Secondary Color"
+                    description="Admin secondary UI color."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="adminBackgroundColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Admin Background Color"
+                    description="Admin panel background tone."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="adminTextColor"
+              render={({ field }) => (
+                <FormItem>
+                  <ColorPickerField
+                    label="Admin Text Color"
+                    description="Default admin text color."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Live Theme Preview
+          </h3>
+          <div
+            className="rounded-lg border p-4 space-y-3"
+            style={{
+              backgroundColor: form.watch("backgroundColor") || "#f8f9ff",
+              color: form.watch("textColor") || "#181c22",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="font-semibold">
+                {form.watch("siteName") || "PHAGLP"}
+              </span>
+            </div>
+            <button
+              type="button"
+              className="rounded-md px-3 py-2 text-white"
+              style={{
+                backgroundColor: form.watch("primaryColor") || "#0040a1",
+              }}
+              onClick={(e) => e.preventDefault()}
+            >
+              Primary Action
+            </button>
+            <p className="text-xs opacity-80">
+              This preview shows your selected theme tokens.
+            </p>
+          </div>
         </div>
 
         {/* Integration Controls for Analytics Tracking */}
@@ -262,10 +452,10 @@ export function SettingsForm({
                   <FormItem>
                     <FormLabel>Measurement ID (G-XXXXXX)</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="G-XXXXXXXXXX" 
-                        {...field} 
-                        value={field.value ?? ""} 
+                      <Input
+                        placeholder="G-XXXXXXXXXX"
+                        {...field}
+                        value={field.value ?? ""}
                         disabled={!form.watch("enableGoogleAnalytics")}
                       />
                     </FormControl>
@@ -275,6 +465,36 @@ export function SettingsForm({
               />
             </div>
           </div>
+        </div>
+
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Admin Theme Override
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            Enable this to allow the admin panel to use its own colors instead
+            of inheriting the public theme.
+          </p>
+          <FormField
+            control={form.control}
+            name="enableAdminTheme"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-white/40 dark:bg-slate-900/10">
+                <div className="space-y-0.5">
+                  <FormLabel>Enable independent admin theme</FormLabel>
+                  <FormDescription>
+                    Use separate colors for the admin panel.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className="space-y-4 pt-4 border-t">
@@ -402,13 +622,12 @@ export function SettingsForm({
                         className="h-24 w-auto object-cover border rounded-md"
                       />
                     )}
-                    //  FIXED
-<CloudinaryUploadButton
-  onUpload={(url) => field.onChange(url)}
->
-  Upload Cover
-</CloudinaryUploadButton>
-
+                    // FIXED
+                    <CloudinaryUploadButton
+                      onUpload={(url) => field.onChange(url)}
+                    >
+                      Upload Cover
+                    </CloudinaryUploadButton>
                   </div>
                   <FormMessage />
                 </FormItem>

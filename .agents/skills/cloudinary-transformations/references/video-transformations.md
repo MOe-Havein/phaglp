@@ -52,6 +52,7 @@ fps_20-25                      # FPS range
 **Requires a video base.** `fl_splice` concatenates a clip onto a video timeline; the spliced-in asset can be a video or an [image](https://cloudinary.com/documentation/video_concatenation.md?install_source=skillspack&referrer=trans-skill#concatenate_videos_with_images) (set its duration with `du_<seconds>`). It is ignored on image-only transformations.
 
 **Pattern:**
+
 1. Declare: `fl_splice,l_video:<public_id>`
 2. Transform overlay (optional)
 3. Apply: `fl_layer_apply` (with `so_0` to splice at beginning)

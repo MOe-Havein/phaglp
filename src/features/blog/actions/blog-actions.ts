@@ -85,7 +85,7 @@ export async function createBlogPost(data: any) {
     revalidatePath("/blog");
     revalidatePath("/");
     revalidateTag("blog-posts");
-    
+
     return { success: true, data: serializePrisma(post) };
   } catch (error: any) {
     console.error("Failed to create blog post:", error);
@@ -134,7 +134,7 @@ export async function updateBlogPost(id: string, data: any) {
     revalidatePath(`/blog/${post.slug}`);
     revalidatePath("/");
     revalidateTag("blog-posts");
-    
+
     return { success: true, data: serializePrisma(post) };
   } catch (error: any) {
     console.error("Failed to update blog post:", error);
@@ -155,7 +155,7 @@ export async function deleteBlogPost(id: string) {
     revalidatePath(`/blog/${post.slug}`);
     revalidatePath("/");
     revalidateTag("blog-posts");
-    
+
     return { success: true };
   } catch (error: any) {
     console.error("Failed to delete blog post:", error);

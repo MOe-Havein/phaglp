@@ -34,5 +34,13 @@
 - **Abstraction:** Avoid using `@apply` in CSS files. If a Tailwind string is too long, extract it into a small sub-component.
 - **Design Tokens:** Only use theme colors (e.g., `primary`, `secondary`) defined in `tailwind.config.ts`.
 - **Dark Mode:** Every component must be built with a `dark:` variant to match the PHAGLP dark aesthetic.
+- **Runtime Theme Colors:** Admin-configurable colors are driven by CSS custom properties set in `ThemeColorProvider`. Tailwind tokens such as `primary`, `secondary`, `background`, and `foreground` read from runtime CSS variables. Do not use client-side `@apply` for theme color overrides.
+
+### 7. Theming & Admin Controls
+
+- **Theme Source:** `SiteSettings` is the source of truth for `primaryColor`, `secondaryColor`, `backgroundColor`, and `textColor`.
+- **Runtime Application:** `src/components/ui/theme-color-provider.tsx` injects CSS variables from `SiteSettings`.
+- **Admin UI:** `src/components/control/settings-form.tsx` exposes color pickers for those fields.
+- **Validation:** Hex colors must match `/#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})/`.
 
 ---

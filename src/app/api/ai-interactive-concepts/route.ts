@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { cohereChat } from "@/features/ai/src/providers";
 import prisma from "@/lib/prisma";
-import { CohereClient } from "cohere-ai";
-
-let cohereInstance: CohereClient | null = null;
-
-function getCohereClient() {
-  const token = process.env.COHERE_API_KEY?.trim();
-  if (!token) return null;
-
-  if (!cohereInstance) {
-    cohereInstance = new CohereClient({ token });
-  }
-  return cohereInstance;
-}
 
 export const dynamic = "force-dynamic";
+
+function safeResponseText(raw: string): string {
+  let clean = raw.trim();
+  if (clean.startsWith("```json")) clean = clean.slice(7).trim();
+  else if (clean.startsWith("```")) clean = clean.slice(3).trim();
+  if (clean.endsWith("```")) clean = clean.slice(0, -3).trim();
+  return clean;
+}
 
 // GET: Fetch recent analytics logged under the Tech Concepts Dashboard
 export async function GET() {
@@ -30,9 +26,7 @@ export async function GET() {
         userId: session.user.id,
         path: "/dashboard/tech-concepts",
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
       take: 15,
     });
 
@@ -87,14 +81,9 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const cohere = getCohereClient();
-
-      // 1. Try real Cohere AI Client if configured
-      if (cohere) {
-        try {
-          const prompt = `You are a high-level academic instructor at PHAGLP Academy. 
+      const prompt = `You are a high-level academic instructor at PHAGLP Academy. 
 Create educational material about the topic "${topic}".
-Goal: ${goal} (generate explanation, quiz, or both).
+Goal: ${goal || "generate explanation, quiz, or both"}.
 
 Format the output strictly as a valid JSON object. Do not include markdown codeblocks or any additional text.
 Strictly match this JSON schema:
@@ -128,44 +117,41 @@ Strictly match this JSON schema:
   ]
 }`;
 
-          const response = await cohere.v2.chat({
-            model: "command-a-reasoning-08-2025",
-            messages: [{ role: "user", content: prompt }],
+      const messages = [{ role: "user", content: prompt } as const];
+
+      let text: string;
+      try {
+        text = await cohereChat({
+          messages,
+          model: "command-a-reasoning-08-2025",
+        });
+      } catch (cohereError) {
+        console.warn(
+          "Cohere interactive concepts generation failed:",
+          cohereError,
+        );
+        text = "";
+      }
+
+      if (text) {
+        try {
+          const parsed = JSON.parse(safeResponseText(text));
+          return NextResponse.json({
+            success: true,
+            data: parsed,
+            source: "cohere",
           });
-
-          const textContent = response.message?.content?.find(
-            (item) => item.type === "text",
-          );
-          const generatedText =
-            textContent?.type === "text" ? textContent.text : "";
-
-          if (generatedText) {
-            // Strip any markdown wrapper if cohere wraps JSON
-            let cleanJson = generatedText.trim();
-            if (cleanJson.startsWith("```json")) {
-              cleanJson = cleanJson.substring(7, cleanJson.length - 3).trim();
-            } else if (cleanJson.startsWith("```")) {
-              cleanJson = cleanJson.substring(3, cleanJson.length - 3).trim();
-            }
-
-            const parsed = JSON.parse(cleanJson);
-            return NextResponse.json({
-              success: true,
-              data: parsed,
-              source: "cohere",
-            });
-          }
-        } catch (cohereError) {
+        } catch (parseError) {
           console.warn(
-            "Cohere generation failed, falling back to high-fidelity mock generator:",
-            cohereError,
+            "Interactive concepts JSON parse failed, falling back to mock:",
+            parseError,
           );
         }
       }
 
-      // 2. High-fidelity Mock Generator (if Cohere is missing or errors)
-      const lowerTopic = topic.toLowerCase();
-      let mockTitle = topic;
+      // High-fidelity Mock Generator
+      const lowerTopic = (topic || "").toLowerCase();
+      let mockTitle = topic || "Interactive Concept";
       let mockExplanation = "";
       let mockTakeaways: string[] = [];
       let mockQuiz: any[] = [];
@@ -327,7 +313,8 @@ Strictly match this JSON schema:
           },
         ];
       } else {
-        mockTitle = `Integrated Discourse: ${topic.charAt(0).toUpperCase() + topic.slice(1)}`;
+        const capitalized = topic.charAt(0).toUpperCase() + topic.slice(1);
+        mockTitle = `Integrated Discourse: ${capitalized}`;
         mockExplanation = `This custom interactive lecture explores the core dimensions of "${topic}". By examining this concept from both historical and modern perspectives, we unlock how semantic frameworks influence active learning and institutional structure. In aligning "${topic}" with general philosophical analysis, we study its structural premises, logical consistencies, and ethical implications. Practical implementations of this knowledge provide actionable methods to improve logical reasoning and critical problem-solving skills across the entire PHAGLP academic ecosystem.`;
         mockTakeaways = [
           `Conceptual Structure: Investigating the underlying frameworks that define ${topic}.`,

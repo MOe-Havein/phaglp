@@ -28,7 +28,10 @@ export async function POST(request: NextRequest) {
             { status: 400 },
           );
         }
-        result = await generateOutline(data.title, data.category);
+        result = await generateOutline({
+          title: data.title,
+          category: data.category,
+        });
         break;
 
       case "summary":
@@ -58,7 +61,10 @@ export async function POST(request: NextRequest) {
             { status: 400 },
           );
         }
-        result = await writeLecture(data.title, data.category);
+        result = await writeLecture({
+          title: data.title,
+          category: data.category,
+        });
         break;
 
       default:

@@ -4,7 +4,7 @@ description: Create and debug Cloudinary transformation URLs from natural langua
 license: MIT
 metadata:
   author: cloudinary
-  version: '1.0.3'
+  version: "1.0.3"
 ---
 
 # Cloudinary Transformation Rules
@@ -22,6 +22,7 @@ metadata:
 ### Default Best Practice: Always Optimize
 
 **Add `f_auto/q_auto` to the end of nearly every transformation URL** (as final components):
+
 - Automatically delivers optimal format
 - Optimizes quality for best balance of visual quality and file size
 - Reduces bandwidth and improves performance
@@ -29,12 +30,14 @@ metadata:
 **Example:** `c_fill,g_auto,w_400,h_300/f_auto/q_auto`
 
 **Exceptions - Don't add optimization when:**
+
 - Account has "Optimize By Default" enabled (already applied automatically)
 - Special quality requirements (use `q_auto:best`, `q_auto:low`, or manual `q_N` instead)
 - Specific format required (replace `f_auto` with `f_png`, `f_jpg`, etc.)
 - Delivering exact original with no modifications
 
 **Examples of common transformations (with optimization):**
+
 1. Resize: `c_scale,w_400/f_auto/q_auto`
 2. Smart crop: `c_fill,g_auto,h_300,w_400/f_auto/q_auto`
 3. Background removal: `e_background_removal/f_png/q_auto`
@@ -45,62 +48,77 @@ metadata:
 
 **For debugging:** See [references/debugging.md](references/debugging.md) for detailed troubleshooting steps.
 
-
 ## Gathering Requirements
 
 Before generating a transformation URL, if not already specified, clarify these details based on the user's request:
 
 ### For Resize/Crop Requests
+
 **Required:**
+
 - At least one dimension (width OR height)
 - Crop behavior if both dimensions specified (fill, pad, scale, limit, etc.)
 
 **Clarify:**
+
 - Focal point/gravity (especially for cropping): Face detection? Center? Smart auto-detection?
 - Maintain aspect ratio? (if only one dimension, this is automatic)
 
 **Example questions:**
+
 - "What dimensions do you need? (width and/or height)"
 - "Should this fill the space (may crop) or fit within it (no cropping)?"
 - "Any important focal point? (faces, center, specific area)"
 
 ### For AI Transformation Requests
+
 **Background removal:**
+
 - Output format needs (PNG for transparency vs JPG with solid background)
 - What to do with transparent area (keep transparent, add color, or gen_fill)
 
 **Generative fill:**
+
 - Target dimensions or aspect ratio
 - How much extension needed
 
 **Generative replace:**
+
 - What object to replace (from)
 - What to replace it with (to)
 - Preserve original shape? (for clothing/objects)
 
 **Generative remove:**
+
 - What object(s) to remove
 - Remove all instances or just one?
 
 **Generative background replace:**
+
 - Describe desired background (or use auto-generation)
 - Need reproducibility? (consider seed parameter)
 
 ### For Video Transformation Requests
+
 **Trimming:**
+
 - Start and end time, or duration
 - Seconds or percentage of video
 
 **Codec/format:**
+
 - Output format needs (MP4, WebM, etc.)
 - Quality requirements (use `vc_auto` if unsure)
 
 **Audio:**
+
 - Keep or remove audio track
 - If for autoplay, suggest removing audio (`ac_none`)
 
 ### Always Recommend
+
 Unless user specifies otherwise:
+
 - **Add `f_auto/q_auto` at the end** of transformation URLs (see Quick Start section for exceptions)
 - Use `g_auto` for smart cropping when filling dimensions
 - Consider cost for AI transformations (inform user of transformation credits)
@@ -114,6 +132,7 @@ https://res.cloudinary.com/<cloud_name>/<asset_type>/<delivery_type>/<transforma
 ```
 
 **Key Rules:**
+
 - Commas (`,`) separate parameters **within** a component
 - Slashes (`/`) separate components **between** transformations
 - Each component acts on the output of the previous one
@@ -130,46 +149,55 @@ Check the [Transformation Reference](https://cloudinary.com/documentation/transf
 ### Resize & Crop
 
 **Dimension value formats:**
+
 - **Whole numbers** (e.g., `w_400`, `h_300`) = pixels
 - **Decimal values** (e.g., `w_0.5`, `h_1.0`) = percentage of original dimensions (0.5 = 50%, 1.0 = 100%)
 
 **Choosing the right crop mode:**
 
 Use **`c_scale`** when:
+
 - Resizing while maintaining original aspect ratio
 - Specify only ONE dimension (width OR height)
 - No cropping needed
 - The user intentionally wants to stretch or squash an image by changing the aspect ratio
 
 Use **`c_fill`** when:
+
 - Must fit exact dimensions (e.g., thumbnail grid, fixed layout)
 - Okay to crop parts of image
 - Combine with `g_auto` for smart cropping, or `g_face` for portraits
 
 Use **`c_fit`** when:
+
 - Image must fit within dimensions without cropping
 - Okay to have empty space
 - Maintaining full image content is critical
 
 Use **`c_pad`** when:
+
 - Must fit exact dimensions without cropping
 - Need to fill empty space with background color/blur (videos only)/AI-generated pixels
 - Use with `b_<color>`, `b_auto`, `b_blurred` (blurred background - videos only), or `b_gen_fill`
 
 Use **`c_limit`** when:
+
 - Set maximum dimensions but don't upscale small images
 - Preserving original quality of small images matters
 
 Use **`c_thumb`** when:
+
 - Creating thumbnails (typically avatars)
 - Use with `g_face` for face-centered crops
 
 Use **`c_auto`** when:
+
 - Cloudinary should intelligently crop to interesting content
 - Combine with `g_auto` for best results
 - Good for dynamic content where focal point varies
 
 **Examples:**
+
 ```
 c_scale,w_400                      # Resize width to 400px, maintain aspect ratio
 c_scale,w_0.5                      # Resize to 50% of original width
@@ -195,28 +223,33 @@ Gravity determines which part of the image to focus on when cropping:
 - **`x_N,y_N`** - Custom offsets (integers = pixels, floats = percentage: 0.8 = 80%)
 
 **Examples:**
+
 ```
 c_fill,g_auto,w_400,h_300                      # Smart crop
 c_thumb,g_face,w_200,h_200                     # Face-centered
 l_logo/fl_layer_apply,g_south_east,x_10,y_10  # Logo bottom-right
 ```
 
-**Important**: 
+**Important**:
+
 - `g_auto` only works with `c_fill`, `c_lfill`, `c_crop`, `c_thumb`, `c_auto`
 - When using x, y, h, w together, use all integers OR all floats (don't mix)
 
 ### Format & Quality
 
 **Recommended defaults:**
+
 - **`f_auto/q_auto`** - Use for most production images (WebP to supported browsers, optimized file size)
 
 **Specific formats** (when requirements dictate):
+
 - **`f_png`** - Transparency needed (e.g., after background removal)
 - **`f_jpg`** - Force JPEG (remove transparency)
 - **`q_N`** - Manual quality 1-100 (e.g., `q_60` for thumbnails, `q_90` for hero images)
 - **`dpr_auto`** - Retina displays (Chromium-only, requires Client Hints - see limitations below)
 
 **Examples:**
+
 ```
 f_auto/q_auto           # Recommended default
 f_png/q_auto            # PNG with transparency
@@ -228,6 +261,7 @@ q_80                    # Manual 80% quality
 #### Responsive Images (`dpr_auto`, `w_auto`)
 
 **`dpr_auto`** - Automatically adapts to device pixel ratio (Retina displays)
+
 - **Chromium-only** (Chrome, Edge, Opera, Samsung Internet)
 - Requires Client Hints configuration
 - Falls back to `dpr_1.0` on other browsers
@@ -240,6 +274,7 @@ For Client Hints configuration, browser compatibility, responsive breakpoints, a
 ### Effects
 
 **Common effects:**
+
 - **`e_grayscale`** - Black and white (artistic, accessibility)
 - **`e_sepia`** - Vintage/nostalgic feel
 - **`e_blur:N`** - Blur (privacy, placeholders; N typically 300-2000)
@@ -249,6 +284,7 @@ For Client Hints configuration, browser compatibility, responsive breakpoints, a
 - **`e_background_removal`** - See AI Transformations section
 
 **Examples:**
+
 ```
 e_blur:800                       # Blur effect
 e_sharpen                        # Enhance clarity
@@ -260,16 +296,19 @@ co_rgb:0044ff,e_colorize:40      # Blue tint at 40%
 ### Overlays & Underlays
 
 **Use for:**
+
 - **`l_<public_id>`** - Image overlays (logos, watermarks, badges)
 - **`u_<public_id>`** - Image underlays (custom backgrounds behind transparent subjects)
 - **`l_text:font_size:text`** - Text overlays (labels, social cards, dynamic text)
 
 **Pattern:**
+
 1. Declare: `l_<public_id>` or `u_<public_id>` or `l_text:Arial_40:Hello%20World`
-2. Transform (optional): e.g.  `/c_scale,w_100/` or `/o_50/` (opacity)
+2. Transform (optional): e.g. `/c_scale,w_100/` or `/o_50/` (opacity)
 3. Apply: `/fl_layer_apply,g_<position>,x_<offset>,y_<offset>`
 
 **Critical: Using `fl_relative` for overlay dimensions:**
+
 - **Without `fl_relative`**: Dimensions are relative to the **overlay's original size**
   - Example: `w_1.0` = 100% of the overlay image's width (not useful for small images)
 - **With `fl_relative`**: Dimensions are relative to the **base image's size**
@@ -277,6 +316,7 @@ co_rgb:0044ff,e_colorize:40      # Blue tint at 40%
   - **Always use `fl_relative`** when sizing overlays as a percentage of the base image
 
 **Examples:**
+
 ```
 l_logo/c_scale,w_100/fl_layer_apply,g_north_west,x_10,y_10                # Logo at 100px
 l_logo/c_scale,fl_relative,w_0.25/fl_layer_apply,g_north_west,x_10,y_10  # Logo at 25% of image width
@@ -286,10 +326,11 @@ u_background/e_background_removal                                          # Cus
 c_fill,h_400,w_300/l_same_image/c_fill,e_grayscale,h_400,w_300/fl_layer_apply,g_west,x_300 # Side-by-side (600×400)
 ```
 
-**Important**: 
+**Important**:
+
 - Color (`co_`) is a qualifier — use in the **same component** as text overlay declaration
 - **Always use `fl_relative`** when you want overlay dimensions as a percentage of the base image
-- **Side-by-side / canvas extension**: to place an overlay *beside* the base, offset it past the base edge — the canvas auto-expands. Use `g_west,x_<base_width>` for horizontal or `g_north,y_<base_height>` for vertical.
+- **Side-by-side / canvas extension**: to place an overlay _beside_ the base, offset it past the base edge — the canvas auto-expands. Use `g_west,x_<base_width>` for horizontal or `g_north,y_<base_height>` for vertical.
 
 ### Borders & Rounding
 
@@ -298,6 +339,7 @@ c_fill,h_400,w_300/l_same_image/c_fill,e_grayscale,h_400,w_300/fl_layer_apply,g_
 - **`bo_NNpx_solid_color`** - Border (frame images, separate from background)
 
 **Examples:**
+
 ```
 r_20                           # 20px rounded corners
 r_max                          # Perfect circle
@@ -314,6 +356,7 @@ r_20,bo_5px_solid_rgb:0066ff   # Rounded with border (same component)
 - **`b_gen_fill,c_pad`** - AI-extended background (change aspect ratio without cropping; see AI Transformations for cost)
 
 **Examples:**
+
 ```
 b_lightblue,c_pad,w_1.0         # Light blue background
 b_auto,c_pad,ar_16:9            # Automatically selected color for background, 16:9
@@ -332,6 +375,7 @@ b_blurred,c_pad,ar_16:9         # Blurred background (videos only), 16:9
 - **`a_auto_right`/`a_auto_left`** - Auto-rotate based on EXIF orientation
 
 **Examples:**
+
 ```
 a_90                    # Rotate 90° clockwise
 a_-2                    # Straighten slight tilt
@@ -343,7 +387,8 @@ a_auto_right            # Auto-fix from EXIF
 
 Many flags and parameters apply to only one asset type. Applying one to the wrong base often **fails silently** — the URL still returns a valid `200` with no `X-Cld-Error`, just the wrong output. This goes both ways: video-only syntax on an image, and image-only syntax on a video. Always verify the actual output (dimensions, duration, frame count) rather than assuming it worked.
 
-**Common video-only examples** (this is *not* an exhaustive list — ~35 parameters are video-only):
+**Common video-only examples** (this is _not_ an exhaustive list — ~35 parameters are video-only):
+
 - **`fl_splice`** (flag) - Concatenate a clip/image onto the video timeline (no image equivalent — to place media side-by-side, offset the overlay to extend the canvas: `fl_layer_apply,g_west,x_<base_width>`)
 - **`du_`, `so_`, `eo_`** - Trim/seek by time (duration, start offset, end offset)
 - **`fps_`** - Set frame rate
@@ -355,6 +400,7 @@ Many flags and parameters apply to only one asset type. Applying one to the wron
 ## Named Transformations
 
 Named transformations (`t_<name>`) save transformation chains for reuse. Suggest for:
+
 - Transformations used across multiple assets
 - Complex transformation chains
 - Expensive operations (to enable baseline transformations and reduce costs)
@@ -396,6 +442,7 @@ For complete details, syntax, and powerful combinations, see [references/ai-tran
 - **Video resizing** - Same crop modes as images (`c_fill`, `c_scale`, `c_pad`)
 
 **Common patterns:**
+
 ```
 vc_auto/ac_none/f_auto:video/q_auto                      # Autoplay-ready
 so_0/du_10/vc_auto/f_auto:video/q_auto                   # First 10 seconds
@@ -408,18 +455,21 @@ For complete details including codecs, trimming strategies, and video concatenat
 ## Variables & Conditionals
 
 **Variables** reuse values and create templates:
+
 ```
 $size_300/c_fill,h_$size,w_$size        # Reuse value
 $iw/w_$iw_div_2                         # Half original width (arithmetic)
 ```
 
 **Conditionals** adapt transformations dynamically:
+
 ```
 if_w_gt_1000/c_scale,w_1000/if_end                          # Responsive sizing
 if_ar_gt_1.0/c_fill,w_800,h_450/if_else/c_fill,w_450,h_800/if_end  # Orientation handling
 ```
 
 **Key rules:**
+
 - Variable names: alphanumeric, start with letter, no underscores
 - Conditionals: Must close with `if_end`
 - Arithmetic: `add`, `sub`, `mul`, `div` (left-to-right evaluation)
@@ -442,6 +492,7 @@ For complete syntax, arithmetic operations, nested conditionals, and real-world 
 10. ✅ **Flags/parameters match the base asset type** (asset-type-specific syntax — e.g. video-only `fl_splice`, `du_`, `fps_`, `vc_` — often no-ops silently on the wrong base, in either direction; verify the output and check the reference when unsure — see [Asset Type Matters](#asset-type-matters-image-vs-video))
 
 **Quick syntax check:**
+
 - Commas separate parameters within a component: `c_fill,g_auto,w_400`
 - Slashes separate components: `c_fill,w_400/f_auto/q_auto`
 - Actions vs qualifiers: Only one action per component, qualifiers modify that action
@@ -474,22 +525,26 @@ When a transformation isn't working:
 The `X-Cld-Error` header contains error details when a transformation fails. To check it:
 
 **Using browser DevTools:**
+
 1. Open Developer Tools (Network tab)
 2. Request the transformation URL
 3. Look for `X-Cld-Error` in Response Headers
 
 **Using code (fetch the URL):**
+
 ```javascript
-fetch('https://res.cloudinary.com/demo/image/upload/w_abc/sample.jpg')
-  .then(response => {
-    const error = response.headers.get('x-cld-error');
+fetch("https://res.cloudinary.com/demo/image/upload/w_abc/sample.jpg").then(
+  (response) => {
+    const error = response.headers.get("x-cld-error");
     if (error) {
-      console.log('Cloudinary Error:', error);
+      console.log("Cloudinary Error:", error);
     }
-  });
+  },
+);
 ```
 
 **Common X-Cld-Error messages:**
+
 - `Invalid width - abc` - Width parameter expects a number
 - `Invalid transformation syntax` - Malformed transformation string
 - `Resource not found` - Asset doesn't exist or public ID is incorrect
@@ -508,6 +563,7 @@ For complete cost details and cost reduction strategies, see [references/transfo
 ## Additional Resources
 
 ### Skill References (Progressive Disclosure)
+
 - [references/debugging.md](references/debugging.md) - Use when transformations return errors or unexpected results
 - [references/ai-transformations.md](references/ai-transformations.md) - Use when you need AI transformation prompt syntax, cost details, or complex AI combinations
 - [references/video-transformations.md](references/video-transformations.md) - Use when working with video codecs, trimming strategies, or concatenation
@@ -518,9 +574,11 @@ For complete cost details and cost reduction strategies, see [references/transfo
 - [references/examples.md](references/examples.md) - Use when you need real-world examples beyond the Quick Start (social cards, e-commerce, responsive images)
 
 ### Core Cloudinary Documentation
+
 - [Transformation Reference](https://cloudinary.com/documentation/transformation_reference.md?install_source=skillspack&referrer=trans-skill) - All parameters
 
 ### Image Transformations
+
 - [Image Transformations Overview](https://cloudinary.com/documentation/image_transformations.md?install_source=skillspack&referrer=trans-skill)
 - [Resizing and Cropping](https://cloudinary.com/documentation/resizing_and_cropping.md?install_source=skillspack&referrer=trans-skill)
 - [Placing Layers on Images](https://cloudinary.com/documentation/layers.md?install_source=skillspack&referrer=trans-skill)
@@ -537,6 +595,7 @@ For complete cost details and cost reduction strategies, see [references/transfo
 - [Custom Functions](https://cloudinary.com/documentation/custom_functions.md?install_source=skillspack&referrer=trans-skill)
 
 ### Video Transformations
+
 - [Video Transformations Overview](https://cloudinary.com/documentation/video_manipulation_and_delivery.md?install_source=skillspack&referrer=trans-skill)
 - [Resizing and Cropping](https://cloudinary.com/documentation/video_resizing_and_cropping.md?install_source=skillspack&referrer=trans-skill)
 - [Trimming and Concatenating](https://cloudinary.com/documentation/video_trimming_and_concatenating.md?install_source=skillspack&referrer=trans-skill)
@@ -550,12 +609,14 @@ For complete cost details and cost reduction strategies, see [references/transfo
 ## Common Mistakes & Best Practices
 
 **Avoid:**
+
 - ❌ `w_400,h_300` → ✅ `c_scale,w_400` (both dimensions with c_scale distorts image; prefer one dimension)
 - ❌ `c_scale,g_auto,w_400` → ✅ `c_fill,g_auto,w_400` (g_auto doesn't work with c_scale)
 - ❌ `l_logo/fl_layer_apply,g_north_west` → ✅ `l_logo/c_scale,w_100/fl_layer_apply,g_north_west`
 - ❌ `b_lightblue/e_trim` → ✅ `b_lightblue,c_pad,w_1.0/e_trim` (background as qualifier)
 
 **Always:**
+
 - Prefer `f_auto/q_auto` in separate components over `f_auto,q_auto`
 - Use `g_auto` for smart cropping unless specific focal point needed
 - Specify crop mode with width/height; prefer one dimension with `c_scale`

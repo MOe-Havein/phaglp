@@ -1,7 +1,6 @@
 import { SiteSettings } from "@/lib/shared/types";
 
 export const siteConfig: SiteSettings = {
-  
   id: "global",
   siteName: "",
   siteUrl: "https://www.phaglp.com",
@@ -9,6 +8,9 @@ export const siteConfig: SiteSettings = {
   metaDescription: "High-performance app architecture.",
   description: "Unified Dashboard Management Engine.",
   primaryColor: "#3b82f6",
+  secondaryColor: "#565e71",
+  backgroundColor: "#f8f9ff",
+  textColor: "#181c22",
   ogImage: "",
   logoUrl: "/phaglp-logo.webp",
   faviconUrl: "",

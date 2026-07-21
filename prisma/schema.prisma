@@ -229,6 +229,11 @@ model SiteSettings {
   secondaryColor        String?
   backgroundColor       String?
   textColor             String?
+  enableAdminTheme      Boolean @default(false)
+  adminPrimaryColor     String?
+  adminSecondaryColor   String?
+  adminBackgroundColor  String?
+  adminTextColor        String?
   ogImage               String?
   logoUrl               String?
   faviconUrl            String?

@@ -1,28 +1,21 @@
 "use server";
 
-import { CohereClient } from "cohere-ai";
+import { hermesChat, cohereChat } from "@/features/ai/src/providers";
 
-let cohereInstance: CohereClient | null = null;
+type GenerateOutlineOptions = {
+  title: string;
+  category?: string;
+  model?: string;
+};
 
-function getCohereClient() {
-  if (cohereInstance) return cohereInstance;
-
-  const token = process.env.COHERE_API_KEY?.trim();
-  if (!token) {
-    throw new Error("COHERE_API_KEY environment variable is required");
-  }
-
-  cohereInstance = new CohereClient({
-    token,
-  });
-  return cohereInstance;
-}
-
-export async function generateOutline(title: string, category?: string) {
+export async function generateOutline({
+  title,
+  category,
+  model,
+}: GenerateOutlineOptions) {
   try {
-    const cohere = getCohereClient();
     const prompt = `Create a detailed outline for a lecture titled "${title}"${category ? ` in the category of ${category}` : ""}. 
-    
+
 The outline should:
 - Have 3-5 main sections
 - Include 2-3 subsections per main section
@@ -31,26 +24,31 @@ The outline should:
 
 Format the outline using Markdown with proper heading levels (##, ###).`;
 
-    const response = await cohere.v2.chat({
-      model: "command-a-reasoning-08-2025",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-    });
+    const messages = [{ role: "user", content: prompt } as const];
 
-    const textContent = response.message?.content?.find(
-      (item) => item.type === "text",
-    );
-    const generatedText =
-      textContent?.type === "text" ? textContent.text : "No content generated";
+    let text: string;
+    try {
+      text = await hermesChat({
+        messages,
+        model: model || "gpt-4o-mini",
+        temperature: 0.7,
+        maxOutputTokens: 700,
+      });
+      if (!text || !text.trim()) {
+        throw new Error("Hermes returned empty text");
+      }
+    } catch (hermesErr) {
+      console.error(
+        "Hermes outline failed, falling back to Cohere:",
+        hermesErr,
+      );
+      text = await cohereChat({
+        messages,
+        model: "command-a-reasoning-08-2025",
+      });
+    }
 
-    return {
-      success: true,
-      data: generatedText,
-    };
+    return { success: true, data: text };
   } catch (error: any) {
     console.error("Error generating outline:", error);
     return {
@@ -60,40 +58,47 @@ Format the outline using Markdown with proper heading levels (##, ###).`;
   }
 }
 
-export async function summarizeContent(content: string) {
+type SummarizeContentOptions = {
+  content: string;
+  model?: string;
+};
+
+export async function summarizeContent({
+  content,
+  model,
+}: SummarizeContentOptions) {
   try {
     if (!content || content.trim().length === 0) {
-      return {
-        success: false,
-        error: "No content provided to summarize.",
-      };
+      return { success: false, error: "No content provided to summarize." };
     }
 
-    const cohere = getCohereClient();
-    const prompt = `Summarize the following lecture content in 2-3 concise paragraphs. Focus on the main ideas, key arguments, and conclusions:
+    const prompt = `Summarize the following lecture content in 2-3 concise paragraphs. Focus on the main ideas, key arguments, and conclusions:\n\n${content}`;
 
-${content}`;
+    const messages = [{ role: "user", content: prompt } as const];
 
-    const response = await cohere.v2.chat({
-      model: "command-a-reasoning-08-2025",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-    });
+    let text: string;
+    try {
+      text = await hermesChat({
+        messages,
+        model: model || "gpt-4o-mini",
+        temperature: 0.7,
+        maxOutputTokens: 700,
+      });
+      if (!text || !text.trim()) {
+        throw new Error("Hermes returned empty text");
+      }
+    } catch (hermesErr) {
+      console.error(
+        "Hermes summarize failed, falling back to Cohere:",
+        hermesErr,
+      );
+      text = await cohereChat({
+        messages,
+        model: "command-a-reasoning-08-2025",
+      });
+    }
 
-    const textContent = response.message?.content?.find(
-      (item) => item.type === "text",
-    );
-    const generatedText =
-      textContent?.type === "text" ? textContent.text : "No content generated";
-
-    return {
-      success: true,
-      data: generatedText,
-    };
+    return { success: true, data: text };
   } catch (error: any) {
     console.error("Error summarizing content:", error);
     return {
@@ -103,47 +108,47 @@ ${content}`;
   }
 }
 
-export async function checkLogicalFallacies(content: string) {
+type CheckLogicalFallaciesOptions = {
+  content: string;
+  model?: string;
+};
+
+export async function checkLogicalFallacies({
+  content,
+  model,
+}: CheckLogicalFallaciesOptions) {
   try {
     if (!content || content.trim().length === 0) {
-      return {
-        success: false,
-        error: "No content provided to analyze.",
-      };
+      return { success: false, error: "No content provided to analyze." };
     }
 
-    const cohere = getCohereClient();
-    const prompt = `Analyze the following text for logical fallacies. For each fallacy found:
-1. Name the fallacy
-2. Quote the specific passage
-3. Explain why it's a fallacy
-4. Suggest how to improve the argument
+    const prompt = `Analyze the following text for logical fallacies. For each fallacy found:\n1. Name the fallacy\n2. Quote the specific passage\n3. Explain why it's a fallacy\n4. Suggest how to improve the argument\n\nIf no fallacies are found, explain why the argumentation is sound.\n\nText to analyze:\n${content}`;
 
-If no fallacies are found, explain why the argumentation is sound.
+    const messages = [{ role: "user", content: prompt } as const];
 
-Text to analyze:
-${content}`;
+    let text: string;
+    try {
+      text = await hermesChat({
+        messages,
+        model: model || "gpt-4o-mini",
+        temperature: 0.7,
+        maxOutputTokens: 700,
+      });
+      if (!text || !text.trim()) {
+        throw new Error("Hermes returned empty text");
+      }
+    } catch (hermesErr) {
+      console.error(
+        "Hermes fallacy check failed, falling back to Cohere:",
+        hermesErr,
+      );
+      text = await cohereChat({
+        messages,
+        model: "command-a-reasoning-08-2025",
+      });
+    }
 
-    const response = await cohere.v2.chat({
-      model: "command-a-reasoning-08-2025",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-    });
-
-    const textContent = response.message?.content?.find(
-      (item) => item.type === "text",
-    );
-    const generatedText =
-      textContent?.type === "text" ? textContent.text : "No content generated";
-
-    return {
-      success: true,
-      data: generatedText,
-    };
+    return { success: true, data: text };
   } catch (error: any) {
     console.error("Error checking logical fallacies:", error);
     return {
@@ -153,17 +158,26 @@ ${content}`;
   }
 }
 
-export async function writeLecture(topic: string, category?: string) {
+type WriteLectureOptions = {
+  title: string;
+  category?: string;
+  model?: string;
+};
+
+export async function writeLecture({
+  title,
+  category,
+  model,
+}: WriteLectureOptions) {
   try {
-    if (!topic || topic.trim().length === 0) {
+    if (!title || title.trim().length === 0) {
       return {
         success: false,
-        error: "No topic provided for lecture writing.",
+        error: "No title provided for lecture writing.",
       };
     }
 
-    const cohere = getCohereClient();
-    const prompt = `Write a comprehensive, engaging lecture on "${topic}"${category ? ` in the category of ${category}` : ""}. 
+    const prompt = `Write a comprehensive, engaging lecture on "${title}"${category ? ` in the category of ${category}` : ""}. 
 
 The lecture should:
 - Have a clear, logical structure with an engaging introduction, well-organized body, and conclusive ending
@@ -179,26 +193,28 @@ Do NOT include:
 
 Just write the lecture content naturally, starting with the title as an H1, followed by the introduction and body sections.`;
 
-    const response = await cohere.v2.chat({
-      model: "command-a-reasoning-08-2025",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-    });
+    const messages = [{ role: "user", content: prompt } as const];
 
-    const textContent = response.message?.content?.find(
-      (item) => item.type === "text",
-    );
-    const generatedText =
-      textContent?.type === "text" ? textContent.text : "No content generated";
+    let text: string;
+    try {
+      text = await hermesChat({
+        messages,
+        model: model || "gpt-4o-mini",
+        temperature: 0.7,
+        maxOutputTokens: 1200,
+      });
+    } catch (hermesErr) {
+      console.error(
+        "Hermes lecture write failed, falling back to Cohere:",
+        hermesErr,
+      );
+      text = await cohereChat({
+        messages,
+        model: "command-a-reasoning-08-2025",
+      });
+    }
 
-    return {
-      success: true,
-      data: generatedText,
-    };
+    return { success: true, data: text };
   } catch (error: any) {
     console.error("Error writing lecture:", error);
     return {

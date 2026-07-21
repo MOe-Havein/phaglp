@@ -29,6 +29,7 @@ c_fill,w_300/t_<name>             # Transform first, then apply named transforma
 ## Limitations of Named Transformations
 
 **Automatic parameters don't work inside named transformations:**
+
 - ❌ `f_auto` - Automatic format selection
 - ❌ `dpr_auto` - Automatic DPR matching
 - ❌ `w_auto` - Automatic width matching (with Client Hints)
@@ -52,11 +53,13 @@ Baseline transformations (`bl_<named transformation>`) cache the result of a nam
 ### When to Use Baseline Transformations
 
 **Especially useful for:**
+
 - **Expensive AI transformations** (background removal, generative AI, upscaling) - Avoid re-processing
 - **Time-consuming operations** that you'll apply variations to
 - **Transformations with special transformation counts** (75-230 tx) that you need to reuse
 
 **Consider eagerly generating baselines:**
+
 - On upload using the [upload method](https://cloudinary.com/documentation/image_upload_api_reference?install_source=skillspack&referrer=trans-skill#upload_method) or [upload preset](https://cloudinary.com/documentation/upload_presets?install_source=skillspack&referrer=trans-skill)
 - For existing assets using the [explicit method](https://cloudinary.com/documentation/image_upload_api_reference?install_source=skillspack&referrer=trans-skill#explicit_method)
 
@@ -69,6 +72,7 @@ bl_<named transformation>/<additional transformations>
 ### Examples
 
 **Example 1: Background removal + grayscale baseline, then add effects**
+
 ```
 # Named transformation "bg_rem_gray_jxl" contains:
 e_background_removal/f_jxl/q_100/e_grayscale
@@ -76,14 +80,17 @@ e_background_removal/f_jxl/q_100/e_grayscale
 # Use as baseline:
 bl_bg_rem_gray_jxl/e_cartoonify/f_auto/q_auto
 ```
+
 Result: Background removed, grayscale applied once (cached), then cartoonify effect added.
 
 **Example 2: Same baseline, resize and add underlay**
+
 ```
 bl_bg_rem_gray_jxl/c_fill,h_150/u_docs:sky/c_fill,h_150/fl_layer_apply
 ```
 
 **Example 3: Video baseline with trimming**
+
 ```
 # Named transformation "first5_rotate" contains:
 du_5/f_mp4/a_15
@@ -91,6 +98,7 @@ du_5/f_mp4/a_15
 # Use as baseline:
 bl_first5_rotate/e_loop:2/f_auto/q_auto
 ```
+
 Result: Video trimmed to 5 seconds and rotated once (cached), then looped twice.
 
 ### Critical Rules
@@ -117,6 +125,7 @@ Result: Video trimmed to 5 seconds and rotated once (cached), then looped twice.
 ### Cost Savings Example
 
 Without baseline:
+
 ```
 # Every URL regenerates the background removal (75 tx each time)
 e_background_removal/c_scale,w_500/f_auto/q_auto     # 75 tx
@@ -125,6 +134,7 @@ e_background_removal/e_grayscale/f_auto/q_auto       # 75 tx
 ```
 
 With baseline:
+
 ```
 # Named transformation "bg_removed" contains: e_background_removal/f_jxl/q_100
 # Baseline is generated once, then reused (75 tx only once)
@@ -140,6 +150,7 @@ For more cost optimization strategies, see [transformation-costs.md](transformat
 ## Implementation Note
 
 Named transformations are created in the Cloudinary Console or via API. When suggesting them to users, explain:
+
 1. The transformation would be saved in their Cloudinary account with a name
 2. They can then reference it using `t_<name>` in URLs
 3. For expensive operations, they can generate a baseline transformation eagerly or use `bl_<name>` to cache results

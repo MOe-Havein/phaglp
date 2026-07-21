@@ -14,7 +14,6 @@ export interface LETURES {
   createdAt: string; // ISO string format
 }
 
-
 interface LatestLETURESProps {
   title?: string | undefined;
 }

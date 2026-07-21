@@ -56,7 +56,6 @@ interface NavbarProps {
 }
 
 export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
-
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
@@ -218,8 +217,8 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
           {/* Desktop Auth Menu */}
           <div className="flex items-center gap-2 border-l pl-4 ml-1">
             {mounted && <ThemeToggle />}
-            {mounted && (
-              session ? (
+            {mounted &&
+              (session ? (
                 <div className="flex items-center gap-3">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild={true}>
@@ -230,7 +229,9 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                         <Avatar className="w-7 h-7 border border-primary/20">
                           <AvatarImage src={session.user?.image || ""} />
                           <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold uppercase">
-                            {session.user?.name ? session.user.name.substring(0, 2) : "US"}
+                            {session.user?.name
+                              ? session.user.name.substring(0, 2)
+                              : "US"}
                           </AvatarFallback>
                         </Avatar>
                         <span className="text-xs font-semibold text-foreground max-w-[100px] truncate">
@@ -309,8 +310,7 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                     </Button>
                   )}
                 </div>
-              )
-            )}
+              ))}
           </div>
         </nav>
 
@@ -480,14 +480,16 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
 
               {/* Mobile Auth Actions - Using router.push for bug-free routing */}
               <div className="p-6 border-t mt-auto space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
-                {mounted && (
-                  session ? (
+                {mounted &&
+                  (session ? (
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center gap-3 px-1 py-1">
                         <Avatar className="w-10 h-10 border border-primary/20">
                           <AvatarImage src={session.user?.image || ""} />
                           <AvatarFallback className="bg-primary/10 text-primary font-bold uppercase">
-                            {session.user?.name ? session.user.name.substring(0, 2) : "US"}
+                            {session.user?.name
+                              ? session.user.name.substring(0, 2)
+                              : "US"}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col min-w-0">
@@ -548,10 +550,7 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                         className="text-primary border-primary hover:bg-primary/10 w-full rounded-xl"
                         asChild
                       >
-                        <Link
-                          href="/login"
-                          onClick={() => setIsOpen(false)}
-                        >
+                        <Link href="/login" onClick={() => setIsOpen(false)}>
                           Login
                         </Link>
                       </Button>
@@ -569,8 +568,7 @@ export function Navbar({ initialMenus = [], currentSettings }: NavbarProps) {
                         </Button>
                       )}
                     </div>
-                  )
-                )}
+                  ))}
               </div>
             </SheetContent>
           </Sheet>

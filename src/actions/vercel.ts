@@ -3,7 +3,8 @@
 import { logger } from "@/lib/server/logger";
 
 const VERCEL_API = "https://api.vercel.com";
-const VERCEL_API_TOKEN = process.env.VERCEL_API_TOKEN || process.env.VERCEL_OIDC_TOKEN;
+const VERCEL_API_TOKEN =
+  process.env.VERCEL_API_TOKEN || process.env.VERCEL_OIDC_TOKEN;
 
 async function vercelFetch<T>(
   endpoint: string,

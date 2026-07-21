@@ -27,10 +27,12 @@
 **Objective:** Confirm whether the Vercel CLI is installed and whether this directory is linked to a Vercel project.
 
 **Files:** Read-only checks
+
 - `vercel.json`
 - local `.vercel/project.json` if present
 
 **Step 1:** Run from `/root/testa-phaglp2`:
+
 ```bash
 command -v vercel || echo MISSING
 vercel --version
@@ -38,6 +40,7 @@ test -f .vercel/project.json && cat .vercel/project.json || echo 'not linked'
 ```
 
 **Step 2: Verify**
+
 - CLI present.
 - If not linked, next task handles link bootstrap without secrets leakage.
 
@@ -48,16 +51,19 @@ test -f .vercel/project.json && cat .vercel/project.json || echo 'not linked'
 **Objective:** Create `scripts/vercel-preview-deploy.sh` that performs a non-interactive preview deploy.
 
 **Files:**
+
 - Create: `scripts/vercel-preview-deploy.sh`
 
 **Step 1: Write failing behavior contract**
 
 Expected invocation:
+
 ```bash
 bash scripts/vercel-preview-deploy.sh
 ```
 
 Expected outputs on success:
+
 - prints preview URL
 - prints deployment id or inspector URL
 - exits `0`
@@ -94,6 +100,7 @@ exit 0
 ```
 
 **Step 3: Make executable**
+
 ```bash
 chmod +x scripts/vercel-preview-deploy.sh
 ```
@@ -105,6 +112,7 @@ chmod +x scripts/vercel-preview-deploy.sh
 **Objective:** If CLI link/auth fails, create a server-action style deploy path using existing `src/actions/vercel.ts` plus a small REST endpoint that triggers preview deploy metadata retrieval after CLI deploy.
 
 **Files:**
+
 - Modify: `src/actions/vercel.ts`
 - Create: `src/app/api/vercel/preview-deploy/route.ts`
 
@@ -172,12 +180,18 @@ import { createVercelPreviewDeployment } from "@/actions/vercel";
 
 export async function POST() {
   if (!process.env.VERCEL_API_TOKEN) {
-    return NextResponse.json({ success: false, error: "missing VERCEL_API_TOKEN" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "missing VERCEL_API_TOKEN" },
+      { status: 500 },
+    );
   }
 
   const result = await createVercelPreviewDeployment({});
   if (!result) {
-    return NextResponse.json({ success: false, error: "vercel_deploy_failed" }, { status: 502 });
+    return NextResponse.json(
+      { success: false, error: "vercel_deploy_failed" },
+      { status: 502 },
+    );
   }
 
   return NextResponse.json({ success: true, deployment: result });
@@ -186,6 +200,7 @@ export async function POST() {
 
 **Step 3: Validate typing**
 Run:
+
 ```bash
 pnpm typecheck
 ```
@@ -197,6 +212,7 @@ pnpm typecheck
 **Objective:** Ensure `VERCEL_API_TOKEN` never comes from committed env.
 
 **Files:**
+
 - Check for or create: `.envrc`, `.env.local`, and docs reference in README/docs
 - Optionally create: `scripts/load-secrets.sh`
 
@@ -225,6 +241,7 @@ fi
 ```
 
 **Step 3: Verify no committed `.env.local` contains token**
+
 ```bash
 grep -R "VERCEL_API_TOKEN" /root/testa-phaglp2 2>/dev/null | grep -v node_modules | grep -v '.git/' || true
 ```
@@ -238,12 +255,13 @@ Expected: no matches outside secret paths.
 **Objective:** Provide a ready-to-use cron job config snapshot this project can consume for automated preview deploys.
 
 **Files:**
+
 - Create: `.hermes/plans/vercel-preview-cron-setup.md`
 - Optionally: add repo-local `docs/vercel-preview.md`
 
 **Step 1: Add `docs/vercel-preview.md`**
 
-```md
+````md
 # Vercel Preview Deploy
 
 Prefer local CLI deploy:
@@ -251,6 +269,7 @@ Prefer local CLI deploy:
 ```bash
 bash scripts/vercel-preview-deploy.sh
 ```
+````
 
 Hermes cron example command:
 
@@ -259,13 +278,14 @@ cd /root/testa-phaglp2 && bash scripts/load-secrets.sh bash scripts/vercel-previ
 ```
 
 Expected output contains `PREVIEW_URL=...`.
-```
+
+````
 
 **Step 2: Verify docs render and paths are correct**
 
 ```bash
 ls -la docs/vercel-preview.md scripts/vercel-preview-deploy.sh scripts/load-secrets.sh
-```
+````
 
 Expected: all files exist and executable bits are set.
 

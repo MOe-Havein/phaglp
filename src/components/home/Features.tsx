@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Cpu, Microscope, ShieldAlert, Award } from "lucide-react";
 import Image from "next/image";
 
-
 interface FeaturesProps {
   title?: string | null;
   body?: string | null;
@@ -17,8 +16,7 @@ const defaultFeatures = [
   {
     icon: <Cpu className="w-6 h-6 text-blue-500" />,
     title: "Education & Wisdom",
-    description:
-      "Deep dive into historical and modern philosophical systems",
+    description: "Deep dive into historical and modern philosophical systems",
   },
   {
     icon: <Microscope className="w-6 h-6 text-orange-500" />,

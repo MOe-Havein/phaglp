@@ -5,10 +5,10 @@ Complete TypeScript patterns for Cloudinary React integration.
 ## Type Imports
 
 ```tsx
-import type { CloudinaryImage, CloudinaryVideo } from '@cloudinary/url-gen';
+import type { CloudinaryImage, CloudinaryVideo } from "@cloudinary/url-gen";
 
-const img: CloudinaryImage = cld.image('id');
-const video: CloudinaryVideo = cld.video('id');
+const img: CloudinaryImage = cld.image("id");
+const video: CloudinaryVideo = cld.video("id");
 ```
 
 ## Upload Result Types
@@ -54,7 +54,7 @@ interface ImportMeta {
 
 ```tsx
 function isUploadWidgetReady(): boolean {
-  return typeof window !== 'undefined' && 
+  return typeof window !== 'undefined' &&
          typeof window.cloudinary?.createUploadWidget === 'function';
 }
 
@@ -99,7 +99,7 @@ if (uploadPreset) {
 
 ```tsx
 function handleResult(result: unknown) {
-  if (result && typeof result === 'object' && 'public_id' in result) {
+  if (result && typeof result === "object" && "public_id" in result) {
     const uploadResult = result as CloudinaryUploadResult;
     // Use uploadResult
   }
@@ -121,13 +121,17 @@ declare global {
 ## Common TypeScript Errors
 
 ### "Property 'cloudinary' does not exist on type 'Window'"
+
 ✅ Add global type declaration above
 
 ### "Property 'VITE_CLOUDINARY_CLOUD_NAME' does not exist"
+
 ✅ Create `vite-env.d.ts` with ImportMetaEnv interface
 
 ### "Type 'null' is not assignable to type 'RefObject'"
+
 ✅ Use proper HTML element type: `useRef<HTMLVideoElement>(null)`
 
 ### "Parameter implicitly has 'any' type"
+
 ✅ Define proper interface for callbacks and results

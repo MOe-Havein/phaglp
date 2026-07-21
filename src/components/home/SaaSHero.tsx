@@ -33,7 +33,6 @@ export function SaaSHero({
 }: SaaSHeroProps) {
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center py-10 px-3 overflow-hidden select-none bg-frost">
-      
       {/* Foreground Content */}
       <div className="container mx-auto text-center max-w-3xl relative">
         {/* 3. Inject the dynamic badgeText */}
@@ -42,21 +41,21 @@ export function SaaSHero({
             {badgeText}
           </Badge>
         )}
-        
+
         {/* 4. Inject the dynamic headline pieces */}
         <h1 className="text-5xl md:text-4xl font-bold mb-3 text-balance bg-gradient-to-r from-perfectsky via-tartorange to-celebration bg-clip-text text-transparent drop-shadow-sm flex flex-col gap-1">
           <span>{headlinePre}</span>
           <span>{headlineHighlight}</span>
           {headlinePost && <span>{headlinePost}</span>}
         </h1>
-        
+
         {/* 5. Inject the dynamic subheadline */}
         {subheadline && (
           <p className="text-xl text-perfectsky mb-8 leading-relaxed text-pretty max-w-2xl mx-auto">
             {subheadline}
           </p>
         )}
-        
+
         {/* 6. Inject the dynamic Call-to-Action buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
@@ -68,7 +67,7 @@ export function SaaSHero({
               {primaryCtaText} <ArrowRight className="ml-2 w-4 h-4" />
             </Link>
           </Button>
-          
+
           <Button
             size="lg"
             variant="outline"
@@ -78,8 +77,7 @@ export function SaaSHero({
             <Link href={secondaryCtaHref}>{secondaryCtaText}</Link>
           </Button>
         </div>
-      </div> 
-      
+      </div>
     </section>
   );
 }

@@ -51,7 +51,7 @@ const getCachedCourses = unstable_cache(
     return result?.data || [];
   },
   ["public-courses"],
-  { tags: ["courses"], revalidate: 300 }
+  { tags: ["courses"], revalidate: 300 },
 );
 
 export default async function CoursesPage() {
@@ -194,11 +194,15 @@ export default async function CoursesPage() {
                   <div className="flex flex-col h-full justify-between">
                     <div>
                       {/* Program Header Gradient Banner */}
-                      <div className={`h-2 bg-gradient-to-r ${prog.gradient}`} />
+                      <div
+                        className={`h-2 bg-gradient-to-r ${prog.gradient}`}
+                      />
 
                       <CardHeader className="p-6">
                         <div className="flex items-center justify-between mb-4">
-                          <div className={`p-3 rounded-xl bg-gradient-to-br ${prog.gradient} text-white shadow-md`}>
+                          <div
+                            className={`p-3 rounded-xl bg-gradient-to-br ${prog.gradient} text-white shadow-md`}
+                          >
                             <IconComponent className="w-6 h-6" />
                           </div>
                           <Badge
@@ -217,7 +221,7 @@ export default async function CoursesPage() {
                         <p className="text-sm text-muted-foreground line-clamp-3">
                           {prog.description}
                         </p>
-                        
+
                         <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
                           <Clock className="w-4 h-4" />
                           <span>{prog.duration}</span>
@@ -225,7 +229,10 @@ export default async function CoursesPage() {
 
                         <ul className="space-y-2 pt-2">
                           {prog.features.map((feature, i) => (
-                            <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                            <li
+                              key={i}
+                              className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300"
+                            >
                               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                               <span>{feature}</span>
                             </li>

@@ -30,7 +30,7 @@ const getCachedLectures = unstable_cache(
     return result.data || [];
   },
   ["public-lectures"],
-  { tags: ["lectures"], revalidate: 300 } // Refreshes automatically every 300 seconds
+  { tags: ["lectures"], revalidate: 300 }, // Refreshes automatically every 300 seconds
 );
 
 export default async function LecturesPage() {

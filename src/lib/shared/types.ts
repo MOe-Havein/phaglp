@@ -6,6 +6,17 @@ export interface SiteSettings {
   metaDescription: string;
   description: string;
   primaryColor?: string | null;
+  secondaryColor?: string | null;
+  backgroundColor?: string | null;
+  textColor?: string | null;
+
+  // Optional independent admin theme
+  enableAdminTheme?: boolean | null;
+  adminPrimaryColor?: string | null;
+  adminSecondaryColor?: string | null;
+  adminBackgroundColor?: string | null;
+  adminTextColor?: string | null;
+
   ogImage?: string | null;
   logoUrl?: string | null;
   faviconUrl?: string | null;
@@ -14,7 +25,7 @@ export interface SiteSettings {
   maintenanceMode: boolean;
   enableGoogleAnalytics: boolean;
   allowRegistration: boolean;
-  
+
   // Layout & UI Structure
   navItems: NavItem[];
   footerLinks: FooterSection[];

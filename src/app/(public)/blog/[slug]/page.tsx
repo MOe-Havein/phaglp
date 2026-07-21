@@ -10,8 +10,11 @@ import Image from "next/image";
 import nextDynamic from "next/dynamic";
 
 const MarkdownViewer = nextDynamic(
-  () => import("@/components/editor/markdown-viewer").then((mod) => mod.MarkdownViewer),
-  { ssr: true }
+  () =>
+    import("@/components/editor/markdown-viewer").then(
+      (mod) => mod.MarkdownViewer,
+    ),
+  { ssr: true },
 );
 
 // Ensure dynamic rendering to handle database state safely at runtime
@@ -35,9 +38,9 @@ const getBlogPostBySlug = async (slug: string) => {
       },
     });
   });
-  
+
   return result.data;
-}; 
+};
 
 export async function generateMetadata({
   params,
