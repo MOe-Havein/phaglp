@@ -18,6 +18,12 @@ export const siteConfig: SiteSettings = {
   enableGoogleAnalytics: false,
   maintenanceMode: false,
   allowRegistration: false,
+  enableAdminTheme: false,
+  adminPrimaryColor: null,
+  adminSecondaryColor: null,
+  adminBackgroundColor: null,
+  adminTextColor: null,
+  adminTheme: null,
   fullAddress: "2501 CASE STREET, BATESVILLE 72501, ARKANSAS, USA ",
   navItems: [
     { title: "Courses", href: "/courses" },

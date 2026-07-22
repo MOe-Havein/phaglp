@@ -51,6 +51,7 @@ export async function getSiteSettings(
           adminSecondaryColor: settings.adminSecondaryColor ?? null,
           adminBackgroundColor: settings.adminBackgroundColor ?? null,
           adminTextColor: settings.adminTextColor ?? null,
+          adminTheme: (settings as any).adminTheme ?? null,
 
           ogImage: settings.ogImage ?? siteConfig.ogImage ?? null,
           logoUrl: settings.logoUrl ?? siteConfig.logoUrl ?? null,

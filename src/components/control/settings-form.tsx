@@ -70,6 +70,7 @@ const formSchema = z.object({
   logoUrl: z.string().optional().nullable(),
   ogImage: z.string().optional().nullable(),
   faviconUrl: z.string().optional().nullable(),
+  adminTheme: z.string().optional().nullable(),
 });
 
 interface SiteSettingsData {
@@ -95,6 +96,7 @@ interface SiteSettingsData {
   logoUrl?: string | null;
   ogImage?: string | null;
   faviconUrl?: string | null;
+  adminTheme?: string | null;
 }
 
 export function SettingsForm({
@@ -137,6 +139,7 @@ export function SettingsForm({
       logoUrl: initialData?.logoUrl || "",
       ogImage: initialData?.ogImage || "",
       faviconUrl: initialData?.faviconUrl || "",
+      adminTheme: initialData?.adminTheme || "default",
     },
   });
 

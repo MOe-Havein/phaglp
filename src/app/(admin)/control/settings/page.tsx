@@ -1,38 +1,43 @@
-import { Settings } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+import { getSiteSettings } from "@/lib/server/site-settings";
 import { SettingsForm } from "@/components/control/settings-form";
 
-export const metadata = {
-  title: "Site Settings — PHAGLP Control",
-};
-
-async function getSettings() {
-  try {
-    return await prisma.siteSettings.findUnique({ where: { id: "global" } });
-  } catch {
-    return null;
-  }
-}
-
-export default async function SettingsPage() {
-  const settings = await getSettings();
+export default async function AdminThemeSettingsPage() {
+  const s = await getSiteSettings();
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       <div>
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
-          <Settings className="w-4 h-4" />
-          <span>Configuration</span>
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-          Site Settings
-        </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Global platform configuration and feature flags.
+        <h1 className="text-2xl font-bold">Theme Settings</h1>
+        <p className="text-muted-foreground">
+          Manage public and admin theme colors.
         </p>
       </div>
-
-      <SettingsForm initialData={settings} />
+      <SettingsForm
+        initialData={{
+          siteName: s.siteName,
+          siteUrl: s.siteUrl,
+          description: s.description ?? "",
+          maintenanceMode: s.maintenanceMode,
+          allowRegistration: s.allowRegistration ?? false,
+          enableGoogleAnalytics: s.enableGoogleAnalytics ?? false,
+          enableAdminTheme: s.enableAdminTheme ?? null,
+          googleAnalyticsId: s.googleAnalyticsId ?? "",
+          metaTitle: s.metaTitle ?? "",
+          metaDescription: s.metaDescription ?? "",
+          primaryColor: s.primaryColor ?? "",
+          secondaryColor: s.secondaryColor ?? "",
+          backgroundColor: s.backgroundColor ?? "",
+          textColor: s.textColor ?? "",
+          adminPrimaryColor: s.adminPrimaryColor ?? "",
+          adminSecondaryColor: s.adminSecondaryColor ?? "",
+          adminBackgroundColor: s.adminBackgroundColor ?? "",
+          adminTextColor: s.adminTextColor ?? "",
+          fullAddress: s.fullAddress ?? "",
+          logoUrl: s.logoUrl ?? "",
+          ogImage: s.ogImage ?? "",
+          faviconUrl: s.faviconUrl ?? "",
+        }}
+      />
     </div>
   );
 }

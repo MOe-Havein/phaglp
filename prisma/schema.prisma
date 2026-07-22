@@ -234,6 +234,7 @@ model SiteSettings {
   adminSecondaryColor   String?
   adminBackgroundColor  String?
   adminTextColor        String?
+  adminTheme            String?
   ogImage               String?
   logoUrl               String?
   faviconUrl            String?

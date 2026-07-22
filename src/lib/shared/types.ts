@@ -16,6 +16,7 @@ export interface SiteSettings {
   adminSecondaryColor?: string | null;
   adminBackgroundColor?: string | null;
   adminTextColor?: string | null;
+  adminTheme?: string | null;
 
   ogImage?: string | null;
   logoUrl?: string | null;
