@@ -89,15 +89,23 @@ export default async function DashboardPage() {
     ? (dbUser.lecturePreferences as string[])
     : [];
 
-  // Extract unique categories from published lectures
-  const availableCategories = Array.from(
-    new Set(allLectures.map((l) => l.category)),
+  const availableCategories: string[] = allLectures.reduce(
+    (acc: string[], next: { category?: string }) => {
+      const category = next.category;
+      if (typeof category === "string" && !acc.includes(category)) {
+        acc.push(category);
+      }
+      return acc;
+    },
+    [],
   );
 
   // Filter lectures based on preference settings
   const customizedLectures =
     preferences.length > 0
-      ? allLectures.filter((l) => preferences.includes(l.category))
+      ? allLectures.filter((l: { category?: string }) =>
+          preferences.includes(l.category || ""),
+        )
       : allLectures; // Show all if no preference is chosen yet
 
   const ongoingCourses = [
@@ -153,7 +161,7 @@ export default async function DashboardPage() {
                     {dbUser?.name
                       ? dbUser.name
                           .split(" ")
-                          .map((n) => n[0])
+                          .map((n: string) => n[0])
                           .join("")
                           .slice(0, 2)
                       : "US"}
@@ -350,7 +358,7 @@ export default async function DashboardPage() {
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {customizedLectures.slice(0, 6).map((lec) => (
+              {(customizedLectures as Array<any>).slice(0, 6).map((lec) => (
                 <Card
                   key={lec.id}
                   className="group hover:border-primary/45 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col justify-between bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80"

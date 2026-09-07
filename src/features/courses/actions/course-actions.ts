@@ -78,7 +78,8 @@ export async function getEnrolledCourses() {
       },
     });
 
-    return enrollments.map((e) => e.course);
+    return enrollments.map((e: any) => e.course);
+
   }, []);
 
   return result;

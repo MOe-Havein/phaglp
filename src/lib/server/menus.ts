@@ -32,6 +32,9 @@ export async function getNavigationMenus(): Promise<DynamicMenu[]> {
     "site-navigation-menus",
     async () => {
       try {
+        if (!prisma) {
+          throw new Error("Prisma is not initialized");
+        }
         const dbMenus = await prisma.navigationMenu.findMany({
           where: { isActive: true },
           orderBy: { order: "asc" },

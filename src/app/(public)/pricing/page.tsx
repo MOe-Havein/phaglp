@@ -175,7 +175,8 @@ export default async function PricingPage() {
                     <form
                       action={async () => {
                         "use server";
-                        const { selfUpgradeUserTier } = await import("@/lib/actions");
+                        const { selfUpgradeUserTier } =
+                          await import("@/lib/actions");
                         await selfUpgradeUserTier(tier.id);
                       }}
                       className="w-full"

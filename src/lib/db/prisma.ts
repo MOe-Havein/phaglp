@@ -1,148 +1,92 @@
+import "server-only";
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { env } from "@/env";
 
-// Prevents multiple instances of Prisma Client from being created in development
 const prismaClientSingleton = () => {
-  const url = process.env.DATABASE_URL || "file:./dev.db";
+  const remoteUrl = env.DATABASE_URL;
   const isRemote =
-    url.startsWith("libsql://") ||
-    url.startsWith("http://") ||
-    url.startsWith("https://");
+    typeof remoteUrl === "string" &&
+    (remoteUrl.startsWith("libsql://") ||
+      remoteUrl.startsWith("http://") ||
+      remoteUrl.startsWith("https://"));
 
-  let client: PrismaClient;
-
-  if (isRemote) {
-    const config: { url: string; authToken?: string } = { url };
-    if (process.env.TURSO_AUTH_TOKEN) {
-      config.authToken = process.env.TURSO_AUTH_TOKEN;
+  if (
+    isRemote &&
+    typeof process !== "undefined" &&
+    process.env.NEXT_RUNTIME === "nodejs" &&
+    typeof process.env.TURSO_AUTH_TOKEN === "string"
+  ) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { PrismaLibSql } = require("@prisma/adapter-libsql");
+      const adapter = new PrismaLibSql({
+        url: remoteUrl,
+        authToken: process.env.TURSO_AUTH_TOKEN,
+      });
+      return new PrismaClient({
+        log:
+          env.NODE_ENV === "development"
+            ? ["query", "error", "warn"]
+            : ["error"],
+        adapter,
+      });
+    } catch (error) {
+      if (env.NODE_ENV !== "test") {
+        console.warn(
+          "[Prisma] Remote adapter unavailable, falling back to local DB:",
+          error,
+        );
+      }
     }
-    const adapter = new PrismaLibSql(config);
-    client = new PrismaClient({
-      log:
-        process.env.NODE_ENV === "development"
-          ? ["query", "error", "warn"]
-          : ["error"],
-      adapter,
-    });
-  } else {
-    client = new PrismaClient({
-      log:
-        process.env.NODE_ENV === "development"
-          ? ["query", "error", "warn"]
-          : ["error"],
-      datasources: {
-        db: { url },
-      },
-    });
   }
 
-  return new Proxy(client, {
-    get(target, prop) {
-      if (
-        typeof prop === "string" &&
-        !prop.startsWith("$") &&
-        prop !== "then"
-      ) {
-        return new Proxy(Reflect.get(target, prop) || {}, {
-          get(modelTarget, modelProp) {
-            const originalMethod = Reflect.get(modelTarget, modelProp);
-            if (typeof originalMethod === "function") {
-              return async (...args: any[]) => {
-                try {
-                  return await originalMethod.apply(modelTarget, args);
-                } catch (err: any) {
-                  const errStr = String(err);
-                  if (
-                    errStr.includes("Can't reach database server") ||
-                    errStr.includes("DATABASE_URL") ||
-                    errStr.includes("connect") ||
-                    errStr.includes("initialization")
-                  ) {
-                    console.warn(
-                      `[Prisma Proxy] Database unreachable. Mocking prisma.${prop}.${String(modelProp)}`,
-                    );
-                    if (String(modelProp).startsWith("findMany")) {
-                      return [];
-                    }
-                    if (
-                      String(modelProp).startsWith("findFirst") ||
-                      String(modelProp).startsWith("findUnique")
-                    ) {
-                      return null;
-                    }
-                    if (String(modelProp).startsWith("count")) {
-                      return 0;
-                    }
-                    if (
-                      String(modelProp).startsWith("create") ||
-                      String(modelProp).startsWith("update") ||
-                      String(modelProp).startsWith("delete") ||
-                      String(modelProp).startsWith("upsert")
-                    ) {
-                      return {};
-                    }
-                    return null;
-                  }
-                  throw err;
-                }
-              };
-            }
-            return originalMethod;
-          },
-        });
-      }
-      return Reflect.get(target, prop);
-    },
-  });
+  return undefined as any;
 };
 
-declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton> | undefined;
-} & typeof global;
+type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
 
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClientSingleton | undefined;
+};
+
+export const prisma: PrismaClientSingleton = (() => {
+  try {
+    return globalForPrisma.prisma ?? prismaClientSingleton();
+  } catch (error) {
+    console.error("[Prisma initialization failed]", error);
+    return undefined as any;
+  }
+})();
+
+if (env.NODE_ENV !== "production" && prisma) {
+  globalForPrisma.prisma = prisma;
+}
 
 export default prisma;
 
-if (process.env.NODE_ENV !== "production") {
-  globalThis.prismaGlobal = prisma;
-}
-
-/**
- * Safely serializes data from Prisma to be passed from Server to Client Components.
- * Converts Dates to ISO strings and resolves standard JSON serialization limits.
- */
 export function serializePrisma<T>(data: T): T {
   if (!data) return data;
   return JSON.parse(JSON.stringify(data));
 }
 
-/**
- * Standardized database query wrapper for error safety and serializability.
- */
 export async function safeDbQuery<T>(
   queryFn: () => Promise<T>,
   fallbackValue: T | null = null,
 ): Promise<{ success: boolean; data: T | null; error: string | null }> {
+  if (!prisma) {
+    return { success: false, data: fallbackValue, error: "Prisma not initialized" };
+  }
   try {
     const result = await queryFn();
-    return {
-      success: true,
-      data: serializePrisma(result),
-      error: null,
-    };
+    return { success: true, data: serializePrisma(result), error: null };
   } catch (error: unknown) {
     const message =
       error instanceof Error
         ? error.message
         : "An unexpected database error occurred";
-    if (process.env.NODE_ENV === "development") {
+    if (env.NODE_ENV === "development") {
       console.error("[Database Error]:", error);
     }
-    return {
-      success: false,
-      data: fallbackValue,
-      error: message,
-    };
+    return { success: false, data: fallbackValue, error: message };
   }
 }

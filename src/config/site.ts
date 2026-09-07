@@ -1,7 +1,6 @@
 import { SiteSettings } from "@/lib/shared/types";
 
 export const siteConfig: SiteSettings = {
-  
   id: "global",
   siteName: "",
   siteUrl: "https://www.phaglp.com",

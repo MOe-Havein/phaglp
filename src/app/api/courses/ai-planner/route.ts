@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { CohereClient } from "cohere-ai";
-
-let cohereInstance: CohereClient | null = null;
-
-function getCohereClient() {
-  const token = process.env.COHERE_API_KEY?.trim();
-  if (!token) return null;
-
-  if (!cohereInstance) {
-    cohereInstance = new CohereClient({ token });
-  }
-  return cohereInstance;
-}
+import prisma from "@/lib/prisma";
+import { generateChatText, resolveModelForRequest } from "@/lib/ai-client";
+import { DEFAULT_AI_MODEL_ID } from "@/lib/ai-models";
 
 export const dynamic = "force-dynamic";
+
+function stripJsonWrapper(text: string): string {
+  let clean = text.trim();
+  if (clean.startsWith("```json")) {
+    clean = clean.substring(7, clean.length - 3).trim();
+  } else if (clean.startsWith("```")) {
+    clean = clean.substring(3, clean.length - 3).trim();
+  }
+  return clean;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,9 +33,35 @@ export async function POST(request: NextRequest) {
       courseTitle,
       lessonTitle,
       currentContent = "",
+      model,
     } = body;
 
-    const cohere = getCohereClient();
+    // Resolve the model to use: explicit request param > user default > global default.
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { aiModel: true },
+    });
+    const resolved = resolveModelForRequest(model, user?.aiModel ?? DEFAULT_AI_MODEL_ID);
+
+    // Helper: ask the selected provider; return trimmed text or null on failure.
+    async function askAI(
+      system: string,
+      userPrompt: string,
+    ): Promise<string | null> {
+      try {
+        const { text } = await generateChatText({
+          modelId: resolved.modelId,
+          messages: [
+            { role: "system", content: system },
+            { role: "user", content: userPrompt },
+          ],
+        });
+        return text?.trim() || null;
+      } catch (err) {
+        console.warn(`AI planner (${action}) failed, falling back:`, err);
+        return null;
+      }
+    }
 
     // =========================================================================
     // ACTION: WRITE LECTURE
@@ -51,37 +77,21 @@ export async function POST(request: NextRequest) {
       const cTitle = courseTitle || "Unified Philosophical Study";
       const lTitle = lessonTitle;
 
-      if (cohere) {
-        try {
-          const prompt = `You are a Lead Academic Professor at PHAGLP Academy.
-Write a comprehensive, professional, and highly educational textbook lecture for the lesson session: "${lTitle}" in the course "${cTitle}".
+      const text = await askAI(
+        `You are a Lead Academic Professor at PHAGLP Academy.
+Write a comprehensive, professional, and highly educational textbook lecture.
 Deconstruct key theoretical ideas, provide clear logical arguments, and focus on practical cognitive application.
-Format the output in a clean, structured Markdown format. Start directly with the lecture body text. Do not include introductory conversation, headers, or metadata. Keep it around 250 to 400 words.`;
+Format the output in a clean, structured Markdown format. Start directly with the lecture body text. Do not include introductory conversation, headers, or metadata. Keep it around 250 to 400 words.`,
+        `Write a comprehensive textbook lecture for the lesson session: "${lTitle}" in the course "${cTitle}".`,
+      );
 
-          const response = await cohere.v2.chat({
-            model: "command-a-reasoning-08-2025",
-            messages: [{ role: "user", content: prompt }],
-          });
-
-          const textContent = response.message?.content?.find(
-            (item) => item.type === "text",
-          );
-          const generatedText =
-            textContent?.type === "text" ? textContent.text : "";
-
-          if (generatedText) {
-            return NextResponse.json({
-              success: true,
-              content: generatedText.trim(),
-              source: "cohere",
-            });
-          }
-        } catch (cohereError) {
-          console.warn(
-            "Cohere write-lecture failed, falling back to mock:",
-            cohereError,
-          );
-        }
+      if (text) {
+        return NextResponse.json({
+          success: true,
+          content: text,
+          source: resolved.provider,
+          model: resolved.modelId,
+        });
       }
 
       // Mock Fallback for Write Lecture
@@ -102,6 +112,7 @@ By mastering the insights of ${lTitle}, scholars acquire the precise tools to re
         success: true,
         content: mockLecture,
         source: "mock",
+        model: resolved.modelId,
       });
     }
 
@@ -119,38 +130,22 @@ By mastering the insights of ${lTitle}, scholars acquire the precise tools to re
       const cTitle = courseTitle || "Unified Philosophical Study";
       const lTitle = lessonTitle;
 
-      if (cohere) {
-        try {
-          const prompt = `You are an Academic Examiner at PHAGLP Academy.
-Create an interactive practice review quiz consisting of exactly 3 multiple-choice questions for the lesson session: "${lTitle}" in the course "${cTitle}".
+      const text = await askAI(
+        `You are an Academic Examiner at PHAGLP Academy.
+Create an interactive practice review quiz consisting of exactly 3 multiple-choice questions.
 Format each question with 4 options (A, B, C, D) and specify the correct answer and a brief logical explanation.
-Return the output in clean, structured Markdown format to be appended to the lesson reading textbook. Start directly with the quiz header (e.g. "### Practice Quiz"). Do not include metadata or conversational text.`;
+Return the output in clean, structured Markdown format to be appended to the lesson reading textbook. Start directly with the quiz header (e.g. "### Practice Quiz"). Do not include metadata or conversational text.`,
+        `Create a practice review quiz for the lesson session: "${lTitle}" in the course "${cTitle}".`,
+      );
 
-          const response = await cohere.v2.chat({
-            model: "command-a-reasoning-08-2025",
-            messages: [{ role: "user", content: prompt }],
-          });
-
-          const textContent = response.message?.content?.find(
-            (item) => item.type === "text",
-          );
-          const generatedText =
-            textContent?.type === "text" ? textContent.text : "";
-
-          if (generatedText) {
-            const combinedContent = `${currentContent}\n\n${generatedText.trim()}`;
-            return NextResponse.json({
-              success: true,
-              content: combinedContent,
-              source: "cohere",
-            });
-          }
-        } catch (cohereError) {
-          console.warn(
-            "Cohere generate-quiz failed, falling back to mock:",
-            cohereError,
-          );
-        }
+      if (text) {
+        const combinedContent = `${currentContent}\n\n${text.trim()}`;
+        return NextResponse.json({
+          success: true,
+          content: combinedContent,
+          source: resolved.provider,
+          model: resolved.modelId,
+        });
       }
 
       // Mock Fallback for Generate Quiz
@@ -184,6 +179,7 @@ Return the output in clean, structured Markdown format to be appended to the les
         success: true,
         content: combinedContent,
         source: "mock",
+        model: resolved.modelId,
       });
     }
 
@@ -194,15 +190,9 @@ Return the output in clean, structured Markdown format to be appended to the les
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    // 1. Try real Cohere AI Client if configured
-    if (cohere) {
-      try {
-        const prompt = `You are a high-level curriculum architect at PHAGLP Academy.
-Create a structured course outline about the topic "${topic}".
-Description/Context: ${description || "General study"}
-Number of Modules: ${moduleCount}
-Lessons Per Module: ${lessonsPerModule}
-
+    const outlineText = await askAI(
+      `You are a high-level curriculum architect at PHAGLP Academy.
+Create a structured course outline.
 Format the output strictly as a valid JSON object. Do not include markdown codeblocks or any additional text.
 Strictly match this JSON schema:
 {
@@ -223,58 +213,40 @@ Strictly match this JSON schema:
       ]
     }
   ]
-}`;
+}`,
+      `Create a structured course outline about the topic "${topic}".
+Description/Context: ${description || "General study"}
+Number of Modules: ${moduleCount}
+Lessons Per Module: ${lessonsPerModule}`,
+    );
 
-        const response = await cohere.v2.chat({
-          model: "command-a-reasoning-08-2025",
-          messages: [{ role: "user", content: prompt }],
+    if (outlineText) {
+      try {
+        const parsed = JSON.parse(stripJsonWrapper(outlineText));
+        return NextResponse.json({
+          success: true,
+          data: parsed,
+          source: resolved.provider,
+          model: resolved.modelId,
         });
-
-        const textContent = response.message?.content?.find(
-          (item) => item.type === "text",
-        );
-        const generatedText =
-          textContent?.type === "text" ? textContent.text : "";
-
-        if (generatedText) {
-          let cleanJson = generatedText.trim();
-          if (cleanJson.startsWith("```json")) {
-            cleanJson = cleanJson.substring(7, cleanJson.length - 3).trim();
-          } else if (cleanJson.startsWith("```")) {
-            cleanJson = cleanJson.substring(3, cleanJson.length - 3).trim();
-          }
-
-          const parsed = JSON.parse(cleanJson);
-          return NextResponse.json({
-            success: true,
-            data: parsed,
-            source: "cohere",
-          });
-        }
-      } catch (cohereError) {
-        console.warn(
-          "Cohere curriculum planner failed, falling back to high-fidelity mock:",
-          cohereError,
-        );
+      } catch (parseErr) {
+        console.warn("Failed to parse AI outline JSON, using mock:", parseErr);
       }
     }
 
-    // 2. High-fidelity Mock Generator (if Cohere is missing or errors)
+    // High-fidelity Mock Generator fallback
     const capitalizedTopic = topic.charAt(0).toUpperCase() + topic.slice(1);
 
-    // Build dynamic mock outline
     const mockModules = Array.from({ length: moduleCount }).map((_, mIdx) => {
       const mNum = mIdx + 1;
-      const lessons = Array.from({ length: lessonsPerModule }).map(
-        (_, lIdx) => {
-          const lNum = lIdx + 1;
-          return {
-            title: `Lesson ${lNum}: Foundations of ${capitalizedTopic} - Level ${mNum}`,
-            content: `In this section, we analyze the core structural paradigms, logical foundations, and historic impacts of ${capitalizedTopic}. By deconstructing primary source texts and validating premises, scholars gain actionable knowledge to address modern challenges.`,
-            order: lNum,
-          };
-        },
-      );
+      const lessons = Array.from({ length: lessonsPerModule }).map((_, lIdx) => {
+        const lNum = lIdx + 1;
+        return {
+          title: `Lesson ${lNum}: Foundations of ${capitalizedTopic} - Level ${mNum}`,
+          content: `In this section, we analyze the core structural paradigms, logical foundations, and historic impacts of ${capitalizedTopic}. By deconstructing primary source texts and validating premises, scholars gain actionable knowledge to address modern challenges.`,
+          order: lNum,
+        };
+      });
 
       return {
         title: `Module ${mNum}: Core Principles of ${capitalizedTopic}`,
@@ -295,6 +267,7 @@ Strictly match this JSON schema:
       success: true,
       data: mockData,
       source: "mock",
+      model: resolved.modelId,
     });
   } catch (error: any) {
     console.error("AI Planner API Error:", error);

@@ -31,11 +31,13 @@ export const viewport = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteConfig = await getSiteSettings();
-  
+
   // Use specialized SEO meta values if present; fallback gracefully to general definitions
   const titleText = siteConfig.metaTitle || siteConfig.siteName;
   const descriptionText = siteConfig.metaDescription || siteConfig.description;
-  const baseMetadataUrl = siteConfig.siteUrl ? new URL(siteConfig.siteUrl) : null;
+  const baseMetadataUrl = siteConfig.siteUrl
+    ? new URL(siteConfig.siteUrl)
+    : null;
 
   return {
     title: {
@@ -47,13 +49,13 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: "MOe Hamid" }],
     creator: "MOe Hamid",
     ...(baseMetadataUrl && { metadataBase: baseMetadataUrl }),
-    
+
     // Wire dynamic brand icons natively into Next.js Metadata API
     icons: {
       icon: siteConfig.faviconUrl || "/favicon.ico",
       apple: siteConfig.logoUrl || "/apple-icon.png",
     },
-    
+
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -83,9 +85,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const siteConfig = await getSiteSettings();
-  
+
   // Clean fallback mapping for JSON-LD schema metrics
-  const displayLogo = siteConfig.logoUrl || `${siteConfig.siteUrl}/phaglp-logo.webp`;
+  const displayLogo =
+    siteConfig.logoUrl || `${siteConfig.siteUrl}/phaglp-logo.webp`;
 
   return (
     <html
@@ -95,7 +98,7 @@ export default async function RootLayout({
     >
       <body className="font-sans antialiased" suppressHydrationWarning>
         <LayoutClient>{children}</LayoutClient>
-        
+
         {/* Google Analytics Injection */}
         {siteConfig.enableGoogleAnalytics && siteConfig.googleAnalyticsId && (
           <>

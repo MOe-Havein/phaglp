@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { ModelSelector, useDefaultAIModel } from "@/components/model-selector";
 
 interface LessonOutline {
   title: string;
@@ -54,6 +55,7 @@ export default function AICoursePlannerPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [outline, setOutline] = useState<CourseOutline | null>(null);
+  const { model: aiModel, setModel: setAiModel } = useDefaultAIModel();
 
   // Generate Course Outline via AI
   const handleGenerate = async () => {
@@ -72,6 +74,7 @@ export default function AICoursePlannerPage() {
           description,
           moduleCount,
           lessonsPerModule,
+          model: aiModel || undefined,
         }),
       });
 
@@ -143,6 +146,7 @@ export default function AICoursePlannerPage() {
           action: "write-lecture",
           courseTitle: outline.title,
           lessonTitle: lesson.title,
+          model: aiModel || undefined,
         }),
       });
 
@@ -176,6 +180,7 @@ export default function AICoursePlannerPage() {
           courseTitle: outline.title,
           lessonTitle: lesson.title,
           currentContent: lesson.content || "",
+          model: aiModel || undefined,
         }),
       });
 
@@ -297,6 +302,10 @@ export default function AICoursePlannerPage() {
                   rows={3}
                   className="w-full bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 font-semibold leading-relaxed"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <ModelSelector value={aiModel || ""} onChange={setAiModel} />
               </div>
 
               <div className="grid sm:grid-cols-2 gap-6">

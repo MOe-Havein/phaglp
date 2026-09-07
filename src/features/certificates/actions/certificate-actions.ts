@@ -188,7 +188,7 @@ export async function getCourseProgress(userId: string, courseId: string) {
       };
     }
 
-    const lessons = course.modules.flatMap((m) => m.lessons);
+    const lessons = course.modules.flatMap((m: any) => m.lessons);
     const totalCount = lessons.length;
 
     if (totalCount === 0) {
@@ -203,7 +203,7 @@ export async function getCourseProgress(userId: string, courseId: string) {
       };
     }
 
-    const lessonIds = lessons.map((l) => l.id);
+    const lessonIds = lessons.map((l: any) => l.id);
 
     // 2. Get completed progress records for these lessons
     const completedProgress = await prisma.lessonProgress.findMany({
@@ -222,7 +222,7 @@ export async function getCourseProgress(userId: string, courseId: string) {
         percent,
         completedCount,
         totalCount,
-        completedLessonIds: completedProgress.map((p) => p.lessonId),
+        completedLessonIds: completedProgress.map((p: any) => p.lessonId),
       },
     };
   } catch (error: any) {

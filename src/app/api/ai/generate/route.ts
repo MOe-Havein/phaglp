@@ -1,15 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
+import prisma from "@/lib/prisma";
 import {
   generateOutline,
   summarizeContent,
   checkLogicalFallacies,
   writeLecture,
 } from "@/lib/ai-assistant";
+import { DEFAULT_AI_MODEL_ID } from "@/lib/ai-models";
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
-    const { type, data } = body;
+    const { type, data, model } = body;
+
+    // Resolve the model: explicit request param > user's persisted default > global default.
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { aiModel: true },
+    });
+    const modelId = model || user?.aiModel || DEFAULT_AI_MODEL_ID;
 
     if (!type) {
       return NextResponse.json(
@@ -28,7 +43,7 @@ export async function POST(request: NextRequest) {
             { status: 400 },
           );
         }
-        result = await generateOutline(data.title, data.category);
+        result = await generateOutline(data.title, data.category, modelId);
         break;
 
       case "summary":
@@ -38,7 +53,7 @@ export async function POST(request: NextRequest) {
             { status: 400 },
           );
         }
-        result = await summarizeContent(data.content);
+        result = await summarizeContent(data.content, modelId);
         break;
 
       case "fallacy-check":
@@ -48,7 +63,7 @@ export async function POST(request: NextRequest) {
             { status: 400 },
           );
         }
-        result = await checkLogicalFallacies(data.content);
+        result = await checkLogicalFallacies(data.content, modelId);
         break;
 
       case "write-lecture":
@@ -58,7 +73,7 @@ export async function POST(request: NextRequest) {
             { status: 400 },
           );
         }
-        result = await writeLecture(data.title, data.category);
+        result = await writeLecture(data.title, data.category, modelId);
         break;
 
       default:
@@ -75,6 +90,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       content: result.data,
+      model: modelId,
     });
   } catch (error) {
     console.error("Error in AI generation endpoint:", error);

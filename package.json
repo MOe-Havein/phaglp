@@ -5,7 +5,7 @@
   "engines": {
     "node": "^22.x"
   },
-  "packageManager": "pnpm@10.6.1",
+  "packageManager": "pnpm@11.0.0",
   "scripts": {
     "dev": "next dev",
     "dev:clean": "cmd /c \"if exist .next rmdir /s /q .next\" && pnpm dev",
@@ -26,6 +26,7 @@
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^3.10.0",
     "@libsql/client": "^0.17.3",
+    "@libsql/win32-x64-msvc": "^0.5.29",
     "@modelcontextprotocol/server-filesystem": "^2026.1.14",
     "@prisma/adapter-libsql": "^7.8.0",
     "@prisma/client": "^6.19.3",
@@ -122,6 +123,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
+    "@libsql/client": "^0.17.3",
     "@playwright/test": "^1.60.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^25.9.1",

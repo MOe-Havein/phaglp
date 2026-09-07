@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { seedKnowledgeBase } from "@/lib/seed-knowledge";
-import { requireAdmin } from "@/lib/rbac";
+import { requireAdmin } from "@/lib/rbac/index";
 
 /**
  * Admin-only endpoint to seed the knowledge base

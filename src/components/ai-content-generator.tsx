@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Wand2, Copy, RefreshCw } from "lucide-react";
+import { ModelSelector, useDefaultAIModel } from "@/components/model-selector";
 
 interface AIContentGeneratorProps {
   onContentGenerated: (field: string, value: string | string[]) => void;
@@ -17,6 +18,7 @@ export function AIContentGenerator({
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const { model: aiModel, setModel: setAiModel } = useDefaultAIModel();
 
   const contentTypes = [
     {
@@ -46,6 +48,7 @@ export function AIContentGenerator({
         body: JSON.stringify({
           prompt: prompt || `Create content for a ${type} section`,
           type,
+          model: aiModel || undefined,
         }),
       });
 
@@ -132,6 +135,11 @@ export function AIContentGenerator({
             )}
           </Button>
         </div>
+      </div>
+
+      {/* Model selector */}
+      <div className="pt-2">
+        <ModelSelector value={aiModel || ""} onChange={setAiModel} />
       </div>
 
       {/* Generated Content Preview */}

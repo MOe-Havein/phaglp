@@ -1,0 +1,2 @@
+hermes-acp>=0.1.0
+hermes-agent[acp]==0.18

@@ -1,21 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
-import { CohereClient } from "cohere-ai";
-
-let cohereInstance: CohereClient | null = null;
-
-function getCohereClient() {
-  const token = process.env.COHERE_API_KEY?.trim();
-  if (!token) return null;
-
-  if (!cohereInstance) {
-    cohereInstance = new CohereClient({ token });
-  }
-  return cohereInstance;
-}
+import { generateChatText, resolveModelForRequest } from "@/lib/ai-client";
+import { DEFAULT_AI_MODEL_ID } from "@/lib/ai-models";
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Build the structured JSON prompt for the Generative AI Playground.
+ * Kept as a helper so the (large) mock fallback can share the same shape.
+ */
+function promptFor(topic: string, goal?: string): string {
+  return `You are a high-level academic instructor at PHAGLP Academy.
+Create educational material about the topic "${topic}".
+Goal: ${goal} (generate explanation, quiz, or both).
+
+Format the output strictly as a valid JSON object. Do not include markdown codeblocks or any additional text.
+Strictly match this JSON schema:
+{
+  "title": "${topic}",
+  "explanation": "Write a 3-paragraph rich-text overview of the topic. Use structured paragraphs, clear philosophical depth, and mention key historic figures if applicable.",
+  "keyTakeaways": [
+    "Takeaway 1 detailing logical concepts",
+    "Takeaway 2 detailing scientific relevance",
+    "Takeaway 3 detailing practical application"
+  ],
+  "quiz": [
+    {
+      "question": "Insert challenging multiple choice question here",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answerIndex": 0,
+      "explanation": "Provide a brief explanation of why this answer is correct."
+    },
+    {
+      "question": "Second challenging multiple choice question",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answerIndex": 1,
+      "explanation": "Explanation here."
+    },
+    {
+      "question": "Third challenging multiple choice question",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answerIndex": 2,
+      "explanation": "Explanation here."
+    }
+  ]
+}`;
+}
 
 // GET: Fetch recent analytics logged under the Tech Concepts Dashboard
 export async function GET() {
@@ -55,7 +86,15 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { action, eventName, metadata, topic, goal } = body;
+    const { action, eventName, metadata, topic, goal, model } = body;
+
+    // Resolve the model to use: explicit request param wins, otherwise the
+    // user's persisted default (User.aiModel), otherwise the global default.
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { aiModel: true },
+    });
+    const resolved = resolveModelForRequest(model, user?.aiModel ?? DEFAULT_AI_MODEL_ID);
 
     // Route 1: Logging database analytics event
     if (action === "log") {
@@ -87,83 +126,37 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const cohere = getCohereClient();
+      // 1. Try the selected AI provider
+      try {
+        const response = await generateChatText({
+          modelId: resolved.modelId,
+          messages: [{ role: "user", content: promptFor(topic, goal) }],
+        });
 
-      // 1. Try real Cohere AI Client if configured
-      if (cohere) {
-        try {
-          const prompt = `You are a high-level academic instructor at PHAGLP Academy. 
-Create educational material about the topic "${topic}".
-Goal: ${goal} (generate explanation, quiz, or both).
-
-Format the output strictly as a valid JSON object. Do not include markdown codeblocks or any additional text.
-Strictly match this JSON schema:
-{
-  "title": "${topic}",
-  "explanation": "Write a 3-paragraph rich-text overview of the topic. Use structured paragraphs, clear philosophical depth, and mention key historic figures if applicable.",
-  "keyTakeaways": [
-    "Takeaway 1 detailing logical concepts",
-    "Takeaway 2 detailing scientific relevance",
-    "Takeaway 3 detailing practical application"
-  ],
-  "quiz": [
-    {
-      "question": "Insert challenging multiple choice question here",
-      "options": ["Option A", "Option B", "Option C", "Option D"],
-      "answerIndex": 0,
-      "explanation": "Provide a brief explanation of why this answer is correct."
-    },
-    {
-      "question": "Second challenging multiple choice question",
-      "options": ["Option A", "Option B", "Option C", "Option D"],
-      "answerIndex": 1,
-      "explanation": "Explanation here."
-    },
-    {
-      "question": "Third challenging multiple choice question",
-      "options": ["Option A", "Option B", "Option C", "Option D"],
-      "answerIndex": 2,
-      "explanation": "Explanation here."
-    }
-  ]
-}`;
-
-          const response = await cohere.v2.chat({
-            model: "command-a-reasoning-08-2025",
-            messages: [{ role: "user", content: prompt }],
-          });
-
-          const textContent = response.message?.content?.find(
-            (item) => item.type === "text",
-          );
-          const generatedText =
-            textContent?.type === "text" ? textContent.text : "";
-
-          if (generatedText) {
-            // Strip any markdown wrapper if cohere wraps JSON
-            let cleanJson = generatedText.trim();
-            if (cleanJson.startsWith("```json")) {
-              cleanJson = cleanJson.substring(7, cleanJson.length - 3).trim();
-            } else if (cleanJson.startsWith("```")) {
-              cleanJson = cleanJson.substring(3, cleanJson.length - 3).trim();
-            }
-
-            const parsed = JSON.parse(cleanJson);
-            return NextResponse.json({
-              success: true,
-              data: parsed,
-              source: "cohere",
-            });
+        const generatedText = response.text?.trim();
+        if (generatedText) {
+          // Strip any markdown wrapper if the model wraps JSON
+          let cleanJson = generatedText;
+          if (cleanJson.startsWith("```json")) {
+            cleanJson = cleanJson.substring(7, cleanJson.length - 3).trim();
+          } else if (cleanJson.startsWith("```")) {
+            cleanJson = cleanJson.substring(3, cleanJson.length - 3).trim();
           }
-        } catch (cohereError) {
-          console.warn(
-            "Cohere generation failed, falling back to high-fidelity mock generator:",
-            cohereError,
-          );
-        }
-      }
 
-      // 2. High-fidelity Mock Generator (if Cohere is missing or errors)
+          const parsed = JSON.parse(cleanJson);
+          return NextResponse.json({
+            success: true,
+            data: parsed,
+            source: response.provider,
+            model: response.modelId,
+          });
+        }
+      } catch (aiError) {
+        console.warn(
+          "AI generation failed, falling back to high-fidelity mock generator:",
+          aiError,
+        );
+      }
       const lowerTopic = topic.toLowerCase();
       let mockTitle = topic;
       let mockExplanation = "";
@@ -383,6 +376,7 @@ Strictly match this JSON schema:
           quiz: mockQuiz,
         },
         source: "mock",
+        model: resolved.modelId,
       });
     }
 
