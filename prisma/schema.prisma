@@ -1,0 +1,576 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Optional: direct port 5432 for migrations
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model User {
+  id           String           @id @default(cuid())
+  email        String           @unique
+  name         String?
+  image        String?
+  passwordHash String
+  role         Role             @default(USER)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  tier         SubscriptionTier @default(BASIC)
+
+  // Extended Profile — Personal
+  firstName        String?
+  fatherName       String?
+  grandfatherName  String?
+  familyName       String?
+  nickname         String?
+  photoUrl         String?
+  sex              Sex?
+  birthDate        DateTime?
+  birthCountry     String?
+  birthState       String?
+  birthCity        String?
+  birthTown        String?
+  birthVillage     String?
+
+  // Financial & Geographic classification
+  incomeLevel      IncomeLevel?
+  worldTier        WorldTier?
+  
+  // Contact
+  mobile1          String?
+  mobile2          String?
+  telephone        String?
+  
+  // Education
+  educationLevel   EducationLevel?
+  educationDegree  String?
+  educationSchool  String?
+  educationPhoto   String?
+  
+  // IQ / Aptitude
+  iqLevel          IQLevel?
+  
+  // Identity
+  nationalityId    String?
+  nationalityPhoto String?
+  
+  // Addresses
+  residenceState   String?
+  residenceCity    String?
+  residenceTown    String?
+  residenceNo      String?
+  residencePhoto   String?
+  homeUnit         String?
+  homeBuilding     String?
+  homeStreet       String?
+  homeCity         String?
+  homeState        String?
+  homeCountry      String?
+  
+  // Employment
+  jobTitle         String?
+  jobIncome        String?
+  jobOrganization  String?
+  jobCountry       String?
+  
+  // Guardian
+  guardianName     String?
+  guardianMobile   String?
+  guardianEmail    String?
+  guardianResidence String?
+  guardianIncome   IncomeLevel?
+  
+  // Dashboard preferences
+  lecturePreferences Json
+  
+  chatMessages ChatMessage[]
+  comments     Comment[]
+  courses      Course[]         @relation(\"InstructorCourses\")
+  enrollments  Enrollment[]
+  lectures     Lecture[]
+  pages        Page[]
+  posts        Post[]
+  sessions     Session[]
+  analytics    Analytics[]
+  assetAllocations AssetAllocation[]
+  certificates     Certificate[]
+  lessonProgress   LessonProgress[]
+  
+  @@index([role])
+  @@index([tier])
+  @@index([incomeLevel])
+  @@index([worldTier])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  body        String    // Rich HTML content
+  excerpt     String?
+  category    String
+  tags        Json      // Array of tag strings
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  readingTime Int?
+  coverImage  String?
+  isFeatured  Boolean   @default(false)
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments    Comment[]
+  
+  @@index([authorId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  postId    String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@index([postId])
+  @@index([authorId])
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  pages Page[] @relation(\"PageToTag\")
+}
+
+model PageRevision {
+  id        String   @id @default(cuid())
+  pageId    String
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+model Page {
+  id              String         @id @default(cuid())
+  slug            String         @unique
+  title           String
+  content         String
+  published       Boolean        @default(false)
+  /// Nullable to support system-generated or orphaned pages (e.g. landing pages without a direct author)
+  authorId        String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  readingTime     Int            @default(0)
+  seoTitle        String?
+  metaDescription String?
+  author          User?          @relation(fields: [authorId], references: [id])
+  revisions       PageRevision[]
+  tags            Tag[]          @relation(\"PageToTag\")
+}
+
+model Lecture {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  title       String
+  body        String
+  excerpt     String?
+  category    String
+  tags        Json
+  authorId    String
+  published   Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  readingTime Int?
+  coverImage  String?
+  isFeatured  Boolean           @default(false)
+  author      User              @relation(fields: [authorId], references: [id])
+  revisions   LectureRevision[]
+  
+  @@index([authorId])
+}
+
+model LectureRevision {
+  id        String   @id @default(cuid())
+  lectureId String
+  title     String
+  body      String
+  authorId  String
+  createdAt DateTime @default(now())
+  lecture   Lecture  @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  
+  @@index([lectureId])
+  @@index([authorId])
+}
+
+model SiteSettings {
+  id                    String  @id @default(\"global\")
+  siteName              String
+  siteUrl               String
+  metaTitle             String
+  metaDescription       String
+  description           String?
+  primaryColor          String
+  ogImage               String?
+  logoUrl               String?
+  faviconUrl            String?
+  googleAnalyticsId     String?
+  enableGoogleAnalytics Boolean @default(false)
+  maintenanceMode       Boolean @default(false)
+  fullAddress           String?
+  allowRegistration     Boolean @default(true)
+}
+
+model FeatureFlag {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  description String?
+  isEnabled   Boolean @default(false)
+}
+
+model Course {
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  title          String
+  description    String
+  price          Float
+  published      Boolean        @default(false)
+  instructorId   String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  duration       String?
+  courseType     CourseType     @default(OTHER)
+  durationMonths Int?
+  instructor     User           @relation(\"InstructorCourses\", fields: [instructorId], references: [id])
+  modules        CourseModule[]
+  enrollments    Enrollment[]
+  assets         AcademyAsset[]
+  certificates   Certificate[]
+  
+  @@index([courseType])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
+
+model CourseModule {
+  id        String   @id @default(cuid())
+  courseId  String
+  title     String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+  
+  @@index([courseId])
+}
+
+model Lesson {
+  id        String       @id @default(cuid())
+  moduleId  String
+  title     String
+  content   String?
+  videoUrl  String?
+  order     Int
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  module    CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress  LessonProgress[]
+  
+  @@index([moduleId])
+}
+
+model KnowledgeBase {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  type      String
+  embedding Json
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([type])
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  role      MessageRole
+  content   String
+  createdAt DateTime    @default(now())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  
+  @@index([sessionId])
+  @@index([userId])
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  event     String
+  path      String?
+  metadata  Json?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  
+  @@index([event])
+  @@index([createdAt])
+  @@index([userId])
+}
+
+enum Role {
+  USER
+  ADMIN
+  INSTRUCTOR
+}
+
+/// Product access tiers for consumers.
+enum SubscriptionTier {
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+/// Role of a participant in a chat message thread.
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+/// Biological sex for user profile.
+enum Sex {
+  MALE
+  FEMALE
+}
+
+/// Financial income classification.
+enum IncomeLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+/// Global development tier of user's home country.
+enum WorldTier {
+  FIRST
+  SECOND
+  THIRD
+}
+
+/// Cognitive aptitude classification.
+enum IQLevel {
+  GENIUS
+  GIFTED
+  TALENTED
+  AVERAGE
+}
+
+/// Highest education level attained.
+enum EducationLevel {
+  SCHOOL
+  CLASS
+  DEGREE
+}
+
+/// Predefined course program types.
+enum CourseType {
+  GP_GENERAL
+  GP_GROUPS
+  GP_SUBJECTS
+  OTHER
+}
+
+/// Physical or digital asset category for the academy inventory.
+enum AssetCategory {
+  COURSE_MATERIAL   // Printed/digital handouts, textbooks
+  MEDIA_EQUIPMENT   // Cameras, projectors, microphones
+  PUBLICATION_PRINT // Academy books, journals, magazines
+  DIGITAL_LICENSE   // Software, subscriptions
+  FURNITURE         // Chairs, desks, whiteboards
+  OTHER
+}
+
+/// Physical condition of an academy asset.
+enum AssetCondition {
+  NEW
+  GOOD
+  FAIR
+  POOR
+  RETIRED
+}
+
+/// Operational status of an academy asset.
+enum AssetStatus {
+  AVAILABLE
+  ALLOCATED
+  MAINTENANCE
+  RETIRED
+}
+
+/// An academy asset — physical or digital inventory item.
+model AcademyAsset {
+  id            String         @id @default(cuid())
+  /// Human-readable stock-keeping unit, e.g. \"CAM-001\", \"BK-PHIL-042\"
+  sku           String         @unique
+  name          String
+  description   String?
+  category      AssetCategory  @default(OTHER)
+  condition     AssetCondition @default(GOOD)
+  status        AssetStatus    @default(AVAILABLE)
+  quantity      Int            @default(1)
+  /// Unit of measure: \"unit\", \"set\", \"copy\", etc.
+  quantityUnit  String         @default(\"unit\")
+  /// Physical storage location, e.g. \"Room A3\", \"Storage Shelf B2\"
+  location      String?
+  supplier      String?
+  purchaseDate  DateTime?
+  purchasePrice Float?
+  notes         String?
+  
+  /// Optional link to a specific course this asset supports
+  courseId      String?
+  course        Course?        @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  allocations   AssetAllocation[]
+  
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  @@index([sku])
+  @@index([category])
+  @@index([status])
+  @@index([courseId])
+}
+
+/// Records who an asset was allocated to and when it was (or should be) returned.
+model AssetAllocation {
+  id          String       @id @default(cuid())
+  assetId     String
+  userId      String
+  quantity    Int          @default(1)
+  allocatedAt DateTime     @default(now())
+  /// Null means the asset has not yet been returned.
+  returnedAt  DateTime?
+  notes       String?
+  
+  asset       AcademyAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([assetId])
+  @@index([userId])
+}
+
+model NavigationMenu {
+  id            String               @id @default(cuid())
+  name          String               @unique
+  order         Int                  @default(0)
+  href          String?              // Optional direct page link instead of dropdown
+  isOpenNewTab  Boolean              @default(false)
+  isActive      Boolean              @default(true)
+  showInHeader  Boolean              @default(true)
+  showInFooter  Boolean              @default(true)
+  icon          String?              // e.g. \"BookOpen\", \"Settings\", etc.
+  items         NavigationSubItem[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  
+  @@index([order])
+}
+
+model NavigationSubItem {
+  id            String               @id @default(cuid())
+  menuId        String
+  name          String
+  order         Int                  @default(0)
+  href          String
+  isOpenNewTab  Boolean              @default(false)
+  isActive      Boolean              @default(true)
+  icon          String?
+  menu          NavigationMenu       @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  
+  @@unique([menuId, name])
+  @@index([menuId])
+  @@index([order])
+}
+
+
+
+model Certificate {
+  id              String   @id @default(cuid())
+  userId          String
+  courseId        String
+  certificateCode String   @unique
+  grade           String   @default(\"Completed\")
+  issueDate       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([courseId])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+}
+
+model Profile {
+  id           String   @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  email        String   @unique
+  display_name String?
+  updatedAt    DateTime @default(now()) @updatedAt
+  
+  @@map("profiles")
+}
