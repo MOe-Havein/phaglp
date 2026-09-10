@@ -1,0 +1,13 @@
+[ERROR] Invalid query - \. List can search only by version or range
+
+pnpm: Invalid query - \. List can search only by version or range
+    at parseSearchQuery (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:165218:11)
+    at Array.map (<anonymous>)
+    at createPackagesSearcher (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:165179:29)
+    at searchForPackages (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:166195:19)
+    at listForPackages (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:166221:22)
+    at render2 (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:210194:61)
+    at listRecursive (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:210029:12)
+    at Object.handler26 (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:210165:12)
+    at file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:277203:42
+    at async main4 (file:///D:/.pnpm-store/v11/links/@/pnpm/11.5.2/54cca61479d7b5622a27a0c4b6a7994506eb707524e1b7073ef2311a9b6bce54/node_modules/pnpm/dist/pnpm.mjs:277182:30)

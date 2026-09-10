@@ -1,0 +1,20 @@
+packages:
+  - .
+allowBuilds:
+  "@prisma/client": true
+  "@prisma/engines": true
+  better-sqlite3: true
+  esbuild: true
+  prisma: true
+  sharp: true
+  unrs-resolver: true
+overrides:
+  jsdom: 25.0.1
+  jsdom>parse5: 7.3.0
+onlyBuiltDependencies:
+  - "@prisma/client"
+  - "@prisma/engines"
+  - esbuild
+  - prisma
+  - sharp
+  - unrs-resolver

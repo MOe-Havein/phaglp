@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "github": {
+    "enabled": true,
+    "silent": true
+  },
+  "functions": {
+    "src/app/api/**/*": {
+      "maxDuration": 60
+    }
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "preview": true
+    }
+  }
+}
