@@ -1,0 +1,47 @@
+{
+  // Set Prettier as the default formatter.
+  // Requires the Prettier VS Code extension: esbenp.prettier-vscode
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Enable format on save for all files.
+  "editor.formatOnSave": true,
+
+  // Automatically fix ESLint errors on save.
+  // Requires the ESLint VS Code extension: dbaeumer.vscode-eslint
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // Use the project's local version of TypeScript.
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Hide build and dependency folders from the file explorer and search.
+  "files.exclude": {
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/out": true
+  },
+
+  "search.exclude": {
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/out": true
+  },
+
+  "files.watcherExclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/build/**": true,
+    "**/dist/**": true,
+    "**/out/**": true
+  },
+  "WillLuke.nextjs.addTypesOnSave": true,
+  "WillLuke.nextjs.hasPrompted": true,
+  "workbench.externalBrowser": "chrome",
+  "geminicodeassist.agentYoloMode": false,
+  "geminicodeassist.chat.automaticScrolling": false
+}

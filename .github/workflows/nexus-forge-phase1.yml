@@ -1,0 +1,249 @@
+name: NEXUS-FORGE Phase 1 Architecture Stabilization
+
+on:
+  workflow_dispatch:
+
+jobs:
+  phase1-analysis:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Tree Utility
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tree cloc
+
+      ########################################################
+      # DIRECTORY + ARCHITECTURE ANALYSIS
+      ########################################################
+
+      - name: Generate Repository Tree
+        run: |
+          tree -L 5 \
+            -I 'node_modules|.next|dist|coverage|build|.git|pnpm-store' \
+            > architecture-tree.txt
+
+      - name: Generate Source Directory Map
+        run: |
+          if [ -d "src" ]; then
+            find src -maxdepth 5 -type d | sort \
+              > source-directories.txt
+          else
+            echo "No src directory found" \
+              > source-directories.txt
+          fi
+
+      - name: Generate TypeScript File Inventory
+        run: |
+          if [ -d "src" ]; then
+            find src \
+              -type f \
+              \( -name "*.ts" -o -name "*.tsx" \) \
+              | sort \
+              > typescript-files.txt
+          else
+            echo "No TypeScript files found" \
+              > typescript-files.txt
+          fi
+
+      ########################################################
+      # NEXT.JS APP ROUTER ANALYSIS
+      ########################################################
+
+      - name: Analyze Dashboard Route Structure
+        run: |
+          if [ -d "src/app/(public)/dashboard" ]; then
+            find "src/app/(public)/dashboard" \
+              -maxdepth 6 \
+              -type f \
+              | sort \
+              > app-router-map.txt
+          else
+            echo "Dashboard route not found" \
+              > app-router-map.txt
+          fi
+
+      - name: Detect Route Groups
+        run: |
+          if [ -d "src/app" ]; then
+            find src/app -type d \
+              | grep '/([^/]*' \
+              > route-groups.txt || true
+          else
+            echo "No route groups found" \
+              > route-groups.txt
+          fi
+
+      ########################################################
+      # FEATURE MODULE MIGRATION ANALYSIS
+      ########################################################
+
+      - name: Detect Candidate Feature Domains
+        run: |
+          if [ -d "src/components" ]; then
+            find src/components \
+              -maxdepth 2 \
+              -type d \
+              > component-domains.txt
+          else
+            echo "No component domains found" \
+              > component-domains.txt
+          fi
+
+      - name: Analyze API Surface Area
+        run: |
+          if [ -d "src/app/api" ]; then
+            find src/app/api \
+              -type f \
+              | sort \
+              > api-surface-map.txt
+          else
+            echo "No API routes found" \
+              > api-surface-map.txt
+          fi
+
+      - name: Detect Oversized Files
+        run: |
+          if [ -d "src" ]; then
+            find src \
+              -type f \
+              \( -name "*.ts" -o -name "*.tsx" \) \
+              -exec wc -l {} + \
+              | sort -nr \
+              | sed -n '1,100p' \
+              > oversized-files.txt
+          else
+            echo "No oversized files found" \
+              > oversized-files.txt
+          fi
+
+      ########################################################
+      # TYPESCRIPT + CODE QUALITY
+      ########################################################
+
+      - name: Run TypeScript Check
+        run: |
+          if [ -f "tsconfig.json" ]; then
+            pnpm exec tsc --noEmit \
+              > typescript-report.txt || true
+          else
+            echo "No tsconfig.json found" \
+              > typescript-report.txt
+          fi
+
+      - name: Run ESLint
+        run: |
+          if pnpm run | grep -q "lint"; then
+            pnpm run lint \
+              > eslint-report.txt || true
+          else
+            echo "No lint script found" \
+              > eslint-report.txt
+          fi
+
+      ########################################################
+      # ARCHITECTURE DRIFT DETECTION
+      ########################################################
+
+      - name: Detect Potential Architecture Drift
+        run: |
+          {
+            echo "=== ACTIONS DIRECTORY ==="
+            find src -type d -name "actions" 2>/dev/null
+
+            echo ""
+            echo "=== SERVICES DIRECTORY ==="
+            find src -type d -name "services" 2>/dev/null
+
+            echo ""
+            echo "=== DUPLICATED DOMAIN NAMES ==="
+
+            find src -type d 2>/dev/null \
+              | awk -F/ '{print $NF}' \
+              | sort \
+              | uniq -d
+          } > architecture-drift.txt
+
+      ########################################################
+      # PACKAGE + DEPENDENCY ANALYSIS
+      ########################################################
+
+      - name: Analyze Dependencies
+        run: |
+          pnpm ls --depth 3 \
+            > dependency-report.txt || true
+
+      ########################################################
+      # CODEBASE METRICS
+      ########################################################
+
+      - name: Generate Code Metrics
+        run: |
+          if [ -d "src" ]; then
+            cloc src \
+              > codebase-metrics.txt
+          else
+            echo "No src directory found" \
+              > codebase-metrics.txt
+          fi
+
+      ########################################################
+      # GENERATE FEATURE-MODULE TARGET STRUCTURE
+      ########################################################
+
+      - name: Generate Suggested Feature Structure
+        run: |
+          cat << 'EOF' > suggested-feature-architecture.txt
+          src/features/
+          ├── auth
+          ├── admin
+          ├── users
+          ├── ai
+          ├── courses
+          ├── homepage
+          ├── navigation
+          ├── blog
+          ├── certificates
+          └── shared
+          EOF
+
+      ########################################################
+      # UPLOAD ARTIFACTS
+      ########################################################
+
+      - name: Upload Architecture Audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-forge-phase1-audit
+          path: |
+            architecture-tree.txt
+            source-directories.txt
+            typescript-files.txt
+            app-router-map.txt
+            route-groups.txt
+            component-domains.txt
+            api-surface-map.txt
+            oversized-files.txt
+            typescript-report.txt
+            eslint-report.txt
+            architecture-drift.txt
+            dependency-report.txt
+            codebase-metrics.txt
+            suggested-feature-architecture.txt

@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+src/testa_phaglp2.egg-info/PKG-INFO
+src/testa_phaglp2.egg-info/SOURCES.txt
+src/testa_phaglp2.egg-info/dependency_links.txt
+src/testa_phaglp2.egg-info/requires.txt
+src/testa_phaglp2.egg-info/top_level.txt

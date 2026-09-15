@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# General build output
+build/
+dist/
+
+# Exclude all .md files except README.md
+*.md
+!README.md
+GeminiPrompts.md
+ThemeContext.md
+AdminContext.md
+DatabaseContext.md
+PERFORMANCE.md
+PROJECT_OVERVIEW.md
+SEO_CONFIG.md
+
