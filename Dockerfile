@@ -1,64 +1,70 @@
 # ==========================================
-# Stage 1: Base Configuration
+# Consolidated Multi-Stage Dockerfile
+# Supports both development and production builds
 # ==========================================
-FROM node:22-bookworm-slim AS base
+
+ARG NODE_VERSION=22
+
+# ==========================================
+# Stage: base - Common configuration
+# ==========================================
+FROM node:${NODE_VERSION}-slim AS base
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
+# Enable pnpm via corepack
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # ==========================================
-# Stage 2: Dependencies (Cached Layer)
-# ==========================================
-# ==========================================
-# Stage 2: Dependencies (Cached Layer)
+# Stage: deps - Install dependencies
 # ==========================================
 FROM base AS deps
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+COPY package.json pnpm-lock.yaml* .npmrc* ./
 COPY prisma ./prisma
 
-# HIGH PERF: Removed strict frozen constraint to auto-heal the mismatch
-# using your persistent BuildKit layer cache
+# Install all dependencies (dev + prod) with cache mount for faster rebuilds
+# Use --no-optional to reduce installation size and memory usage
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
-    corepack enable pnpm && pnpm install --no-frozen-lockfile
+    pnpm install --no-frozen-lockfile --ignore-scripts --no-optional
 
-# Pre-generate client so types and query engines are bound
+# Generate Prisma client and run necessary post-install scripts
+# Run separately to reduce memory pressure
 RUN pnpm prisma generate
-
-
+RUN pnpm rebuild sharp --verbose || echo "Sharp rebuild failed, continuing..."
 
 # ==========================================
-# Stage 3: Application Builder (Low RAM Tune)
+# Stage: builder - Build application
 # ==========================================
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Build arguments for Next.js public environment variables
 ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV CLOUDINARY_URL="cloudinary://build_placeholder:build_placeholder@phaglp"
 
-# LOW-RAM LIMITS: Prevents Next.js from hijacking your 9GB setup
-ENV NODE_OPTIONS="--max-old-space-size=2048"
-ENV CPUS=1
+# Memory limits for build process - optimized for low-memory environments
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 ENV NEXT_DISABLE_SOURCEMAPS=1
+ENV NEXT_TELEMETRY_DISABLED=1
 
+# Build with cache mount for Next.js build cache
+# Reduced memory limit to prevent OOM on constrained systems
 RUN --mount=type=cache,target=/app/.next/cache \
     pnpm build
 
-
 # ==========================================
-# Stage 3: Application Builder
+# Stage: runner - Production runtime
 # ==========================================
-# Build Arguments & Public Environment 
-# HIGH PERF FIX: Caches the Next.js SWC (Rust compiler) framework output folder.
-# Subsequent Next.js builds will compile in seconds instead of minutes.
-#ENV SKIP_ENV_VALIDA
-# Stage 4: Production Runner
-# ==========================================
-FROM node:22-bookworm-slim AS runner
+FROM node:${NODE_VERSION}-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -66,7 +72,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# ca-certificates is required for outbound TLS api calls (like Cloudinary)
+# Install only ca-certificates for TLS, then clean up
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
@@ -75,24 +81,45 @@ RUN apt-get update && \
     mkdir -p /data /app/public/uploads /app/.next && \
     chown -R nextjs:nodejs /data /app
 
-# Copy standalone build
+# Copy only production artifacts
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Copy Prisma schema and runtime scripts
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
 USER nextjs
 EXPOSE 3000
 
+CMD ["node", "server.js"]
 
-# Switch to non-root user for security best practices
+# ==========================================
+# Stage: dev - Development runtime
+# ==========================================
+FROM base AS dev
+
+# Copy dependency manifests
+COPY package.json pnpm-lock.yaml* ./
+
+# Install dependencies with cache mount
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --prefer-offline --no-frozen-lockfile --ignore-scripts
+
+# Copy application code
+COPY . .
+
+# Generate Prisma client and rebuild native modules
+RUN pnpm prisma generate && \
+    pnpm rebuild sharp --verbose
+
+# Configure Next.js for hot reload in Docker
+ENV WATCHPACK_POLLING=true
+ENV HOSTNAME="0.0.0.0"
+
+# Run as non-root user
+RUN chown -R node:node /app
 USER node
 
-# Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
 
-# Start Next.js standalone server
-CMD ["node", "server.js"]
+CMD ["pnpm", "dev"]
