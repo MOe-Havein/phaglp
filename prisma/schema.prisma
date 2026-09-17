@@ -566,10 +566,10 @@ model LessonProgress {
 }
 
 model Profile {
-  id           String   @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  id           String   @id @default(cuid())
   email        String   @unique
   display_name String?
   updatedAt    DateTime @default(now()) @updatedAt
-  
+
   @@map("profiles")
 }
