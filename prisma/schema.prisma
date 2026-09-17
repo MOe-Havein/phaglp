@@ -1,7 +1,6 @@
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL") // Optional: direct port 5432 for migrations
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
