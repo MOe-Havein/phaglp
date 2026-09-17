@@ -1,3 +1,4 @@
+// Prisma client configuration for LibSQL/Turso
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { env } from "@/env";
