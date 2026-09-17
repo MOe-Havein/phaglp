@@ -4,48 +4,40 @@ import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { createClient } from "@libsql/client";
 
 const prismaClientSingleton = () => {
-  const isProd = process.env.NODE_ENV === "production";
-  
-  // 📁 FIX 1: Establish environment-aware local replication disk destinations
-  const localReplicaPath = isProd ? "file:/data/prod.db" : "file:./dev.db";
-  
-  // 🌍 FIX 2: Check for Turso live cloud variables explicitly
   const tursoUrl = process.env.TURSO_DATABASE_URL;
-  const isRemote = !!tursoUrl;
+  const tursoAuthToken = process.env.TURSO_AUTH_TOKEN;
 
   let client: PrismaClient;
 
-  if (isRemote) {
-    console.log(`[Prisma Initializer] ⚡ Initializing Turso Embedded Replica client via: ${localReplicaPath}`);
-    
-    // ⚙️ FIX 3: Initialize libSQL client engine with Embedded Replica mapping capabilities
+  if (tursoUrl && tursoAuthToken) {
+    // Remote Turso connection (production/Vercel)
+    console.log(`[Prisma Initializer] ⚡ Connecting to Turso remote database`);
+
     const libsqlClient = createClient({
-      url: localReplicaPath,                     // Writes locally onto your mounted Docker volume
-      syncUrl: tursoUrl,                         // Reads cloud state mutations from Turso
-      authToken: process.env.TURSO_AUTH_TOKEN,
+      url: tursoUrl,
+      authToken: tursoAuthToken,
     });
 
-    // Handle initial synchronous check seamlessly when building layout states
-    if (typeof window === 'undefined') {
-      libsqlClient.sync()
-        .then(() => console.log("[Turso Sync] Initial boot migration synchronization loop complete."))
-        .catch((err) => console.error("[Turso Sync Error] Initial baseline sync loop failed:", err));
-    }
-
     const adapter = new PrismaLibSql(libsqlClient);
-    
+
     client = new PrismaClient({
       log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
       adapter,
     });
   } else {
-    // Local SQLite fallback mode execution pathway if no Turso variables exist
-    console.log(`[Prisma Initializer] 📁 Initializing standalone local SQLite client via: ${localReplicaPath}`);
+    // Local SQLite fallback for development
+    const localDbPath = "file:./dev.db";
+    console.log(`[Prisma Initializer] 📁 Using local SQLite database: ${localDbPath}`);
+
+    const libsqlClient = createClient({
+      url: localDbPath,
+    });
+
+    const adapter = new PrismaLibSql(libsqlClient);
+
     client = new PrismaClient({
       log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-      datasources: {
-        db: { url: localReplicaPath },
-      },
+      adapter,
     });
   }
 
