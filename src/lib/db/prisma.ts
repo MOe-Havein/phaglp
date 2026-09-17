@@ -1,3 +1,4 @@
+// Prisma client with embedded replica support
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { createClient } from "@libsql/client";

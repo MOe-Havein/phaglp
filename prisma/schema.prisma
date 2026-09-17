@@ -88,7 +88,7 @@ model User {
   
   chatMessages ChatMessage[]
   comments     Comment[]
-  courses      Course[]         @relation(\"InstructorCourses\")
+  courses      Course[]         @relation("InstructorCourses")
   enrollments  Enrollment[]
   lectures     Lecture[]
   pages        Page[]
@@ -154,7 +154,7 @@ model Comment {
 model Tag {
   id    String @id @default(cuid())
   name  String @unique
-  pages Page[] @relation(\"PageToTag\")
+  pages Page[] @relation("PageToTag")
 }
 
 model PageRevision {
@@ -182,7 +182,7 @@ model Page {
   metaDescription String?
   author          User?          @relation(fields: [authorId], references: [id])
   revisions       PageRevision[]
-  tags            Tag[]          @relation(\"PageToTag\")
+  tags            Tag[]          @relation("PageToTag")
 }
 
 model Lecture {
@@ -220,7 +220,7 @@ model LectureRevision {
 }
 
 model SiteSettings {
-  id                    String  @id @default(\"global\")
+  id                    String  @id @default("global")
   siteName              String
   siteUrl               String
   metaTitle             String
@@ -257,7 +257,7 @@ model Course {
   duration       String?
   courseType     CourseType     @default(OTHER)
   durationMonths Int?
-  instructor     User           @relation(\"InstructorCourses\", fields: [instructorId], references: [id])
+  instructor     User           @relation("InstructorCourses", fields: [instructorId], references: [id])
   modules        CourseModule[]
   enrollments    Enrollment[]
   assets         AcademyAsset[]
@@ -460,7 +460,7 @@ model AcademyAsset {
   status        AssetStatus    @default(AVAILABLE)
   quantity      Int            @default(1)
   /// Unit of measure: \"unit\", \"set\", \"copy\", etc.
-  quantityUnit  String         @default(\"unit\")
+  quantityUnit  String         @default("unit")
   /// Physical storage location, e.g. \"Room A3\", \"Storage Shelf B2\"
   location      String?
   supplier      String?
@@ -542,7 +542,7 @@ model Certificate {
   userId          String
   courseId        String
   certificateCode String   @unique
-  grade           String   @default(\"Completed\")
+  grade           String   @default("Completed")
   issueDate       DateTime @default(now())
   
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
